@@ -1,9 +1,11 @@
 """
-Kobo staging for tests/cases/connection.py --kobo staging: deploys the test forms (from
+A real Kobo server for tests/cases/connection.py --kobo real: deploys the test forms (from
 kobo/forms/*.json, through KPI's API) and makes submissions (OpenRosa XML, as Collect and
-Enketo send them), on a throwaway account's own projects only.
+Enketo send them), on a throwaway test account's own projects only (all named
+"... (espo-kobo test)"; nothing else is touched).
 
-Refuses production servers. Projects are found by name; deploying again updates them.
+A production server only with KOBO_TEST_ACCOUNT_ON_PRODUCTION=yes in .env (Josh,
+2026-11-05: the test account on kf.kobotoolbox.org). Deploying again updates the projects.
 """
 import json
 import urllib.parse
@@ -15,12 +17,16 @@ from xml.sax.saxutils import escape
 PRODUCTION = ('kf.kobotoolbox.org', 'eu.kobotoolbox.org', 'kobo.humanitarianresponse.info')
 
 
-class Staging:
-    def __init__(self, url, token):
+class RealKobo:
+    def __init__(self, url, token, production_ok=False):
         host = urllib.parse.urlsplit(url).hostname or ''
-        if not host or any(host == p or host.endswith('.' + p) for p in PRODUCTION):
-            raise SystemExit(f'not a staging server: {url!r}')
+        if not host or (not production_ok and any(host == p or host.endswith('.' + p) for p in PRODUCTION)):
+            raise SystemExit(f'{url!r} is a production server: set KOBO_TEST_ACCOUNT_ON_PRODUCTION=yes '
+                             'only for a throwaway test account')
         self.url, self.token = url.rstrip('/'), token
+        # OpenRosa (what Collect and Enketo post to): kc.<domain>/submission; kf's old
+        # /api/v1/submissions answers 410
+        self.submission_url = self.url.replace('://kf.', '://kc.', 1) + '/submission'
         self.ids = {}  # uid -> (form id, version)
 
     def call(self, method, path, body=None, raw=None, headers=None):
@@ -93,7 +99,7 @@ class Staging:
         boundary = 'kobo-espo-' + uuid.uuid4().hex
         body = (f'--{boundary}\r\nContent-Disposition: form-data; name="xml_submission_file"; filename="s.xml"\r\n'
                 'Content-Type: text/xml\r\n\r\n').encode() + xml + f'\r\n--{boundary}--\r\n'.encode()
-        self.call('POST', f'{self.url}/api/v1/submissions', raw=body, headers={
+        self.call('POST', self.submission_url, raw=body, headers={
             'Content-Type': f'multipart/form-data; boundary={boundary}', 'X-OpenRosa-Version': '1.0',
             'Date': datetime.now(timezone.utc).strftime('%a, %d %b %Y %H:%M:%S GMT')})
         found = self.call('GET', f'/api/v2/assets/{uid}/data/?' + urllib.parse.urlencode(

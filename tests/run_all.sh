@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Every test, against the test droplet. ./tests/run_all.sh [--kobo staging]
+# Every test, against the test droplet. ./tests/run_all.sh [--kobo real]
 #   - kobo-bridge's unit tests (no network)
 #   - espo/seed (idempotent: makes sure EspoCRM is as the tests expect)
 #   - isolation (T8-T11, T13, T15, T16), workflow B (T14), connection (T1-T7, T12, C1-C3)

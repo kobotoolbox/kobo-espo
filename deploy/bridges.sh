@@ -5,14 +5,18 @@
 #   deploy/bridges.sh down     stop the bridges (EspoCRM keeps running)
 #   deploy/bridges.sh logs     their logs
 #
-# Needs KOBO_URL and KOBO_TOKEN in .env (Kobo STAGING only). The token goes to
+# Needs KOBO_URL and KOBO_TOKEN in .env: a throwaway test account (on a production server
+# only with KOBO_TEST_ACCOUNT_ON_PRODUCTION=yes). The token goes to
 # /root/kobo-espo-kobo.token on the droplet (mode 600); the API keys setup made to
 # /root/kobo-espo-bridge.secrets (mode 600).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 set -a; source .env; set +a
 case "$KOBO_URL" in
-    *kf.kobotoolbox.org*|*eu.kobotoolbox.org*|"") echo "KOBO_URL must be Kobo staging (got '${KOBO_URL}')" >&2; exit 1 ;;
+    "") echo "no KOBO_URL in .env" >&2; exit 1 ;;
+    *kf.kobotoolbox.org*|*eu.kobotoolbox.org*)
+        [[ ${KOBO_TEST_ACCOUNT_ON_PRODUCTION:-} == yes ]] || {
+            echo "KOBO_URL is a production server: set KOBO_TEST_ACCOUNT_ON_PRODUCTION=yes, for a throwaway test account only" >&2; exit 1; } ;;
 esac
 SSH_OPTS="-o ControlMaster=auto -o ControlPath=/tmp/kobo-espo-ssh-%C -o ControlPersist=10m"
 CMD=${1:-up}

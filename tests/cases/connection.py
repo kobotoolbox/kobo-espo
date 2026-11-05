@@ -2,12 +2,12 @@
 """
 The Kobo -> EspoCRM connection end to end: T1-T7, T12, and Workflow C (sites and lists).
 
-    python3 -I tests/cases/connection.py [--kobo fake|staging] [--skip-espo-down]
+    python3 -I tests/cases/connection.py [--kobo fake|real] [--skip-espo-down]
 
 The real bridge (kobo-bridge's bridge.py, run as a process, as in its container) and its
 setup.py, against the test droplet's EspoCRM. Kobo: a fake one on this machine
-(kobo-bridge/fake_kobo.py, the default), or Kobo staging (KOBO_URL, KOBO_TOKEN in .env;
-tests/kobo-staging.py deploys the forms there first).
+(kobo-bridge/fake_kobo.py, the default), or a real one (KOBO_URL, KOBO_TOKEN in .env,
+a throwaway test account; tests/staging.py deploys the forms there first).
 
 T3 stops EspoCRM on the droplet for a minute (docker compose stop espocrm) unless
 --skip-espo-down. Writes tests/results/connection-<kobo>.json.
@@ -27,15 +27,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lib import ROOT, URL, BridgeError, Espo, admin, as_user, env, secrets  # noqa: E402
 
-BRIDGE_DIR = Path(os.environ.get('KOBO_BRIDGE_DIR', ROOT.parent / 'kobo-bridge'))
-sys.path.insert(0, str(BRIDGE_DIR))
-import bridge  # noqa: E402
+from bridges import SECRETS, Bridge, by, notifications  # noqa: E402
 
 FORMS = {k: json.loads((ROOT / 'kobo' / 'forms' / f'{k}.json').read_text())
          for k in ('support-request', 'volunteer-availability', 'site-registration', 'site-visit')}
 TEMPLATES = {'support-request': 'support-request', 'volunteer-availability': 'volunteer',
              'site-registration': 'site-registration', 'site-visit': 'site-visit'}
-SECRETS = ROOT / 'secrets' / 'bridge.secrets'
 RUN = str(int(time.time()))[-6:]  # makes this run's emails and site codes its own
 results = []
 
@@ -54,71 +51,6 @@ def status(fn):
         return e.status
 
 
-class Bridge:
-    """One template's bridge: setup, then passes of bridge.py once, each a new process."""
-
-    def __init__(self, name, kobo_url, token):
-        self.name, self.kobo_url = name, kobo_url
-        self.template = ROOT / 'kobo' / 'templates' / f'{name}.toml'
-        self.t = bridge.load_template(self.template)
-        self.state = Path(tempfile.mkdtemp(prefix=f'bridge-{name}-'))
-        self.token_file = self.state / 'token'
-        self.token_file.write_text(token)
-        self.token_file.chmod(0o600)
-
-    def setup(self):
-        out = subprocess.run([sys.executable, '-I', str(BRIDGE_DIR / 'setup.py'), '--template', str(self.template),
-                              '--url', URL, '--secrets', str(SECRETS), '--kobo-url', self.kobo_url,
-                              '--token-file', str(self.token_file), '--state-dir', str(self.state)],
-                             capture_output=True, text=True)
-        if out.returncode:
-            raise SystemExit(f'setup {self.name} failed:\n{out.stdout}\n{out.stderr}')
-        return out.stdout
-
-    def env(self, espo_url=URL):
-        s = secrets('bridge')
-        b, fu = self.t.get('bridge') or {}, self.t.get('followup') or {}
-        e = {'PATH': os.environ['PATH'], 'ESPO_URL': espo_url, 'ESPO_API_KEY': s[b['secret']],
-             'KOBO_URL': self.kobo_url, 'KOBO_TOKEN_FILE': str(self.token_file),
-             'BRIDGE_TEMPLATE': str(self.template), 'BRIDGE_STATE_DIR': str(self.state),
-             'BRIDGE_LIST_MIN_SECONDS': '0'}
-        if fu:
-            e['ESPO_FOLLOWUP_API_KEY'] = s[fu.get('secret', 'ESPO_FOLLOWUP_API_KEY')]
-        if self.t['entity'] == 'Case' and self.t.get('form'):
-            e['ESPO_EDITS_API_KEY'] = s['ESPO_EDITS_API_KEY']
-        return e
-
-    def once(self, espo_url=URL):
-        out = subprocess.run([sys.executable, '-I', str(BRIDGE_DIR / 'bridge.py'), 'once'],
-                             env=self.env(espo_url), capture_output=True, text=True)
-        status = json.loads((self.state / 'status.json').read_text())
-        return out.returncode, out.stdout + out.stderr, status
-
-    def failed(self):
-        return subprocess.run([sys.executable, '-I', str(BRIDGE_DIR / 'bridge.py'), 'failed', str(self.state)],
-                              capture_output=True, text=True).stdout
-
-    def forget(self):
-        """A lost ledger: the next pass rescans every submission."""
-        for f in self.state.glob('bridge.sqlite*'):
-            f.unlink()
-
-
-def by(espo, entity, attr, value, select=None):
-    params = {'where[0][type]': 'equals', 'where[0][attribute]': attr, 'where[0][value]': value, 'maxSize': 20}
-    if select:
-        params['select'] = select
-    return espo.call('GET', f'/{entity}', params)['list']
-
-
-def notifications(espo, record_id):
-    """The user's notifications about a record (EspoCRM 10 groups them per record)."""
-    rows = espo.call('GET', '/Notification', {'maxSize': 50})['list']
-    # A mention is about the note: the record is the note's parent
-    return [n for n in rows if record_id in (n.get('relatedParentId'), n.get('relatedId'),
-                                             (n.get('noteData') or {}).get('parentId'))]
-
-
 def droplet(cmd):
     return subprocess.run(['ssh', '-o', 'ControlMaster=auto', '-o', 'ControlPath=/tmp/kobo-espo-ssh-%C',
                            '-o', 'ControlPersist=10m', env('ESPO_SSH'),
@@ -135,7 +67,7 @@ def support(project, email, org='alpha', **kw):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--kobo', choices=['fake', 'staging'], default='fake')
+    ap.add_argument('--kobo', choices=['fake', 'real'], default='fake')
     ap.add_argument('--skip-espo-down', action='store_true')
     args = ap.parse_args()
     a = admin()
@@ -150,8 +82,8 @@ def main():
         uids = {k: kobo.add_form(f['settings']['form_title'], f) for k, f in FORMS.items()}
         submit = kobo.submit
     else:
-        from staging import Staging
-        kobo = Staging(env('KOBO_URL'), env('KOBO_TOKEN'))
+        from staging import RealKobo
+        kobo = RealKobo(env('KOBO_URL'), env('KOBO_TOKEN'), env('KOBO_TEST_ACCOUNT_ON_PRODUCTION') == 'yes')
         kobo_url, token = kobo.url, kobo.token
         uids = kobo.deploy_all(FORMS)
         submit = kobo.submit
@@ -259,6 +191,7 @@ def main():
           any('@triager' in (n.get('post') or '') for n in note))
     check('T5', 'triager assigns it to staff-1', status(lambda: triager.call(
         'PUT', f'/Case/{case["id"]}', body={'assignedUserId': user['staff-1']})) == 200)
+    assigned_at = a.call('GET', f'/Case/{case["id"]}')['modifiedAt']
     check('T5', 'staff-1 notified of the assignment', bool(notifications(as_user('staff-1'), case['id'])))
     # partner-b shares a team (Consortium B) with the triager, not with the case: EspoCRM's
     # own check lets this through; the Case API Before Save Script refuses it
@@ -276,8 +209,10 @@ def main():
     second = by(a, 'Case', 'cKoboSubmissionUuid', s1b['_uuid'])[0]
     check('T5', 'escalation: the unassigned case is mentioned to staff-1 (lead for Consortium A)',
           bool(notifications(as_user('staff-1'), second['id'])) and st['counts']['escalated'] >= 1, st['counts'])
-    check('T5', 'escalation: the assigned case is not escalated', not any(
-        'unassigned' in (n.get('post') or '').lower() for n in a.call('GET', f'/Case/{case["id"]}/stream', {'maxSize': 20})['list']))
+    # (It may have been escalated before it was assigned, on a slow run: that's right)
+    check('T5', 'escalation: no escalation of the case after it was assigned', not any(
+        'unassigned' in (n.get('post') or '').lower() and n['createdAt'] > assigned_at
+        for n in a.call('GET', f'/Case/{case["id"]}/stream', {'maxSize': 20})['list']))
     check('T5', 'escalation happens once', intake.once()[2]['counts']['escalated'] == 0)
 
     # --- T6: each consortium's requests land in its own team ---------------------------------
