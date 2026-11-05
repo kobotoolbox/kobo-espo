@@ -1,0 +1,102 @@
+{
+ "settings": {
+  "form_title": "Site registration (espo-kobo test)",
+  "form_id": "site_registration",
+  "version": "1"
+ },
+ "survey": [
+  {
+   "type": "select_one_from_file responses.csv",
+   "name": "response",
+   "label": "Which response?",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "site_code",
+   "label": "Site code",
+   "required": "true",
+   "constraint": "regex(., '^[A-Z0-9-]{3,20}$')",
+   "constraint_message": "Capitals, digits and dashes, e.g. EQ1-WP-004"
+  },
+  {
+   "type": "text",
+   "name": "site_name",
+   "label": "Site name",
+   "required": "true"
+  },
+  {
+   "type": "select_one site_type",
+   "name": "site_type",
+   "label": "What is installed here?",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "region",
+   "label": "Region or district",
+   "required": "true"
+  },
+  {
+   "type": "geopoint",
+   "name": "location",
+   "label": "Location"
+  },
+  {
+   "type": "date",
+   "name": "installed",
+   "label": "Installed on",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "equipment",
+   "label": "Equipment (make, model, serial numbers)",
+   "required": "true",
+   "appearance": "multiline"
+  },
+  {
+   "type": "select_one_from_file standards.csv",
+   "name": "standard",
+   "label": "Which standard does it follow?"
+  },
+  {
+   "type": "calculate",
+   "name": "standard_requirement",
+   "calculation": "pulldata('standards', 'requirement', 'name', ${standard})"
+  },
+  {
+   "type": "note",
+   "name": "standard_note",
+   "label": "Requirement: ${standard_requirement}",
+   "relevant": "${standard} != ''"
+  }
+ ],
+ "choices": [
+  {
+   "list_name": "site_type",
+   "name": "water_point",
+   "label": "Water point"
+  },
+  {
+   "list_name": "site_type",
+   "name": "solar",
+   "label": "Solar installation"
+  },
+  {
+   "list_name": "site_type",
+   "name": "health_post",
+   "label": "Health post"
+  },
+  {
+   "list_name": "site_type",
+   "name": "shelter",
+   "label": "Shelter"
+  },
+  {
+   "list_name": "site_type",
+   "name": "other",
+   "label": "Other"
+  }
+ ]
+}

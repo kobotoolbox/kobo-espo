@@ -161,6 +161,20 @@ def main():
     check('T10', 'roster-1: assigning own task within the team allowed',
           status(lambda: r.call('PUT', f'/Task/{t_r1_roster1["id"]}', body={'assignedUserId': user['roster-2']})) == 200)
     a.call('PUT', f'/Task/{t_r1_roster1["id"]}', body={'assignedUserId': user['roster-1']})
+    # roster-2 is in both responses: EspoCRM's "team" assignment permission alone would let
+    # them hand a Response 1 task to a Response 2 volunteer (Task API Before Save Script)
+    r2u = as_user('roster-2')
+    mine = a.call('GET', '/Task', {'select': 'name', 'where[0][type]': 'equals', 'where[0][attribute]': 'name',
+                                   'where[0][value]': 'ISO R1 task of roster-2'})['list'][0]
+    check('T10', 'roster-2 (both responses): giving a Response 1 task to a Response 2 volunteer refused',
+          status(lambda: r2u.call('PUT', f'/Task/{mine["id"]}', body={'assignedUserId': user['volunteer-1']})) == 400)
+    check('T10', 'roster-2: adding a Response 2 volunteer as collaborator on a Response 1 task refused',
+          status(lambda: r2u.call('PUT', f'/Task/{mine["id"]}', body={
+              'collaboratorsIds': [user['roster-2'], user['volunteer-1']]})) == 400)
+    check('T10', 'roster-2: adding a Response 1 member as collaborator allowed',
+          status(lambda: r2u.call('PUT', f'/Task/{mine["id"]}', body={
+              'collaboratorsIds': [user['roster-2'], user['roster-1']]})) == 200)
+    a.call('PUT', f'/Task/{mine["id"]}', body={'collaboratorsIds': [user['roster-2']]})
     check('T10', 'roster-1: a task in Response 2 can\'t be created by putting it under Response 2',
           status(lambda: r.call('POST', '/Task', body={'name': 'ISO sneaky', 'cResponseId': r2['id'],
                                                        'assignedUserId': user['roster-1']})) in (400, 403))
@@ -195,11 +209,11 @@ def main():
     check('T15', "roster-1 as collaborator can't move volunteer-2's task (EspoCRM 10: shared = read only)",
           status(lambda: r.call('PUT', f'/Task/{t_r1_vol2["id"]}', body={'status': 'Started'})) == 403)
     outsider = as_user('volunteer-1')  # Response 2 only
-    a.call('PUT', f'/Task/{t_r1_vol2["id"]}', body={'collaboratorsIds': [user['roster-1'], user['volunteer-1']]})
-    check('T15', 'a collaborator from outside the response can read that one task (sharing crosses teams)',
-          status(lambda: outsider.call('GET', f'/Task/{t_r1_vol2["id"]}')) == 200
-          and status(lambda: outsider.call('GET', f'/CResponse/{r1["id"]}')) == 403,
-          'by design: adding a collaborator shares the task, not its response')
+    check('T15', 'a collaborator from outside the response is refused, even by an admin (Task API script)',
+          status(lambda: a.call('PUT', f'/Task/{t_r1_vol2["id"]}', body={
+              'collaboratorsIds': [user['roster-1'], user['volunteer-1']]})) == 400
+          and status(lambda: outsider.call('GET', f'/Task/{t_r1_vol2["id"]}')) == 403,
+          'without the script, adding one shares the task across teams (EspoCRM: collaborators may read)')
     a.call('PUT', f'/Task/{t_r1_vol2["id"]}', body={'collaboratorsIds': [user['roster-1']]})
     v = as_user('volunteer-2')
     check('T15', 'volunteer-2 moves own task', status(lambda: v.call(

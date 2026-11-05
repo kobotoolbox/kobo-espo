@@ -1,0 +1,98 @@
+{
+ "settings": {
+  "form_title": "Volunteer availability (espo-kobo test)",
+  "form_id": "volunteer_availability",
+  "version": "1"
+ },
+ "survey": [
+  {
+   "type": "text",
+   "name": "full_name",
+   "label": "Full name",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "email",
+   "label": "Email",
+   "required": "true",
+   "constraint": "regex(., '^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')"
+  },
+  {
+   "type": "select_multiple skills",
+   "name": "skills",
+   "label": "Skills",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "languages",
+   "label": "Languages you work in",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "availability",
+   "label": "When are you available? (dates, how long)",
+   "required": "true",
+   "appearance": "multiline"
+  },
+  {
+   "type": "select_multiple deployment",
+   "name": "deployment",
+   "label": "Deployment preferences"
+  }
+ ],
+ "choices": [
+  {
+   "list_name": "skills",
+   "name": "wash",
+   "label": "WASH"
+  },
+  {
+   "list_name": "skills",
+   "name": "shelter",
+   "label": "Shelter"
+  },
+  {
+   "list_name": "skills",
+   "name": "health",
+   "label": "Health"
+  },
+  {
+   "list_name": "skills",
+   "name": "logistics",
+   "label": "Logistics"
+  },
+  {
+   "list_name": "skills",
+   "name": "data",
+   "label": "Data and information management"
+  },
+  {
+   "list_name": "skills",
+   "name": "translation",
+   "label": "Translation"
+  },
+  {
+   "list_name": "skills",
+   "name": "coordination",
+   "label": "Coordination"
+  },
+  {
+   "list_name": "deployment",
+   "name": "remote",
+   "label": "Remote"
+  },
+  {
+   "list_name": "deployment",
+   "name": "in_country",
+   "label": "In country"
+  },
+  {
+   "list_name": "deployment",
+   "name": "regional",
+   "label": "Regional hub"
+  }
+ ]
+}

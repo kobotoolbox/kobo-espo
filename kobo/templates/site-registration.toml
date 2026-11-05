@@ -1,0 +1,71 @@
+# Workflow C: registering a site (an installation, a water point...) from Kobo. The form
+# picks the response from responses.csv and a standard from standards.csv, both kept by
+# the bridge from EspoCRM. Registering the same site code again updates that site. The
+# site takes its response's teams (CSite formula).
+
+[bridge]
+user = "kobo-sites"
+role = "Kobo sites"
+secret = "ESPO_SITES_API_KEY"
+
+[form]
+name = "Site registration (espo-kobo test)"
+
+[record]
+entity = "CSite"
+panel = "Registration"
+name = "{site_name}"
+match = { siteCode = "site_code" }
+required = ["response", "site_code", "site_name"]
+
+[[field]]
+kobo = "response"
+espo = "response"
+type = "link"
+
+[[field]]
+kobo = "site_code"
+espo = "siteCode"
+
+[[field]]
+kobo = "site_type"
+espo = "siteType"
+
+[[field]]
+kobo = "region"
+espo = "region"
+
+[[field]]
+kobo = "installed"
+espo = "installedAt"
+
+[[field]]
+kobo = "equipment"
+espo = "equipment"
+
+[[field]]
+kobo = "location"
+espo = "location"
+type = "varchar"
+label = "Location (Kobo geopoint)"
+
+[[field]]
+kobo = "standard"
+espo = "standardCode"
+type = "varchar"
+label = "Standard"
+
+# Lists from EspoCRM for the form. Only these columns reach the phones
+[[list]]
+file = "responses.csv"
+entity = "CResponse"
+where = { status = ["Planning", "Active"] }
+columns = { name = "id", label = "name" }
+forms = ["Site registration (espo-kobo test)"]
+
+[[list]]
+file = "standards.csv"
+entity = "CStandard"
+order_by = "code"
+columns = { name = "code", label = "{code} · {name}", requirement = "requirement", category = "category" }
+forms = ["Site registration (espo-kobo test)"]

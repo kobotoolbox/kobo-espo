@@ -1,0 +1,35 @@
+# Workflow C: follow-up visits to the sites of one response (Test EQ 1). The form picks
+# the site from sites.csv (that response's sites only, from EspoCRM); each visit updates
+# the site's status and last visit and adds a note on it.
+
+[bridge]
+user = "kobo-site-lists"
+role = "Kobo site lists"
+secret = "ESPO_SITE_LISTS_API_KEY"
+
+[record]
+entity = "CSite"
+
+[followup]
+form = "Site visit - Test EQ 1 (espo-kobo test)"
+key = "site"
+match = "siteCode"  # the site whose code was picked
+title = "Site visit"
+user = "kobo-site-visits"
+role = "Kobo site visits"
+secret = "ESPO_SITE_VISITS_API_KEY"
+fields = { condition = "status", visit_date = "lastVisit" }
+note = [
+    ["By", "visitor"],
+    ["Date", "visit_date"],
+    ["Condition", "condition"],
+    ["Notes", "visit_notes"],
+]
+
+[[list]]
+file = "sites.csv"
+entity = "CSite"
+team = "Response: Test EQ 1"
+order_by = "siteCode"
+columns = { name = "siteCode", label = "{siteCode} · {name}", status = "status", region = "region" }
+forms = ["Site visit - Test EQ 1 (espo-kobo test)"]

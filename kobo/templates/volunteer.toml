@@ -1,0 +1,51 @@
+# Workflow B: a volunteer sign-up becomes a Contact (profile Volunteer) in the roster pool.
+# Signing up again with the same email updates that Contact. Making them a user, to give
+# them tasks, stays a person's decision (plan §8.3).
+
+[bridge]
+user = "kobo-volunteers"
+role = "Kobo volunteers"
+secret = "ESPO_VOLUNTEERS_API_KEY"
+
+[form]
+name = "Volunteer availability (espo-kobo test)"
+
+[record]
+entity = "Contact"
+panel = "Volunteer"
+match = { emailAddress = "email" }
+required = ["full_name", "email"]
+set = { cProfileType = "Volunteer" }
+
+[[route]]
+team = "Roster and volunteers"
+notify = ["staff-1"]
+
+[[field]]
+kobo = "full_name"
+espo = "name"
+type = "personName"
+
+[[field]]
+kobo = "email"
+espo = "emailAddress"
+
+[[field]]
+kobo = "skills"
+espo = "cSkills"
+label = "Skills"
+
+[[field]]
+kobo = "languages"
+espo = "cLanguages"
+type = "varchar"
+label = "Languages"
+
+[[field]]
+kobo = "availability"
+espo = "cAvailability"
+
+[[field]]
+kobo = "deployment"
+espo = "cDeployment"
+label = "Deployment preferences"

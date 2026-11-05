@@ -1,0 +1,7 @@
+// A site is in its response's teams, like its tasks: the response's members see it
+if (responseId && (entity\isNew() || entity\isAttributeChanged('responseId'))) {
+    $teams = record\attribute('CResponse', responseId, 'teamsIds');
+    if (array\length($teams) > 0) {
+        teamsIds = $teams;
+    }
+}

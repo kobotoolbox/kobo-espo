@@ -1,0 +1,38 @@
+// The assignee and every collaborator must be in the task's response team (or the task's
+// teams). EspoCRM's "team" assignment permission lets someone assign anyone who shares any
+// of *their* teams: a roster expert in two responses could give a Response 1 task to a
+// Response 2 volunteer, who would then see it.
+// (On a new task, link-multiple attributes the request doesn't set can't be read: EspoCRM
+// would load the relation of a record with no id yet, a 500.)
+$teams = list();
+if (cResponseId) {
+    $teams = record\attribute('CResponse', cResponseId, 'teamsIds');
+} else if (!entity\isNew() || entity\isAttributeChanged('teamsIds')) {
+    $teams = teamsIds;
+}
+if (array\length($teams) > 0 && (entity\isNew() || entity\isAttributeChanged('assignedUserId')
+        || entity\isAttributeChanged('collaboratorsIds') || entity\isAttributeChanged('cResponseId'))) {
+    $people = list();
+    if (!entity\isNew() || entity\isAttributeChanged('collaboratorsIds')) {
+        $people = collaboratorsIds;
+    }
+    if (assignedUserId) {
+        $people = array\push($people, assignedUserId);
+    }
+    $p = 0;
+    while ($p < array\length($people)) {
+        $userTeams = record\attribute('User', array\at($people, $p), 'teamsIds');
+        $ok = false;
+        $i = 0;
+        while ($i < array\length($teams)) {
+            if (array\includes($userTeams, array\at($teams, $i))) {
+                $ok = true;
+            }
+            $i = $i + 1;
+        }
+        if (!$ok) {
+            recordService\throwBadRequest('Everyone on a task must be in its response\'s team.');
+        }
+        $p = $p + 1;
+    }
+}

@@ -1,0 +1,6 @@
+[
+ {"code": "WASH-1", "name": "Water quantity", "category": "WASH", "source": "Test standards (made up)", "requirement": "At least 15 litres per person per day"},
+ {"code": "WASH-2", "name": "Distance to water point", "category": "WASH", "source": "Test standards (made up)", "requirement": "No household more than 500 m from a water point"},
+ {"code": "ENRG-1", "name": "Solar installation", "category": "Energy", "source": "Test standards (made up)", "requirement": "Panels anchored; battery enclosure ventilated and locked"},
+ {"code": "HLTH-1", "name": "Health post access", "category": "Health", "source": "Test standards (made up)", "requirement": "Open 8 hours a day, 5 days a week"}
+]

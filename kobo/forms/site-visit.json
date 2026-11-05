@@ -1,0 +1,67 @@
+{
+ "settings": {
+  "form_title": "Site visit - Test EQ 1 (espo-kobo test)",
+  "form_id": "site_visit_eq1",
+  "version": "1"
+ },
+ "survey": [
+  {
+   "type": "select_one_from_file sites.csv",
+   "name": "site",
+   "label": "Which site?",
+   "required": "true"
+  },
+  {
+   "type": "calculate",
+   "name": "site_status_before",
+   "calculation": "pulldata('sites', 'status', 'name', ${site})"
+  },
+  {
+   "type": "note",
+   "name": "site_note",
+   "label": "Status on record: ${site_status_before}"
+  },
+  {
+   "type": "date",
+   "name": "visit_date",
+   "label": "Date of visit",
+   "required": "true"
+  },
+  {
+   "type": "select_one condition",
+   "name": "condition",
+   "label": "Condition now",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "visit_notes",
+   "label": "What did you find or do?",
+   "required": "true",
+   "appearance": "multiline"
+  },
+  {
+   "type": "text",
+   "name": "visitor",
+   "label": "Your name",
+   "required": "true"
+  }
+ ],
+ "choices": [
+  {
+   "list_name": "condition",
+   "name": "operational",
+   "label": "Operational"
+  },
+  {
+   "list_name": "condition",
+   "name": "needs_repair",
+   "label": "Needs repair"
+  },
+  {
+   "list_name": "condition",
+   "name": "decommissioned",
+   "label": "Decommissioned"
+  }
+ ]
+}

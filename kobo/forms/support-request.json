@@ -1,0 +1,162 @@
+{
+ "settings": {
+  "form_title": "Kobo support request (espo-kobo test)",
+  "form_id": "kobo_support_request",
+  "version": "1"
+ },
+ "survey": [
+  {
+   "type": "text",
+   "name": "requester_name",
+   "label": "Your name",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "requester_email",
+   "label": "Your email",
+   "required": "true",
+   "constraint": "regex(., '^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')",
+   "constraint_message": "An email address, e.g. name@example.org"
+  },
+  {
+   "type": "select_one organisation",
+   "name": "organisation",
+   "label": "Your organisation",
+   "required": "true"
+  },
+  {
+   "type": "select_one project",
+   "name": "project",
+   "label": "Which project is this about?",
+   "required": "true"
+  },
+  {
+   "type": "select_one category",
+   "name": "category",
+   "label": "What is it about?",
+   "required": "true"
+  },
+  {
+   "type": "select_one priority",
+   "name": "priority",
+   "label": "How urgent is it?",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "summary",
+   "label": "In a few words",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "description",
+   "label": "Describe the problem or request",
+   "required": "true",
+   "appearance": "multiline"
+  },
+  {
+   "type": "file",
+   "name": "attachment",
+   "label": "A file that helps (optional)"
+  }
+ ],
+ "choices": [
+  {
+   "list_name": "organisation",
+   "name": "kobo",
+   "label": "KoboToolbox"
+  },
+  {
+   "list_name": "organisation",
+   "name": "alpha",
+   "label": "Org Alpha"
+  },
+  {
+   "list_name": "organisation",
+   "name": "beta",
+   "label": "Org Beta"
+  },
+  {
+   "list_name": "organisation",
+   "name": "gamma",
+   "label": "Org Gamma"
+  },
+  {
+   "list_name": "organisation",
+   "name": "delta",
+   "label": "Org Delta"
+  },
+  {
+   "list_name": "organisation",
+   "name": "epsilon",
+   "label": "Org Epsilon"
+  },
+  {
+   "list_name": "project",
+   "name": "internal",
+   "label": "Kobo internal"
+  },
+  {
+   "list_name": "project",
+   "name": "consortium_a",
+   "label": "Consortium A (Kobo + 3 orgs)"
+  },
+  {
+   "list_name": "project",
+   "name": "consortium_b",
+   "label": "Consortium B (Kobo + 5 orgs)"
+  },
+  {
+   "list_name": "category",
+   "name": "access",
+   "label": "Account and access"
+  },
+  {
+   "list_name": "category",
+   "name": "forms",
+   "label": "Forms and XLSForm"
+  },
+  {
+   "list_name": "category",
+   "name": "data",
+   "label": "Data and exports"
+  },
+  {
+   "list_name": "category",
+   "name": "integrations",
+   "label": "Integrations"
+  },
+  {
+   "list_name": "category",
+   "name": "training",
+   "label": "Training"
+  },
+  {
+   "list_name": "category",
+   "name": "other",
+   "label": "Other"
+  },
+  {
+   "list_name": "priority",
+   "name": "Low",
+   "label": "Low"
+  },
+  {
+   "list_name": "priority",
+   "name": "Normal",
+   "label": "Normal"
+  },
+  {
+   "list_name": "priority",
+   "name": "High",
+   "label": "High"
+  },
+  {
+   "list_name": "priority",
+   "name": "Urgent",
+   "label": "Urgent"
+  }
+ ]
+}

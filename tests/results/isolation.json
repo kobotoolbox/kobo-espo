@@ -1,7 +1,7 @@
 {
-  "when": "2026-11-05T09:18:02Z",
+  "when": "2026-11-05T09:56:41Z",
   "espo": "https://espo-test.kobolabs.dev",
-  "passed": 77,
+  "passed": 80,
   "failed": 0,
   "results": [
     {
@@ -364,6 +364,24 @@
     },
     {
       "test": "T10",
+      "check": "roster-2 (both responses): giving a Response 1 task to a Response 2 volunteer refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T10",
+      "check": "roster-2: adding a Response 2 volunteer as collaborator on a Response 1 task refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T10",
+      "check": "roster-2: adding a Response 1 member as collaborator allowed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T10",
       "check": "roster-1: a task in Response 2 can't be created by putting it under Response 2",
       "ok": true,
       "detail": ""
@@ -490,9 +508,9 @@
     },
     {
       "test": "T15",
-      "check": "a collaborator from outside the response can read that one task (sharing crosses teams)",
+      "check": "a collaborator from outside the response is refused, even by an admin (Task API script)",
       "ok": true,
-      "detail": "by design: adding a collaborator shares the task, not its response"
+      "detail": "without the script, adding one shares the task across teams (EspoCRM: collaborators may read)"
     },
     {
       "test": "T15",

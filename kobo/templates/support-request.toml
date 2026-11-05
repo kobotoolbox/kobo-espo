@@ -1,0 +1,67 @@
+# Workflow A: a support request from Kobo becomes a Case in its project's team, linked to
+# the requester (Contact, by email) and their organisation (Account, by name). The
+# project's triager is notified; if nobody is assigned within [escalation] after_hours,
+# the team lead is.
+
+[bridge]
+user = "kobo-intake"
+role = "Kobo intake"
+secret = "ESPO_INTAKE_API_KEY"
+
+[form]
+name = "Kobo support request (espo-kobo test)"
+
+[record]
+entity = "Case"
+panel = "Request"
+name = "{category}: {summary}"
+details = [["", "description"]]
+required = ["requester_email", "project", "summary", "description"]
+single_team = true  # plan §2: one team per case
+set = { cSource = "Kobo form" }
+attachments = true  # links to the files in Kobo, not copies
+notify_message = "New support request from Kobo, please triage:"
+
+[requester]
+email = "requester_email"
+name = "requester_name"
+organisation = "organisation"  # the answer's label is the Account's name
+
+# Short for testing; a real value would be e.g. 4
+[escalation]
+after_hours = 0.02
+
+[[route]]
+match = { project = "internal" }
+team = "Internal Kobo"
+notify = ["staff-1"]
+escalate = ["staff-2"]
+
+[[route]]
+match = { project = "consortium_a" }
+team = "Project: Consortium A"
+notify = ["triager"]
+escalate = ["staff-1"]
+
+[[route]]
+match = { project = "consortium_b" }
+team = "Project: Consortium B"
+notify = ["triager"]
+escalate = ["staff-2"]
+
+[[field]]
+kobo = "category"
+espo = "cCategory"
+label = "Category"
+
+[[field]]
+kobo = "priority"
+espo = "priority"  # EspoCRM's own: the form's choices are its values (Low ... Urgent)
+
+[[field]]
+kobo = "project"
+espo = "cProject"
+label = "Project"
+
+[[field]]
+kobo = "description"

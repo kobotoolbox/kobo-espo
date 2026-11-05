@@ -3,3 +3,22 @@
 if (array\length(teamsIds) > 1) {
     recordService\throwBadRequest('A case can be in one team only: remove the other teams first.');
 }
+
+// The assignee must be in the case's team. EspoCRM's "team" assignment permission lets
+// someone assign anyone who shares any of *their* teams: a triager in two consortia could
+// give a Consortium A case to a Consortium B partner, who would then see it.
+if (assignedUserId && array\length(teamsIds) > 0 &&
+    (entity\isNew() || entity\isAttributeChanged('assignedUserId') || entity\isAttributeChanged('teamsIds'))) {
+    $userTeams = record\attribute('User', assignedUserId, 'teamsIds');
+    $ok = false;
+    $i = 0;
+    while ($i < array\length(teamsIds)) {
+        if (array\includes($userTeams, array\at(teamsIds, $i))) {
+            $ok = true;
+        }
+        $i = $i + 1;
+    }
+    if (!$ok) {
+        recordService\throwBadRequest('The assignee is not in the case\'s team.');
+    }
+}

@@ -46,10 +46,15 @@ ENTITIES = {
     }},
     'Site': {'labelPlural': 'Sites', 'iconClass': 'fas fa-map-marker-alt', 'fields': {
         'siteCode': {'type': 'varchar', 'label': 'Site code', 'required': True},
+        # Values as the Kobo forms' choice names, labels as people read them
         'siteType': {'type': 'enum', 'label': 'Site type',
-                     'options': ['', 'Water point', 'Solar installation', 'Health post', 'Shelter', 'Other']},
-        'status': {'type': 'enum', 'options': ['Planned', 'Operational', 'Needs repair', 'Decommissioned'],
-                   'default': 'Planned', 'style': {'Operational': 'success', 'Needs repair': 'danger'}},
+                     'options': ['', 'water_point', 'solar', 'health_post', 'shelter', 'other'],
+                     'translatedOptions': {'water_point': 'Water point', 'solar': 'Solar installation',
+                                           'health_post': 'Health post', 'shelter': 'Shelter', 'other': 'Other'}},
+        'status': {'type': 'enum', 'options': ['planned', 'operational', 'needs_repair', 'decommissioned'],
+                   'translatedOptions': {'planned': 'Planned', 'operational': 'Operational',
+                                         'needs_repair': 'Needs repair', 'decommissioned': 'Decommissioned'},
+                   'default': 'planned', 'style': {'operational': 'success', 'needs_repair': 'danger'}},
         'region': {'type': 'varchar'},
         'latitude': {'type': 'float', 'decimalPlaces': 6},
         'longitude': {'type': 'float', 'decimalPlaces': 6},
@@ -72,17 +77,14 @@ LINKS = [('CResponse', 'tasks', 'Task', 'response', 'oneToMany'),
 
 FIELDS = {
     'Case': {
+        # cCategory comes from the support form (kobo/templates/support-request.toml)
         'source': {'type': 'enum', 'options': ['Kobo form', 'Email', 'Manual'], 'default': 'Manual'},
-        'category': {'type': 'enum', 'options': ['', 'Account and access', 'Forms and XLSForm',
-                                                 'Data and exports', 'Integrations', 'Training', 'Other']},
     },
     'Contact': {
         'profileType': {'type': 'enum', 'label': 'Profile type',
                         'options': ['', 'Roster', 'Volunteer', 'Partner contact']},
         'availability': {'type': 'text'},
-        'skills': {'type': 'multiEnum', 'options': ['wash', 'shelter', 'health', 'logistics',
-                                                    'data', 'translation', 'coordination']},
-        'languages': {'type': 'varchar'},
+        # cSkills, cLanguages come from the volunteer form (kobo/templates/volunteer.toml)
     },
 }
 
@@ -261,8 +263,8 @@ def ensure_layouts(espo):
                                          'lastVisit', 'latitude', 'longitude', 'equipment'])
     ensure_layout_fields(espo, 'CStandard', ['code', 'category', 'source', 'requirement'])
     ensure_layout_fields(espo, 'Task', ['cResponse'])  # EspoCRM's own entity: c-prefixed
-    ensure_layout_fields(espo, 'Contact', ['cProfileType', 'cSkills', 'cLanguages', 'cAvailability'])
-    ensure_layout_fields(espo, 'Case', ['cSource', 'cCategory'])
+    ensure_layout_fields(espo, 'Contact', ['cProfileType', 'cAvailability'])
+    ensure_layout_fields(espo, 'Case', ['cSource'])
     for entity, cols in {'CResponse': ['name', 'status', 'emergencyType', 'country', 'lead', 'teams'],
                          'CSite': ['name', 'siteCode', 'siteType', 'status', 'region', 'response', 'lastVisit'],
                          'CStandard': ['name', 'code', 'category', 'source']}.items():
@@ -299,6 +301,11 @@ def main():
     ensure_task_board(espo)
     ensure_formulas(espo)
     ensure_layouts(espo)
+
+    # Reference data: standards (no team: everyone with read access sees them)
+    import json
+    for std in json.loads((ROOT / 'espo' / 'seed' / 'data' / 'standards.json').read_text()):
+        ensure(espo, 'CStandard', 'code', std['code'], std, update=True)
 
     teams = {name: ensure(espo, 'Team', 'name', name, {'name': name})['id'] for name in TEAMS}
     roles = {}

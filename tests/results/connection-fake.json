@@ -1,0 +1,643 @@
+{
+  "when": "2026-11-05T10:00:40Z",
+  "espo": "https://espo-test.kobolabs.dev",
+  "kobo": "fake",
+  "run": "872601",
+  "passed": 62,
+  "failed": 0,
+  "results": [
+    {
+      "test": "T1",
+      "check": "one case for the submission",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T1",
+      "check": "name, category, priority, project from the answers",
+      "ok": true,
+      "detail": {
+        "name": "Forms and XLSForm: Form will not deploy (872601)",
+        "cCategory": "forms",
+        "priority": "High",
+        "cProject": "consortium_a"
+      }
+    },
+    {
+      "test": "T1",
+      "check": "in the Consortium A team only",
+      "ok": true,
+      "detail": {
+        "6aec41fb5be629a65": "Project: Consortium A"
+      }
+    },
+    {
+      "test": "T1",
+      "check": "source \"Kobo form\", Kobo link and ids",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T1",
+      "check": "requester Contact by email, with their name",
+      "ok": true,
+      "detail": {
+        "emailAddress": "req-a-872601@example.org",
+        "firstName": "Test Requester",
+        "lastName": "872601"
+      }
+    },
+    {
+      "test": "T1",
+      "check": "Account \"Org Alpha\" linked to the case and the contact",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T1",
+      "check": "description has the request and a link to the attachment in Kobo",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T1",
+      "check": "latency of one pass (submission -> case), seconds",
+      "ok": true,
+      "detail": 11.9
+    },
+    {
+      "test": "T2",
+      "check": "a lost ledger rescans everything: no second case",
+      "ok": true,
+      "detail": {
+        "seen": 1,
+        "created": 0,
+        "skipped": 0,
+        "existing": 1,
+        "failed": 0,
+        "retried": 0,
+        "updated": 0,
+        "closed_note": 0,
+        "lists": 0,
+        "edited": 0,
+        "statuses": 0,
+        "merged": 0,
+        "notified": 0,
+        "escalated": 11
+      }
+    },
+    {
+      "test": "T2",
+      "check": "and no second contact or account",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T2",
+      "check": "the same requester's next request reuses their contact",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T3",
+      "check": "Kobo down: the pass fails and status.json says why",
+      "ok": true,
+      "detail": "GET /api/v2/assets/: HTTP 503"
+    },
+    {
+      "test": "T4",
+      "check": "the pass goes on (the good ones still go through)",
+      "ok": true,
+      "detail": {
+        "last_pass": "2026-11-05T09:58:08Z",
+        "last_success": "2026-11-05T09:58:08Z",
+        "ok": true,
+        "error": null,
+        "counts": {
+          "seen": 2,
+          "created": 0,
+          "skipped": 0,
+          "existing": 0,
+          "failed": 2,
+          "retried": 0,
+          "updated": 0,
+          "closed_note": 0,
+          "lists": 0,
+          "edited": 0,
+          "statuses": 0,
+          "merged": 0,
+          "notified": 0,
+          "escalated": 0
+        },
+        "failed": 2,
+        "failed_elsewhere": 0,
+        "oldest_failed": "2026-11-05T09:58:08Z",
+        "oldest_error": "required answer missing: summary"
+      }
+    },
+    {
+      "test": "T4",
+      "check": "missing answer: \"required answer missing: summary\" in the ledger",
+      "ok": true,
+      "detail": "abb3b2d696e094c7a994cb  submission 3  since 2026-11-05T09:58:08Z  1 attempt(s), next 2026-11-05T09:59:08Z\n    required answer missing: summary\nabb3b2d696e094c7a994cb  submission 4  since 2026-11-05T09:58:08Z  1 attempt(s), next 2026-11-05T09:59:08Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+    },
+    {
+      "test": "T4",
+      "check": "missing answer: no contact made for it",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T4",
+      "check": "invalid email: refused by EspoCRM, recorded with its reason",
+      "ok": true,
+      "detail": "abb3b2d696e094c7a994cb  submission 3  since 2026-11-05T09:58:08Z  1 attempt(s), next 2026-11-05T09:59:08Z\n    required answer missing: summary\nabb3b2d696e094c7a994cb  submission 4  since 2026-11-05T09:58:08Z  1 attempt(s), next 2026-11-05T09:59:08Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+    },
+    {
+      "test": "T4",
+      "check": "no case for either",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T4",
+      "check": "no answers in the error messages (status.json)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T5",
+      "check": "triager notified of the new Consortium A case (mention)",
+      "ok": true,
+      "detail": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "test": "T5",
+      "check": "the note on the case says what it is and mentions the triager",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T5",
+      "check": "triager assigns it to staff-1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T5",
+      "check": "staff-1 notified of the assignment",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T5",
+      "check": "triager cannot assign it to someone outside its team (partner-b, Consortium B)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T5",
+      "check": "triager cannot put it in a second team (one team per case)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T5",
+      "check": "escalation: the unassigned case is mentioned to staff-1 (lead for Consortium A)",
+      "ok": true,
+      "detail": {
+        "seen": 0,
+        "created": 0,
+        "skipped": 0,
+        "existing": 0,
+        "failed": 2,
+        "retried": 2,
+        "updated": 0,
+        "closed_note": 0,
+        "lists": 0,
+        "edited": 0,
+        "statuses": 0,
+        "merged": 0,
+        "notified": 0,
+        "escalated": 1
+      }
+    },
+    {
+      "test": "T5",
+      "check": "escalation: the assigned case is not escalated",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T5",
+      "check": "escalation happens once",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T6",
+      "check": "Consortium B request -> Consortium B team",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T6",
+      "check": "internal request -> Internal Kobo team",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T6",
+      "check": "partner-a sees the A case, not the B one",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T6",
+      "check": "Org Delta's account is in Consortium B's team only (partner-a can't read it)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T7",
+      "check": "a Contact with profile Volunteer, skills, availability",
+      "ok": true,
+      "detail": {
+        "cProfileType": "Volunteer",
+        "cSkills": [
+          "wash",
+          "data"
+        ],
+        "cAvailability": "From 1 Dec, 6 weeks"
+      }
+    },
+    {
+      "test": "T7",
+      "check": "in the roster pool team",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T7",
+      "check": "not made a user (that stays a person's decision)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T7",
+      "check": "signing up again (same email, other case) updates that contact",
+      "ok": true,
+      "detail": {
+        "seen": 1,
+        "created": 0,
+        "skipped": 0,
+        "existing": 0,
+        "failed": 0,
+        "retried": 0,
+        "updated": 0,
+        "closed_note": 0,
+        "lists": 0,
+        "edited": 0,
+        "statuses": 0,
+        "merged": 1,
+        "notified": 0,
+        "escalated": 0
+      }
+    },
+    {
+      "test": "T7",
+      "check": "staff-1 notified of the sign-up",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T12",
+      "check": "ESPO_INTAKE_API_KEY: reads Case, Contact, Account",
+      "ok": true,
+      "detail": {
+        "Case": 200,
+        "Contact": 200,
+        "Account": 200,
+        "Task": 403,
+        "CResponse": 403,
+        "CSite": 403,
+        "User": 200
+      }
+    },
+    {
+      "test": "T12",
+      "check": "ESPO_INTAKE_API_KEY: refused Task, CResponse, CSite; lists no users",
+      "ok": true,
+      "detail": {
+        "Case": 200,
+        "Contact": 200,
+        "Account": 200,
+        "Task": 403,
+        "CResponse": 403,
+        "CSite": 403,
+        "User": 200,
+        "users": 0
+      }
+    },
+    {
+      "test": "T12",
+      "check": "ESPO_INTAKE_API_KEY: cannot delete",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T12",
+      "check": "ESPO_VOLUNTEERS_API_KEY: reads Contact",
+      "ok": true,
+      "detail": {
+        "Contact": 200,
+        "Case": 403,
+        "Account": 403,
+        "Task": 403,
+        "CResponse": 403,
+        "User": 200
+      }
+    },
+    {
+      "test": "T12",
+      "check": "ESPO_VOLUNTEERS_API_KEY: refused Case, Account, Task, CResponse; lists no users",
+      "ok": true,
+      "detail": {
+        "Contact": 200,
+        "Case": 403,
+        "Account": 403,
+        "Task": 403,
+        "CResponse": 403,
+        "User": 200,
+        "users": 0
+      }
+    },
+    {
+      "test": "T12",
+      "check": "ESPO_VOLUNTEERS_API_KEY: cannot delete",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T12",
+      "check": "ESPO_SITES_API_KEY: reads CSite, CResponse, CStandard",
+      "ok": true,
+      "detail": {
+        "CSite": 200,
+        "CResponse": 200,
+        "CStandard": 200,
+        "Case": 403,
+        "Contact": 403,
+        "Task": 403,
+        "User": 200
+      }
+    },
+    {
+      "test": "T12",
+      "check": "ESPO_SITES_API_KEY: refused Case, Contact, Task; lists no users",
+      "ok": true,
+      "detail": {
+        "CSite": 200,
+        "CResponse": 200,
+        "CStandard": 200,
+        "Case": 403,
+        "Contact": 403,
+        "Task": 403,
+        "User": 200,
+        "users": 0
+      }
+    },
+    {
+      "test": "T12",
+      "check": "ESPO_SITES_API_KEY: cannot delete",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T12",
+      "check": "ESPO_SITE_LISTS_API_KEY: reads CSite",
+      "ok": true,
+      "detail": {
+        "CSite": 200,
+        "Case": 403,
+        "Contact": 403,
+        "Task": 403,
+        "CResponse": 403,
+        "User": 200
+      }
+    },
+    {
+      "test": "T12",
+      "check": "ESPO_SITE_LISTS_API_KEY: refused Case, Contact, Task, CResponse; lists no users",
+      "ok": true,
+      "detail": {
+        "CSite": 200,
+        "Case": 403,
+        "Contact": 403,
+        "Task": 403,
+        "CResponse": 403,
+        "User": 200,
+        "users": 0
+      }
+    },
+    {
+      "test": "T12",
+      "check": "ESPO_SITE_LISTS_API_KEY: cannot delete",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T12",
+      "check": "intake key: cannot change a case it made (create only)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "C1",
+      "check": "responses.csv on the registration form: the active responses, id and name only",
+      "ok": true,
+      "detail": [
+        {
+          "name": "6aec527580b4f989e",
+          "label": "ISO EQ 2"
+        },
+        {
+          "name": "6aec4fe0090ea19f8",
+          "label": "Test EQ 1 response"
+        },
+        {
+          "name": "6aec4fe1cd0f28c55",
+          "label": "Test EQ 2 response"
+        }
+      ]
+    },
+    {
+      "test": "C1",
+      "check": "standards.csv: code, label, requirement, category",
+      "ok": true,
+      "detail": [
+        {
+          "name": "ENRG-1",
+          "label": "ENRG-1 \u00b7 Solar installation",
+          "requirement": "Panels anchored; battery enclosure ventilated and locked",
+          "category": "Energy"
+        },
+        {
+          "name": "HLTH-1",
+          "label": "HLTH-1 \u00b7 Health post access",
+          "requirement": "Open 8 hours a day, 5 days a week",
+          "category": "Health"
+        }
+      ]
+    },
+    {
+      "test": "C2",
+      "check": "a registration makes a Site, linked to its response",
+      "ok": true,
+      "detail": {
+        "responseId": "6aec4fe0090ea19f8",
+        "siteType": "water_point",
+        "standardCode": "WASH-2"
+      }
+    },
+    {
+      "test": "C2",
+      "check": "in its response's team (Site formula)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "C2",
+      "check": "registering the same code again updates that site",
+      "ok": true,
+      "detail": {
+        "seen": 1,
+        "created": 0,
+        "skipped": 0,
+        "existing": 0,
+        "failed": 0,
+        "retried": 0,
+        "updated": 0,
+        "closed_note": 0,
+        "lists": 0,
+        "edited": 0,
+        "statuses": 0,
+        "merged": 1,
+        "notified": 0,
+        "escalated": 0
+      }
+    },
+    {
+      "test": "C2",
+      "check": "roster-1 (Response 1) sees the site; volunteer-1 (Response 2) doesn't",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "C3",
+      "check": "sites.csv on Response 1's visit form: its sites, not Response 2's",
+      "ok": true,
+      "detail": [
+        {
+          "name": "EQ1-WP-871633",
+          "label": "EQ1-WP-871633 \u00b7 Water point 871633",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-871884",
+          "label": "EQ1-WP-871884 \u00b7 Water point 871884",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-872601",
+          "label": "EQ1-WP-872601 \u00b7 Water point 872601",
+          "status": "planned",
+          "region": "North"
+        },
+        {
+          "name": "ISO-S1",
+          "label": "ISO-S1 \u00b7 ISO Site R1",
+          "status": "planned",
+          "region": ""
+        }
+      ]
+    },
+    {
+      "test": "C3",
+      "check": "sites.csv columns: code, label, status, region only",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "C3",
+      "check": "a visit updates the site: status and last visit",
+      "ok": true,
+      "detail": {
+        "status": "needs_repair",
+        "lastVisit": "2026-11-05"
+      }
+    },
+    {
+      "test": "C3",
+      "check": "and adds a note with what was found, marked with the visit's uuid",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "C3",
+      "check": "a visit is never applied twice (lost ledger)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "C3",
+      "check": "the list follows: sites.csv now shows the new status",
+      "ok": true,
+      "detail": [
+        {
+          "name": "EQ1-WP-871633",
+          "label": "EQ1-WP-871633 \u00b7 Water point 871633",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-871884",
+          "label": "EQ1-WP-871884 \u00b7 Water point 871884",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-872601",
+          "label": "EQ1-WP-872601 \u00b7 Water point 872601",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "ISO-S1",
+          "label": "ISO-S1 \u00b7 ISO Site R1",
+          "status": "planned",
+          "region": ""
+        }
+      ]
+    },
+    {
+      "test": "C3",
+      "check": "a visit to an unknown site is recorded, not guessed",
+      "ok": true,
+      "detail": "ac706def4ed714c18b43b6  submission 2  since 2026-11-05T10:00:38Z  1 attempt(s), next 2026-11-05T10:01:38Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
+    }
+  ]
+}
