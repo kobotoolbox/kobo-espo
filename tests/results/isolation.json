@@ -1,7 +1,7 @@
 {
-  "when": "2026-11-05T09:10:51Z",
+  "when": "2026-11-05T09:18:02Z",
   "espo": "https://espo-test.kobolabs.dev",
-  "passed": 76,
+  "passed": 77,
   "failed": 0,
   "results": [
     {
@@ -547,18 +547,15 @@
     },
     {
       "test": "T16",
-      "check": "roster-1: no one else's Response 1 tasks listed after removal",
+      "check": "roster-1: no Response 1 tasks listed after closing and removal, not even their own",
       "ok": true,
-      "detail": [
-        "ISO R1 task of roster-1",
-        "ISO R1 task of volunteer-2"
-      ]
+      "detail": []
     },
     {
       "test": "T16",
-      "check": "roster-1: own (assigned or collaborating) Response 1 tasks after removal (recorded)",
+      "check": "roster-1: their former task by id refused",
       "ok": true,
-      "detail": "still listed: ['ISO R1 task of roster-1', 'ISO R1 task of volunteer-2']"
+      "detail": ""
     },
     {
       "test": "T16",
@@ -568,18 +565,17 @@
     },
     {
       "test": "T16",
-      "check": "roster-2: no one else's Response 1 tasks listed after removal",
+      "check": "roster-2: no Response 1 tasks listed after closing and removal, not even their own",
       "ok": true,
       "detail": [
-        "ISO R1 task of roster-2",
         "ISO R2 task of volunteer-1"
       ]
     },
     {
       "test": "T16",
-      "check": "roster-2: own (assigned or collaborating) Response 1 tasks after removal (recorded)",
+      "check": "roster-2: their former task by id refused",
       "ok": true,
-      "detail": "still listed: ['ISO R1 task of roster-2']"
+      "detail": ""
     },
     {
       "test": "T16",
@@ -589,17 +585,21 @@
     },
     {
       "test": "T16",
-      "check": "volunteer-2: no one else's Response 1 tasks listed after removal",
+      "check": "volunteer-2: no Response 1 tasks listed after closing and removal, not even their own",
       "ok": true,
-      "detail": [
-        "ISO R1 task of volunteer-2"
-      ]
+      "detail": []
     },
     {
       "test": "T16",
-      "check": "volunteer-2: own (assigned or collaborating) Response 1 tasks after removal (recorded)",
+      "check": "volunteer-2: their former task by id refused",
       "ok": true,
-      "detail": "still listed: ['ISO R1 task of volunteer-2']"
+      "detail": ""
+    },
+    {
+      "test": "T16",
+      "check": "closing gave every Response 1 task to the lead, with no other collaborators",
+      "ok": true,
+      "detail": []
     },
     {
       "test": "T16",

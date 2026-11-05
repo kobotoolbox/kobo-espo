@@ -8,3 +8,15 @@ if (entity\isNew()) {
         $i = $i + 1;
     }
 }
+
+// Closed: its tasks go back to the lead, without collaborators. Taking someone out of the
+// response's team doesn't hide the tasks assigned to them or shared with them (EspoCRM's
+// "own" access doesn't depend on teams), so this is what leaves them to staff only.
+if (!entity\isNew() && entity\isAttributeChanged('status') && status == 'Closed' && leadId) {
+    $ids = record\findMany('Task', 1000, 'createdAt', 'asc', 'cResponseId=', id);
+    $i = 0;
+    while ($i < array\length($ids)) {
+        record\update('Task', array\at($ids, $i), 'assignedUserId', leadId, 'collaboratorsIds', list());
+        $i = $i + 1;
+    }
+}

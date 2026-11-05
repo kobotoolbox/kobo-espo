@@ -258,12 +258,19 @@ def membership_tests(a, user, eq1, r1, r1_tasks, t_r1_roster1):
         u = as_user(who)
         check('T16', f'{who}: closed Response 1 refused after removal', status(lambda: u.call('GET', f'/CResponse/{r1["id"]}')) == 403)
         left = names(u, 'Task')
-        own = {f'ISO R1 task of {who}'} | ({'ISO R1 task of volunteer-2'} if who == 'roster-1' else set())
-        check('T16', f"{who}: no one else's Response 1 tasks listed after removal",
-              left == 403 or not (left & (r1_tasks - own)), left)
-        check('T16', f'{who}: own (assigned or collaborating) Response 1 tasks after removal (recorded)', True,
-              f'still listed: {sorted(left & own) if left != 403 else "none"}')
+        # Closing gave their tasks back to the lead (CResponse formula): none left, not even their own
+        check('T16', f'{who}: no Response 1 tasks listed after closing and removal, not even their own',
+              left == 403 or not (left & r1_tasks), left)
+        check('T16', f'{who}: their former task by id refused',
+              status(lambda: u.call('GET', f'/Task/{t_r1_roster1["id"]}')) == 403)
     s = as_user('staff-1')
+    back = a.call('GET', '/Task', {'select': 'name,assignedUserId,collaboratorsIds', 'maxSize': 200,
+                                   'where[0][type]': 'equals', 'where[0][attribute]': 'cResponseId', 'where[0][value]': r1['id']})['list']
+    # The lead is then their only collaborator (EspoCRM adds the assignee)
+    lead_only = lambda t: set(t.get('collaboratorsIds') or []) <= {user['staff-1']}  # noqa: E731
+    check('T16', 'closing gave every Response 1 task to the lead, with no other collaborators',
+          all(t['assignedUserId'] == user['staff-1'] and lead_only(t) for t in back),
+          [t['name'] for t in back if t['assignedUserId'] != user['staff-1'] or not lead_only(t)])
     check('T16', 'staff-1 (still in the team) reads the closed response and its tasks',
           status(lambda: s.call('GET', f'/CResponse/{r1["id"]}')) == 200 and r1_tasks <= names(s, 'Task'))
 
