@@ -1,0 +1,10 @@
+// A new response starts with the standard tasks, in its teams, for its lead
+if (entity\isNew()) {
+    $tasks = list('Set up the Kobo project', 'Confirm the roster', 'Comms plan', 'Agree site list and standards');
+    $i = 0;
+    while ($i < array\length($tasks)) {
+        record\create('Task', 'name', array\at($tasks, $i), 'status', 'Backlog',
+            'cResponseId', id, 'teamsIds', teamsIds, 'assignedUserId', leadId);
+        $i = $i + 1;
+    }
+}

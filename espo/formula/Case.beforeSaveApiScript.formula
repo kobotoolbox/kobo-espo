@@ -1,0 +1,5 @@
+// One team per case (plan §2): refuse a second team, so whoever saves it picks one.
+// API Before Save runs for every save through the API, which the UI uses too.
+if (array\length(teamsIds) > 1) {
+    recordService\throwBadRequest('A case can be in one team only: remove the other teams first.');
+}

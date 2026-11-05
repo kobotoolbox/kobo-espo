@@ -1,0 +1,9 @@
+// A task is in its response's teams, so the response's members see it (and only they do).
+// A response's starter tasks are made while it's being saved (not in the database yet):
+// they keep the teams they were given, which are the response's.
+if (cResponseId && (entity\isNew() || entity\isAttributeChanged('cResponseId'))) {
+    $teams = record\attribute('CResponse', cResponseId, 'teamsIds');
+    if (array\length($teams) > 0) {
+        teamsIds = $teams;
+    }
+}

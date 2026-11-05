@@ -1,0 +1,86 @@
+# EspoCRM as request intake + response tasking hub (see plans/espo-kobo-setup-plan.md).
+# Runs on the test droplet (deploy/up.sh) or a laptop (ESPO_SITE_URL=http://localhost:8085,
+# no caddy). Passwords come from the secrets file deploy/up.sh writes (not in git).
+#
+#   db              MariaDB, only on this project's network
+#   espocrm         the web app (apache image), behind caddy
+#   espocrm-daemon  EspoCRM's scheduled jobs (notifications, emails, cleanup)
+#   caddy           TLS for ESPO_HOST (profile `tls`; Let's Encrypt)
+#   bridge          kobo-bridge, polling Kobo (profile `bridge`; one per template)
+
+services:
+  db:
+    image: mariadb:11.4.13
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${ESPO_DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: espocrm
+      MARIADB_USER: espocrm
+      MARIADB_PASSWORD: ${ESPO_DB_PASSWORD}
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  espocrm:
+    image: espocrm/espocrm:10.0.11-apache
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ESPOCRM_DATABASE_PLATFORM: Mysql
+      ESPOCRM_DATABASE_HOST: db
+      ESPOCRM_DATABASE_USER: espocrm
+      ESPOCRM_DATABASE_PASSWORD: ${ESPO_DB_PASSWORD}
+      # Only read on the first start, when EspoCRM installs itself
+      ESPOCRM_ADMIN_USERNAME: admin
+      ESPOCRM_ADMIN_PASSWORD: ${ESPO_ADMIN_PASSWORD}
+      ESPOCRM_SITE_URL: ${ESPO_SITE_URL}
+    # EspoCRM 10: these three, not all of /var/www/html (that's the "legacy" layout,
+    # which no longer installs)
+    volumes:
+      - espo-data:/var/www/html/data
+      - espo-custom:/var/www/html/custom
+      - espo-client-custom:/var/www/html/client/custom
+    ports: ["127.0.0.1:${ESPO_PORT:-8085}:80"]
+    healthcheck:
+      test: ["CMD", "bin/command", "app-check"]
+      start_period: 60s
+      interval: 30s
+      timeout: 20s
+      retries: 5
+
+  espocrm-daemon:
+    image: espocrm/espocrm:10.0.11-apache
+    restart: unless-stopped
+    entrypoint: docker-daemon.sh
+    depends_on:
+      espocrm:
+        condition: service_healthy
+    volumes_from:
+      - espocrm
+
+  caddy:
+    profiles: [tls]
+    image: caddy:2.10
+    restart: unless-stopped
+    command: caddy reverse-proxy --from ${ESPO_HOST} --to espocrm:80
+    ports: ["80:80", "443:443"]
+    volumes:
+      - caddy:/data
+    # Not published before EspoCRM has installed itself: its /install/ page is open until
+    # then, and scanners found it within seconds on the first try
+    depends_on:
+      espocrm:
+        condition: service_healthy
+
+volumes:
+  db:
+  espo-data:
+  espo-custom:
+  espo-client-custom:
+  caddy:
