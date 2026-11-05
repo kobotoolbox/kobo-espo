@@ -77,7 +77,7 @@
 <figure><a href="requests.html"><img src="static/shots/cases-triager.jpg" width="1440" height="900" alt="EspoCRM's Cases list as the triager: five requests from Kobo, each with status, priority, team (Project: Consortium A or B) and assignee."></a><figcaption><a href="requests.html"><strong>Requests</strong></a>: a support form on Kobo becomes a case for the right project team. A triager is notified, assigns it, and the assignee is notified. Partners see only their own consortium's cases.</figcaption></figure>
 <figure><a href="responses.html"><img src="static/shots/board-staff.jpg" width="1440" height="900" alt="The Tasks board with columns Backlog, To do, In progress, Blocked and Done, holding tasks of the earthquake and flood responses with their assignees."></a><figcaption><a href="responses.html"><strong>Responses</strong></a>: each response (an earthquake, a flood) has its team and a task board. Roster experts and volunteers see their own response only. It replaces task boards kept in GitHub Projects, with no GitHub accounts needed.</figcaption></figure>
 </div>
-<figure><a href="sites.html"><img src="static/shots/site.jpg" width="1440" height="1810" alt="A site, Hilltop water point, registered from Kobo: site code, type, status Needs repair, response, equipment and a photo; below, the note of a site visit with what was found and its photo."></a><figcaption><a href="sites.html"><strong>Sites and lists</strong></a>: installations and other sites are registered from Kobo, with photos, and followed up with visit forms that pick the site from a list EspoCRM keeps on the form. Standards and other reference lists reach the forms the same way.</figcaption></figure>
+<figure><a href="sites.html"><img src="static/shots/site.jpg" width="1440" height="1868" alt="A site, Hilltop water point, registered from Kobo: site code, type, status Needs repair, response, equipment and a photo; below, the note of a site visit with what was found and its photo."></a><figcaption><a href="sites.html"><strong>Sites and lists</strong></a>: installations and other sites are registered from Kobo, with photos, and followed up with visit forms that pick the site from a list EspoCRM keeps on the form. Standards and other reference lists reach the forms the same way.</figcaption></figure>
 </section>
 
 <section id="access">
@@ -107,11 +107,11 @@
 <div class="table-scroll"><table>
   <thead><tr><th>What</th><th>Checks</th><th>Result</th></tr></thead>
   <tbody>
-    <tr><td>Kobo → EspoCRM on real Kobo (T1–T7, T12; sites, lists and visits)</td><td>69</td><td>All passed</td></tr>
-    <tr><td>The same with a fake Kobo, including Kobo being down</td><td>70</td><td>All passed</td></tr>
+    <tr><td>Kobo → EspoCRM on real Kobo (T1–T7, T12; sites, lists and visits)</td><td>72</td><td>All passed</td></tr>
+    <tr><td>The same with a fake Kobo, including Kobo being down</td><td>73</td><td>All passed</td></tr>
     <tr><td>Isolation: responses, consortia, volunteers, leaving a team, closing a response (T8–T11, T13, T15, T16)</td><td>80</td><td>All passed, after three fixes (below)</td></tr>
     <tr><td>A new response's board (T14)</td><td>8</td><td>All passed</td></tr>
-    <tr><td>kobo-bridge unit tests</td><td>47</td><td>All passed</td></tr>
+    <tr><td>kobo-bridge unit tests</td><td>53</td><td>All passed</td></tr>
     <tr><td>Time from submission to record, through the running bridge</td><td>5</td><td>4 to 26 s (mean 17 s), polling every 30 s</td></tr>
   </tbody>
 </table></div>

@@ -98,11 +98,11 @@ All on the droplet's EspoCRM; the JSON files have every check with its detail.
 
 | Test | File | Checks | Result |
 |---|---|---|---|
-| T1–T7, T12, C1–C3 on real Kobo | `results/connection-real.json` | 69 | all pass |
-| The same with the fake Kobo, plus Kobo down | `results/connection-fake.json` | 70 | all pass |
+| T1–T7, T12, C1–C3 on real Kobo | `results/connection-real.json` | 72 | all pass |
+| The same with the fake Kobo, plus Kobo down | `results/connection-fake.json` | 73 | all pass |
 | T8–T11, T13, T15, T16 | `results/isolation.json` | 80 | all pass (after the guards above) |
 | T14 | `results/workflow_b.json` | 8 | all pass |
-| kobo-bridge unit tests | `kobo-bridge/tests` | 47 | all pass |
+| kobo-bridge unit tests | `kobo-bridge/tests` | 53 | all pass |
 | T1 latency through the running bridges | `results/latency.json` | 5 | 4.4–26.4 s, mean 17.2 s (30 s polling) |
 
 Per test (expected → actual):
@@ -148,7 +148,9 @@ Per test (expected → actual):
   including their former own tasks; staff still read them.
 - **C1–C3** `responses.csv` and `standards.csv` on the registration form, `sites.csv` (that
   response's sites only, four columns) on the visit form; a registration makes a Site in its
-  response's team with its photo, again with the same code updates it; a visit sets status
+  response's team with its photo (named as answered, though Kobo stores it cleaned up),
+  linked to its Standard by the code picked, with the form's end time in UTC; a code with
+  no Standard is recorded, no site made; again with the same code updates it; a visit sets status
   and last visit and adds a note with its photo, once; the list follows the new status; an
   unknown site code is recorded, not guessed.
 
@@ -187,6 +189,33 @@ Reviewed `~/Desktop/work/repos/kobo2logie`.
   - a PDF of the submission on the record (kobo2pdf).
 - **Out of scope here:** AI transcription, extraction and validation. They fit as the same
   kind of optional step.
+
+## Reviewed: kobo-connect (rodekruis)
+
+[rodekruis/kobo-connect](https://github.com/rodekruis/kobo-connect) receives Kobo REST
+Service webhooks and maps answers to EspoCRM with custom HTTP headers
+(`question: Entity.field`).
+- **Taken into kobo-bridge:**
+  - links by lookup: the record whose field has the answer, as its
+    `Entity.link.field` headers do (`[[field]] type = "link"`, `entity`, `lookup`). Here the
+    registration links the site to its Standard by the code picked. None or several: the
+    submission is recorded, where kobo-connect skips the field;
+  - datetimes: `type = "datetime"` stores Kobo's local time and offset in UTC, in the bridge
+    (kobo-connect's docs have a formula and a hidden text field for it). Here the form's
+    `end` becomes the site's "Registered";
+  - attachment file names: Kobo stores `site photo (1).png` as `site_photo_1.png`.
+    kf.kobotoolbox.org also gives the original (`media_file_basename`, checked on the test
+    account), so it already worked here; older servers don't, and are now matched by the
+    stored name.
+- **Already in the bridge:** select-multiple (`multiEnum`), updating a record by a field
+  (`match`; kobo-connect's search is `contains`, so `AB1` also finds `AB12`), skipping
+  submissions (`when`), never twice (the ledger and the uuid, not a Cosmos DB), attachments
+  (with a host check and a size limit), and lists for forms (CSV media, where its "linked
+  Kobo" rewrites the other form's choices).
+- **Not taken:** mapping a fixed index of a repeat group to a field (no form here needs
+  repeats), several unlinked records from one submission (`[requester]` covers the linked
+  case), webhooks instead of polling, lowercasing question names, its 121 and Bitrix24
+  connections.
 
 ## Open questions for Josh
 

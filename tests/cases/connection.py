@@ -318,8 +318,9 @@ def main():
     s_a = submit(uids['site-registration'], {'response': resp[0]['id'], 'site_code': code_1, 'site_name': f'Water point {RUN}',
                                               'site_type': 'water_point', 'region': 'North', 'installed': '2026-11-01',
                                               'equipment': 'Hand pump, model X', 'location': '1.23 4.56 0 5',
-                                              'standard': 'WASH-2', 'photo': 'site.png'},
-               files={'site.png': (png((40, 120, 200)), 'image/png')})
+                                              'standard': 'WASH-2', 'end': '2026-11-05T14:21:06.502+05:30',
+                                              'photo': 'site photo (1).png'},
+               files={'site photo (1).png': (png((40, 120, 200)), 'image/png')})
     submit(uids['site-registration'], {'response': resp2[0]['id'], 'site_code': code_2, 'site_name': f'Solar {RUN}',
                                        'site_type': 'solar', 'region': 'South', 'installed': '2026-11-02',
                                        'equipment': '4 panels, 1 battery'})
@@ -327,17 +328,28 @@ def main():
     site = by(a, 'CSite', 'siteCode', code_1)
     site = a.call('GET', f'/CSite/{site[0]["id"]}') if site else {}
     check('C2', 'a registration makes a Site, linked to its response', site.get('responseId') == resp[0]['id']
-          and site.get('siteType') == 'water_point' and site.get('standardCode') == 'WASH-2',
-          {k: site.get(k) for k in ('responseId', 'siteType', 'standardCode')} or log[-300:])
+          and site.get('siteType') == 'water_point', {k: site.get(k) for k in ('responseId', 'siteType')} or log[-300:])
+    wash2 = by(a, 'CStandard', 'code', 'WASH-2')
+    check('C2', 'linked to its standard, looked up by the code picked', wash2 and site.get('standardId') == wash2[0]['id'],
+          site.get('standardId'))
+    check('C2', "the form's end time, in UTC", site.get('registeredAt') == '2026-11-05 08:51:06', site.get('registeredAt'))
     check('C2', "in its response's team (Site formula)", site.get('teamsIds') == [team['Response: Test EQ 1']])
-    check('C2', 'media: the site photo is on the site', list((site.get('photosNames') or {}).values()) == ['site.png'],
-          site.get('photosNames'))
+    check('C2', "media: the site photo is on the site, with the answer's file name (Kobo stores site_photo_1.png)",
+          list((site.get('photosNames') or {}).values()) == ['site photo (1).png'], site.get('photosNames'))
     submit(uids['site-registration'], {'response': resp[0]['id'], 'site_code': code_1, 'site_name': f'Water point {RUN}',
                                        'site_type': 'water_point', 'region': 'North', 'installed': '2026-11-01',
                                        'equipment': 'Hand pump, model X; new seal'})
     code, log, st = sites.once()
     check('C2', 'registering the same code again updates that site', len(by(a, 'CSite', 'siteCode', code_1)) == 1
           and 'new seal' in a.call('GET', f'/CSite/{site["id"]}')['equipment'] and st['counts']['merged'] == 1, st['counts'])
+    code_3 = f'EQ1-XX-{RUN}'
+    bad_std = submit(uids['site-registration'], {'response': resp[0]['id'], 'site_code': code_3, 'site_name': f'Unknown std {RUN}',
+                                                 'site_type': 'other', 'region': 'North', 'installed': '2026-11-01',
+                                                 'equipment': 'x', 'standard': 'NO-SUCH-STD'})
+    code, log, st = sites.once()
+    check('C2', 'a standard code EspoCRM has no record for: recorded, no site made',
+          f'submission {bad_std["_id"]}' in sites.failed() and '0 CStandard records with that code' in sites.failed()
+          and not by(a, 'CSite', 'siteCode', code_3), sites.failed())
     check('C2', "roster-1 (Response 1) sees the site; volunteer-1 (Response 2) doesn't",
           status(lambda: as_user('roster-1').call('GET', f'/CSite/{site["id"]}')) == 200
           and status(lambda: as_user('volunteer-1').call('GET', f'/CSite/{site["id"]}')) == 403)

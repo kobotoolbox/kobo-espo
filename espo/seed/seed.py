@@ -74,6 +74,7 @@ ENTITIES = {
 # entity, gets a "c": Task.cResponse (cResponseId); on Site, a custom one, it's Site.response
 LINKS = [('CResponse', 'tasks', 'Task', 'response', 'oneToMany'),
          ('CResponse', 'sites', 'CSite', 'response', 'oneToMany'),
+         ('CStandard', 'sites', 'CSite', 'standard', 'oneToMany'),  # the standard a site follows
          ('CResponse', 'lead', 'User', 'leadOfResponses', 'manyToOne')]
 
 FIELDS = {
@@ -260,7 +261,7 @@ def ensure_layout_fields(espo, entity, names, panel='Details'):
 
 def ensure_layouts(espo):
     ensure_layout_fields(espo, 'CResponse', ['status', 'emergencyType', 'country', 'lead', 'startDate', 'endDate'])
-    ensure_layout_fields(espo, 'CSite', ['siteCode', 'siteType', 'status', 'region', 'response', 'installedAt',
+    ensure_layout_fields(espo, 'CSite', ['siteCode', 'siteType', 'status', 'region', 'response', 'standard', 'installedAt',
                                          'lastVisit', 'latitude', 'longitude', 'equipment', 'photos'])
     ensure_layout_fields(espo, 'CStandard', ['code', 'category', 'source', 'requirement'])
     ensure_layout_fields(espo, 'Task', ['cResponse'])  # EspoCRM's own entity: c-prefixed

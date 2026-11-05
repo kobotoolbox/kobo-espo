@@ -50,11 +50,18 @@ espo = "location"
 type = "varchar"
 label = "Location (Kobo geopoint)"
 
-[[field]]
+[[field]]  # the standard's record, found by the code picked from standards.csv
 kobo = "standard"
-espo = "standardCode"
-type = "varchar"
-label = "Standard"
+espo = "standard"
+type = "link"
+entity = "CStandard"
+lookup = "code"
+
+[[field]]  # when the form was finished, in UTC (Kobo sends local time with its offset)
+kobo = "end"
+espo = "registeredAt"
+type = "datetime"
+label = "Registered"
 
 # Lists from EspoCRM for the form. Only these columns reach the phones
 [[list]]

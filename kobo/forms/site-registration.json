@@ -2,9 +2,13 @@
  "settings": {
   "form_title": "Site registration (espo-kobo test)",
   "form_id": "site_registration",
-  "version": "2"
+  "version": "3"
  },
  "survey": [
+  {
+   "type": "end",
+   "name": "end"
+  },
   {
    "type": "select_one_from_file responses.csv",
    "name": "response",

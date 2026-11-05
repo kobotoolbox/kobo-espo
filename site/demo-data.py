@@ -13,6 +13,7 @@ teams and the seeded standards. Kobo projects are left as they are.
 import json
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -192,7 +193,8 @@ def main():
         kobo.submit(uids['site-registration'], {
             'response': (eq1 if resp == 'eq1' else eq2)['id'], 'site_code': code, 'site_name': name,
             'site_type': kind, 'region': region, 'installed': installed, 'equipment': equipment,
-            'photo': f'{code}.jpg', **({'standard': std} if std else {})},
+            'photo': f'{code}.jpg', 'end': datetime.now().astimezone().isoformat(timespec='milliseconds'),
+            **({'standard': std} if std else {})},
             files={f'{code}.jpg': (picture(name, f'{code} · {region}', (40, 100, 150)), 'image/jpeg')})
     for code in [s[1] for s in SITES]:
         wait_for(a, 'CSite', 'siteCode', code)
