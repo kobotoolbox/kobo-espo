@@ -19,7 +19,7 @@ Makes, with the admin API only (no files on the server):
 --users makes the test users (USERS) with generated passwords, kept in
 secrets/seed.secrets (gitignored).
 
-The bridge's API users and roles aren't made here: kobo-bridge's setup.py makes them per
+The bridge's API users and roles aren't made here: kobo-espo-bridge's setup.py makes them per
 template (kobo/templates/*.toml), each with only what its template needs.
 """
 import argparse
@@ -61,7 +61,7 @@ ENTITIES = {
         'installedAt': {'type': 'date', 'label': 'Installed'},
         'equipment': {'type': 'text'},
         'lastVisit': {'type': 'date', 'label': 'Last visit'},
-        'photos': {'type': 'attachmentMultiple'},  # from the registration form (kobo-bridge media)
+        'photos': {'type': 'attachmentMultiple'},  # from the registration form (kobo-espo-bridge media)
     }},
     'Standard': {'labelPlural': 'Standards', 'iconClass': 'fas fa-book', 'fields': {
         'code': {'type': 'varchar', 'required': True},

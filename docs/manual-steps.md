@@ -1,6 +1,6 @@
 # Manual steps
 
-Everything else is scripted (`deploy/up.sh`, `espo/seed/seed.py`, kobo-bridge's `setup.py`
+Everything else is scripted (`deploy/up.sh`, `espo/seed/seed.py`, kobo-espo-bridge's `setup.py`
 through `deploy/bridges.sh`, the tests). These are the steps that stay manual, by design
 or because EspoCRM only has them in its UI.
 

@@ -1,4 +1,4 @@
-"""Running kobo-bridge's setup.py and bridge.py (as processes, as in their containers)
+"""Running kobo-espo-bridge's setup.py and bridge.py (as processes, as in their containers)
 against the test droplet's EspoCRM, for the tests and the demo data."""
 import json
 import os
@@ -9,7 +9,7 @@ from pathlib import Path
 
 from lib import ROOT, URL, secrets
 
-BRIDGE_DIR = Path(os.environ.get('KOBO_BRIDGE_DIR', ROOT.parent / 'kobo-bridge'))
+BRIDGE_DIR = Path(os.environ.get('KOBO_ESPO_BRIDGE_DIR', ROOT.parent / 'kobo-espo-bridge'))
 sys.path.insert(0, str(BRIDGE_DIR))
 import bridge  # noqa: E402
 

@@ -25,7 +25,7 @@ if [[ $CMD == up ]]; then
     token=$(mktemp); trap 'rm -f "$token"' EXIT
     ( umask 077; printf %s "$KOBO_TOKEN" > "$token" )
     for t in kobo/templates/*.toml; do
-        python3 -I ../kobo-bridge/setup.py --template "$t" --url "https://$ESPO_HOST" \
+        python3 -I ../kobo-espo-bridge/setup.py --template "$t" --url "https://$ESPO_HOST" \
             --secrets secrets/bridge.secrets --kobo-url "$KOBO_URL" --token-file "$token" | tail -1
     done
     scp $SSH_OPTS -q "$token" "$ESPO_SSH:/root/kobo-espo-kobo.token"

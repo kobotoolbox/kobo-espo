@@ -1,4 +1,4 @@
-"""Shared test helpers: EspoCRM clients for the test droplet, reusing kobo-bridge's.
+"""Shared test helpers: EspoCRM clients for the test droplet, reusing kobo-espo-bridge's.
 
 Secrets come from secrets/espo.secrets (gitignored; deploy/up.sh writes them on the
 droplet, tests/fetch-secrets.sh copies them here) and secrets/seed.secrets (espo/seed).
@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, os.environ.get('KOBO_BRIDGE_DIR', str(ROOT.parent / 'kobo-bridge')))
+sys.path.insert(0, os.environ.get('KOBO_ESPO_BRIDGE_DIR', str(ROOT.parent / 'kobo-espo-bridge')))
 from bridge import BridgeError, Espo  # noqa: E402,F401
 
 

@@ -6,7 +6,7 @@
 #   espocrm         the web app (apache image), behind caddy
 #   espocrm-daemon  EspoCRM's scheduled jobs (notifications, emails, cleanup)
 #   caddy           TLS for ESPO_HOST (profile `tls`; Let's Encrypt)
-#   bridge          kobo-bridge, polling Kobo (profile `bridge`; one per template)
+#   bridge          kobo-espo-bridge, polling Kobo (profile `bridge`; one per template)
 
 services:
   db:
@@ -78,7 +78,7 @@ services:
       espocrm:
         condition: service_healthy
 
-  # kobo-bridge, one per template (deploy/bridges.sh starts them with the keys setup made)
+  # kobo-espo-bridge, one per template (deploy/bridges.sh starts them with the keys setup made)
   bridge-intake: &bridge
     profiles: [bridge]
     image: python:3.13-slim
@@ -89,7 +89,7 @@ services:
       espocrm:
         condition: service_healthy
     volumes:
-      - /root/kobo-bridge:/bridge:ro
+      - /root/kobo-espo-bridge:/bridge:ro
       - ./kobo/templates:/templates:ro
       - /root/kobo-espo-kobo.token:/run/kobo.token:ro
       - bridge-state:/state

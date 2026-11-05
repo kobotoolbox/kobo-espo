@@ -47,7 +47,7 @@ FOOT = """</main>
   <div class="wrap">
     <div>
       <img src="static/site/logo-white.svg" alt="KoboToolbox">
-      <p>Kobo and EspoCRM: request intake, response tasking and sites on one EspoCRM, connected to KoboToolbox by kobo-bridge. A test, with made-up data.</p>
+      <p>Kobo and EspoCRM: request intake, response tasking and sites on one EspoCRM, connected to KoboToolbox by kobo-espo-bridge. A test, with made-up data.</p>
     </div>
     <div>
       <span class="footer__label">KoboToolbox</span>

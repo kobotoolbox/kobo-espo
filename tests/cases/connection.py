@@ -4,9 +4,9 @@ The Kobo -> EspoCRM connection end to end: T1-T7, T12, and Workflow C (sites and
 
     python3 -I tests/cases/connection.py [--kobo fake|real] [--skip-espo-down]
 
-The real bridge (kobo-bridge's bridge.py, run as a process, as in its container) and its
+The real bridge (kobo-espo-bridge's bridge.py, run as a process, as in its container) and its
 setup.py, against the test droplet's EspoCRM. Kobo: a fake one on this machine
-(kobo-bridge/fake_kobo.py, the default), or a real one (KOBO_URL, KOBO_TOKEN in .env,
+(kobo-espo-bridge/fake_kobo.py, the default), or a real one (KOBO_URL, KOBO_TOKEN in .env,
 a throwaway test account; tests/staging.py deploys the forms there first).
 
 T3 stops EspoCRM on the droplet for a minute (docker compose stop espocrm) unless

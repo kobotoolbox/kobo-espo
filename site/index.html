@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Overview: Kobo and EspoCRM</title>
-<meta name="description" content="One EspoCRM for support requests, humanitarian response tasking and sites, fed by KoboToolbox forms through kobo-bridge, with access kept inside each project's and response's team. What it does, who sees what, what was tested, and whether to use one instance.">
+<meta name="description" content="One EspoCRM for support requests, humanitarian response tasking and sites, fed by KoboToolbox forms through kobo-espo-bridge, with access kept inside each project's and response's team. What it does, who sees what, what was tested, and whether to use one instance.">
 <link rel="icon" href="static/site/icon.png" type="image/png">
 <link rel="stylesheet" href="static/site/home.css">
 </head>
@@ -66,7 +66,7 @@
 <ul>
   <li><strong>KoboToolbox</strong>, unchanged: the forms people already use, on the web or in KoboCollect.</li>
   <li><strong>EspoCRM 10</strong>, open source, where staff, partners, roster experts and volunteers each see their own team's work. It has cases, contacts and accounts, and here also Responses, Sites and Standards, with a Kanban board for tasks.</li>
-  <li><strong>kobo-bridge</strong>, a small program that connects them. It polls Kobo for new submissions and turns each one into a record. It keeps lists from EspoCRM on Kobo forms. And it applies follow-up visits to the records they're about. It was taken from <a href="https://github.com/kobotoolbox">Kobo in a box</a>'s case management and made general, so this test, the box and later connections share one tested bridge.</li>
+  <li><strong>kobo-espo-bridge</strong>, a small program that connects them. It polls Kobo for new submissions and turns each one into a record. It keeps lists from EspoCRM on Kobo forms. And it applies follow-up visits to the records they're about. It was taken from <a href="https://github.com/kobotoolbox">Kobo in a box</a>'s case management and made general, so this test, the box and later connections share one tested bridge.</li>
 </ul>
 <p>Nothing changes in KoboToolbox's settings: no REST services or webhooks to set up. After either side has been down, the bridge catches up by itself, and never makes a record twice.</p>
 </section>
@@ -111,7 +111,7 @@
     <tr><td>The same with a fake Kobo, including Kobo being down</td><td>73</td><td>All passed</td></tr>
     <tr><td>Isolation: responses, consortia, volunteers, leaving a team, closing a response (T8–T11, T13, T15, T16)</td><td>80</td><td>All passed, after three fixes (below)</td></tr>
     <tr><td>A new response's board (T14)</td><td>8</td><td>All passed</td></tr>
-    <tr><td>kobo-bridge unit tests</td><td>53</td><td>All passed</td></tr>
+    <tr><td>kobo-espo-bridge unit tests</td><td>53</td><td>All passed</td></tr>
     <tr><td>Time from submission to record, through the running bridge</td><td>5</td><td>4 to 26 s (mean 17 s), polling every 30 s</td></tr>
   </tbody>
 </table></div>
@@ -151,7 +151,7 @@
 <h2>The code</h2>
 <ul>
   <li><strong>kobo-espo</strong>: this instance's setup (Docker Compose, the EspoCRM seed and formula scripts, the Kobo forms and templates), the tests, this manual.</li>
-  <li><strong>kobo-bridge</strong>: the bridge, shared with Kobo in a box: templates, setup, a fake Kobo for tests.</li>
+  <li><strong>kobo-espo-bridge</strong>: the bridge, shared with Kobo in a box: templates, setup, a fake Kobo for tests.</li>
 </ul>
 </section>
 
@@ -163,7 +163,7 @@
   <div class="wrap">
     <div>
       <img src="static/site/logo-white.svg" alt="KoboToolbox">
-      <p>Kobo and EspoCRM: request intake, response tasking and sites on one EspoCRM, connected to KoboToolbox by kobo-bridge. A test, with made-up data.</p>
+      <p>Kobo and EspoCRM: request intake, response tasking and sites on one EspoCRM, connected to KoboToolbox by kobo-espo-bridge. A test, with made-up data.</p>
     </div>
     <div>
       <span class="footer__label">KoboToolbox</span>

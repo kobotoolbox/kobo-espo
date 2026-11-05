@@ -5,13 +5,13 @@ EspoCRM as request intake and response tasking hub, connected to KoboToolbox: a 
 recommendation are in [REPORT.md](REPORT.md); the user manual, with screenshots, is
 `site/` (GitHub Pages).
 
-The Kobo ↔ EspoCRM connection is [kobo-bridge](../kobo-bridge), shared with kobo-in-a-box;
+The Kobo ↔ EspoCRM connection is [kobo-espo-bridge](../kobo-espo-bridge), shared with kobo-in-a-box;
 this repository has the instance's setup, its forms and templates, and the tests.
 
 ```
 docker-compose.yml          EspoCRM 10.0.11 (apache), MariaDB 11.4, its scheduler, Caddy (TLS), the bridges
 deploy/up.sh                the stack onto the droplet (ESPO_SSH), secrets generated there
-deploy/bridges.sh           kobo-bridge's setup for each template, then the bridges (up | down | logs)
+deploy/bridges.sh           kobo-espo-bridge's setup for each template, then the bridges (up | down | logs)
 espo/seed/seed.py           entities (Response, Site, Standard), fields, Task board, roles, teams, users
 espo/formula/               EspoCRM formula scripts, one file per entity and script type
 kobo/forms/                 the Kobo forms as XLSForm rows (.json; .xlsx from export.py)
@@ -26,7 +26,7 @@ docs/manual-steps.md        what isn't scripted
 ```bash
 cp .env.example .env        # ESPO_HOST, ESPO_SSH; KOBO_URL, KOBO_TOKEN of a throwaway Kobo account
                             # (on kf/eu.kobotoolbox.org also KOBO_TEST_ACCOUNT_ON_PRODUCTION=yes)
-git clone <kobo-bridge> ../kobo-bridge
+git clone <kobo-espo-bridge> ../kobo-espo-bridge
 deploy/up.sh                # needs a host with Docker and ESPO_HOST's DNS pointing at it
 tests/fetch-secrets.sh
 python3 -I espo/seed/seed.py --users

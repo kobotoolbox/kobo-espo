@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Running it: Kobo and EspoCRM</title>
-<meta name="description" content="Setting up the EspoCRM and kobo-bridge for Kobo requests, responses and sites: one command sequence, the templates, adding a consortium or a response, people and roles, checking on the bridge, and the tests.">
+<meta name="description" content="Setting up the EspoCRM and kobo-espo-bridge for Kobo requests, responses and sites: one command sequence, the templates, adding a consortium or a response, people and roles, checking on the bridge, and the tests.">
 <link rel="icon" href="static/site/icon.png" type="image/png">
 <link rel="stylesheet" href="static/site/home.css">
 </head>
@@ -27,7 +27,7 @@
 <section class="banner">
   <div class="wrap">
     <h1>Running it</h1>
-    <p class="banner__lead">Everything is in two repositories and reproducible from them. <strong>kobo-espo</strong> has this instance's setup, forms, templates, tests and this manual. <strong>kobo-bridge</strong> has the bridge. A few things are done by hand, and they're listed.</p>
+    <p class="banner__lead">Everything is in two repositories and reproducible from them. <strong>kobo-espo</strong> has this instance's setup, forms, templates, tests and this manual. <strong>kobo-espo-bridge</strong> has the bridge. A few things are done by hand, and they're listed.</p>
   </div>
 </section>
 
@@ -52,7 +52,7 @@
 deploy/up.sh                       # EspoCRM 10.0.11, MariaDB, its scheduler, Caddy (TLS)
 tests/fetch-secrets.sh             # the admin password, to secrets/ (not in git)
 python3 -I espo/seed/seed.py --users   # entities, fields, board, roles, teams, formulas, test users
-deploy/bridges.sh                  # kobo-bridge's setup for each template, then the bridges</code></pre>
+deploy/bridges.sh                  # kobo-espo-bridge's setup for each template, then the bridges</code></pre>
 <p>Each step can be run again: they all keep what's there and put back what they define.</p>
 <ul>
   <li><code>deploy/up.sh</code> generates the passwords on the server, the first time.</li>
@@ -64,7 +64,7 @@ deploy/bridges.sh                  # kobo-bridge's setup for each template, then
 
 <section id="templates">
 <h2>Templates</h2>
-<p>Each Kobo form has a template in <code>kobo/templates/</code>: which records it makes, its routes to teams, who's notified, its fields, its lists and follow-ups. kobo-bridge's README describes every setting.</p>
+<p>Each Kobo form has a template in <code>kobo/templates/</code>: which records it makes, its routes to teams, who's notified, its fields, its lists and follow-ups. kobo-espo-bridge's README describes every setting.</p>
 <div class="table-scroll"><table>
   <thead><tr><th>Template</th><th>Form</th><th>Makes</th><th>API user</th></tr></thead>
   <tbody>
@@ -144,7 +144,7 @@ python3 -I tests/cases/latency.py  # submission to record, through the running b
   <div class="wrap">
     <div>
       <img src="static/site/logo-white.svg" alt="KoboToolbox">
-      <p>Kobo and EspoCRM: request intake, response tasking and sites on one EspoCRM, connected to KoboToolbox by kobo-bridge. A test, with made-up data.</p>
+      <p>Kobo and EspoCRM: request intake, response tasking and sites on one EspoCRM, connected to KoboToolbox by kobo-espo-bridge. A test, with made-up data.</p>
     </div>
     <div>
       <span class="footer__label">KoboToolbox</span>

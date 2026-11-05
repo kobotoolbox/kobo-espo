@@ -18,9 +18,9 @@ export RSYNC_RSH="ssh $SSH_OPTS"
 
 rsync -az --delete --exclude .git --exclude .env --exclude 'state/' --exclude '__pycache__' \
     ./ "$ESPO_SSH:$REMOTE/"
-# The shared bridge, next to this repo (KOBO_BRIDGE_DIR, default ../kobo-bridge)
+# The shared bridge, next to this repo (KOBO_ESPO_BRIDGE_DIR, default ../kobo-espo-bridge)
 rsync -az --delete --exclude .git --exclude '__pycache__' \
-    "${KOBO_BRIDGE_DIR:-../kobo-bridge}/" "$ESPO_SSH:/root/kobo-bridge/"
+    "${KOBO_ESPO_BRIDGE_DIR:-../kobo-espo-bridge}/" "$ESPO_SSH:/root/kobo-espo-bridge/"
 
 ssh $SSH_OPTS "$ESPO_SSH" ESPO_HOST="$ESPO_HOST" CMD="${1:-up}" REMOTE="$REMOTE" SECRETS="$SECRETS" bash -s <<'EOF'
 set -euo pipefail

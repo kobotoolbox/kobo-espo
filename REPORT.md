@@ -39,7 +39,7 @@ that must stay on its own server, not for isolation between projects or response
 | EspoCRM | 10.0.11 (`espocrm/espocrm:10.0.11-apache`), MariaDB 11.4.13, Caddy 2.10 (TLS), daemon container for scheduled jobs |
 | Where | Throwaway droplet `espo-kobo-test` (DigitalOcean nyc1, s-1vcpu-2gb, 137.184.130.173), `https://espo-test.kobolabs.dev` (A record in kobolabs.dev). Teardown: docs/manual-steps.md |
 | Kobo | `kf.kobotoolbox.org` (production server), throwaway test account `bob_kobo`, its own projects named "... (espo-kobo test)" |
-| Bridge | [kobo-bridge](../kobo-bridge) (stdlib Python 3.13, `python:3.13-slim`), one container per template, polling every 30 s |
+| Bridge | [kobo-espo-bridge](../kobo-espo-bridge) (stdlib Python 3.13, `python:3.13-slim`), one container per template, polling every 30 s |
 | Advanced Pack | Not installed, here or on `espo.kobolabs.dev` (no modules beyond Crm): everything is core EspoCRM |
 
 ## Decisions and deviations from the plan
@@ -48,13 +48,13 @@ that must stay on its own server, not for isolation between projects or response
   entity, a "Demo Kobo Intake API" user and role, 5 users). The plan says not to alter it,
   and this test needs instance-wide changes. A new throwaway droplet was public, so Kobo
   needed no tunnel. Replaying onto the real instance is `deploy/up.sh` + the seed + `deploy/bridges.sh`.
-- **Delivery: polling (kobo-bridge), not Kobo REST Services or KoboHooks** (plan §4.2;
+- **Delivery: polling (kobo-espo-bridge), not Kobo REST Services or KoboHooks** (plan §4.2;
   decided with Josh). Kobo's config is unchanged, and backfill and catching up after an
   outage come for free. So T2 and T3 test redelivery and outages through the bridge's
   ledger, not `retry_hook`/`get_hook_logs`. The bridge was extracted from
   `kobo-in-a-box/remote/espocrm` into its own repo and made general (any entity,
   requesters, matching, mentions, escalation, lists, media). kobo-in-a-box is unchanged
-  until kobo-bridge passes its own end-to-end tests there.
+  until kobo-espo-bridge passes its own end-to-end tests there.
 - **Kobo production server, test account** (Josh, 5 Nov), instead of staging. The scripts
   refuse a production URL unless `KOBO_TEST_ACCOUNT_ON_PRODUCTION=yes`, and touch only their
   own projects.
@@ -102,7 +102,7 @@ All on the droplet's EspoCRM; the JSON files have every check with its detail.
 | The same with the fake Kobo, plus Kobo down | `results/connection-fake.json` | 73 | all pass |
 | T8–T11, T13, T15, T16 | `results/isolation.json` | 80 | all pass (after the guards above) |
 | T14 | `results/workflow_b.json` | 8 | all pass |
-| kobo-bridge unit tests | `kobo-bridge/tests` | 53 | all pass |
+| kobo-espo-bridge unit tests | `kobo-espo-bridge/tests` | 53 | all pass |
 | T1 latency through the running bridges | `results/latency.json` | 5 | 4.4–26.4 s, mean 17.2 s (30 s polling) |
 
 Per test (expected → actual):
@@ -171,7 +171,7 @@ Per test (expected → actual):
 - Enketo/KoboCollect screenshots of the forms with lists: the test account's forms need a
   Kobo login. The lists were checked on the forms through the API.
 - kobo-in-a-box's own end-to-end tests (60 checks on its rig) against the generalised
-  kobo-bridge, before the box switches.
+  kobo-espo-bridge, before the box switches.
 - Email notifications (no SMTP on the droplet); EspoCRM's portal for partners following
   their own requests.
 
@@ -195,7 +195,7 @@ Reviewed `~/Desktop/work/repos/kobo2logie`.
 [rodekruis/kobo-connect](https://github.com/rodekruis/kobo-connect) receives Kobo REST
 Service webhooks and maps answers to EspoCRM with custom HTTP headers
 (`question: Entity.field`).
-- **Taken into kobo-bridge:**
+- **Taken into kobo-espo-bridge:**
   - links by lookup: the record whose field has the answer, as its
     `Entity.link.field` headers do (`[[field]] type = "link"`, `entity`, `lookup`). Here the
     registration links the site to its Standard by the code picked. None or several: the
@@ -229,7 +229,7 @@ Service webhooks and maps answers to EspoCRM with custom HTTP headers
 5. **Escalation time** and who it goes to, per project.
 6. **Collaborators who can't move cards** (v10): acceptable, or should roster tasks be
    editable by the whole response team ("edit: team" for Roster Expert)?
-7. **kobo-bridge's home:** a repo under kobotoolbox on GitHub? And when should kobo-in-a-box
+7. **kobo-espo-bridge's home:** a repo under kobotoolbox on GitHub? And when should kobo-in-a-box
    switch to it?
 8. **Teardown:** when to delete the droplet and DNS record, and the test projects on the
    Kobo account?
