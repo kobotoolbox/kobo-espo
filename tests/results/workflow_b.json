@@ -1,0 +1,104 @@
+{
+  "when": "2026-11-05T10:01:59Z",
+  "espo": "https://espo-test.kobolabs.dev",
+  "passed": 8,
+  "failed": 0,
+  "results": [
+    {
+      "test": "T14",
+      "check": "staff-1 creates a response: its 4 starter tasks appear",
+      "ok": true,
+      "detail": [
+        "Agree site list and standards",
+        "Comms plan",
+        "Confirm the roster",
+        "Set up the Kobo project"
+      ]
+    },
+    {
+      "test": "T14",
+      "check": "in the response's team, assigned to its lead, in Backlog",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T14",
+      "check": "board columns are Backlog, To do, In progress, Blocked, Done (Canceled, Deferred hidden)",
+      "ok": true,
+      "detail": [
+        "Backlog",
+        "Not Started",
+        "Started",
+        "Blocked",
+        "Completed"
+      ]
+    },
+    {
+      "test": "T14",
+      "check": "the board, filtered by the response, has the starter tasks in Backlog",
+      "ok": true,
+      "detail": {
+        "Backlog": [
+          "Agree site list and standards",
+          "Comms plan",
+          "Confirm the roster",
+          "Set up the Kobo project"
+        ],
+        "Not Started": [],
+        "Started": [],
+        "Blocked": [],
+        "Completed": []
+      }
+    },
+    {
+      "test": "T14",
+      "check": "volunteer-1 moved their task to In progress; the board shows it there",
+      "ok": true,
+      "detail": {
+        "Backlog": [
+          "Agree site list and standards",
+          "Comms plan",
+          "Set up the Kobo project"
+        ],
+        "Not Started": [],
+        "Started": [
+          "Confirm the roster"
+        ],
+        "Blocked": [],
+        "Completed": []
+      }
+    },
+    {
+      "test": "T14",
+      "check": "volunteer-1 sees the response's whole board (team read), not other responses'",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T14",
+      "check": "volunteer-2 (Response 1 only): this board is empty for them",
+      "ok": true,
+      "detail": {
+        "Backlog": [],
+        "Not Started": [],
+        "Started": [],
+        "Blocked": [],
+        "Completed": []
+      }
+    },
+    {
+      "test": "T14",
+      "check": "columns read To do / In progress / Done",
+      "ok": true,
+      "detail": {
+        "Not Started": "To do",
+        "Started": "In progress",
+        "Completed": "Done",
+        "Canceled": "Canceled",
+        "Deferred": "Deferred",
+        "Backlog": "Backlog",
+        "Blocked": "Blocked"
+      }
+    }
+  ]
+}

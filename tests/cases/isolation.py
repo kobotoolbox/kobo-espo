@@ -27,7 +27,7 @@ results = []
 
 
 def check(test, name, ok, detail=''):
-    detail = sorted(detail) if isinstance(detail, set) else detail
+    detail = json.loads(json.dumps(detail, default=sorted))  # sets, also inside dicts
     results.append({'test': test, 'check': name, 'ok': bool(ok), 'detail': detail})
     print(f'{"PASS" if ok else "FAIL"}  {test}  {name}' + (f'  ({detail})' if detail and not ok else ''))
 

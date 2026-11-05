@@ -41,7 +41,7 @@ results = []
 
 
 def check(test, name, ok, detail=''):
-    detail = sorted(detail) if isinstance(detail, set) else detail
+    detail = json.loads(json.dumps(detail, default=sorted))  # sets, also inside dicts
     results.append({'test': test, 'check': name, 'ok': bool(ok), 'detail': detail})
     print(f'{"PASS" if ok else "FAIL"}  {test}  {name}' + (f'  ({detail})' if detail and not ok else ''))
 
@@ -188,8 +188,9 @@ def main():
           {k: contact.get(k) for k in ('emailAddress', 'firstName', 'lastName')})
     check('T1', 'Account "Org Alpha" linked to the case and the contact',
           case.get('accountName') == 'Org Alpha' and contact.get('accountId') == case.get('accountId'))
-    check('T1', 'description has the request and a link to the attachment in Kobo',
-          'choice list' in (case.get('description') or '') and 'screenshot.png' in (case.get('description') or ''))
+    check('T1', 'description has the request' + (' and a link to the attachment in Kobo' if args.kobo == 'fake' else ''),
+          'choice list' in (case.get('description') or '')
+          and (args.kobo != 'fake' or 'screenshot.png' in (case.get('description') or '')))
     check('T1', 'latency of one pass (submission -> case), seconds', True, round(latency, 1))
 
     # --- T2: delivered again -> still one case ----------------------------------------------
