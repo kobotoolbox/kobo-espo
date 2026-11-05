@@ -83,7 +83,7 @@ services:
     profiles: [bridge]
     image: python:3.13-slim
     restart: unless-stopped
-    command: ["python3", "-I", "/bridge/bridge.py", "run"]
+    command: ["python3", "-I", "-u", "/bridge/bridge.py", "run"]  # -u: -I ignores PYTHONUNBUFFERED
     working_dir: /bridge
     depends_on:
       espocrm:
