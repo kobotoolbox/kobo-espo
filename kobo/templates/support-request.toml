@@ -19,7 +19,7 @@ details = [["", "description"]]
 required = ["requester_email", "project", "summary", "description"]
 single_team = true  # plan §2: one team per case
 set = { cSource = "Kobo form" }
-attachments = true  # links to the files in Kobo, not copies
+media = "attachments"  # the files, copied into EspoCRM (staff need no Kobo account to see them)
 notify_message = "New support request from Kobo, please triage:"
 
 [requester]

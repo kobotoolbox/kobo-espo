@@ -39,7 +39,9 @@ set -a; source /root/kobo-espo.secrets; source /root/kobo-espo-bridge.secrets; E
 compose() { docker compose -p kobo-espo --profile bridge "$@"; }
 case $CMD in
     # --no-deps: never recreate EspoCRM itself from here
-    up) compose up -d --no-deps bridge-intake bridge-volunteers bridge-sites bridge-site-visits ;;
+    # restart too: the code is mounted, and a running bridge has the old one loaded
+    up) compose up -d --no-deps bridge-intake bridge-volunteers bridge-sites bridge-site-visits
+        compose restart bridge-intake bridge-volunteers bridge-sites bridge-site-visits ;;
     down) compose stop bridge-intake bridge-volunteers bridge-sites bridge-site-visits ;;
     logs) compose logs --tail 40 bridge-intake bridge-volunteers bridge-sites bridge-site-visits ;;
 esac

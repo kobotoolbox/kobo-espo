@@ -85,9 +85,10 @@ class RealKobo:
     def deploy_all(self, forms):
         return {k: self.deploy(content) for k, content in forms.items()}
 
-    def submit(self, uid, answers, attachments=None):
-        """An OpenRosa submission; returns it as KPI has it (with _id, _uuid). Attachments
-        aren't sent (the test's are fake): only the links are tested, with the fake Kobo."""
+    def submit(self, uid, answers, attachments=None, files=None):
+        """An OpenRosa submission, with files ({filename: (bytes, mimetype)}, named by an
+        answer) in the same request as Collect sends them; returns it as KPI has it.
+        `attachments` (the fake Kobo's ready-made list) is ignored."""
         form_id, version, asset = self.ids[uid]
         instance = str(uuid.uuid4())
         names = {r['name']: r for r in asset['content']['survey'] if r.get('name')}
@@ -98,7 +99,11 @@ class RealKobo:
                f'<meta><instanceID>uuid:{instance}</instanceID></meta></{form_id}>').encode()
         boundary = 'kobo-espo-' + uuid.uuid4().hex
         body = (f'--{boundary}\r\nContent-Disposition: form-data; name="xml_submission_file"; filename="s.xml"\r\n'
-                'Content-Type: text/xml\r\n\r\n').encode() + xml + f'\r\n--{boundary}--\r\n'.encode()
+                'Content-Type: text/xml\r\n\r\n').encode() + xml + b'\r\n'
+        for name, (data, mime) in (files or {}).items():
+            body += (f'--{boundary}\r\nContent-Disposition: form-data; name="{name}"; filename="{name}"\r\n'
+                     f'Content-Type: {mime}\r\n\r\n').encode() + data + b'\r\n'
+        body += f'--{boundary}--\r\n'.encode()
         self.call('POST', self.submission_url, raw=body, headers={
             'Content-Type': f'multipart/form-data; boundary={boundary}', 'X-OpenRosa-Version': '1.0',
             'Date': datetime.now(timezone.utc).strftime('%a, %d %b %Y %H:%M:%S GMT')})

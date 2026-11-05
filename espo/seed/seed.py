@@ -61,6 +61,7 @@ ENTITIES = {
         'installedAt': {'type': 'date', 'label': 'Installed'},
         'equipment': {'type': 'text'},
         'lastVisit': {'type': 'date', 'label': 'Last visit'},
+        'photos': {'type': 'attachmentMultiple'},  # from the registration form (kobo-bridge media)
     }},
     'Standard': {'labelPlural': 'Standards', 'iconClass': 'fas fa-book', 'fields': {
         'code': {'type': 'varchar', 'required': True},
@@ -260,7 +261,7 @@ def ensure_layout_fields(espo, entity, names, panel='Details'):
 def ensure_layouts(espo):
     ensure_layout_fields(espo, 'CResponse', ['status', 'emergencyType', 'country', 'lead', 'startDate', 'endDate'])
     ensure_layout_fields(espo, 'CSite', ['siteCode', 'siteType', 'status', 'region', 'response', 'installedAt',
-                                         'lastVisit', 'latitude', 'longitude', 'equipment'])
+                                         'lastVisit', 'latitude', 'longitude', 'equipment', 'photos'])
     ensure_layout_fields(espo, 'CStandard', ['code', 'category', 'source', 'requirement'])
     ensure_layout_fields(espo, 'Task', ['cResponse'])  # EspoCRM's own entity: c-prefixed
     ensure_layout_fields(espo, 'Contact', ['cProfileType', 'cAvailability'])

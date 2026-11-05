@@ -17,6 +17,7 @@ panel = "Registration"
 name = "{site_name}"
 match = { siteCode = "site_code" }
 required = ["response", "site_code", "site_name"]
+media = "photos"  # the site photo, copied into EspoCRM
 
 [[field]]
 kobo = "response"

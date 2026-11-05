@@ -58,6 +58,26 @@ def droplet(cmd):
                           capture_output=True, text=True)
 
 
+def png(rgb=(200, 80, 40), size=64):
+    """A small real PNG (stdlib only), for the media tests."""
+    import struct
+    import zlib
+    raw = b''.join(b'\x00' + bytes(rgb) * size for _ in range(size))
+
+    def chunk(kind, data):
+        return struct.pack('>I', len(data)) + kind + data + struct.pack('>I', zlib.crc32(kind + data) & 0xffffffff)
+    return (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', size, size, 8, 2, 0, 0, 0))
+            + chunk(b'IDAT', zlib.compress(raw)) + chunk(b'IEND', b''))
+
+
+def download(espo, attachment_id):
+    """An attachment's bytes, as a user opening it in EspoCRM gets them."""
+    import urllib.request
+    req = urllib.request.Request(f'{URL}/?entryPoint=download&id={attachment_id}', headers=espo.headers)
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return r.read()
+
+
 def support(project, email, org='alpha', **kw):
     return {'requester_name': f'Test Requester {RUN}', 'requester_email': email, 'organisation': org,
             'project': project, 'category': 'forms', 'priority': 'High',
@@ -98,10 +118,10 @@ def main():
 
     # --- T1: a support request becomes a Case with its requester ---------------------------
     email_a = f'req-a-{RUN}@example.org'
-    attachment = [{'filename': f'u/attachments/{RUN}/screenshot.png', 'media_file_basename': 'screenshot.png',
-                   'download_url': f'{kobo_url}/api/v2/assets/{uids["support-request"]}/data/1/attachments/1/'}]
+    shot = png()
     started = time.time()
-    s1 = submit(uids['support-request'], support('consortium_a', email_a, org='alpha'), attachments=attachment)
+    s1 = submit(uids['support-request'], support('consortium_a', email_a, org='alpha', attachment='screenshot.png'),
+                files={'screenshot.png': (shot, 'image/png')})
     code, log, st = intake.once()
     latency = time.time() - started
     cases = by(a, 'Case', 'cKoboSubmissionUuid', s1['_uuid'])
@@ -120,9 +140,17 @@ def main():
           {k: contact.get(k) for k in ('emailAddress', 'firstName', 'lastName')})
     check('T1', 'Account "Org Alpha" linked to the case and the contact',
           case.get('accountName') == 'Org Alpha' and contact.get('accountId') == case.get('accountId'))
-    check('T1', 'description has the request' + (' and a link to the attachment in Kobo' if args.kobo == 'fake' else ''),
-          'choice list' in (case.get('description') or '')
-          and (args.kobo != 'fake' or 'screenshot.png' in (case.get('description') or '')))
+    check('T1', 'description has the request', 'choice list' in (case.get('description') or ''))
+    files = case.get('attachmentsIds') or []
+    check('T1', 'media: the attached file is copied onto the case', len(files) == 1
+          and (case.get('attachmentsNames') or {}).get(files[0]) == 'screenshot.png', case.get('attachmentsNames'))
+    check('T1', 'media: the same bytes, and the triager can open it', files and download(as_user('triager'), files[0]) == shot)
+    try:
+        leaked = download(as_user('partner-b'), files[0]) if files else None
+    except Exception as e:  # noqa: BLE001 - any refusal will do
+        leaked = None
+        refusal = getattr(e, 'code', type(e).__name__)
+    check('T1', "media: partner-b (Consortium B) can't open it", leaked is None, locals().get('refusal'))
     check('T1', 'latency of one pass (submission -> case), seconds', True, round(latency, 1))
 
     # --- T2: delivered again -> still one case ----------------------------------------------
@@ -290,7 +318,8 @@ def main():
     s_a = submit(uids['site-registration'], {'response': resp[0]['id'], 'site_code': code_1, 'site_name': f'Water point {RUN}',
                                               'site_type': 'water_point', 'region': 'North', 'installed': '2026-11-01',
                                               'equipment': 'Hand pump, model X', 'location': '1.23 4.56 0 5',
-                                              'standard': 'WASH-2'})
+                                              'standard': 'WASH-2', 'photo': 'site.png'},
+               files={'site.png': (png((40, 120, 200)), 'image/png')})
     submit(uids['site-registration'], {'response': resp2[0]['id'], 'site_code': code_2, 'site_name': f'Solar {RUN}',
                                        'site_type': 'solar', 'region': 'South', 'installed': '2026-11-02',
                                        'equipment': '4 panels, 1 battery'})
@@ -301,6 +330,8 @@ def main():
           and site.get('siteType') == 'water_point' and site.get('standardCode') == 'WASH-2',
           {k: site.get(k) for k in ('responseId', 'siteType', 'standardCode')} or log[-300:])
     check('C2', "in its response's team (Site formula)", site.get('teamsIds') == [team['Response: Test EQ 1']])
+    check('C2', 'media: the site photo is on the site', list((site.get('photosNames') or {}).values()) == ['site.png'],
+          site.get('photosNames'))
     submit(uids['site-registration'], {'response': resp[0]['id'], 'site_code': code_1, 'site_name': f'Water point {RUN}',
                                        'site_type': 'water_point', 'region': 'North', 'installed': '2026-11-01',
                                        'equipment': 'Hand pump, model X; new seal'})
@@ -318,7 +349,8 @@ def main():
           code_1 in {r['name'] for r in srows} and code_2 not in {r['name'] for r in srows}, srows)
     check('C3', 'sites.csv columns: code, label, status, region only', srows and srows[0].keys() == {'name', 'label', 'status', 'region'})
     visit = submit(uids['site-visit'], {'site': code_1, 'visit_date': '2026-11-05', 'condition': 'needs_repair',
-                                        'visit_notes': 'Seal leaking again', 'visitor': 'Rui Roster'})
+                                        'visit_notes': 'Seal leaking again', 'visitor': 'Rui Roster',
+                                        'photo': 'leak.png'}, files={'leak.png': (png((90, 90, 90)), 'image/png')})
     code, log, st = visits.once()
     after = a.call('GET', f'/CSite/{site["id"]}')
     check('C3', 'a visit updates the site: status and last visit', after.get('status') == 'needs_repair'
@@ -326,6 +358,10 @@ def main():
     notes = [n.get('post') or '' for n in a.call('GET', f'/CSite/{site["id"]}/stream', {'maxSize': 20})['list']]
     check('C3', "and adds a note with what was found, marked with the visit's uuid",
           any('Seal leaking again' in n and visit['_uuid'] in n for n in notes))
+    vnote = next((n for n in a.call('GET', f'/CSite/{site["id"]}/stream', {'maxSize': 20})['list']
+                  if visit['_uuid'] in (n.get('post') or '')), {})
+    check('C3', "media: the visit's photo is on its note", list((vnote.get('attachmentsNames') or {}).values()) == ['leak.png'],
+          vnote.get('attachmentsNames'))
     visits.forget()
     visits.once()
     notes2 = [n.get('post') or '' for n in a.call('GET', f'/CSite/{site["id"]}/stream', {'maxSize': 20})['list']]

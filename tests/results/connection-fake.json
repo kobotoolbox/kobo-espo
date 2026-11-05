@@ -1,9 +1,9 @@
 {
-  "when": "2026-11-05T10:11:37Z",
+  "when": "2026-11-05T11:17:47Z",
   "espo": "https://espo-test.kobolabs.dev",
   "kobo": "fake",
-  "run": "873255",
-  "passed": 62,
+  "run": "877217",
+  "passed": 67,
   "failed": 0,
   "results": [
     {
@@ -17,7 +17,7 @@
       "check": "name, category, priority, project from the answers",
       "ok": true,
       "detail": {
-        "name": "Forms and XLSForm: Form will not deploy (873255)",
+        "name": "Forms and XLSForm: Form will not deploy (877217)",
         "cCategory": "forms",
         "priority": "High",
         "cProject": "consortium_a"
@@ -42,9 +42,9 @@
       "check": "requester Contact by email, with their name",
       "ok": true,
       "detail": {
-        "emailAddress": "req-a-873255@example.org",
+        "emailAddress": "req-a-877217@example.org",
         "firstName": "Test Requester",
-        "lastName": "873255"
+        "lastName": "877217"
       }
     },
     {
@@ -55,15 +55,35 @@
     },
     {
       "test": "T1",
-      "check": "description has the request and a link to the attachment in Kobo",
+      "check": "description has the request",
       "ok": true,
       "detail": ""
     },
     {
       "test": "T1",
+      "check": "media: the attached file is copied onto the case",
+      "ok": true,
+      "detail": {
+        "6aec6522bf58843c9": "screenshot.png"
+      }
+    },
+    {
+      "test": "T1",
+      "check": "media: the same bytes, and the triager can open it",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T1",
+      "check": "media: partner-b (Consortium B) can't open it",
+      "ok": true,
+      "detail": 403
+    },
+    {
+      "test": "T1",
       "check": "latency of one pass (submission -> case), seconds",
       "ok": true,
-      "detail": 14.0
+      "detail": 8.6
     },
     {
       "test": "T2",
@@ -83,7 +103,7 @@
         "statuses": 0,
         "merged": 0,
         "notified": 0,
-        "escalated": 14
+        "escalated": 3
       }
     },
     {
@@ -109,8 +129,8 @@
       "check": "the pass goes on (the good ones still go through)",
       "ok": true,
       "detail": {
-        "last_pass": "2026-11-05T10:09:05Z",
-        "last_success": "2026-11-05T10:09:05Z",
+        "last_pass": "2026-11-05T11:15:08Z",
+        "last_success": "2026-11-05T11:15:08Z",
         "ok": true,
         "error": null,
         "counts": {
@@ -131,7 +151,7 @@
         },
         "failed": 2,
         "failed_elsewhere": 0,
-        "oldest_failed": "2026-11-05T10:09:05Z",
+        "oldest_failed": "2026-11-05T11:15:08Z",
         "oldest_error": "required answer missing: summary"
       }
     },
@@ -139,7 +159,7 @@
       "test": "T4",
       "check": "missing answer: \"required answer missing: summary\" in the ledger",
       "ok": true,
-      "detail": "a7adc9775aeab493881e64  submission 3  since 2026-11-05T10:09:05Z  1 attempt(s), next 2026-11-05T10:10:05Z\n    required answer missing: summary\na7adc9775aeab493881e64  submission 4  since 2026-11-05T10:09:05Z  1 attempt(s), next 2026-11-05T10:10:05Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "a841e4870e2784d7cad99a  submission 3  since 2026-11-05T11:15:08Z  1 attempt(s), next 2026-11-05T11:16:08Z\n    required answer missing: summary\na841e4870e2784d7cad99a  submission 4  since 2026-11-05T11:15:08Z  1 attempt(s), next 2026-11-05T11:16:08Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -151,7 +171,7 @@
       "test": "T4",
       "check": "invalid email: refused by EspoCRM, recorded with its reason",
       "ok": true,
-      "detail": "a7adc9775aeab493881e64  submission 3  since 2026-11-05T10:09:05Z  1 attempt(s), next 2026-11-05T10:10:05Z\n    required answer missing: summary\na7adc9775aeab493881e64  submission 4  since 2026-11-05T10:09:05Z  1 attempt(s), next 2026-11-05T10:10:05Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "a841e4870e2784d7cad99a  submission 3  since 2026-11-05T11:15:08Z  1 attempt(s), next 2026-11-05T11:16:08Z\n    required answer missing: summary\na841e4870e2784d7cad99a  submission 4  since 2026-11-05T11:15:08Z  1 attempt(s), next 2026-11-05T11:16:08Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -170,9 +190,6 @@
       "check": "triager notified of the new Consortium A case (mention)",
       "ok": true,
       "detail": [
-        null,
-        null,
-        null,
         null,
         null,
         null,
@@ -235,7 +252,7 @@
     },
     {
       "test": "T5",
-      "check": "escalation: the assigned case is not escalated",
+      "check": "escalation: no escalation of the case after it was assigned",
       "ok": true,
       "detail": ""
     },
@@ -469,16 +486,16 @@
       "ok": true,
       "detail": [
         {
-          "name": "6aec527580b4f989e",
-          "label": "ISO EQ 2"
+          "name": "6aec6346142165754",
+          "label": "Earthquake response, Testland North"
         },
         {
-          "name": "6aec4fe0090ea19f8",
+          "name": "6aec6346e46189fbd",
+          "label": "Flood response, Testland South"
+        },
+        {
+          "name": "6aec65bedb5d54f56",
           "label": "Test EQ 1 response"
-        },
-        {
-          "name": "6aec4fe1cd0f28c55",
-          "label": "Test EQ 2 response"
         }
       ]
     },
@@ -506,7 +523,7 @@
       "check": "a registration makes a Site, linked to its response",
       "ok": true,
       "detail": {
-        "responseId": "6aec4fe0090ea19f8",
+        "responseId": "6aec65bedb5d54f56",
         "siteType": "water_point",
         "standardCode": "WASH-2"
       }
@@ -516,6 +533,14 @@
       "check": "in its response's team (Site formula)",
       "ok": true,
       "detail": ""
+    },
+    {
+      "test": "C2",
+      "check": "media: the site photo is on the site",
+      "ok": true,
+      "detail": {
+        "6aec65c402ce28c86": "site.png"
+      }
     },
     {
       "test": "C2",
@@ -550,34 +575,40 @@
       "ok": true,
       "detail": [
         {
-          "name": "EQ1-WP-871633",
-          "label": "EQ1-WP-871633 \u00b7 Water point 871633",
-          "status": "needs_repair",
-          "region": "North"
+          "name": "EQ1-HP-001",
+          "label": "EQ1-HP-001 \u00b7 Riverside health post",
+          "status": "planned",
+          "region": "River valley"
         },
         {
-          "name": "EQ1-WP-871884",
-          "label": "EQ1-WP-871884 \u00b7 Water point 871884",
-          "status": "needs_repair",
-          "region": "North"
+          "name": "EQ1-SO-001",
+          "label": "EQ1-SO-001 \u00b7 Clinic solar system",
+          "status": "operational",
+          "region": "North district"
         },
         {
-          "name": "EQ1-WP-872601",
-          "label": "EQ1-WP-872601 \u00b7 Water point 872601",
+          "name": "EQ1-WP-001",
+          "label": "EQ1-WP-001 \u00b7 Hilltop water point",
           "status": "needs_repair",
-          "region": "North"
+          "region": "North district"
         },
         {
-          "name": "EQ1-WP-873255",
-          "label": "EQ1-WP-873255 \u00b7 Water point 873255",
+          "name": "EQ1-WP-002",
+          "label": "EQ1-WP-002 \u00b7 Market square water point",
+          "status": "planned",
+          "region": "North district"
+        },
+        {
+          "name": "EQ1-WP-003",
+          "label": "EQ1-WP-003 \u00b7 School water point",
+          "status": "planned",
+          "region": "River valley"
+        },
+        {
+          "name": "EQ1-WP-877217",
+          "label": "EQ1-WP-877217 \u00b7 Water point 877217",
           "status": "planned",
           "region": "North"
-        },
-        {
-          "name": "ISO-S1",
-          "label": "ISO-S1 \u00b7 ISO Site R1",
-          "status": "planned",
-          "region": ""
         }
       ]
     },
@@ -604,6 +635,14 @@
     },
     {
       "test": "C3",
+      "check": "media: the visit's photo is on its note",
+      "ok": true,
+      "detail": {
+        "6aec65d239ce801f7": "leak.png"
+      }
+    },
+    {
+      "test": "C3",
       "check": "a visit is never applied twice (lost ledger)",
       "ok": true,
       "detail": ""
@@ -614,34 +653,40 @@
       "ok": true,
       "detail": [
         {
-          "name": "EQ1-WP-871633",
-          "label": "EQ1-WP-871633 \u00b7 Water point 871633",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-871884",
-          "label": "EQ1-WP-871884 \u00b7 Water point 871884",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-872601",
-          "label": "EQ1-WP-872601 \u00b7 Water point 872601",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-873255",
-          "label": "EQ1-WP-873255 \u00b7 Water point 873255",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "ISO-S1",
-          "label": "ISO-S1 \u00b7 ISO Site R1",
+          "name": "EQ1-HP-001",
+          "label": "EQ1-HP-001 \u00b7 Riverside health post",
           "status": "planned",
-          "region": ""
+          "region": "River valley"
+        },
+        {
+          "name": "EQ1-SO-001",
+          "label": "EQ1-SO-001 \u00b7 Clinic solar system",
+          "status": "operational",
+          "region": "North district"
+        },
+        {
+          "name": "EQ1-WP-001",
+          "label": "EQ1-WP-001 \u00b7 Hilltop water point",
+          "status": "needs_repair",
+          "region": "North district"
+        },
+        {
+          "name": "EQ1-WP-002",
+          "label": "EQ1-WP-002 \u00b7 Market square water point",
+          "status": "planned",
+          "region": "North district"
+        },
+        {
+          "name": "EQ1-WP-003",
+          "label": "EQ1-WP-003 \u00b7 School water point",
+          "status": "planned",
+          "region": "River valley"
+        },
+        {
+          "name": "EQ1-WP-877217",
+          "label": "EQ1-WP-877217 \u00b7 Water point 877217",
+          "status": "needs_repair",
+          "region": "North"
         }
       ]
     },
@@ -649,7 +694,7 @@
       "test": "C3",
       "check": "a visit to an unknown site is recorded, not guessed",
       "ok": true,
-      "detail": "a91e1ccba7742458fa1bbc  submission 2  since 2026-11-05T10:11:35Z  1 attempt(s), next 2026-11-05T10:12:35Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
+      "detail": "ae4087b511f13495fa55bb  submission 2  since 2026-11-05T11:17:46Z  1 attempt(s), next 2026-11-05T11:18:46Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
     }
   ]
 }

@@ -2,7 +2,7 @@
  "settings": {
   "form_title": "Site visit - Test EQ 1 (espo-kobo test)",
   "form_id": "site_visit_eq1",
-  "version": "1"
+  "version": "2"
  },
  "survey": [
   {
@@ -39,6 +39,11 @@
    "label": "What did you find or do?",
    "required": "true",
    "appearance": "multiline"
+  },
+  {
+   "type": "image",
+   "name": "photo",
+   "label": "A photo of what you found (optional)"
   },
   {
    "type": "text",

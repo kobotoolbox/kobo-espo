@@ -2,7 +2,7 @@
  "settings": {
   "form_title": "Site registration (espo-kobo test)",
   "form_id": "site_registration",
-  "version": "1"
+  "version": "2"
  },
  "survey": [
   {
@@ -54,6 +54,11 @@
    "label": "Equipment (make, model, serial numbers)",
    "required": "true",
    "appearance": "multiline"
+  },
+  {
+   "type": "image",
+   "name": "photo",
+   "label": "A photo of the site"
   },
   {
    "type": "select_one_from_file standards.csv",

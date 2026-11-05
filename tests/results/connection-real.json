@@ -1,9 +1,9 @@
 {
-  "when": "2026-11-05T10:38:07Z",
+  "when": "2026-11-05T11:29:51Z",
   "espo": "https://espo-test.kobolabs.dev",
   "kobo": "real",
-  "run": "874609",
-  "passed": 64,
+  "run": "877497",
+  "passed": 69,
   "failed": 0,
   "results": [
     {
@@ -17,7 +17,7 @@
       "check": "name, category, priority, project from the answers",
       "ok": true,
       "detail": {
-        "name": "Forms and XLSForm: Form will not deploy (874609)",
+        "name": "Forms and XLSForm: Form will not deploy (877497)",
         "cCategory": "forms",
         "priority": "High",
         "cProject": "consortium_a"
@@ -42,9 +42,9 @@
       "check": "requester Contact by email, with their name",
       "ok": true,
       "detail": {
-        "emailAddress": "req-a-874609@example.org",
+        "emailAddress": "req-a-877497@example.org",
         "firstName": "Test Requester",
-        "lastName": "874609"
+        "lastName": "877497"
       }
     },
     {
@@ -61,20 +61,40 @@
     },
     {
       "test": "T1",
+      "check": "media: the attached file is copied onto the case",
+      "ok": true,
+      "detail": {
+        "6aec66bbd5dc9a67d": "screenshot.png"
+      }
+    },
+    {
+      "test": "T1",
+      "check": "media: the same bytes, and the triager can open it",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T1",
+      "check": "media: partner-b (Consortium B) can't open it",
+      "ok": true,
+      "detail": 403
+    },
+    {
+      "test": "T1",
       "check": "latency of one pass (submission -> case), seconds",
       "ok": true,
-      "detail": 32.3
+      "detail": 119.5
     },
     {
       "test": "T2",
       "check": "a lost ledger rescans everything: no second case",
       "ok": true,
       "detail": {
-        "seen": 14,
+        "seen": 44,
         "created": 0,
         "skipped": 0,
-        "existing": 10,
-        "failed": 4,
+        "existing": 38,
+        "failed": 6,
         "retried": 0,
         "updated": 0,
         "closed_note": 0,
@@ -83,7 +103,7 @@
         "statuses": 0,
         "merged": 0,
         "notified": 0,
-        "escalated": 24
+        "escalated": 16
       }
     },
     {
@@ -116,8 +136,8 @@
           "created": 1,
           "skipped": 0,
           "existing": 0,
-          "failed": 0,
-          "retried": 0,
+          "failed": 6,
+          "retried": 6,
           "updated": 0,
           "closed_note": 0,
           "lists": 0,
@@ -125,7 +145,7 @@
           "statuses": 0,
           "merged": 0,
           "notified": 1,
-          "escalated": 1
+          "escalated": 4
         }
       }
     },
@@ -140,8 +160,8 @@
       "check": "the pass goes on (the good ones still go through)",
       "ok": true,
       "detail": {
-        "last_pass": "2026-11-05T10:33:20Z",
-        "last_success": "2026-11-05T10:33:20Z",
+        "last_pass": "2026-11-05T11:23:36Z",
+        "last_success": "2026-11-05T11:23:36Z",
         "ok": true,
         "error": null,
         "counts": {
@@ -149,8 +169,8 @@
           "created": 0,
           "skipped": 0,
           "existing": 0,
-          "failed": 6,
-          "retried": 4,
+          "failed": 2,
+          "retried": 0,
           "updated": 0,
           "closed_note": 0,
           "lists": 0,
@@ -160,9 +180,9 @@
           "notified": 0,
           "escalated": 0
         },
-        "failed": 6,
+        "failed": 8,
         "failed_elsewhere": 0,
-        "oldest_failed": "2026-11-05T10:32:05Z",
+        "oldest_failed": "2026-11-05T11:21:46Z",
         "oldest_error": "required answer missing: summary"
       }
     },
@@ -170,7 +190,7 @@
       "test": "T4",
       "check": "missing answer: \"required answer missing: summary\" in the ledger",
       "ok": true,
-      "detail": "aEou6CT7stpATUyL3jCcVU  submission 908617769  since 2026-11-05T10:32:05Z  2 attempt(s), next 2026-11-05T10:43:20Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908617782  since 2026-11-05T10:32:05Z  2 attempt(s), next 2026-11-05T10:43:20Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908625545  since 2026-11-05T10:32:05Z  2 attempt(s), next 2026-11-05T10:43:20Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908625562  since 2026-11-05T10:32:05Z  2 attempt(s), next 2026-11-05T10:43:20Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908633812  since 2026-11-05T10:33:20Z  1 attempt(s), next 2026-11-05T10:34:20Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908633823  since 2026-11-05T10:33:20Z  1 attempt(s), next 2026-11-05T10:34:20Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "aEou6CT7stpATUyL3jCcVU  submission 908617769  since 2026-11-05T11:21:46Z  2 attempt(s), next 2026-11-05T11:33:08Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908617782  since 2026-11-05T11:21:46Z  2 attempt(s), next 2026-11-05T11:33:08Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908625545  since 2026-11-05T11:21:46Z  2 attempt(s), next 2026-11-05T11:33:08Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908625562  since 2026-11-05T11:21:46Z  2 attempt(s), next 2026-11-05T11:33:08Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908633812  since 2026-11-05T11:21:46Z  2 attempt(s), next 2026-11-05T11:33:08Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908633823  since 2026-11-05T11:21:46Z  2 attempt(s), next 2026-11-05T11:33:08Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908676914  since 2026-11-05T11:23:36Z  1 attempt(s), next 2026-11-05T11:24:36Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908676939  since 2026-11-05T11:23:36Z  1 attempt(s), next 2026-11-05T11:24:36Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -182,7 +202,7 @@
       "test": "T4",
       "check": "invalid email: refused by EspoCRM, recorded with its reason",
       "ok": true,
-      "detail": "aEou6CT7stpATUyL3jCcVU  submission 908617769  since 2026-11-05T10:32:05Z  2 attempt(s), next 2026-11-05T10:43:20Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908617782  since 2026-11-05T10:32:05Z  2 attempt(s), next 2026-11-05T10:43:20Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908625545  since 2026-11-05T10:32:05Z  2 attempt(s), next 2026-11-05T10:43:20Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908625562  since 2026-11-05T10:32:05Z  2 attempt(s), next 2026-11-05T10:43:20Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908633812  since 2026-11-05T10:33:20Z  1 attempt(s), next 2026-11-05T10:34:20Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908633823  since 2026-11-05T10:33:20Z  1 attempt(s), next 2026-11-05T10:34:20Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "aEou6CT7stpATUyL3jCcVU  submission 908617769  since 2026-11-05T11:21:46Z  2 attempt(s), next 2026-11-05T11:33:08Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908617782  since 2026-11-05T11:21:46Z  2 attempt(s), next 2026-11-05T11:33:08Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908625545  since 2026-11-05T11:21:46Z  2 attempt(s), next 2026-11-05T11:33:08Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908625562  since 2026-11-05T11:21:46Z  2 attempt(s), next 2026-11-05T11:33:08Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908633812  since 2026-11-05T11:21:46Z  2 attempt(s), next 2026-11-05T11:33:08Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908633823  since 2026-11-05T11:21:46Z  2 attempt(s), next 2026-11-05T11:33:08Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908676914  since 2026-11-05T11:23:36Z  1 attempt(s), next 2026-11-05T11:24:36Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908676939  since 2026-11-05T11:23:36Z  1 attempt(s), next 2026-11-05T11:24:36Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -500,16 +520,16 @@
       "ok": true,
       "detail": [
         {
-          "name": "6aec527580b4f989e",
-          "label": "ISO EQ 2"
+          "name": "6aec6346142165754",
+          "label": "Earthquake response, Testland North"
         },
         {
-          "name": "6aec4fe0090ea19f8",
+          "name": "6aec6346e46189fbd",
+          "label": "Flood response, Testland South"
+        },
+        {
+          "name": "6aec65bedb5d54f56",
           "label": "Test EQ 1 response"
-        },
-        {
-          "name": "6aec4fe1cd0f28c55",
-          "label": "Test EQ 2 response"
         }
       ]
     },
@@ -537,7 +557,7 @@
       "check": "a registration makes a Site, linked to its response",
       "ok": true,
       "detail": {
-        "responseId": "6aec4fe0090ea19f8",
+        "responseId": "6aec65bedb5d54f56",
         "siteType": "water_point",
         "standardCode": "WASH-2"
       }
@@ -547,6 +567,14 @@
       "check": "in its response's team (Site formula)",
       "ok": true,
       "detail": ""
+    },
+    {
+      "test": "C2",
+      "check": "media: the site photo is on the site",
+      "ok": true,
+      "detail": {
+        "6aec683578852d41b": "site.png"
+      }
     },
     {
       "test": "C2",
@@ -581,52 +609,46 @@
       "ok": true,
       "detail": [
         {
-          "name": "EQ1-WP-871633",
-          "label": "EQ1-WP-871633 \u00b7 Water point 871633",
+          "name": "EQ1-HP-001",
+          "label": "EQ1-HP-001 \u00b7 Riverside health post",
+          "status": "planned",
+          "region": "River valley"
+        },
+        {
+          "name": "EQ1-SO-001",
+          "label": "EQ1-SO-001 \u00b7 Clinic solar system",
+          "status": "operational",
+          "region": "North district"
+        },
+        {
+          "name": "EQ1-WP-001",
+          "label": "EQ1-WP-001 \u00b7 Hilltop water point",
+          "status": "needs_repair",
+          "region": "North district"
+        },
+        {
+          "name": "EQ1-WP-002",
+          "label": "EQ1-WP-002 \u00b7 Market square water point",
+          "status": "planned",
+          "region": "North district"
+        },
+        {
+          "name": "EQ1-WP-003",
+          "label": "EQ1-WP-003 \u00b7 School water point",
+          "status": "planned",
+          "region": "River valley"
+        },
+        {
+          "name": "EQ1-WP-877217",
+          "label": "EQ1-WP-877217 \u00b7 Water point 877217",
           "status": "needs_repair",
           "region": "North"
         },
         {
-          "name": "EQ1-WP-871884",
-          "label": "EQ1-WP-871884 \u00b7 Water point 871884",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-872601",
-          "label": "EQ1-WP-872601 \u00b7 Water point 872601",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-873255",
-          "label": "EQ1-WP-873255 \u00b7 Water point 873255",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-873694",
-          "label": "EQ1-WP-873694 \u00b7 Water point 873694",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-874127",
-          "label": "EQ1-WP-874127 \u00b7 Water point 874127",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-874609",
-          "label": "EQ1-WP-874609 \u00b7 Water point 874609",
+          "name": "EQ1-WP-877497",
+          "label": "EQ1-WP-877497 \u00b7 Water point 877497",
           "status": "planned",
           "region": "North"
-        },
-        {
-          "name": "ISO-S1",
-          "label": "ISO-S1 \u00b7 ISO Site R1",
-          "status": "planned",
-          "region": ""
         }
       ]
     },
@@ -653,6 +675,14 @@
     },
     {
       "test": "C3",
+      "check": "media: the visit's photo is on its note",
+      "ok": true,
+      "detail": {
+        "6aec6878e0a6ff01a": "leak.png"
+      }
+    },
+    {
+      "test": "C3",
       "check": "a visit is never applied twice (lost ledger)",
       "ok": true,
       "detail": ""
@@ -663,52 +693,46 @@
       "ok": true,
       "detail": [
         {
-          "name": "EQ1-WP-871633",
-          "label": "EQ1-WP-871633 \u00b7 Water point 871633",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-871884",
-          "label": "EQ1-WP-871884 \u00b7 Water point 871884",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-872601",
-          "label": "EQ1-WP-872601 \u00b7 Water point 872601",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-873255",
-          "label": "EQ1-WP-873255 \u00b7 Water point 873255",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-873694",
-          "label": "EQ1-WP-873694 \u00b7 Water point 873694",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-874127",
-          "label": "EQ1-WP-874127 \u00b7 Water point 874127",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "EQ1-WP-874609",
-          "label": "EQ1-WP-874609 \u00b7 Water point 874609",
-          "status": "needs_repair",
-          "region": "North"
-        },
-        {
-          "name": "ISO-S1",
-          "label": "ISO-S1 \u00b7 ISO Site R1",
+          "name": "EQ1-HP-001",
+          "label": "EQ1-HP-001 \u00b7 Riverside health post",
           "status": "planned",
-          "region": ""
+          "region": "River valley"
+        },
+        {
+          "name": "EQ1-SO-001",
+          "label": "EQ1-SO-001 \u00b7 Clinic solar system",
+          "status": "operational",
+          "region": "North district"
+        },
+        {
+          "name": "EQ1-WP-001",
+          "label": "EQ1-WP-001 \u00b7 Hilltop water point",
+          "status": "needs_repair",
+          "region": "North district"
+        },
+        {
+          "name": "EQ1-WP-002",
+          "label": "EQ1-WP-002 \u00b7 Market square water point",
+          "status": "planned",
+          "region": "North district"
+        },
+        {
+          "name": "EQ1-WP-003",
+          "label": "EQ1-WP-003 \u00b7 School water point",
+          "status": "planned",
+          "region": "River valley"
+        },
+        {
+          "name": "EQ1-WP-877217",
+          "label": "EQ1-WP-877217 \u00b7 Water point 877217",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-877497",
+          "label": "EQ1-WP-877497 \u00b7 Water point 877497",
+          "status": "needs_repair",
+          "region": "North"
         }
       ]
     },
@@ -716,7 +740,7 @@
       "test": "C3",
       "check": "a visit to an unknown site is recorded, not guessed",
       "ok": true,
-      "detail": "aFDZDN7rbkVxLySRfhdk9Q  submission 908621723  since 2026-11-05T10:37:27Z  1 attempt(s), next 2026-11-05T10:38:27Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908629693  since 2026-11-05T10:37:27Z  1 attempt(s), next 2026-11-05T10:38:27Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908637906  since 2026-11-05T10:37:58Z  1 attempt(s), next 2026-11-05T10:38:58Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
+      "detail": "aFDZDN7rbkVxLySRfhdk9Q  submission 908620902  since 2026-11-05T11:29:07Z  1 attempt(s), next 2026-11-05T11:30:07Z\n    0 CSite records with siteCode EQ1-WP-873694\naFDZDN7rbkVxLySRfhdk9Q  submission 908621723  since 2026-11-05T11:29:07Z  1 attempt(s), next 2026-11-05T11:30:07Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908628895  since 2026-11-05T11:29:07Z  1 attempt(s), next 2026-11-05T11:30:07Z\n    0 CSite records with siteCode EQ1-WP-874127\naFDZDN7rbkVxLySRfhdk9Q  submission 908629693  since 2026-11-05T11:29:07Z  1 attempt(s), next 2026-11-05T11:30:07Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908637215  since 2026-11-05T11:29:07Z  1 attempt(s), next 2026-11-05T11:30:07Z\n    0 CSite records with siteCode EQ1-WP-874609\naFDZDN7rbkVxLySRfhdk9Q  submission 908637906  since 2026-11-05T11:29:07Z  1 attempt(s), next 2026-11-05T11:30:07Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908683701  since 2026-11-05T11:29:42Z  1 attempt(s), next 2026-11-05T11:30:42Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
     }
   ]
 }
