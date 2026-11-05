@@ -27,8 +27,8 @@ def find(a, entity, attr, value):
                                        'where[0][value]': value, 'select': 'id', 'maxSize': 1})['list'][0]['id']
 
 
-def save(page, name, clip=None):
-    png = page.screenshot(clip=clip, full_page=False)
+def save(page, name, full=False):
+    png = page.screenshot(full_page=full)
     img = Image.open(io.BytesIO(png)).convert('RGB')
     img.save(OUT / f'{name}.jpg', 'JPEG', quality=82, optimize=True)
     print(f'{name}.jpg {img.size[0]}x{img.size[1]}')
@@ -41,7 +41,7 @@ def sign_in(browser, user, size=(1440, 900)):
     page.fill('#field-userName', user)
     page.fill('#field-password', secrets()['ESPO_ADMIN_PASSWORD'] if user == 'admin' else secrets('seed')[pw_key(user)])
     page.click('#btn-login')
-    page.wait_for_selector('#navbar', timeout=30000)
+    page.wait_for_function("document.querySelector('#main') && document.querySelector('#main').children.length > 0", timeout=30000)
     time.sleep(2)
     return ctx, page
 
@@ -91,16 +91,15 @@ def main(only):
             page = sessions[user][1]
             go(page, hash_)
             if action == 'kanban':
-                page.click('.list-view-mode-buttons button[data-name="kanban"], button[data-value="kanban"], '
-                           'a[data-name="kanban"]')
-                page.wait_for_selector('.kanban', timeout=30000)
+                page.click('button[data-name="kanban"][data-action="switchViewMode"]')
+                page.wait_for_selector('button[data-name="kanban"].active', timeout=30000)
                 time.sleep(3)
             if action == 'notifications':
                 page.click('.notifications-badge, a.notifications-button, [data-name="notifications"] a')
                 page.wait_for_selector('.notification-panel-container, .notification-list, #notifications-panel',
                                        timeout=30000)
                 time.sleep(2.5)
-            save(page, name)
+            save(page, name, full='/view/' in hash_)  # a record's page: down to its stream
         browser.close()
 
 

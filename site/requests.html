@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Requests: Kobo and EspoCRM</title>
+<meta name="description" content="Support requests from a KoboToolbox form become EspoCRM cases for the right project team, linked to the requester and their organisation, with attachments; the triager is notified and assigns them, and unassigned cases are escalated. For Kobo alone or consortia of Kobo and partner organisations.">
+<link rel="icon" href="static/site/icon.png" type="image/png">
+<link rel="stylesheet" href="static/site/home.css">
+</head>
+<body>
+<header class="header">
+  <div class="wrap">
+    <a class="header__brand" href="./"><img src="static/site/logo.svg" alt="KoboToolbox"><span class="header__product">+ EspoCRM</span></a>
+    <ul class="header__nav">
+      <li><a href="./">Overview</a></li>
+      <li><a href="requests.html" aria-current="page">Requests</a></li>
+      <li><a href="responses.html">Responses</a></li>
+      <li><a href="sites.html">Sites and lists</a></li>
+      <li><a href="running.html">Running it</a></li>
+    </ul>
+    <a class="button button--filled button--m" href="https://espo-test.kobolabs.dev">Open the test EspoCRM</a>
+  </div>
+</header>
+
+<main>
+<section class="banner">
+  <div class="wrap">
+    <h1>Requests from a Kobo form</h1>
+    <p class="banner__lead">Partners and staff ask for support with a KoboToolbox form. Each submission becomes a case in EspoCRM for its project's team, linked to whoever sent it and their organisation, with their files attached. The project's triager is notified and passes it to someone to work on. Each consortium sees its own cases and no one else's.</p>
+  </div>
+</section>
+
+<div class="wrap docs">
+<nav class="docs__nav" aria-label="On this page">
+  <ul>
+    <li><a href="#form">The form</a></li>
+    <li><a href="#case">A request becomes a case</a></li>
+    <li><a href="#triage">Triage</a></li>
+    <li><a href="#escalation">Nobody picked it up</a></li>
+    <li><a href="#partners">Consortia and partners</a></li>
+    <li><a href="#trouble">When something goes wrong</a></li>
+  </ul>
+</nav>
+
+<article class="prose">
+
+<section id="form">
+<h2>The form</h2>
+<p><strong>Kobo support request</strong> (<code>kobo/forms/support-request.json</code>, also as <code>.xlsx</code>) asks for:</p>
+<ul>
+  <li>the requester's name, email and organisation;</li>
+  <li>the project: Kobo internal, Consortium A or Consortium B;</li>
+  <li>a category, how urgent it is, a summary and a description;</li>
+  <li>optionally, a file.</li>
+</ul>
+<p>Anyone with the form's link can use it, in a browser or in KoboCollect. They need no EspoCRM account.</p>
+</section>
+
+<section id="case">
+<h2>A request becomes a case</h2>
+<p>Within about 30 seconds (4 to 26 s in testing) the bridge opens a case:</p>
+<div class="table-scroll"><table>
+  <thead><tr><th>On the case</th><th>From</th></tr></thead>
+  <tbody>
+    <tr><td>Name: "Data and exports: Export to XLS times out"</td><td>Category and summary</td></tr>
+    <tr><td>Priority (Low … Urgent), category, project</td><td>The answers</td></tr>
+    <tr><td>Team: one, the project's</td><td>The project answer (<code>[[route]]</code> in the template)</td></tr>
+    <tr><td>Contact</td><td>The requester, found by email or created; a second request from them reuses it</td></tr>
+    <tr><td>Account</td><td>The organisation, found by name or created</td></tr>
+    <tr><td>Attachments</td><td>The submitted file, copied from Kobo, so it opens without a Kobo account</td></tr>
+    <tr><td>Source "Kobo form", and a Kobo panel: project, submission, link</td><td>The bridge</td></tr>
+  </tbody>
+</table></div>
+<figure><a href="static/shots/case-from-kobo.jpg"><img src="static/shots/case-from-kobo.jpg" width="1440" height="1514" alt="A case, Data and exports: Export to XLS times out, status New, priority High, account Org Beta, contact Amara Okafor, team Project: Consortium A, created by kobo-intake. Its description is the request; Attachments shows the image the requester submitted; the Kobo panel has the project, submission number, uuid and a link. The stream has the bridge's note mentioning the triager, and a later note saying it is still unassigned, mentioning the team lead."></a><figcaption>A request as the bridge opened it. The bridge's note on the case is what notified the triager; the second note, a minute later, is the escalation.</figcaption></figure>
+<p>A case is in <strong>one team</strong>. EspoCRM would allow several, so EspoCRM refuses a second one when anyone tries to add it ("A case can be in one team only").</p>
+</section>
+
+<section id="triage">
+<h2>Triage</h2>
+<p>The triager gets a notification for each new case of their projects. They open it and assign it to someone in the case's team. That person is notified in turn.</p>
+<figure><a href="static/shots/notifications.jpg"><img src="static/shots/notifications.jpg" width="1440" height="900" alt="EspoCRM's notifications panel for the triager: five notifications, kobo-intake mentioned you in case ..., each with New support request from Kobo, please triage."></a><figcaption>The triager's notifications: one per new request in their projects.</figcaption></figure>
+<p>Someone can only be given a case if they're in its team. EspoCRM on its own would let a triager who works for two consortia hand a Consortium A case to a Consortium B partner, who would then see it. So EspoCRM is set to refuse that ("The assignee is not in the case's team").</p>
+<figure><a href="static/shots/case-assigned.jpg"><img src="static/shots/case-assigned.jpg" width="1440" height="1529" alt="A case, Account and access: New enumerators can't log in, Urgent, assigned to Pat Partner-A of Org Gamma's consortium, with Pat's comment in the stream: Their accounts were created on the wrong server (EU). Recreating them on the global server now."></a><figcaption>Assigned to a partner in the consortium, who works it and comments on it.</figcaption></figure>
+</section>
+
+<section id="escalation">
+<h2>Nobody picked it up</h2>
+<p>A case that is still unassigned some time after it came in (<code>[escalation] after_hours</code>: one minute on the test instance, a few hours for real) gets a note mentioning the team's lead, once. Closed or assigned cases are left alone. EspoCRM's own workflows could do this too, but they're in the paid Advanced Pack, so the bridge does it.</p>
+</section>
+
+<section id="partners">
+<h2>Consortia and partners</h2>
+<p>Each project or consortium is a team: <strong>Project: Consortium A</strong> (Kobo and three organisations), <strong>Project: Consortium B</strong> (Kobo and five). A consortium's partner staff are users with the role <strong>Partner Staff</strong> in its team:</p>
+<div class="figures figures--half">
+<figure><a href="static/shots/cases-partner-a.jpg"><img src="static/shots/cases-partner-a.jpg" width="1440" height="900" alt="Cases as Pat Partner-A: three Consortium A cases."></a><figcaption>Consortium A's partner: Consortium A's cases.</figcaption></figure>
+<figure><a href="static/shots/cases-partner-b.jpg"><img src="static/shots/cases-partner-b.jpg" width="1440" height="900" alt="Cases as Pam Partner-B: two Consortium B cases."></a><figcaption>Consortium B's partner: Consortium B's.</figcaption></figure>
+</div>
+<p>The same goes for the requesters and organisations (contacts and accounts), which take the case's team. Partners can't see the other consortium's records in lists, in search or by link, and can't move a case into the other team. Adding a consortium is adding a team, a route in the template, and its people (<a href="running.html#add">see Running it</a>).</p>
+<div class="note"><p>A partner who submits requests but shouldn't log in needs nothing in EspoCRM: they just use the form. EspoCRM's portal (for external users who follow their own requests) wasn't part of this test.</p></div>
+</section>
+
+<section id="trouble">
+<h2>When something goes wrong</h2>
+<ul>
+  <li><strong>A submission missing an answer</strong> the template requires, or one EspoCRM refuses (an invalid email, say), becomes no case. Nothing half-made is left behind: no stray contact or account. It waits in the bridge's ledger with the reason, and is retried after 1 minute, 10 minutes, 1 hour, then every 6 hours. The submissions after it carry on. <code>bridge.py failed &lt;state dir&gt;</code> lists what's waiting and why.</li>
+  <li><strong>EspoCRM or Kobo down</strong>: the bridge's pass fails, and its status says why. When they're back, the next pass catches up, with no duplicates (tested by stopping EspoCRM mid-test).</li>
+  <li><strong>The same submission seen twice</strong> (a lost ledger, a restart) never makes a second case. The bridge looks for the submission's uuid first.</li>
+</ul>
+</section>
+
+</article>
+</div>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <img src="static/site/logo-white.svg" alt="KoboToolbox">
+      <p>Kobo and EspoCRM: request intake, response tasking and sites on one EspoCRM, connected to KoboToolbox by kobo-bridge. A test, with made-up data.</p>
+    </div>
+    <div>
+      <span class="footer__label">KoboToolbox</span>
+      <ul>
+        <li><a href="https://www.kobotoolbox.org">kobotoolbox.org</a></li>
+        <li><a href="https://support.kobotoolbox.org">Help Center</a></li>
+        <li><a href="https://docs.espocrm.com">EspoCRM documentation</a></li>
+      </ul>
+    </div>
+    <div>
+      <span class="footer__label">On this site</span>
+      <ul>
+      <li><a href="./">Overview</a></li>
+      <li><a href="requests.html" aria-current="page">Requests</a></li>
+      <li><a href="responses.html">Responses</a></li>
+      <li><a href="sites.html">Sites and lists</a></li>
+      <li><a href="running.html">Running it</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!-- title: Responses -->
+<!-- description: Humanitarian responses in EspoCRM: each response has its own team and task board; staff, roster experts and volunteers see and move only their response's tasks. Volunteer sign-ups from a Kobo form. Closing a response. -->
+<section class="banner">
+  <div class="wrap">
+    <h1>Responses and their task boards</h1>
+    <p class="banner__lead">An earthquake, a flood: each response is a record in EspoCRM with its own team. Its tasks live on a Kanban board. Kobo staff, roster experts and volunteers are given tasks there, and see their own response's board only. It works like the GitHub Projects boards used for IFRC SIMS, without anyone needing a GitHub account.</p>
+  </div>
+</section>
+
+<div class="wrap docs">
+<nav class="docs__nav" aria-label="On this page">
+  <ul>
+    <li><a href="#new">A new response</a></li>
+    <li><a href="#board">The board</a></li>
+    <li><a href="#people">Roster experts and volunteers</a></li>
+    <li><a href="#signups">Volunteer sign-ups from Kobo</a></li>
+    <li><a href="#several">Several people on a task</a></li>
+    <li><a href="#close">Leaving, and closing a response</a></li>
+  </ul>
+</nav>
+
+<article class="prose">
+
+<section id="new">
+<h2>A new response</h2>
+<p>Staff create a response (Responses → Create) with its team (<strong>Response: …</strong>, one per response), its lead, the emergency type and the country. It starts with four tasks, assigned to the lead, in Backlog:</p>
+<ul>
+  <li>Set up the Kobo project</li>
+  <li>Confirm the roster</li>
+  <li>Comms plan</li>
+  <li>Agree site list and standards</li>
+</ul>
+<p>The response's page lists its tasks and its sites.</p>
+<figure><a href="static/shots/response.jpg"><img src="static/shots/response.jpg" width="1440" height="1299" alt="The response Earthquake response, Testland North: status Active, Earthquake, Testland, lead Sam Staff, start 18 Oct, team Response: Test EQ 1. Below, its tasks with their statuses (Backlog, Blocked, To do, In progress) and due dates, and its five sites."></a><figcaption>A response, with its tasks and sites.</figcaption></figure>
+<p>Every task of a response is in the response's team, whatever team it was given. That's what keeps it on that response's members' board and nobody else's.</p>
+</section>
+
+<section id="board">
+<h2>The board</h2>
+<p>Tasks → the board button (top right). The columns are <strong>Backlog, To do, In progress, Blocked, Done</strong>; cancelled and deferred tasks are left off. Drag a card to move it. Each card shows its response, its assignee and its due date.</p>
+<figure><a href="static/shots/board-staff.jpg"><img src="static/shots/board-staff.jpg" width="1440" height="900" alt="The board as Kobo staff in both responses: tasks of the earthquake and flood responses in Backlog, To do, In progress, Blocked and Done."></a><figcaption>Staff in both responses see both on one board. To see one response, filter by Response (search panel → add filter → Response) and save the filter.</figcaption></figure>
+<div class="note"><p>Saved filters are each person's own in EspoCRM; there's no shared "board of response X" without custom code. People in one response don't need one: their board only has that response's tasks.</p></div>
+</section>
+
+<section id="people">
+<h2>Roster experts and volunteers</h2>
+<p>They're ordinary EspoCRM users, with the role <strong>Roster Expert</strong> or <strong>Volunteer</strong> and their responses' teams. They don't need an email account or a GitHub account, just their EspoCRM login.</p>
+<div class="figures figures--half">
+<figure><a href="static/shots/board-volunteer.jpg"><img src="static/shots/board-volunteer.jpg" width="1440" height="900" alt="The board as Val Volunteer of the earthquake response: only its eight tasks; the menu has only Tasks."></a><figcaption>A volunteer of the earthquake response: its board, nothing else.</figcaption></figure>
+<figure><a href="static/shots/board-volunteer-other.jpg"><img src="static/shots/board-volunteer-other.jpg" width="1440" height="900" alt="The board as Vic Volunteer of the flood response: one task, Assess the collective centres."></a><figcaption>A volunteer of the flood response: its board only.</figcaption></figure>
+</div>
+<div class="table-scroll"><table>
+  <thead><tr><th></th><th>Roster expert</th><th>Volunteer</th></tr></thead>
+  <tbody>
+    <tr><td>See their responses' board, tasks and sites</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Move and edit their own tasks</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Comment on any task of their responses</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Create tasks</td><td>Yes</td><td>No</td></tr>
+    <tr><td>Give a task to someone in the response</td><td>Yes</td><td>No</td></tr>
+    <tr><td>Edit someone else's task</td><td>No</td><td>No</td></tr>
+    <tr><td>See cases, contacts, accounts, other responses</td><td>No</td><td>No</td></tr>
+    <tr><td>See users outside their responses</td><td>No</td><td>No</td></tr>
+  </tbody>
+</table></div>
+<figure><a href="static/shots/role-volunteer.jpg"><img src="static/shots/role-volunteer.jpg" width="1440" height="900" alt="The Volunteer role in EspoCRM's administration: Tasks read team, edit own, stream team; Responses and Sites read team; Standards read all; Teams and Users read team; assignment permission no; export no."></a><figcaption>The Volunteer role, as the seed sets it.</figcaption></figure>
+</section>
+
+<section id="signups">
+<h2>Volunteer sign-ups from Kobo</h2>
+<p>The <strong>Volunteer availability</strong> form asks for:</p>
+<ul>
+  <li>name and email;</li>
+  <li>skills and languages;</li>
+  <li>availability and deployment preferences.</li>
+</ul>
+<p>Each sign-up becomes a contact with the profile <strong>Volunteer</strong> in the <strong>Roster and volunteers</strong> team, and staff are notified. Someone who signs up again with the same email updates their contact; it doesn't make a second one.</p>
+<figure><a href="static/shots/volunteer-contact.jpg"><img src="static/shots/volunteer-contact.jpg" width="1440" height="1200" alt="The contact Nadia Haddad: profile type Volunteer, availability From 1 December, 6 weeks, skills WASH and Coordination, languages Arabic, English, French, deployment preferences In country and Regional hub, team Roster and volunteers, created by kobo-volunteers."></a><figcaption>A volunteer's sign-up, as a contact.</figcaption></figure>
+<p>Making a volunteer a user, so they can be given tasks, is a person's decision, not automatic (<a href="running.html#people">see Running it</a>).</p>
+</section>
+
+<section id="several">
+<h2>Several people on a task</h2>
+<p>A task has one assignee and any number of <strong>collaborators</strong>, all from the response's team (EspoCRM refuses anyone else). In EspoCRM 10, collaborators can read and comment on the task, but not move or edit it: the assignee does. When a task is given to someone else, the previous assignee stops being a collaborator, so they don't keep it.</p>
+</section>
+
+<section id="close">
+<h2>Leaving, and closing a response</h2>
+<p>Taking someone out of a response's team takes the response and the others' tasks away from them straight away, even in a browser they're already signed in to. EspoCRM still lets them see the tasks assigned to them, though, so <strong>reassign their open tasks</strong> when someone leaves.</p>
+<p>Setting a response to <strong>Closed</strong> gives all its tasks back to its lead, without collaborators. Then take its roster and volunteers out of its team: the response and its tasks are left to staff.</p>
+</section>
+
+</article>
+</div>

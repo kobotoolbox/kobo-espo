@@ -1,0 +1,39 @@
+# kobo-espo
+
+EspoCRM as request intake and response tasking hub, connected to KoboToolbox: a test of
+[the plan](plans/espo-kobo-setup-plan.md) on one throwaway EspoCRM. Results and the
+recommendation are in [REPORT.md](REPORT.md); the user manual, with screenshots, is
+`site/` (GitHub Pages).
+
+The Kobo ↔ EspoCRM connection is [kobo-bridge](../kobo-bridge), shared with kobo-in-a-box;
+this repository has the instance's setup, its forms and templates, and the tests.
+
+```
+docker-compose.yml          EspoCRM 10.0.11 (apache), MariaDB 11.4, its scheduler, Caddy (TLS), the bridges
+deploy/up.sh                the stack onto the droplet (ESPO_SSH), secrets generated there
+deploy/bridges.sh           kobo-bridge's setup for each template, then the bridges (up | down | logs)
+espo/seed/seed.py           entities (Response, Site, Standard), fields, Task board, roles, teams, users
+espo/formula/               EspoCRM formula scripts, one file per entity and script type
+kobo/forms/                 the Kobo forms as XLSForm rows (.json; .xlsx from export.py)
+kobo/templates/             one bridge template per form
+tests/                      run_all.sh, cases/ (isolation, workflow_b, connection, latency), results/
+site/                       the manual: pages/, build.py, shots.py, demo-data.py
+docs/manual-steps.md        what isn't scripted
+```
+
+## From a clean checkout
+
+```bash
+cp .env.example .env        # ESPO_HOST, ESPO_SSH; KOBO_URL, KOBO_TOKEN of a throwaway Kobo account
+                            # (on kf/eu.kobotoolbox.org also KOBO_TEST_ACCOUNT_ON_PRODUCTION=yes)
+git clone <kobo-bridge> ../kobo-bridge
+deploy/up.sh                # needs a host with Docker and ESPO_HOST's DNS pointing at it
+tests/fetch-secrets.sh
+python3 -I espo/seed/seed.py --users
+deploy/bridges.sh
+tests/run_all.sh            # or: tests/run_all.sh --kobo real
+```
+
+Python 3.11+ (stdlib only, but `openpyxl`, Pillow and Playwright for the forms' .xlsx,
+the demo photos and the screenshots). Secrets never go into git: `.env*` and `secrets/` are
+ignored; the droplet keeps its own in `/root/kobo-espo*.secrets` (mode 600).

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Running it: Kobo and EspoCRM</title>
+<meta name="description" content="Setting up the EspoCRM and kobo-bridge for Kobo requests, responses and sites: one command sequence, the templates, adding a consortium or a response, people and roles, checking on the bridge, and the tests.">
+<link rel="icon" href="static/site/icon.png" type="image/png">
+<link rel="stylesheet" href="static/site/home.css">
+</head>
+<body>
+<header class="header">
+  <div class="wrap">
+    <a class="header__brand" href="./"><img src="static/site/logo.svg" alt="KoboToolbox"><span class="header__product">+ EspoCRM</span></a>
+    <ul class="header__nav">
+      <li><a href="./">Overview</a></li>
+      <li><a href="requests.html">Requests</a></li>
+      <li><a href="responses.html">Responses</a></li>
+      <li><a href="sites.html">Sites and lists</a></li>
+      <li><a href="running.html" aria-current="page">Running it</a></li>
+    </ul>
+    <a class="button button--filled button--m" href="https://espo-test.kobolabs.dev">Open the test EspoCRM</a>
+  </div>
+</header>
+
+<main>
+<section class="banner">
+  <div class="wrap">
+    <h1>Running it</h1>
+    <p class="banner__lead">Everything is in two repositories and reproducible from them. <strong>kobo-espo</strong> has this instance's setup, forms, templates, tests and this manual. <strong>kobo-bridge</strong> has the bridge. A few things are done by hand, and they're listed.</p>
+  </div>
+</section>
+
+<div class="wrap docs">
+<nav class="docs__nav" aria-label="On this page">
+  <ul>
+    <li><a href="#setup">From nothing</a></li>
+    <li><a href="#templates">Templates</a></li>
+    <li><a href="#add">A new consortium or response</a></li>
+    <li><a href="#people">People and roles</a></li>
+    <li><a href="#checking">Checking on the bridge</a></li>
+    <li><a href="#tests">The tests</a></li>
+    <li><a href="#rules">Rules worth keeping</a></li>
+  </ul>
+</nav>
+
+<article class="prose">
+
+<section id="setup">
+<h2>From nothing</h2>
+<pre><code># .env: ESPO_HOST, ESPO_SSH, KOBO_URL, KOBO_TOKEN (a test or bridge account's)
+deploy/up.sh                       # EspoCRM 10.0.11, MariaDB, its scheduler, Caddy (TLS)
+tests/fetch-secrets.sh             # the admin password, to secrets/ (not in git)
+python3 -I espo/seed/seed.py --users   # entities, fields, board, roles, teams, formulas, test users
+deploy/bridges.sh                  # kobo-bridge's setup for each template, then the bridges</code></pre>
+<p>Each step can be run again: they all keep what's there and put back what they define.</p>
+<ul>
+  <li><code>deploy/up.sh</code> generates the passwords on the server, the first time.</li>
+  <li>The seed makes the <strong>Response</strong>, <strong>Site</strong> and <strong>Standard</strong> entities, the task board's columns, the five roles, the teams, and the formula scripts (<code>espo/formula/</code>).</li>
+  <li>Setup makes each form's fields, and an API user that can do only what that form needs.</li>
+</ul>
+<div class="warning"><p>EspoCRM 10 doesn't install with all of <code>/var/www/html</code> on one volume (the "legacy" layout): mount <code>data</code>, <code>custom</code> and <code>client/custom</code> separately, as <code>docker-compose.yml</code> does. And publish it only once it has installed itself: its installer is open until then, and scanners found it within seconds.</p></div>
+</section>
+
+<section id="templates">
+<h2>Templates</h2>
+<p>Each Kobo form has a template in <code>kobo/templates/</code>: which records it makes, its routes to teams, who's notified, its fields, its lists and follow-ups. kobo-bridge's README describes every setting.</p>
+<div class="table-scroll"><table>
+  <thead><tr><th>Template</th><th>Form</th><th>Makes</th><th>API user</th></tr></thead>
+  <tbody>
+    <tr><td><code>support-request.toml</code></td><td>Kobo support request</td><td>Cases, contacts, accounts</td><td><code>kobo-intake</code></td></tr>
+    <tr><td><code>volunteer.toml</code></td><td>Volunteer availability</td><td>Contacts (volunteers)</td><td><code>kobo-volunteers</code></td></tr>
+    <tr><td><code>site-registration.toml</code></td><td>Site registration</td><td>Sites; <code>responses.csv</code>, <code>standards.csv</code></td><td><code>kobo-sites</code></td></tr>
+    <tr><td><code>site-visit.toml</code></td><td>Site visit - Test EQ 1</td><td>Visit notes on sites; <code>sites.csv</code></td><td><code>kobo-site-lists</code>, <code>kobo-site-visits</code></td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section id="add">
+<h2>A new consortium or response</h2>
+<p><strong>A consortium</strong> (Workflow A):</p>
+<ol>
+  <li>Add its choice to the support form's project question, and redeploy it.</li>
+  <li>Add a <code>[[route]]</code> to <code>support-request.toml</code>: the choice, its team ("Project: …"), who to notify and who to escalate to.</li>
+  <li>Run <code>deploy/bridges.sh</code>. It makes the team, and the case field gets the new choice from the form.</li>
+  <li>Give the consortium's people their role and that team (below).</li>
+</ol>
+<p><strong>A response</strong> (Workflow B):</p>
+<ol>
+  <li>Create its team ("Response: …") in Administration → Teams.</li>
+  <li>Create the response, with that team and its lead. It starts with its four tasks.</li>
+  <li>Give its people the team.</li>
+  <li>For its sites, copy <code>site-visit.toml</code> with the new team and its visit form's name, and run <code>deploy/bridges.sh</code>.</li>
+</ol>
+</section>
+
+<section id="people">
+<h2>People and roles</h2>
+<p>Administration → Users → Create. Give each person a <strong>role</strong>:</p>
+<ul>
+  <li><strong>Internal Staff</strong>, <strong>Support Triager</strong>, <strong>Partner Staff</strong>;</li>
+  <li><strong>Roster Expert</strong>, <strong>Volunteer</strong>.</li>
+</ul>
+<p>Then give them the <strong>teams</strong> of the projects and responses they work on, and nothing more. What each role may do is on the <a href="./#access">overview</a>, and in <code>espo/seed/seed.py</code>.</p>
+<ul>
+  <li><strong>A volunteer who's deployed</strong> (from the roster, a contact with profile Volunteer) becomes a user by hand: role Volunteer, the response's team. It's deliberately not automatic.</li>
+  <li><strong>Someone who leaves</strong>: take them out of the team, and reassign their open tasks.</li>
+</ul>
+<p>The rest of the manual steps (saved board filters, SMTP, sharing forms with a bridge account) are in <code>docs/manual-steps.md</code>.</p>
+</section>
+
+<section id="checking">
+<h2>Checking on the bridge</h2>
+<pre><code>deploy/bridges.sh logs             # what each bridge did: ids and counts, never answers
+ssh root@&lt;droplet&gt; docker exec kobo-espo-bridge-intake-1 \
+    python3 -I /bridge/bridge.py failed /state/intake    # submissions waiting, and why</code></pre>
+<p>Each bridge writes <code>status.json</code> in its state directory: its last good pass, its counts, how many submissions are waiting and the oldest one's reason. A submission waiting for a fix (a choice missing in EspoCRM, a required answer missing) is retried by itself. It's retried at once when the template or the form changes.</p>
+<p>Run <strong>one bridge per template</strong>. Two at once could both make a record for the same new submission: each looks for it first, but neither can see the other's in flight.</p>
+</section>
+
+<section id="tests">
+<h2>The tests</h2>
+<pre><code>tests/run_all.sh                   # unit tests, seed, isolation, board, connection (fake Kobo)
+tests/run_all.sh --kobo real       # the connection tests on the Kobo account in .env
+python3 -I tests/cases/latency.py  # submission to record, through the running bridges</code></pre>
+<p>The tests make their own records (named "ISO …" and "WFB …", and cases with a run number). <code>site/demo-data.py</code> clears the instance and fills it with the made-up demo data again. <code>site/shots.py</code> takes this manual's screenshots, and <code>site/build.py</code> builds its pages.</p>
+</section>
+
+<section id="rules">
+<h2>Rules worth keeping</h2>
+<ul>
+  <li><strong>Teams are the boundary.</strong> Non-staff roles read "team" or "own", never "all", except the shared standards.</li>
+  <li><strong>Keep the formula scripts.</strong> They refuse an assignee or collaborator outside the record's team, keep a case in one team, give tasks and sites their response's team, drop old assignees from collaborators, and hand tasks back when a response closes. Several close gaps EspoCRM's own permissions leave.</li>
+  <li><strong>Administrators see everything</strong>, and fields, layouts and automations are instance-wide. Keep administrators few.</li>
+  <li><strong>The bridge's users can't read users or delete anything.</strong> The intake user reads all cases, contacts and accounts, which it needs to find requesters and avoid duplicates. Keep its key on the server only.</li>
+</ul>
+</section>
+
+</article>
+</div>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <img src="static/site/logo-white.svg" alt="KoboToolbox">
+      <p>Kobo and EspoCRM: request intake, response tasking and sites on one EspoCRM, connected to KoboToolbox by kobo-bridge. A test, with made-up data.</p>
+    </div>
+    <div>
+      <span class="footer__label">KoboToolbox</span>
+      <ul>
+        <li><a href="https://www.kobotoolbox.org">kobotoolbox.org</a></li>
+        <li><a href="https://support.kobotoolbox.org">Help Center</a></li>
+        <li><a href="https://docs.espocrm.com">EspoCRM documentation</a></li>
+      </ul>
+    </div>
+    <div>
+      <span class="footer__label">On this site</span>
+      <ul>
+      <li><a href="./">Overview</a></li>
+      <li><a href="requests.html">Requests</a></li>
+      <li><a href="responses.html">Responses</a></li>
+      <li><a href="sites.html">Sites and lists</a></li>
+      <li><a href="running.html" aria-current="page">Running it</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

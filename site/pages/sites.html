@@ -1,0 +1,134 @@
+<!-- title: Sites and lists -->
+<!-- description: Registering sites and installations (water points, solar systems, health posts) from KoboToolbox into EspoCRM, with photos; follow-up visits that pick the site from a list EspoCRM keeps on the Kobo form; standards and other reference lists from EspoCRM as choices in Kobo forms. -->
+<section class="banner">
+  <div class="wrap">
+    <h1>Sites, follow-up visits, and lists from EspoCRM</h1>
+    <p class="banner__lead">The same connection works for anything a response registers and goes back to: water points, solar installations, health posts, shelters. A Kobo form registers the site, with a photo. A visit form later picks it from a list, which EspoCRM keeps on the form by itself, and records what was found. Lists of standards, responses or partner organisations reach the forms the same way, so EspoCRM becomes the response's one store for them.</p>
+  </div>
+</section>
+
+<section class="steps" aria-label="The loop">
+  <div class="wrap">
+    <ol>
+      <li><h3>Register</h3><p>The registration form picks the response and the standard from lists EspoCRM put on it. The site, with its photo, goes to EspoCRM.</p></li>
+      <li><h3>The list follows</h3><p>Within a minute, the response's visit form lists the new site: code, name, status and region.</p></li>
+      <li><h3>Visit</h3><p>Someone picks the site and records its condition and a photo. The site's status and last visit change, and the visit is a note on it.</p></li>
+    </ol>
+  </div>
+</section>
+
+<div class="wrap docs">
+<nav class="docs__nav" aria-label="On this page">
+  <ul>
+    <li><a href="#register">Registering a site</a></li>
+    <li><a href="#lists">Lists on Kobo forms</a></li>
+    <li><a href="#visits">Follow-up visits</a></li>
+    <li><a href="#store">EspoCRM as the response's store</a></li>
+    <li><a href="#media">Photos and files</a></li>
+    <li><a href="#limits">Limits</a></li>
+  </ul>
+</nav>
+
+<article class="prose">
+
+<section id="register">
+<h2>Registering a site</h2>
+<p>The <strong>Site registration</strong> form asks:</p>
+<ul>
+  <li>which response the site belongs to (from <code>responses.csv</code>);</li>
+  <li>its code, name, type and region;</li>
+  <li>its location, installation date and equipment;</li>
+  <li>a photo;</li>
+  <li>the standard it follows (from <code>standards.csv</code>), with the standard's requirement shown on the form.</li>
+</ul>
+<p>Each submission becomes a <strong>Site</strong> in EspoCRM, linked to its response and in the response's team. Only the response's members see it.</p>
+<ul>
+  <li>Registering the same <strong>site code</strong> again updates that site; it doesn't make a second one.</li>
+  <li>The site's page shows a note saying which submission updated it.</li>
+</ul>
+<figure><a href="static/shots/site.jpg"><img src="static/shots/site.jpg" alt="The site Hilltop water point: site code EQ1-WP-001, type Water point, status Needs repair, region North district, response Earthquake response, Testland North, installed 20 Oct, last visit yesterday, equipment Hand pump (India Mk II), 2 taps, soak pit, and a photo; standard WASH-2. The stream has the site visit by Rui Roster: condition Needs repair, notes Pump handle loose, seal leaking; spare seal needed, with the visit's photo; then kobo-site-visits updated this site to Needs repair, and kobo-sites created it."></a><figcaption>A site from the registration form, after one follow-up visit. The photos are placeholders made for the demo.</figcaption></figure>
+<figure><a href="static/shots/sites.jpg"><img src="static/shots/sites.jpg" alt="The Sites list as Kobo staff: seven sites of the two responses with code, type, status, region, response and last visit."></a><figcaption>Every site of the responses you're in.</figcaption></figure>
+</section>
+
+<section id="lists">
+<h2>Lists on Kobo forms</h2>
+<p>A <code>[[list]]</code> in a bridge template says:</p>
+<ul>
+  <li>which records: an entity, a filter, and optionally a team;</li>
+  <li>which columns;</li>
+  <li>which forms get the file.</li>
+</ul>
+<p>The bridge puts it on those forms as a CSV media file, replacing the old one and redeploying, whenever it changes. Forms then use it with <code>select_one_from_file</code>, <code>pulldata()</code> or <code>search()</code>. These are the files the bridge left on the test forms:</p>
+<p><strong>sites.csv</strong> on the earthquake response's visit form: that response's sites only.</p>
+<pre><code>name,label,status,region
+EQ1-HP-001,EQ1-HP-001 · Riverside health post,planned,River valley
+EQ1-SO-001,EQ1-SO-001 · Clinic solar system,operational,North district
+EQ1-WP-001,EQ1-WP-001 · Hilltop water point,needs_repair,North district
+EQ1-WP-002,EQ1-WP-002 · Market square water point,planned,North district
+EQ1-WP-003,EQ1-WP-003 · School water point,planned,River valley</code></pre>
+<p><strong>standards.csv</strong> on the registration form, with the requirement for <code>pulldata()</code>:</p>
+<pre><code>name,label,requirement,category
+ENRG-1,ENRG-1 · Solar installation,Panels anchored; battery enclosure ventilated and locked,Energy
+WASH-1,WASH-1 · Water quantity,At least 15 litres per person per day,WASH
+WASH-2,WASH-2 · Distance to water point,No household more than 500 m from a water point,WASH
+...</code></pre>
+<p><strong>responses.csv</strong>: active responses, by their EspoCRM id, so a registration links straight to its response.</p>
+<p>The template for <code>sites.csv</code>:</p>
+<pre><code>[[list]]
+file = "sites.csv"
+entity = "CSite"
+team = "Response: Test EQ 1"        # this response's sites only
+order_by = "siteCode"
+columns = { name = "siteCode", label = "{siteCode} · {name}", status = "status", region = "region" }
+forms = ["Site visit - Test EQ 1 (espo-kobo test)"]</code></pre>
+<div class="note"><p>Each upload is a new version of the form, so the bridge uploads at most every <code>BRIDGE_LIST_MIN_SECONDS</code> (a minute on the test instance; 15 minutes is better for real). Phones get the new list when they next update the form.</p></div>
+</section>
+
+<section id="visits">
+<h2>Follow-up visits</h2>
+<p>The <strong>Site visit</strong> form picks the site from <code>sites.csv</code>, and shows its status on record (<code>pulldata()</code>). It then asks for the date, the condition now (Operational, Needs repair, Decommissioned), notes and a photo. For each visit the bridge:</p>
+<ul>
+  <li>finds the site by its code: exactly one, or the visit is recorded as not applied, never guessed;</li>
+  <li>sets its <strong>status</strong> and <strong>last visit</strong>, and nothing else. The bridge's user for visits may edit only those two fields;</li>
+  <li>adds a note to the site with what was found and the photo, marked with the submission's uuid, so a visit is never applied twice;</li>
+  <li>updates <code>sites.csv</code> with the new status.</li>
+</ul>
+<p>This is Kobo in a box's follow-up mechanism (open cases picked on a follow-up form), made general: any entity, found by any field.</p>
+</section>
+
+<section id="store">
+<h2>EspoCRM as the response's store</h2>
+<p>For a project or a response, EspoCRM can hold what the forms need and what they produce:</p>
+<ul>
+  <li>sites and installations;</li>
+  <li>standards;</li>
+  <li>partner organisations;</li>
+  <li>open cases;</li>
+  <li>volunteers.</li>
+</ul>
+<p>Staff keep each list in one place, with access by team. The Kobo forms are fed from it, and add to it.</p>
+<figure><a href="static/shots/standards.jpg"><img src="static/shots/standards.jpg" alt="The Standards list: WASH-1 Water quantity, WASH-2 Distance to water point, ENRG-1 Solar installation, HLTH-1 Health post access, with category and source."></a><figcaption>Standards, kept in EspoCRM and read by everyone: they're on the registration form as <code>standards.csv</code>.</figcaption></figure>
+</section>
+
+<section id="media">
+<h2>Photos and files</h2>
+<p>Photos and files submitted with a form are copied into EspoCRM, onto the site, the case or the visit's note. Staff see them there without a Kobo account, under the record's access rules: in testing, another consortium's partner couldn't open a case's file.</p>
+<p>The bridge only copies:</p>
+<ul>
+  <li>files an answer refers to, in repeat groups too, and not deleted ones (as kobo2logie does);</li>
+  <li>files from its own Kobo server, so a submission can't make it fetch anything else;</li>
+  <li>files up to <code>media_max_mb</code> (10 MB). A bigger file is named on the record instead.</li>
+</ul>
+</section>
+
+<section id="limits">
+<h2>Limits</h2>
+<ul>
+  <li><strong>The whole list goes to every phone with the form.</strong> Only the columns a template names are included. Never put personal data in a list.</li>
+  <li><strong>One list per team</strong> means one <code>[[list]]</code> per response. A new response's visit form needs its own entry (copy <code>kobo/templates/site-visit.toml</code>). One form for all responses could use one list and a <code>choice_filter</code> on the response, if its users may see every response's sites.</li>
+  <li>The site visit form in Enketo or KoboCollect wasn't shown here (the test account's forms need a Kobo login). The lists were checked on the forms through KoboToolbox's API.</li>
+</ul>
+</section>
+
+</article>
+</div>

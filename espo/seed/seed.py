@@ -271,10 +271,14 @@ def ensure_layouts(espo):
                          'CStandard': ['name', 'code', 'category', 'source']}.items():
         espo.call('PUT', f'/{entity}/layout/list',
                   body=[{'name': n, **({'link': True} if n == 'name' else {})} for n in cols])
+    # A response's page: its tasks and sites below it
+    espo.call('PUT', '/CResponse/layout/relationships', body=[{'name': 'tasks'}, {'name': 'sites'}])
     kanban = [{'name': 'name', 'link': True}, {'name': 'cResponse'}, {'name': 'assignedUser'}, {'name': 'dateEnd'}]
     espo.call('PUT', '/Task/layout/kanban', body=kanban)
-    espo.call('PUT', '/Task/layout/filters',
-              body=sorted(set(espo.call('GET', '/Task/layout/filters') or []) | {'cResponse', 'status', 'assignedUser'}))
+    task_fields = metadata(espo, 'entityDefs.Task.fields')
+    espo.call('PUT', '/Task/layout/filters',  # (without fields that don't exist, e.g. from an earlier run)
+              body=sorted(f for f in set(espo.call('GET', '/Task/layout/filters') or []) | {'cResponse', 'status', 'assignedUser'}
+                          if f in task_fields))
     print('layouts: lists, task board card and filters')
 
 

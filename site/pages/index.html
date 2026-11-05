@@ -1,0 +1,135 @@
+<!-- title: Overview -->
+<!-- description: One EspoCRM for support requests, humanitarian response tasking and sites, fed by KoboToolbox forms through kobo-bridge, with access kept inside each project's and response's team. What it does, who sees what, what was tested, and whether to use one instance. -->
+<section class="banner">
+  <div class="wrap">
+    <h1>One EspoCRM for requests, responses and sites, fed by KoboToolbox</h1>
+    <p class="banner__lead">A KoboToolbox form submission becomes a case, a volunteer's profile or a site in <a href="https://www.espocrm.com">EspoCRM</a>, in the right team, with the right people notified. Responses get their own task board, open to their own team only. And lists kept in EspoCRM, such as sites and standards, come back to the Kobo forms as choices. One instance, with access kept apart by teams and roles. This was tested end to end, with made-up data.</p>
+    <div class="banner__buttons">
+      <a class="button button--filled" href="#workflows">The three workflows</a>
+      <a class="button button--light" href="#verdict">One instance or several?</a>
+    </div>
+  </div>
+</section>
+
+<section class="steps" aria-label="The loop">
+  <div class="wrap">
+    <ol>
+      <li><h3>Someone fills in a Kobo form</h3><p>A partner asks for support, a volunteer signs up, a technician registers a water point or reports on a visit.</p></li>
+      <li><h3>The bridge brings it to EspoCRM</h3><p>Within about 30 seconds: a case, a contact or a site, with the photos, in one team, and a notification for whoever should act.</p></li>
+      <li><h3>EspoCRM sends lists back</h3><p>The response's sites, the standards: as choices on the Kobo forms, kept up to date by themselves.</p></li>
+    </ol>
+  </div>
+</section>
+
+<div class="wrap docs">
+<nav class="docs__nav" aria-label="On this page">
+  <ul>
+    <li><a href="#what">What it is</a></li>
+    <li><a href="#workflows">The three workflows</a></li>
+    <li><a href="#access">Who sees what</a></li>
+    <li><a href="#tested">What was tested</a></li>
+    <li><a href="#verdict">One instance or several?</a></li>
+    <li><a href="#limits">Limits and open questions</a></li>
+    <li><a href="#code">The code</a></li>
+  </ul>
+</nav>
+
+<article class="prose">
+
+<section id="what">
+<h2>What it is</h2>
+<p>Three pieces:</p>
+<ul>
+  <li><strong>KoboToolbox</strong>, unchanged: the forms people already use, on the web or in KoboCollect.</li>
+  <li><strong>EspoCRM 10</strong>, open source, where staff, partners, roster experts and volunteers each see their own team's work. It has cases, contacts and accounts, and here also Responses, Sites and Standards, with a Kanban board for tasks.</li>
+  <li><strong>kobo-bridge</strong>, a small program that connects them. It polls Kobo for new submissions and turns each one into a record. It keeps lists from EspoCRM on Kobo forms. And it applies follow-up visits to the records they're about. It was taken from <a href="https://github.com/kobotoolbox">Kobo in a box</a>'s case management and made general, so this test, the box and later connections share one tested bridge.</li>
+</ul>
+<p>Nothing changes in KoboToolbox's settings: no REST services or webhooks to set up. After either side has been down, the bridge catches up by itself, and never makes a record twice.</p>
+</section>
+
+<section id="workflows">
+<h2>The three workflows</h2>
+<div class="figures figures--half">
+<figure><a href="requests.html"><img src="static/shots/cases-triager.jpg" width="1440" height="900" alt="EspoCRM's Cases list as the triager: five requests from Kobo, each with status, priority, team (Project: Consortium A or B) and assignee."></a><figcaption><a href="requests.html"><strong>Requests</strong></a>: a support form on Kobo becomes a case for the right project team. A triager is notified, assigns it, and the assignee is notified. Partners see only their own consortium's cases.</figcaption></figure>
+<figure><a href="responses.html"><img src="static/shots/board-staff.jpg" width="1440" height="900" alt="The Tasks board with columns Backlog, To do, In progress, Blocked and Done, holding tasks of the earthquake and flood responses with their assignees."></a><figcaption><a href="responses.html"><strong>Responses</strong></a>: each response (an earthquake, a flood) has its team and a task board. Roster experts and volunteers see their own response only. It replaces task boards kept in GitHub Projects, with no GitHub accounts needed.</figcaption></figure>
+</div>
+<figure><a href="sites.html"><img src="static/shots/site.jpg" width="1440" height="1846" alt="A site, Hilltop water point, registered from Kobo: site code, type, status Needs repair, response, equipment and a photo; below, the note of a site visit with what was found and its photo."></a><figcaption><a href="sites.html"><strong>Sites and lists</strong></a>: installations and other sites are registered from Kobo, with photos, and followed up with visit forms that pick the site from a list EspoCRM keeps on the form. Standards and other reference lists reach the forms the same way.</figcaption></figure>
+</section>
+
+<section id="access">
+<h2>Who sees what</h2>
+<p>One instance, kept apart by <strong>teams</strong> (one per project, one per response) and <strong>roles</strong> (what each kind of person may do with their teams' records):</p>
+<div class="table-scroll"><table>
+  <thead><tr><th>Who</th><th>Role</th><th>Sees</th><th>Can</th></tr></thead>
+  <tbody>
+    <tr><td>Kobo staff</td><td>Internal Staff</td><td>Everything of their teams: cases, responses, tasks, sites, contacts, accounts</td><td>Create, edit, assign within the team; no delete or export</td></tr>
+    <tr><td>Triager</td><td>Support Triager</td><td>Their projects' cases, requesters and organisations</td><td>Edit and assign cases to people in the case's team</td></tr>
+    <tr><td>Partner staff</td><td>Partner Staff</td><td>Their consortium's cases, contacts and accounts only</td><td>Work their consortium's cases</td></tr>
+    <tr><td>Roster experts</td><td>Roster Expert</td><td>Their responses: board, tasks, sites; the standards</td><td>Edit and move their own tasks, create tasks, comment</td></tr>
+    <tr><td>Volunteers</td><td>Volunteer</td><td>As roster experts</td><td>Move their own tasks and comment; no creating or reassigning</td></tr>
+    <tr><td>The bridge</td><td>One API user per form</td><td>What its form needs (e.g. cases, contacts, accounts for the support form)</td><td>Create records; never read users, never delete</td></tr>
+  </tbody>
+</table></div>
+<p>Volunteers and roster experts are ordinary EspoCRM users with restrictive roles, not portal users: EspoCRM doesn't let portal users be assigned work.</p>
+<div class="figures figures--half">
+<figure><a href="static/shots/cases-partner-a.jpg"><img src="static/shots/cases-partner-a.jpg" width="1440" height="900" alt="The Cases list signed in as a Consortium A partner: only the three Consortium A cases."></a><figcaption>A Consortium A partner sees only Consortium A's cases.</figcaption></figure>
+<figure><a href="static/shots/board-volunteer-other.jpg"><img src="static/shots/board-volunteer-other.jpg" width="1440" height="900" alt="The Tasks board signed in as a volunteer of the flood response: only that response's task, Assess the collective centres; the menu has only Tasks."></a><figcaption>A volunteer of the flood response sees only its board, and nothing else in EspoCRM.</figcaption></figure>
+</div>
+</section>
+
+<section id="tested">
+<h2>What was tested</h2>
+<p>On a throwaway EspoCRM 10.0.11 (<code>espo-test.kobolabs.dev</code>), with Kobo's production server and a test account, on 5 November 2026. Each check is a script in the repository; the results are in <code>tests/results/</code>.</p>
+<div class="table-scroll"><table>
+  <thead><tr><th>What</th><th>Checks</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td>Kobo → EspoCRM on real Kobo (T1–T7, T12; sites, lists and visits)</td><td>69</td><td>All passed</td></tr>
+    <tr><td>The same with a fake Kobo, including Kobo being down</td><td>70</td><td>All passed</td></tr>
+    <tr><td>Isolation: responses, consortia, volunteers, leaving a team, closing a response (T8–T11, T13, T15, T16)</td><td>80</td><td>All passed, after three fixes (below)</td></tr>
+    <tr><td>A new response's board (T14)</td><td>8</td><td>All passed</td></tr>
+    <tr><td>kobo-bridge unit tests</td><td>47</td><td>All passed</td></tr>
+    <tr><td>Time from submission to record, through the running bridge</td><td>5</td><td>4 to 26 s (mean 17 s), polling every 30 s</td></tr>
+  </tbody>
+</table></div>
+<p>Three ways one team's work could reach another team turned up in testing. All three are closed now by EspoCRM's own formula scripts (no paid extensions):</p>
+<ol>
+  <li><strong>Assigning across teams.</strong> EspoCRM's "assign within the team" checks the teams of the person assigning, not the record's. A triager in two consortia could give a Consortium A case to a Consortium B partner, who would then see it. Now refused: the assignee, and anyone added to a task, must be in the record's team.</li>
+  <li><strong>Old assignees stay collaborators.</strong> EspoCRM 10 adds each assignee to a task's collaborators and keeps them there. Collaborators can read a task whatever their teams. Now a reassigned task drops its previous assignee.</li>
+  <li><strong>Leaving a team doesn't hide your own tasks.</strong> People still see the tasks assigned to them after they leave the team. Closing a response now gives all its tasks back to its lead.</li>
+</ol>
+</section>
+
+<section id="verdict">
+<h2>One instance or several?</h2>
+<p><strong>One instance works</strong> for both workflows, on these conditions:</p>
+<ul>
+  <li>the roles and formula scripts as tested here are kept (they're in the repository, and the seed puts them back);</li>
+  <li>non-staff roles never get "all" access to anything but the shared standards;</li>
+  <li>someone in several teams sees all of them: for a partner in two consortia, that's by design;</li>
+  <li>when someone leaves a response, their open tasks are reassigned (closing the response does it for all).</li>
+</ul>
+<p>What stays shared across everything: administrators, fields, layouts and automations are instance-wide, and an administrator sees all. That's the main reason to choose a separate instance: a partner who needs their own administrator, or data that must be kept on its own server.</p>
+</section>
+
+<section id="limits">
+<h2>Limits and open questions</h2>
+<ul>
+  <li><strong>Collaborators can read and comment, not edit</strong> (EspoCRM 10). A task with several people working on it is moved by its assignee.</li>
+  <li><strong>No paid Advanced Pack.</strong> Notifications are mentions posted by the bridge. Starter tasks and the team rules are formula scripts. Escalation of unassigned cases is done by the bridge. The test instance sends no email (no SMTP), so notifications appear in the app only.</li>
+  <li><strong>Saved board filters are per person</strong>: EspoCRM has no shared saved filter without custom code. A response's page lists its tasks and sites, and its members see only its board anyway.</li>
+  <li><strong>Lists go to every phone with the form.</strong> Only the columns a template names are included; keep personal data out of them.</li>
+  <li><strong>Sign-in with Google or Microsoft</strong> (through an OIDC bridge such as authentik) wasn't tested; it's the plan's optional last phase.</li>
+</ul>
+<p>Open questions are in the repository's <code>REPORT.md</code>.</p>
+</section>
+
+<section id="code">
+<h2>The code</h2>
+<ul>
+  <li><strong>kobo-espo</strong>: this instance's setup (Docker Compose, the EspoCRM seed and formula scripts, the Kobo forms and templates), the tests, this manual.</li>
+  <li><strong>kobo-bridge</strong>: the bridge, shared with Kobo in a box: templates, setup, a fake Kobo for tests.</li>
+</ul>
+</section>
+
+</article>
+</div>
