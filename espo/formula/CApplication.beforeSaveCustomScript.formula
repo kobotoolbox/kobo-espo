@@ -1,0 +1,4 @@
+// A new application goes straight to screening (the screening agent's stage)
+if (stage == 'Submitted') {
+    stage = 'Screening';
+}

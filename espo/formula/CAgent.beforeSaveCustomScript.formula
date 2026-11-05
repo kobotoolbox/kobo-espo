@@ -1,0 +1,15 @@
+// Every change to what the agent does raises its version (kept on each run), so a run can
+// always be traced to the setup it used. Routes raise it too (CAgentRoute's script).
+if (!entity\isNew() && (entity\isAttributeChanged('instructions') || entity\isAttributeChanged('readFields')
+        || entity\isAttributeChanged('outputFields') || entity\isAttributeChanged('tools')
+        || entity\isAttributeChanged('model') || entity\isAttributeChanged('entity')
+        || entity\isAttributeChanged('trigger') || entity\isAttributeChanged('triggerStage')
+        || entity\isAttributeChanged('watchField') || entity\isAttributeChanged('filterField')
+        || entity\isAttributeChanged('filterValue') || entity\isAttributeChanged('readNotes')
+        || entity\isAttributeChanged('readAttachments') || entity\isAttributeChanged('onFailure'))) {
+    version = version + 1;
+}
+// Switched on: it works only on what changes from now, not on every old record
+if (mode != 'off' && (entity\isNew() || (entity\isAttributeChanged('mode') && entity\attributeFetched('mode') == 'off'))) {
+    activeSince = datetime\now();
+}

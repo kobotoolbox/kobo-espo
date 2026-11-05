@@ -18,6 +18,9 @@ kobo/forms/                 the Kobo forms as XLSForm rows (.json; .xlsx from ex
 kobo/templates/             one bridge template per form
 tests/                      run_all.sh, cases/ (isolation, workflow_b, connection, latency), results/
 site/                       the manual: pages/, build.py, shots.py, demo-data.py
+agents/                     agents set up in EspoCRM (plans/espo-agents-plan.md): runner.py, llm.py,
+                            tools.py, sync.py, setup/ (the example agents), models.toml
+deploy/agents.sh            sync (an API user and role per agent), then the agent runner (up | sync | down | logs)
 docs/manual-steps.md        what isn't scripted
 ```
 
@@ -31,9 +34,10 @@ deploy/up.sh                # needs a host with Docker and ESPO_HOST's DNS point
 tests/fetch-secrets.sh
 python3 -I espo/seed/seed.py --users
 deploy/bridges.sh
+deploy/agents.sh            # ANTHROPIC_API_KEY in .env for agents with a model
 tests/run_all.sh            # or: tests/run_all.sh --kobo real
 ```
 
-Python 3.11+ (stdlib only, but `openpyxl`, Pillow and Playwright for the forms' .xlsx,
+Python 3.11+ (stdlib only, but the `anthropic` SDK for the agent runner, `openpyxl`, Pillow and Playwright for the forms' .xlsx,
 the demo photos and the screenshots). Secrets never go into git: `.env*` and `secrets/` are
 ignored; the droplet keeps its own in `/root/kobo-espo*.secrets` (mode 600).

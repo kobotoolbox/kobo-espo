@@ -5,6 +5,13 @@ tick the boxes, and write findings to `REPORT.md` (new section "Agents") as you 
 [the setup plan](espo-kobo-setup-plan.md); its decisions and rules of engagement still hold.
 Several patterns come from Ponto (`~/code/ponto`); section 5 lists what and where.
 
+**Status (2026-11-05): MVP built** (`agents/`, REPORT.md "Agents (MVP)"). In: Agents, routes
+and runs in EspoCRM; the runner with rules before and after the model; the fake model and the
+Claude provider; an API user and role per agent (sync); the guard formula; the three example
+agents; `tests/cases/agents.py`. Not yet (hardening): draft mode, scenarios and gates,
+`CAgentScenario`, the Kobo application form, the registry, real sanctions lists, export,
+the OpenAI-compatible provider, Agent Admin role, approve/reject by approvers only, manual pages.
+
 ## 1. Goal
 
 Software agents work in EspoCRM next to people, and **a new agent is set up in EspoCRM, not in

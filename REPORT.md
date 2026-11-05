@@ -217,6 +217,47 @@ Service webhooks and maps answers to EspoCRM with custom HTTP headers
   case), webhooks instead of polling, lowercasing question names, its 121 and Bitrix24
   connections.
 
+## Agents (MVP, 2026-11-05)
+
+[The agents plan](plans/espo-agents-plan.md): agents set up as records in EspoCRM, run by
+one runner (`agents/runner.py`, container `agent-runner`, `deploy/agents.sh`).
+
+**Built.** Agent, Agent route and Agent run entities; the runner (triggers by stage or by a
+watched field and a new note; rules before the model and after it; the model choosing a
+route; actions as the agent's own API user; dry run); the model layer (`llm.py`: the output
+schema from the Agent, code that fixes and checks the answer, sends errors back up to 2
+times; the Claude API with structured output, adaptive thinking, the refusal fallback, web
+search and fetch, PDFs; a fake model for the tests); code tools (`tools.py`: sanctions
+against a fixture list, registry "not checked"); `sync.py` (an API user and a role made
+from each Agent's setup, field by field); the guard formula on Application, Site and Task;
+the Application entity with its board and the Grants review team (staff-2); three example
+agents (`agents/setup/examples.json`: DD screening → DD research → review; site visit
+triage), **in dry run** on the droplet.
+
+**Tests.** `tests/cases/agents.py` 29/29 (fake model): triage E1–E4 (the repair rule
+without the model; the safety rule overriding the model's "ok"; routine; no repeats), dry
+run, a version per change, the DD flow D1–D6 (clean, match, near miss, sent back, model
+failing → failure route), sloppy output fixed in code, guards S1/S3. `agents/test_units.py`
+12/12. After adding the agents: isolation 80/80, workflow B 8/8, connection 73/73 (fake Kobo).
+Tests use their own agent copies in teams the examples don't work in, so the droplet's
+runner never acts on test records.
+
+**Found in EspoCRM 10.0.11.**
+- A record can be assigned to an API user, and `env\userAttribute('id')` in an API
+  before-save script names the API user: the guard identifies agents that way.
+- Field-level security drops writes to read-only fields **silently** (no error). The agents'
+  roles rely on it; S1 checks the values didn't change rather than for a refusal.
+- An update with a stale `versionNumber` is accepted: no optimistic concurrency by default.
+  Runs are claimed with Run records instead. (Worth telling Ponto, whose plan assumed it.)
+- Once, a seed run got a 500 while saving a formula: a half-written route cache during the
+  many rebuilds. Running the seed again fixed it.
+
+**Not done yet** (plan status, top): draft mode, scenarios and gates, the Kobo application
+form, a real registry and the real sanctions lists, export, an OpenAI-compatible provider,
+the Agent Admin role, approving and rejecting by approvers only, manual pages. **No Claude API
+key on the droplet yet:** agents with a model fail their runs and take their failure route
+(in dry run, a note).
+
 ## Open questions for Josh
 
 1. **The real instance:** apply this to `espo.kobolabs.dev`, alongside its demo, or start a

@@ -1,0 +1,4 @@
+// A route is part of its agent's setup: changing it raises the agent's version
+if (agentId) {
+    record\update('CAgent', agentId, 'version', record\attribute('CAgent', agentId, 'version') + 1);
+}

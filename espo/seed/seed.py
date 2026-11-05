@@ -23,6 +23,8 @@ The bridge's API users and roles aren't made here: kobo-espo-bridge's setup.py m
 template (kobo/templates/*.toml), each with only what its template needs.
 """
 import argparse
+import json
+import re
 import secrets
 import sys
 from pathlib import Path
@@ -32,7 +34,7 @@ sys.path.insert(0, str(ROOT / 'tests'))
 from lib import URL, Espo, admin, pw_key, secrets as read_secrets  # noqa: E402
 
 TEAMS = ['Internal Kobo', 'Project: Consortium A', 'Project: Consortium B',
-         'Response: Test EQ 1', 'Response: Test EQ 2', 'Roster and volunteers']
+         'Response: Test EQ 1', 'Response: Test EQ 2', 'Roster and volunteers', 'Grants review']
 
 ENTITIES = {
     'Response': {'labelPlural': 'Responses', 'iconClass': 'fas fa-house-damage', 'fields': {
@@ -69,13 +71,116 @@ ENTITIES = {
         'requirement': {'type': 'text'},
         'source': {'type': 'varchar'},
     }},
+    # Agents (plans/espo-agents-plan.md): set up here, run by agents/runner.py
+    'Agent': {'labelPlural': 'Agents', 'iconClass': 'fas fa-robot', 'stream': False, 'fields': {
+        'mode': {'type': 'enum', 'options': ['off', 'dry_run', 'active'], 'default': 'off',
+                 'translatedOptions': {'off': 'Off', 'dry_run': 'Dry run', 'active': 'Active'},
+                 'style': {'active': 'success', 'dry_run': 'warning'}, 'audited': True},
+        'runner': {'type': 'enum', 'options': ['droplet', 'tests'], 'default': 'droplet',
+                   'tooltipText': 'Which runner runs it: the one on the server, or the tests.'},
+        'entity': {'type': 'enum', 'label': 'Works on', 'options': ['CApplication', 'CSite', 'Case', 'Task'],
+                   'translatedOptions': {'CApplication': 'Application', 'CSite': 'Site', 'Case': 'Case', 'Task': 'Task'}},
+        'trigger': {'type': 'enum', 'options': ['stage', 'change'],
+                    'translatedOptions': {'stage': 'Records in a stage', 'change': 'When a field changes'}},
+        'triggerStage': {'type': 'varchar', 'label': 'Stage'},
+        'watchField': {'type': 'varchar', 'label': 'Watched field'},
+        'filterField': {'type': 'varchar', 'label': 'Only where field'},
+        'filterValue': {'type': 'varchar', 'label': 'equals'},
+        'readFields': {'type': 'array', 'label': 'Reads', 'audited': True},
+        'readNotes': {'type': 'bool', 'label': 'Reads the latest note'},
+        'readAttachments': {'type': 'varchar', 'label': 'Reads the files in field'},
+        'tools': {'type': 'multiEnum', 'options': ['sanctions', 'registry', 'web_search', 'web_fetch'], 'audited': True},
+        'instructions': {'type': 'text', 'audited': True},
+        'outputFields': {'type': 'array', 'label': 'Fills in', 'audited': True},
+        'model': {'type': 'enum', 'options': ['', 'claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-5-5'],
+                  'translatedOptions': {'': 'None (rules only)'}, 'default': 'claude-opus-5-5', 'audited': True},
+        'maxAttempts': {'type': 'int', 'label': 'Max attempts', 'default': 3, 'min': 1, 'max': 10},
+        'budgetPerRun': {'type': 'float', 'label': 'Budget per run (USD)', 'default': 0.5},
+        'onFailure': {'type': 'varchar', 'label': 'Route on failure'},
+        'version': {'type': 'int', 'default': 1, 'readOnly': True},
+        'activeSince': {'type': 'datetime', 'label': 'Working since', 'readOnly': True},
+    }},
+    'AgentRoute': {'labelPlural': 'Agent routes', 'iconClass': 'fas fa-route', 'stream': False, 'fields': {
+        'order': {'type': 'int', 'default': 10},
+        'ruleField': {'type': 'varchar', 'label': 'Rule: field', 'tooltipText': 'A field, a tool result, or "text" (the read fields and note)'},
+        'ruleOp': {'type': 'enum', 'label': 'Rule: test', 'options': ['', 'equals', 'in', 'contains', 'matches']},
+        'ruleValue': {'type': 'varchar', 'label': 'Rule: value', 'maxLength': 500},
+        'ruleWhen': {'type': 'enum', 'label': 'Rule applies', 'options': ['before', 'after'],
+                     'translatedOptions': {'before': 'Before the model (skips it)', 'after': 'After the model (overrides it)'}},
+        'moveToStage': {'type': 'varchar', 'label': 'Move to stage'},
+        'clearAssignee': {'type': 'bool', 'label': 'Unassign'},
+        'createTask': {'type': 'bool', 'label': 'Create a task'},
+        'taskName': {'type': 'varchar', 'label': 'Task name', 'tooltipText': 'e.g. Urgent: {name}'},
+        'taskStatus': {'type': 'varchar', 'label': 'Task status', 'default': 'Backlog'},
+        'taskPriority': {'type': 'enum', 'label': 'Task priority', 'options': ['Low', 'Normal', 'High', 'Urgent'], 'default': 'Normal'},
+        'taskAssignFrom': {'type': 'varchar', 'label': 'Task assignee from',
+                           'tooltipText': 'A user link on the record or its response, e.g. response.lead'},
+        'setFields': {'type': 'text', 'label': 'Set fields (JSON)'},
+        'fixedNote': {'type': 'text', 'label': 'Fixed note', 'tooltipText': 'Posted instead of the model\'s words'},
+        'notify': {'type': 'bool', 'label': 'Mention the assignee'},
+    }},
+    'AgentRun': {'labelPlural': 'Agent runs', 'iconClass': 'fas fa-history', 'stream': False, 'fields': {
+        'status': {'type': 'enum', 'options': ['running', 'done', 'dry_run', 'failed'], 'default': 'running',
+                   'style': {'done': 'success', 'failed': 'danger', 'dry_run': 'warning'}},
+        'recordType': {'type': 'varchar'},
+        'recordId': {'type': 'varchar'},
+        'recordName': {'type': 'varchar'},
+        'triggerKey': {'type': 'varchar', 'maxLength': 255},
+        'agentVersion': {'type': 'int'},
+        'model': {'type': 'varchar'},
+        'promptHash': {'type': 'varchar'},
+        'route': {'type': 'varchar'},
+        'routeBy': {'type': 'enum', 'options': ['', 'rule_before', 'model', 'rule_after', 'failure']},
+        'reason': {'type': 'text'},
+        'output': {'type': 'text'},
+        'error': {'type': 'text'},
+        'attempts': {'type': 'int', 'default': 0},
+        'inputTokens': {'type': 'int'},
+        'outputTokens': {'type': 'int'},
+        'cost': {'type': 'float', 'decimalPlaces': 4},
+        'durationS': {'type': 'float', 'label': 'Duration (s)'},
+    }},
+    # Workflow D: an organisation's application for support, through due diligence
+    'Application': {'labelPlural': 'Applications', 'iconClass': 'fas fa-file-signature', 'statusField': 'stage', 'fields': {
+        'stage': {'type': 'enum', 'options': ['Submitted', 'Screening', 'Research', 'Review', 'Needs info', 'Decision',
+                                              'Approved', 'Rejected'], 'default': 'Submitted',
+                  'style': {'Review': 'primary', 'Needs info': 'warning', 'Approved': 'success', 'Rejected': 'danger'}},
+        'country': {'type': 'varchar'},
+        'registrationNumber': {'type': 'varchar', 'label': 'Registration number'},
+        'website': {'type': 'url'},
+        'amountRequested': {'type': 'float', 'label': 'Amount requested (USD)'},
+        'purpose': {'type': 'text'},
+        'leadership': {'type': 'text', 'tooltipText': 'Names of the organisation\'s leaders, one per line'},
+        'documents': {'type': 'attachmentMultiple'},
+        'noticeVersion': {'type': 'varchar', 'label': 'Notice version'},
+        'ddSanctions': {'type': 'enum', 'label': 'Sanctions', 'options': ['', 'clear', 'possible_match', 'match'],
+                        'translatedOptions': {'clear': 'Clear', 'possible_match': 'Possible match', 'match': 'Match'},
+                        'style': {'clear': 'success', 'possible_match': 'warning', 'match': 'danger'}},
+        'ddSanctionsDetail': {'type': 'text', 'label': 'Sanctions detail'},
+        'ddRegistry': {'type': 'enum', 'label': 'Registry', 'options': ['', 'found', 'not_found', 'not_checked']},
+        'ddRisk': {'type': 'enum', 'label': 'Risk', 'options': ['', 'low', 'medium', 'high', 'unknown'],
+                   'style': {'low': 'success', 'medium': 'warning', 'high': 'danger'}},
+        'ddFlags': {'type': 'multiEnum', 'label': 'Flags',
+                    'options': ['name_mismatch', 'no_web_presence', 'doc_unreadable', 'new_org', 'adverse_media',
+                                'inconsistent_figures', 'instructions_in_application']},
+        'ddSummary': {'type': 'text', 'label': 'Due diligence summary'},
+    }},
 }
+# The entities agents work on: their API Before Save Script starts with _agent-guard.formula
+AGENT_GUARDED = ['CApplication', 'CSite', 'Task']
 # (entity, link, foreign entity, foreign link, type). The link on Task, EspoCRM's own
 # entity, gets a "c": Task.cResponse (cResponseId); on Site, a custom one, it's Site.response
 LINKS = [('CResponse', 'tasks', 'Task', 'response', 'oneToMany'),
          ('CResponse', 'sites', 'CSite', 'response', 'oneToMany'),
          ('CStandard', 'sites', 'CSite', 'standard', 'oneToMany'),  # the standard a site follows
-         ('CResponse', 'lead', 'User', 'leadOfResponses', 'manyToOne')]
+         ('CResponse', 'lead', 'User', 'leadOfResponses', 'manyToOne'),
+         ('CAgent', 'routes', 'CAgentRoute', 'agent', 'oneToMany'),
+         ('CAgent', 'user', 'User', 'agentProfiles', 'manyToOne'),  # its API user (agents/sync.py)
+         ('CAgentRoute', 'assignUser', 'User', 'agentRoutes', 'manyToOne'),
+         ('CAgentRoute', 'assignAgent', 'CAgent', 'routedHere', 'manyToOne'),  # hand over to another agent
+         ('CAgent', 'runs', 'CAgentRun', 'agent', 'oneToMany'),
+         ('CApplication', 'account', 'Account', 'applications', 'manyToOne'),
+         ('CApplication', 'contact', 'Contact', 'applications', 'manyToOne')]
 
 FIELDS = {
     'Case': {
@@ -107,7 +212,7 @@ ROLES = {
     # Kobo staff: everything of their teams, no delete
     'Internal Staff': {
         'data': {e: access('yes', TEAM, TEAM) for e in
-                 ('Case', 'Task', 'CResponse', 'CSite', 'Contact', 'Account')}
+                 ('Case', 'Task', 'CResponse', 'CSite', 'Contact', 'Account', 'CApplication')}
         | {'CStandard': access('yes', ALL, ALL), 'Team': {'read': ALL}, 'User': {'read': TEAM}},
         'assignmentPermission': TEAM, 'userPermission': TEAM, 'mentionPermission': TEAM,
         'exportPermission': 'no', 'massUpdatePermission': 'yes',
@@ -144,13 +249,13 @@ ROLES = {
     },
 }
 
-INT, A, B, EQ1, EQ2, POOL = TEAMS
+INT, A, B, EQ1, EQ2, POOL, GRANTS = TEAMS
 # (username, name, role, teams). Response 1 only: roster-1, volunteer-2; Response 2 only:
 # volunteer-1; both: roster-2
 USERS = [
     ('triager', 'Tess Triager', 'Support Triager', [A, B]),
     ('staff-1', 'Sam Staff', 'Internal Staff', [INT, A, EQ1, EQ2, POOL]),
-    ('staff-2', 'Sasha Staff', 'Internal Staff', [INT, B]),
+    ('staff-2', 'Sasha Staff', 'Internal Staff', [INT, B, GRANTS]),  # reviews applications (Workflow D)
     ('partner-a', 'Pat Partner-A', 'Partner Staff', [A]),
     ('partner-b', 'Pam Partner-B', 'Partner Staff', [B]),
     ('roster-1', 'Rui Roster', 'Roster Expert', [EQ1]),
@@ -198,10 +303,11 @@ def ensure_entities(espo):
         if f'C{name}' not in scopes:
             espo.call('POST', '/EntityManager/action/createEntity', body={
                 'name': name, 'type': 'Base', 'labelSingular': name, 'labelPlural': spec['labelPlural'],
-                'stream': True, 'iconClass': spec['iconClass']})
+                'stream': spec.get('stream', True), 'iconClass': spec['iconClass']})
             print(f'entity created: C{name}')
-        if 'status' in spec['fields']:
-            espo.call('POST', '/EntityManager/action/updateEntity', body={'name': f'C{name}', 'statusField': 'status'})
+        status = spec.get('statusField', 'status' if 'status' in spec['fields'] else None)
+        if status:
+            espo.call('POST', '/EntityManager/action/updateEntity', body={'name': f'C{name}', 'statusField': status})
         for field, fspec in spec['fields'].items():
             ensure_field(espo, f'C{name}', field, fspec)
     for entity, link, foreign, link_foreign, kind in LINKS:
@@ -226,11 +332,20 @@ def ensure_task_board(espo):
 
 
 def ensure_formulas(espo):
-    """espo/formula/<Entity>.<scriptType>.formula, e.g. Case.beforeSaveApiScript.formula"""
+    """espo/formula/<Entity>.<scriptType>.formula, e.g. Case.beforeSaveApiScript.formula;
+    _agent-guard.formula goes first in the API Before Save Script of AGENT_GUARDED (its
+    stage block only where the entity has a stage)."""
     by_entity = {}
-    for path in sorted((ROOT / 'espo' / 'formula').glob('*.formula')):
+    for path in sorted((ROOT / 'espo' / 'formula').glob('[!_]*.formula')):
         entity, kind = path.stem.split('.')
         by_entity.setdefault(entity, {})[kind] = path.read_text()
+    guard = (ROOT / 'espo' / 'formula' / '_agent-guard.formula').read_text()
+    for entity in AGENT_GUARDED:
+        g = guard
+        if 'stage' not in metadata(espo, f'entityDefs.{entity}.fields'):
+            g = re.sub(r'\n *// stage:begin.*?// stage:end\n', '\n', g, flags=re.S)
+        scripts = by_entity.setdefault(entity, {})
+        scripts['beforeSaveApiScript'] = g + '\n' + scripts.get('beforeSaveApiScript', '')
     for entity, scripts in by_entity.items():
         espo.call('POST', '/EntityManager/action/formula', body={'scope': entity, 'data': scripts})
         print(f'formula: {entity} ({", ".join(scripts)})')
@@ -282,6 +397,62 @@ def ensure_layouts(espo):
                           if f in task_fields))
     print('layouts: lists, task board card and filters')
 
+    # Agents: set up on the Agent's page, its routes and runs below it
+    agent_fields = list(ENTITIES['Agent']['fields'])
+    ensure_layout_fields(espo, 'CAgent', ['description'] + agent_fields)
+    ensure_layout_fields(espo, 'CAgentRoute', ['agent', 'description', 'assignUser', 'assignAgent']
+                         + list(ENTITIES['AgentRoute']['fields']))
+    ensure_layout_fields(espo, 'CAgentRun', ['agent'] + list(ENTITIES['AgentRun']['fields']))
+    for entity, cols in {'CAgent': ['name', 'mode', 'entity', 'trigger', 'model', 'version', 'activeSince'],
+                         'CAgentRoute': ['name', 'agent', 'order', 'ruleWhen', 'moveToStage', 'createTask'],
+                         'CAgentRun': ['createdAt', 'agent', 'recordName', 'status', 'route', 'routeBy', 'cost'],
+                         'CApplication': ['name', 'account', 'country', 'stage', 'ddSanctions', 'ddRisk', 'assignedUser']
+                         }.items():
+        espo.call('PUT', f'/{entity}/layout/list',
+                  body=[{'name': n, **({'link': True} if n in ('name', 'createdAt') else {})} for n in cols])
+    espo.call('PUT', '/CAgent/layout/relationships', body=[{'name': 'routes'}, {'name': 'runs'}])
+
+    # Applications: a board by stage
+    ensure_layout_fields(espo, 'CApplication', ['stage', 'account', 'contact', 'country', 'registrationNumber', 'website',
+                                                'amountRequested', 'noticeVersion', 'purpose', 'leadership', 'documents'])
+    ensure_layout_fields(espo, 'CApplication', ['ddSanctions', 'ddRegistry', 'ddRisk', 'ddFlags', 'ddSanctionsDetail',
+                                                'ddSummary'])
+    espo.call('POST', '/EntityManager/action/updateEntity', body={
+        'name': 'CApplication', 'kanbanViewMode': True, 'statusField': 'stage',
+        'kanbanStatusIgnoreList': ['Approved', 'Rejected']})
+    espo.call('PUT', '/CApplication/layout/kanban',
+              body=[{'name': 'name', 'link': True}, {'name': 'account'}, {'name': 'ddRisk'}, {'name': 'assignedUser'}])
+    print('layouts: agents, applications (board)')
+
+
+def ensure_agents(espo, teams):
+    """The example agents (agents/setup/*.json), made if missing, in their mode there
+    (dry run or off): what someone changed on an agent since isn't overwritten."""
+    for path in sorted((ROOT / 'agents' / 'setup').glob('*.json')):
+        for spec in json.loads(path.read_text()):
+            if find(espo, 'CAgent', 'name', spec['name']):
+                continue
+            make_agent(espo, spec, teams)
+            print(f'agent created: {spec["name"]}')
+
+
+def make_agent(espo, spec, teams):
+    """An Agent and its routes from a spec as in agents/setup/*.json: route targets by name
+    (assignUser: a user name, assignAgent: an agent's name), teams by name."""
+    body = {k: v for k, v in spec.items() if k not in ('routes', 'teams')}
+    body['teamsIds'] = [teams[t] for t in spec.get('teams', [])]
+    agent = espo.call('POST', '/CAgent', body=body)
+    for route in spec.get('routes', []):
+        r = {k: v for k, v in route.items() if k not in ('assignUser', 'assignAgent')}
+        if route.get('assignUser'):
+            r['assignUserId'] = espo.find('User', 'userName', route['assignUser'])['id']
+        if route.get('assignAgent'):
+            r['assignAgentId'] = espo.find('CAgent', 'name', route['assignAgent'])['id']
+        if isinstance(r.get('setFields'), dict):
+            r['setFields'] = json.dumps(r['setFields'])
+        espo.call('POST', '/CAgentRoute', body={**r, 'agentId': agent['id']})
+    return agent
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -293,12 +464,12 @@ def main():
     settings = espo.call('GET', '/Settings')
     espo.call('PUT', '/Settings', body={
         'assignmentNotificationsEntityList': sorted(set(settings.get('assignmentNotificationsEntityList') or [])
-                                                    | {'Case', 'Task', 'CResponse', 'CSite'}),
+                                                    | {'Case', 'Task', 'CResponse', 'CSite', 'CApplication'}),
         # In global search, so the isolation tests (T8) search them too
         'globalSearchEntityList': sorted(set(settings.get('globalSearchEntityList') or [])
-                                         | {'Case', 'Contact', 'Account', 'Task', 'CResponse', 'CSite', 'CStandard'}),
+                                         | {'Case', 'Contact', 'Account', 'Task', 'CResponse', 'CSite', 'CStandard', 'CApplication'}),
         'applicationName': 'Kobo requests and responses (test)'})
-    print('settings: assignment notifications for Case, Task, Response, Site; global search')
+    print('settings: assignment notifications for Case, Task, Response, Site, Application; global search')
 
     ensure_entities(espo)
     for entity, fields in FIELDS.items():
@@ -309,7 +480,6 @@ def main():
     ensure_layouts(espo)
 
     # Reference data: standards (no team: everyone with read access sees them)
-    import json
     for std in json.loads((ROOT / 'espo' / 'seed' / 'data' / 'standards.json').read_text()):
         ensure(espo, 'CStandard', 'code', std['code'], std, update=True)
 
@@ -318,6 +488,7 @@ def main():
     for name, spec in ROLES.items():
         roles[name] = ensure(espo, 'Role', 'name', name, {'name': name, 'fieldData': {}, **spec}, update=True)['id']
     print(f'teams: {len(teams)}, roles: {", ".join(roles)}')
+    ensure_agents(espo, teams)
 
     if args.users:
         path = ROOT / 'secrets' / 'seed.secrets'

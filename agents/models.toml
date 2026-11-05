@@ -1,0 +1,25 @@
+# Models an Agent can pick (its "model" field; the seed's options must match these names).
+# Prices: USD per million tokens, from the Claude API price list (2026-10). Web search is
+# billed per search on top. An OpenAI-compatible provider (self-hosted open-weight models)
+# is a later step (plan §2).
+
+[models.claude-opus-5-5]
+provider = "anthropic"
+id = "claude-opus-5-5"
+price_in = 4.0
+price_out = 20.0
+
+[models.claude-sonnet-5-5]
+provider = "anthropic"
+id = "claude-sonnet-5-5"
+price_in = 2.0
+price_out = 10.0
+
+[models.claude-haiku-5-5]
+provider = "anthropic"
+id = "claude-haiku-5-5"
+price_in = 0.10
+price_out = 0.50
+
+[web_search]
+price_per_search = 0.01

@@ -1,0 +1,561 @@
+[
+  {
+    "test": "G1",
+    "check": "each test agent has its own API user",
+    "ok": true,
+    "detail": {
+      "DD research": "agent-test-dd-research",
+      "DD screening": "agent-test-dd-screening",
+      "Site visit triage": "agent-test-site-visit-triage"
+    }
+  },
+  {
+    "test": "E1",
+    "check": "needs_repair: a Repair task on the response board, for its lead",
+    "ok": true,
+    "detail": [
+      {
+        "id": "6aecbd1937ef98b77",
+        "name": "Repair: AGT Site well 1",
+        "status": "Backlog",
+        "priority": "Normal",
+        "createdAt": "2026-11-05 17:30:01",
+        "parentName": null,
+        "createdById": "6aecb5b4a2e26fc7f",
+        "assignedUserId": "6aec420cf14b4edc7"
+      }
+    ]
+  },
+  {
+    "test": "E1",
+    "check": "taken by the rule, without the model",
+    "ok": true,
+    "detail": [
+      {
+        "id": "6aecbd18309b339d7",
+        "name": "Test: Site visit triage: AGT Site well 1",
+        "deleted": false,
+        "description": null,
+        "createdAt": "2026-11-05 17:30:00",
+        "modifiedAt": "2026-11-05 17:30:02",
+        "status": "done",
+        "recordType": "CSite",
+        "recordId": "6aecbd0febe7c06cf",
+        "recordName": "AGT Site well 1",
+        "triggerKey": "note:6aecbd1299535077e",
+        "agentVersion": 5,
+        "model": "claude-opus-5-5",
+        "promptHash": null,
+        "route": "repair",
+        "routeBy": "rule_before",
+        "reason": "Rule: status equals 'needs_repair' \u2192 repair.",
+        "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Repair: AGT Site well 1\",\n    \"status\": \"Backlog\",\n    \"priority\": \"Normal\",\n    \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aecbd0febe7c06cf).\\n\\nRule: status equals 'needs_repair' \u2192 repair.\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aecbd0ab3c904f43\"\n   }\n  }\n ]\n}",
+        "error": null,
+        "attempts": 0,
+        "inputTokens": null,
+        "outputTokens": null,
+        "cost": null,
+        "durationS": 2.27,
+        "createdById": "6aecb5ad28e594818",
+        "createdByName": "agent-runner",
+        "modifiedById": "6aecb5ad28e594818",
+        "modifiedByName": "agent-runner",
+        "assignedUserId": null,
+        "assignedUserName": null,
+        "agentId": "6aecbcd46634286f3",
+        "agentName": "Test: Site visit triage"
+      }
+    ]
+  },
+  {
+    "test": "E2",
+    "check": "the model chose ok, the after rule forced urgent_safety",
+    "ok": true,
+    "detail": [
+      {
+        "id": "6aecbd2a358ff1b3e",
+        "name": "Test: Site visit triage: AGT Site well 1",
+        "deleted": false,
+        "description": null,
+        "createdAt": "2026-11-05 17:30:18",
+        "modifiedAt": "2026-11-05 17:30:20",
+        "status": "done",
+        "recordType": "CSite",
+        "recordId": "6aecbd0febe7c06cf",
+        "recordName": "AGT Site well 1",
+        "triggerKey": "note:6aecbd2478ffd4071",
+        "agentVersion": 5,
+        "model": "fake",
+        "promptHash": "c3f85f2ee930",
+        "route": "urgent_safety",
+        "routeBy": "rule_after",
+        "reason": "Rule: text matches '\\\\b(sick|illness|ill|diarrh\\\\w*|vomit\\\\w*|cholera|contaminat\\\\w*|poison\\\\w*|injur\\\\w*|bleed\\\\w*|died|death|collaps\\\\w*|armed|attack\\\\w*|malade?s?|bless\u00e9\\\\w*|contamin\\\\w*|enferm\\\\w*|herid\\\\w*|muert\\\\w*)\\\\b' \u2192 urgent_safety (overrides ok: Fake model: chosen from the test markers.)",
+        "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Urgent: AGT Site well 1\",\n    \"status\": \"Not Started\",\n    \"priority\": \"Urgent\",\n    \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aecbd0febe7c06cf).\\n\\nRule: text matches '\\\\\\\\b(sick|illness|ill|diarrh\\\\\\\\w*|vomit\\\\\\\\w*|cholera|contaminat\\\\\\\\w*|poison\\\\\\\\w*|injur\\\\\\\\w*|bleed\\\\\\\\w*|died|death|collaps\\\\\\\\w*|armed|attack\\\\\\\\w*|malade?s?|bless\u00e9\\\\\\\\w*|contamin\\\\\\\\w*|enferm\\\\\\\\w*|herid\\\\\\\\w*|muert\\\\\\\\w*)\\\\\\\\b' \u2192 urgent_safety (overrides ok: Fake model: chosen from the test markers.)\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aecbd0ab3c904f43\"\n   }\n  }\n ]\n}",
+        "error": null,
+        "attempts": 1,
+        "inputTokens": 100,
+        "outputTokens": 20,
+        "cost": 0.0008,
+        "durationS": 2.53,
+        "createdById": "6aecb5ad28e594818",
+        "createdByName": "agent-runner",
+        "modifiedById": "6aecb5ad28e594818",
+        "modifiedByName": "agent-runner",
+        "assignedUserId": null,
+        "assignedUserName": null,
+        "agentId": "6aecbcd46634286f3",
+        "agentName": "Test: Site visit triage"
+      }
+    ]
+  },
+  {
+    "test": "E2",
+    "check": "an Urgent task for the response lead",
+    "ok": true,
+    "detail": [
+      {
+        "id": "6aecbd2bb5d5fcf50",
+        "name": "Urgent: AGT Site well 1",
+        "status": "Not Started",
+        "priority": "Urgent",
+        "createdAt": "2026-11-05 17:30:19",
+        "parentName": null,
+        "createdById": "6aecb5b4a2e26fc7f",
+        "assignedUserId": "6aec420cf14b4edc7"
+      },
+      {
+        "id": "6aecbd1937ef98b77",
+        "name": "Repair: AGT Site well 1",
+        "status": "Backlog",
+        "priority": "Normal",
+        "createdAt": "2026-11-05 17:30:01",
+        "parentName": null,
+        "createdById": "6aecb5b4a2e26fc7f",
+        "assignedUserId": "6aec420cf14b4edc7"
+      }
+    ]
+  },
+  {
+    "test": "E2",
+    "check": "the fixed note, mentioning the lead",
+    "ok": true,
+    "detail": "**Test: Site visit triage** \u2192 urgent_safety\n\nUrgent: this visit report may describe a risk to people. A task has been created for the response lead.\n\nTask: [Urgent: AGT Site well 1](https://espo-test.kobolabs.dev/#Task/view/6aecbd2bb5d5fcf50)\n\n@staff-1"
+  },
+  {
+    "test": "E3",
+    "check": "a routine visit: ok, no task, the run gives the reason",
+    "ok": true,
+    "detail": [
+      {
+        "id": "6aecbd3c3ecac2c68",
+        "name": "Test: Site visit triage: AGT Site well 1",
+        "deleted": false,
+        "description": null,
+        "createdAt": "2026-11-05 17:30:36",
+        "modifiedAt": "2026-11-05 17:30:37",
+        "status": "done",
+        "recordType": "CSite",
+        "recordId": "6aecbd0febe7c06cf",
+        "recordName": "AGT Site well 1",
+        "triggerKey": "note:6aecbd36b9c304a23",
+        "agentVersion": 5,
+        "model": "fake",
+        "promptHash": "c3f85f2ee930",
+        "route": "ok",
+        "routeBy": "model",
+        "reason": "Fake model: chosen from the test markers.",
+        "output": "{\n \"output\": {},\n \"actions\": []\n}",
+        "error": null,
+        "attempts": 1,
+        "inputTokens": 100,
+        "outputTokens": 20,
+        "cost": 0.0008,
+        "durationS": 1.07,
+        "createdById": "6aecb5ad28e594818",
+        "createdByName": "agent-runner",
+        "modifiedById": "6aecb5ad28e594818",
+        "modifiedByName": "agent-runner",
+        "assignedUserId": null,
+        "assignedUserName": null,
+        "agentId": "6aecbcd46634286f3",
+        "agentName": "Test: Site visit triage"
+      }
+    ]
+  },
+  {
+    "test": "E4",
+    "check": "the same visit again: no new run, no new task",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "G3",
+    "check": "dry run: a run and a note saying what it would do, no task",
+    "ok": true,
+    "detail": {
+      "run": [
+        {
+          "id": "6aecbd583c83bed0f",
+          "name": "Test: Site visit triage: AGT Site well 1",
+          "deleted": false,
+          "description": null,
+          "createdAt": "2026-11-05 17:31:04",
+          "modifiedAt": "2026-11-05 17:31:05",
+          "status": "dry_run",
+          "recordType": "CSite",
+          "recordId": "6aecbd0febe7c06cf",
+          "recordName": "AGT Site well 1",
+          "triggerKey": "note:6aecbd52ac516b4de",
+          "agentVersion": 5,
+          "model": "claude-opus-5-5",
+          "promptHash": null,
+          "route": "repair",
+          "routeBy": "rule_before",
+          "reason": "Rule: status equals 'needs_repair' \u2192 repair.",
+          "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Repair: AGT Site well 1\",\n    \"status\": \"Backlog\",\n    \"priority\": \"Normal\",\n    \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aecbd0febe7c06cf).\\n\\nRule: status equals 'needs_repair' \u2192 repair.\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aecbd0ab3c904f43\"\n   }\n  }\n ]\n}",
+          "error": null,
+          "attempts": 0,
+          "inputTokens": null,
+          "outputTokens": null,
+          "cost": null,
+          "durationS": 1.37,
+          "createdById": "6aecb5ad28e594818",
+          "createdByName": "agent-runner",
+          "modifiedById": "6aecb5ad28e594818",
+          "modifiedByName": "agent-runner",
+          "assignedUserId": null,
+          "assignedUserName": null,
+          "agentId": "6aecbcd46634286f3",
+          "agentName": "Test: Site visit triage"
+        }
+      ],
+      "note": "**Test: Site visit triage** \u2192 repair (dry run: nothing was changed)\n\nRule: status equals 'needs_repair' \u2192 repair.\n\nWould do: [{\"createTask\": {\"name\": \"Repair: AGT Site well 1\", \"status\": \"Backlog\", \"priority\": \"Normal\", \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aecbd0febe7c06cf).\\n\\nRule: status equals 'needs_repair' \u2192 repair.\", \"assignedUserId\": \"6aec420cf14b4edc7\", \"cResponseId\": \"6aecbd0ab3c904f43\"}}]"
+    }
+  },
+  {
+    "test": "G2",
+    "check": "changing the instructions raises the version; the next run has it, at once",
+    "ok": true,
+    "detail": {
+      "v0": 5,
+      "v1": 6,
+      "run": [
+        {
+          "id": "6aecbd6c909665f11",
+          "name": "Test: Site visit triage: AGT Site well 1",
+          "deleted": false,
+          "description": null,
+          "createdAt": "2026-11-05 17:31:24",
+          "modifiedAt": "2026-11-05 17:31:26",
+          "status": "done",
+          "recordType": "CSite",
+          "recordId": "6aecbd0febe7c06cf",
+          "recordName": "AGT Site well 1",
+          "triggerKey": "note:6aecbd675afa6aea6",
+          "agentVersion": 6,
+          "model": "fake",
+          "promptHash": "bdac393bb085",
+          "route": "repair",
+          "routeBy": "model",
+          "reason": "Fake model: chosen from the test markers.",
+          "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Repair: AGT Site well 1\",\n    \"status\": \"Backlog\",\n    \"priority\": \"Normal\",\n    \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aecbd0febe7c06cf).\\n\\nFake model: chosen from the test markers.\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aecbd0ab3c904f43\"\n   }\n  }\n ]\n}",
+          "error": null,
+          "attempts": 1,
+          "inputTokens": 100,
+          "outputTokens": 20,
+          "cost": 0.0008,
+          "durationS": 1.93,
+          "createdById": "6aecb5ad28e594818",
+          "createdByName": "agent-runner",
+          "modifiedById": "6aecb5ad28e594818",
+          "modifiedByName": "agent-runner",
+          "assignedUserId": null,
+          "assignedUserName": null,
+          "agentId": "6aecbcd46634286f3",
+          "agentName": "Test: Site visit triage"
+        }
+      ]
+    }
+  },
+  {
+    "test": "G2",
+    "check": "changing a route raises the version too",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "D1",
+    "check": "a new application goes to Screening",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "D2",
+    "check": "a clean organisation: Screening \u2192 Research \u2192 Review, for the reviewer",
+    "ok": true,
+    "detail": {
+      "stage": "Review",
+      "assignedUserName": "Sasha Staff"
+    }
+  },
+  {
+    "test": "D2",
+    "check": "screening and research filled in their fields",
+    "ok": true,
+    "detail": {
+      "ddSanctions": "clear",
+      "ddRegistry": "not_checked",
+      "ddRisk": "medium",
+      "ddFlags": [
+        "new_org"
+      ],
+      "ddSummary": "Fake ddSummary."
+    }
+  },
+  {
+    "test": "D2",
+    "check": "one screening run (rules) and one research run (model), each with cost and time",
+    "ok": true,
+    "detail": {
+      "screening": [
+        {
+          "id": "6aecbd875ae461ef5",
+          "name": "Test: DD screening: AGT Clear Water Partners",
+          "deleted": false,
+          "description": null,
+          "createdAt": "2026-11-05 17:31:51",
+          "modifiedAt": "2026-11-05 17:31:53",
+          "status": "done",
+          "recordType": "CApplication",
+          "recordId": "6aecbd78a4892d3cc",
+          "recordName": "AGT Clear Water Partners",
+          "triggerKey": "Screening@2026-11-05 17:31:36",
+          "agentVersion": 4,
+          "model": null,
+          "promptHash": null,
+          "route": "clear",
+          "routeBy": "rule_before",
+          "reason": "Sanctions: clear. Registry: not checked (no registry source yet). Rule: ddSanctions equals 'clear' \u2192 clear.",
+          "output": "{\n \"output\": {\n  \"ddSanctions\": \"clear\",\n  \"ddSanctionsDetail\": \"No match for Clear Water Partners, AGT Clear Water Partners, Jane Example on 3 listed names.\",\n  \"ddRegistry\": \"not_checked\"\n },\n \"actions\": [\n  {\n   \"update\": {\n    \"ddSanctions\": \"clear\",\n    \"ddSanctionsDetail\": \"No match for Clear Water Partners, AGT Clear Water Partners, Jane Example on 3 listed names.\",\n    \"ddRegistry\": \"not_checked\",\n    \"stage\": \"Research\",\n    \"assignedUserId\": \"6aecb5c3a7f3a8441\"\n   }\n  }\n ]\n}",
+          "error": null,
+          "attempts": 0,
+          "inputTokens": null,
+          "outputTokens": null,
+          "cost": null,
+          "durationS": 2.09,
+          "createdById": "6aecb5ad28e594818",
+          "createdByName": "agent-runner",
+          "modifiedById": "6aecb5ad28e594818",
+          "modifiedByName": "agent-runner",
+          "assignedUserId": null,
+          "assignedUserName": null,
+          "agentId": "6aecbcce4c42c26ff",
+          "agentName": "Test: DD screening"
+        }
+      ],
+      "research": [
+        {
+          "id": "6aecbd96e4a46e0e8",
+          "name": "Test: DD research: AGT Clear Water Partners",
+          "deleted": false,
+          "description": null,
+          "createdAt": "2026-11-05 17:32:06",
+          "modifiedAt": "2026-11-05 17:32:08",
+          "status": "done",
+          "recordType": "CApplication",
+          "recordId": "6aecbd78a4892d3cc",
+          "recordName": "AGT Clear Water Partners",
+          "triggerKey": "Research@2026-11-05 17:31:52",
+          "agentVersion": 2,
+          "model": "fake",
+          "promptHash": "4407515a3256",
+          "route": "review",
+          "routeBy": "model",
+          "reason": "Fake model: chosen from the test markers.",
+          "output": "{\n \"output\": {\n  \"ddRisk\": \"medium\",\n  \"ddFlags\": [\n   \"new_org\"\n  ],\n  \"ddSummary\": \"Fake ddSummary.\"\n },\n \"actions\": [\n  {\n   \"update\": {\n    \"ddRisk\": \"medium\",\n    \"ddFlags\": [\n     \"new_org\"\n    ],\n    \"ddSummary\": \"Fake ddSummary.\",\n    \"stage\": \"Review\",\n    \"assignedUserId\": \"6aec420f1594dca3a\"\n   }\n  }\n ]\n}",
+          "error": null,
+          "attempts": 1,
+          "inputTokens": 100,
+          "outputTokens": 20,
+          "cost": 0.0008,
+          "durationS": 2,
+          "createdById": "6aecb5ad28e594818",
+          "createdByName": "agent-runner",
+          "modifiedById": "6aecb5ad28e594818",
+          "modifiedByName": "agent-runner",
+          "assignedUserId": null,
+          "assignedUserName": null,
+          "agentId": "6aecbccbc25680b76",
+          "agentName": "Test: DD research"
+        }
+      ]
+    }
+  },
+  {
+    "test": "D2",
+    "check": "the dossier note mentions the reviewer",
+    "ok": true,
+    "detail": [
+      "**Test: DD research** \u2192 review\n\nFake model: chosen from the test markers.\n\n@staff-2"
+    ]
+  },
+  {
+    "test": "D3",
+    "check": "a sanctions match: straight to Review, research skipped",
+    "ok": true,
+    "detail": {
+      "stage": "Review",
+      "ddSanctions": "match",
+      "ddSanctionsDetail": "Crimson Horizon Relief Brigade ~ Crimson Horizon Relief Brigade (FIXTURE-UN QDe.900, score 1.00)\nAGT Crimson Horizon Relief Brigade ~ Crimson Horizon Relief Brigade (FIXTURE-UN QDe.900, score 0.94)\nCrimson Horizon Relief Brigade ~ Crimson Horizon Brigade (FIXTURE-UN QDe.900, score 0.87)"
+    }
+  },
+  {
+    "test": "D4",
+    "check": "a near miss (a leader's name misspelt): possible match, to Review",
+    "ok": true,
+    "detail": {
+      "stage": "Review",
+      "ddSanctions": "possible_match",
+      "ddSanctionsDetail": "Quentin Vexly ~ Quentin Vexley (FIXTURE-OFAC SDN-90001, score 0.96)"
+    }
+  },
+  {
+    "test": "D6",
+    "check": "the model keeps failing: 3 attempts, then the failure route (Review)",
+    "ok": true,
+    "detail": [
+      {
+        "id": "6aecbd998b6b61dc1",
+        "name": "Test: DD research: AGT Broken Output Org",
+        "deleted": false,
+        "description": null,
+        "createdAt": "2026-11-05 17:32:09",
+        "modifiedAt": "2026-11-05 17:32:11",
+        "status": "failed",
+        "recordType": "CApplication",
+        "recordId": "6aecbd7d976ae67b0",
+        "recordName": "AGT Broken Output Org",
+        "triggerKey": "Research@2026-11-05 17:31:59",
+        "agentVersion": 2,
+        "model": "fake",
+        "promptHash": "4407515a3256",
+        "route": "review",
+        "routeBy": "failure",
+        "reason": "Failed, so: review. The model failed 3 times: invalid output after corrections: route must be one of review; reason is missing; ddRisk is missing; ddFlags is missing; ddSummary is missing",
+        "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"update\": {\n    \"stage\": \"Review\",\n    \"assignedUserId\": \"6aec420f1594dca3a\"\n   }\n  }\n ]\n}",
+        "error": "The model failed 3 times: invalid output after corrections: route must be one of review; reason is missing; ddRisk is missing; ddFlags is missing; ddSummary is missing",
+        "attempts": 3,
+        "inputTokens": 900,
+        "outputTokens": 180,
+        "cost": 0.0072,
+        "durationS": 1.5,
+        "createdById": "6aecb5ad28e594818",
+        "createdByName": "agent-runner",
+        "modifiedById": "6aecb5ad28e594818",
+        "modifiedByName": "agent-runner",
+        "assignedUserId": null,
+        "assignedUserName": null,
+        "agentId": "6aecbccbc25680b76",
+        "agentName": "Test: DD research"
+      }
+    ]
+  },
+  {
+    "test": "G8",
+    "check": "sloppy output (wrong case, a list as text, an extra key) is fixed in code",
+    "ok": true,
+    "detail": [
+      {
+        "id": "6aecbd9baeda02b9e",
+        "name": "Test: DD research: AGT Sloppy Output Org",
+        "deleted": false,
+        "description": null,
+        "createdAt": "2026-11-05 17:32:11",
+        "modifiedAt": "2026-11-05 17:32:13",
+        "status": "done",
+        "recordType": "CApplication",
+        "recordId": "6aecbd7f3cbf0b94e",
+        "recordName": "AGT Sloppy Output Org",
+        "triggerKey": "Research@2026-11-05 17:32:02",
+        "agentVersion": 2,
+        "model": "fake",
+        "promptHash": "4407515a3256",
+        "route": "review",
+        "routeBy": "model",
+        "reason": "Fake model: chosen from the test markers.",
+        "output": "{\n \"output\": {\n  \"ddRisk\": \"low\",\n  \"ddFlags\": [],\n  \"ddSummary\": \"Fake ddSummary.\"\n },\n \"actions\": [\n  {\n   \"update\": {\n    \"ddRisk\": \"low\",\n    \"ddFlags\": [],\n    \"ddSummary\": \"Fake ddSummary.\",\n    \"stage\": \"Review\",\n    \"assignedUserId\": \"6aec420f1594dca3a\"\n   }\n  }\n ]\n}",
+        "error": null,
+        "attempts": 1,
+        "inputTokens": 100,
+        "outputTokens": 20,
+        "cost": 0.0008,
+        "durationS": 1.73,
+        "createdById": "6aecb5ad28e594818",
+        "createdByName": "agent-runner",
+        "modifiedById": "6aecb5ad28e594818",
+        "modifiedByName": "agent-runner",
+        "assignedUserId": null,
+        "assignedUserName": null,
+        "agentId": "6aecbccbc25680b76",
+        "agentName": "Test: DD research"
+      }
+    ]
+  },
+  {
+    "test": "D5",
+    "check": "sent back to Research by a person: the agent runs again",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "S1",
+    "check": "an agent can't move a record to a stage its routes don't go to (Approved)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "S1",
+    "check": "an agent can't change a record's teams",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "S1",
+    "check": "an agent can't assign to someone its routes don't name",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "S1",
+    "check": "an agent can't write fields it doesn't fill in (field-level security)",
+    "ok": true,
+    "detail": {
+      "country": "Testland",
+      "ddSanctions": "clear"
+    }
+  },
+  {
+    "test": "S1",
+    "check": "an agent that is off can't change anything",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "S1",
+    "check": "... nor in dry run",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "S1",
+    "check": "in its own route, it can (stage Review, assignee staff-2)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "S3",
+    "check": "agent users can't read Cases or other teams' sites",
+    "ok": true,
+    "detail": ""
+  }
+]

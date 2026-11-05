@@ -1,0 +1,27 @@
+// Agents (plans/espo-agents-plan.md): an agent's API user may do only what its Agent's
+// routes allow, whatever the model or the record's text asked for. The seed puts this at
+// the top of the API Before Save Script of every entity agents work on.
+$agentId = record\findOne('CAgent', null, null, 'userId', env\userAttribute('id'));
+if ($agentId) {
+    if (record\attribute('CAgent', $agentId, 'mode') != 'active') {
+        recordService\throwForbidden('This agent is not active.');
+    }
+    // stage:begin
+    if (entity\isAttributeChanged('stage') &&
+            !record\exists('CAgentRoute', 'agentId', $agentId, 'moveToStage', stage)) {
+        recordService\throwForbidden('None of this agent\'s routes go to that stage.');
+    }
+    // stage:end
+    // (a new record's link-multiple attributes can't be read unless the request sets them)
+    if (!entity\isNew() && entity\isAttributeChanged('teamsIds')) {
+        recordService\throwForbidden('An agent can\'t change a record\'s teams.');
+    }
+    // An existing record goes only to a route's user or another agent. New records (the
+    // tasks routes create) take their assignee from the record they're about; the entity's
+    // own guards keep that assignee in its team.
+    if (!entity\isNew() && assignedUserId && entity\isAttributeChanged('assignedUserId') &&
+            !record\exists('CAgentRoute', 'agentId', $agentId, 'assignUserId', assignedUserId) &&
+            !record\exists('CAgent', 'userId', assignedUserId)) {
+        recordService\throwForbidden('An agent can assign only to the users its routes name.');
+    }
+}

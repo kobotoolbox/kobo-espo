@@ -7,6 +7,7 @@
 #   espocrm-daemon  EspoCRM's scheduled jobs (notifications, emails, cleanup)
 #   caddy           TLS for ESPO_HOST (profile `tls`; Let's Encrypt)
 #   bridge          kobo-espo-bridge, polling Kobo (profile `bridge`; one per template)
+#   agent-runner    the agents set up in EspoCRM (profile `agents`; agents/runner.py)
 
 services:
   db:
@@ -128,6 +129,30 @@ services:
       BRIDGE_STATE_DIR: /state/site-visits
       ESPO_API_KEY: ${ESPO_SITE_LISTS_API_KEY}
       ESPO_FOLLOWUP_API_KEY: ${ESPO_SITE_VISITS_API_KEY}
+
+  # The agents (plans/espo-agents-plan.md): one runner for every Agent whose runner is "droplet"
+  # (deploy/agents.sh starts it with the keys agents/sync.py made)
+  agent-runner:
+    profiles: [agents]
+    image: python:3.13-slim
+    restart: unless-stopped
+    command: ["sh", "-c", "pip install -q --root-user-action=ignore --disable-pip-version-check anthropic && exec python3 -I -u /agents/runner.py run"]
+    depends_on:
+      espocrm:
+        condition: service_healthy
+    volumes:
+      - ./agents:/agents:ro
+      - /root/kobo-espo-bridge:/bridge:ro
+      - /root/kobo-espo-agents.secrets:/run/agents.secrets:ro
+    environment:
+      ESPO_URL: http://espocrm
+      ESPO_SITE_URL: ${ESPO_SITE_URL}
+      KOBO_ESPO_BRIDGE_DIR: /bridge
+      AGENTS_SECRETS: /run/agents.secrets
+      AGENTS_RUNNER: droplet
+      AGENTS_LLM: ${AGENTS_LLM:-real}
+      AGENTS_POLL_SECONDS: ${AGENTS_POLL_SECONDS:-30}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
 
 volumes:
   db:
