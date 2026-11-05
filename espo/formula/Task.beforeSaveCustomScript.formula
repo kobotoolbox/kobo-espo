@@ -7,3 +7,13 @@ if (cResponseId && (entity\isNew() || entity\isAttributeChanged('cResponseId')))
         teamsIds = $teams;
     }
 }
+
+// Reassigned: the previous assignee stops being a collaborator. EspoCRM 10 makes each
+// assignee a collaborator and keeps them on, and collaborators can read the task whatever
+// their teams: someone who left the response would keep seeing every task they ever had.
+if (!entity\isNew() && entity\isAttributeChanged('assignedUserId')) {
+    $previous = entity\attributeFetched('assignedUserId');
+    if ($previous) {
+        entity\removeLinkMultipleId('collaborators', $previous);
+    }
+}

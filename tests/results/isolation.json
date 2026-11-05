@@ -1,0 +1,611 @@
+{
+  "when": "2026-11-05T09:10:51Z",
+  "espo": "https://espo-test.kobolabs.dev",
+  "passed": 76,
+  "failed": 0,
+  "results": [
+    {
+      "test": "T8",
+      "check": "roster-1: responses list = Response 1 only",
+      "ok": true,
+      "detail": [
+        "ISO EQ 1"
+      ]
+    },
+    {
+      "test": "T8",
+      "check": "roster-1: Response 2 by id (its URL) refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T8",
+      "check": "roster-1: tasks list = Response 1 tasks only",
+      "ok": true,
+      "detail": [
+        "ISO R1 task of roster-1",
+        "ISO R1 task of roster-2",
+        "ISO R1 task of volunteer-2"
+      ]
+    },
+    {
+      "test": "T8",
+      "check": "roster-1: Response 2 task by id refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T8",
+      "check": "roster-1: Kanban board = Response 1 tasks only",
+      "ok": true,
+      "detail": [
+        "ISO R1 task of roster-1",
+        "ISO R1 task of roster-2",
+        "ISO R1 task of volunteer-2"
+      ]
+    },
+    {
+      "test": "T8",
+      "check": "roster-1: Response 2 sites hidden",
+      "ok": true,
+      "detail": [
+        "ISO Site R1"
+      ]
+    },
+    {
+      "test": "T8",
+      "check": "roster-1: Site 2 by id refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T8",
+      "check": "roster-1: cases refused (list)",
+      "ok": true,
+      "detail": 403
+    },
+    {
+      "test": "T8",
+      "check": "roster-1: case A by id refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T8",
+      "check": "roster-1: accounts and contacts refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T8",
+      "check": "roster-1: global search finds nothing of Response 2 or the consortia",
+      "ok": true,
+      "detail": [
+        [
+          "CResponse",
+          "ISO EQ 1"
+        ],
+        [
+          "CSite",
+          "ISO Site R1"
+        ],
+        [
+          "CStandard",
+          "ISO Standard"
+        ],
+        [
+          "Task",
+          "ISO R1 task of roster-1"
+        ],
+        [
+          "Task",
+          "ISO R1 task of roster-2"
+        ],
+        [
+          "Task",
+          "ISO R1 task of volunteer-2"
+        ]
+      ]
+    },
+    {
+      "test": "T8",
+      "check": "roster-1: own stream has nothing from Response 2 or cases",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "test": "T8",
+      "check": "roster-1: standards readable (they are for everyone)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: responses list = Response 1 only",
+      "ok": true,
+      "detail": [
+        "ISO EQ 1"
+      ]
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: Response 2 by id (its URL) refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: tasks list = Response 1 tasks only",
+      "ok": true,
+      "detail": [
+        "ISO R1 task of roster-1",
+        "ISO R1 task of roster-2",
+        "ISO R1 task of volunteer-2"
+      ]
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: Response 2 task by id refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: Kanban board = Response 1 tasks only",
+      "ok": true,
+      "detail": [
+        "ISO R1 task of roster-1",
+        "ISO R1 task of roster-2",
+        "ISO R1 task of volunteer-2"
+      ]
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: Response 2 sites hidden",
+      "ok": true,
+      "detail": [
+        "ISO Site R1"
+      ]
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: Site 2 by id refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: cases refused (list)",
+      "ok": true,
+      "detail": 403
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: case A by id refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: accounts and contacts refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: global search finds nothing of Response 2 or the consortia",
+      "ok": true,
+      "detail": [
+        [
+          "CResponse",
+          "ISO EQ 1"
+        ],
+        [
+          "CSite",
+          "ISO Site R1"
+        ],
+        [
+          "CStandard",
+          "ISO Standard"
+        ],
+        [
+          "Task",
+          "ISO R1 task of roster-1"
+        ],
+        [
+          "Task",
+          "ISO R1 task of roster-2"
+        ],
+        [
+          "Task",
+          "ISO R1 task of volunteer-2"
+        ]
+      ]
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: own stream has nothing from Response 2 or cases",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "test": "T8",
+      "check": "volunteer-2: standards readable (they are for everyone)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T9",
+      "check": "roster-2: responses = both",
+      "ok": true,
+      "detail": [
+        "ISO EQ 1",
+        "ISO EQ 2"
+      ]
+    },
+    {
+      "test": "T9",
+      "check": "roster-2: tasks = both responses' tasks",
+      "ok": true,
+      "detail": [
+        "ISO R1 task of roster-1",
+        "ISO R1 task of roster-2",
+        "ISO R1 task of volunteer-2",
+        "ISO R2 task of volunteer-1"
+      ]
+    },
+    {
+      "test": "T9",
+      "check": "roster-2: sites = both",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T9",
+      "check": "roster-2: still no cases, accounts or contacts",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T9",
+      "check": "roster-2: global search = both responses, their tasks and sites, the standard, nothing else",
+      "ok": true,
+      "detail": [
+        [
+          "CResponse",
+          "ISO EQ 1"
+        ],
+        [
+          "CResponse",
+          "ISO EQ 2"
+        ],
+        [
+          "CSite",
+          "ISO Site R1"
+        ],
+        [
+          "CSite",
+          "ISO Site R2"
+        ],
+        [
+          "CStandard",
+          "ISO Standard"
+        ],
+        [
+          "Task",
+          "ISO R1 task of roster-1"
+        ],
+        [
+          "Task",
+          "ISO R1 task of roster-2"
+        ],
+        [
+          "Task",
+          "ISO R1 task of volunteer-2"
+        ],
+        [
+          "Task",
+          "ISO R2 task of volunteer-1"
+        ]
+      ]
+    },
+    {
+      "test": "T10",
+      "check": "volunteer-2: user list = Response 1 members only",
+      "ok": true,
+      "detail": [
+        "roster-1",
+        "roster-2",
+        "staff-1",
+        "volunteer-2"
+      ]
+    },
+    {
+      "test": "T10",
+      "check": "volunteer-2: a user outside the team by id refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T10",
+      "check": "volunteer-2: assigning own task to someone outside the team refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T10",
+      "check": "volunteer-2: reassigning own task within the team refused too (Volunteer: no assignment)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T10",
+      "check": "volunteer-2: editing someone else's task refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T10",
+      "check": "volunteer-2: creating a task refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T10",
+      "check": "roster-1: assigning own task to someone outside the team refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T10",
+      "check": "roster-1: assigning own task within the team allowed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T10",
+      "check": "roster-1: a task in Response 2 can't be created by putting it under Response 2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T11",
+      "check": "partner-a: cases = own consortium only",
+      "ok": true,
+      "detail": [
+        "ISO Case A"
+      ]
+    },
+    {
+      "test": "T11",
+      "check": "partner-a: the other consortium's case by id refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T11",
+      "check": "partner-a: accounts = own partner only",
+      "ok": true,
+      "detail": [
+        "ISO Partner A1"
+      ]
+    },
+    {
+      "test": "T11",
+      "check": "partner-a: the other partner account by id refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T11",
+      "check": "partner-a: contacts = own consortium only",
+      "ok": true,
+      "detail": [
+        "ISO Contact A1"
+      ]
+    },
+    {
+      "test": "T11",
+      "check": "partner-a: responses and tasks refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T11",
+      "check": "partner-a: moving a case into the other consortium refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T11",
+      "check": "partner-b: cases = own consortium only",
+      "ok": true,
+      "detail": [
+        "ISO Case B"
+      ]
+    },
+    {
+      "test": "T11",
+      "check": "partner-b: the other consortium's case by id refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T11",
+      "check": "partner-b: accounts = own partner only",
+      "ok": true,
+      "detail": [
+        "ISO Partner B1"
+      ]
+    },
+    {
+      "test": "T11",
+      "check": "partner-b: the other partner account by id refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T11",
+      "check": "partner-b: contacts = own consortium only",
+      "ok": true,
+      "detail": [
+        "ISO Contact B1"
+      ]
+    },
+    {
+      "test": "T11",
+      "check": "partner-b: responses and tasks refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T11",
+      "check": "partner-b: moving a case into the other consortium refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T11",
+      "check": "triager (in both consortia): sees both cases",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T15",
+      "check": "roster-1 moves own task Backlog -> In progress",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T15",
+      "check": "roster-1 as collaborator reads and comments on volunteer-2's task",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T15",
+      "check": "roster-1 as collaborator can't move volunteer-2's task (EspoCRM 10: shared = read only)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T15",
+      "check": "a collaborator from outside the response can read that one task (sharing crosses teams)",
+      "ok": true,
+      "detail": "by design: adding a collaborator shares the task, not its response"
+    },
+    {
+      "test": "T15",
+      "check": "volunteer-2 moves own task",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T15",
+      "check": "volunteer-2 moves roster-1's task: refused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T15",
+      "check": "volunteer-2 can comment on a task of the response (stream: team)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T13",
+      "check": "roster-1 (session) reads Response 1 before",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T13",
+      "check": "roster-1 (same session) refused Response 1 right after leaving the team",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T13",
+      "check": "roster-1 (same session): others' Response 1 tasks gone from the list",
+      "ok": true,
+      "detail": [
+        "ISO R1 task of roster-1",
+        "ISO R1 task of volunteer-2"
+      ]
+    },
+    {
+      "test": "T13",
+      "check": "roster-1 (same session): their own task after leaving (recorded)",
+      "ok": true,
+      "detail": "HTTP 200; 200 means still readable as its assignee: reassign tasks when someone leaves"
+    },
+    {
+      "test": "T16",
+      "check": "roster-1: closed Response 1 refused after removal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T16",
+      "check": "roster-1: no one else's Response 1 tasks listed after removal",
+      "ok": true,
+      "detail": [
+        "ISO R1 task of roster-1",
+        "ISO R1 task of volunteer-2"
+      ]
+    },
+    {
+      "test": "T16",
+      "check": "roster-1: own (assigned or collaborating) Response 1 tasks after removal (recorded)",
+      "ok": true,
+      "detail": "still listed: ['ISO R1 task of roster-1', 'ISO R1 task of volunteer-2']"
+    },
+    {
+      "test": "T16",
+      "check": "roster-2: closed Response 1 refused after removal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T16",
+      "check": "roster-2: no one else's Response 1 tasks listed after removal",
+      "ok": true,
+      "detail": [
+        "ISO R1 task of roster-2",
+        "ISO R2 task of volunteer-1"
+      ]
+    },
+    {
+      "test": "T16",
+      "check": "roster-2: own (assigned or collaborating) Response 1 tasks after removal (recorded)",
+      "ok": true,
+      "detail": "still listed: ['ISO R1 task of roster-2']"
+    },
+    {
+      "test": "T16",
+      "check": "volunteer-2: closed Response 1 refused after removal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "T16",
+      "check": "volunteer-2: no one else's Response 1 tasks listed after removal",
+      "ok": true,
+      "detail": [
+        "ISO R1 task of volunteer-2"
+      ]
+    },
+    {
+      "test": "T16",
+      "check": "volunteer-2: own (assigned or collaborating) Response 1 tasks after removal (recorded)",
+      "ok": true,
+      "detail": "still listed: ['ISO R1 task of volunteer-2']"
+    },
+    {
+      "test": "T16",
+      "check": "staff-1 (still in the team) reads the closed response and its tasks",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

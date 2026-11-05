@@ -286,8 +286,11 @@ def main():
     espo.call('PUT', '/Settings', body={
         'assignmentNotificationsEntityList': sorted(set(settings.get('assignmentNotificationsEntityList') or [])
                                                     | {'Case', 'Task', 'CResponse', 'CSite'}),
+        # In global search, so the isolation tests (T8) search them too
+        'globalSearchEntityList': sorted(set(settings.get('globalSearchEntityList') or [])
+                                         | {'Case', 'Contact', 'Account', 'Task', 'CResponse', 'CSite', 'CStandard'}),
         'applicationName': 'Kobo requests and responses (test)'})
-    print('settings: assignment notifications for Case, Task, Response, Site')
+    print('settings: assignment notifications for Case, Task, Response, Site; global search')
 
     ensure_entities(espo)
     for entity, fields in FIELDS.items():
