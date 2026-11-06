@@ -29,12 +29,12 @@
 deploy/up.sh                       # EspoCRM 10.0.11, MariaDB, its scheduler, Caddy (TLS)
 tests/fetch-secrets.sh             # the admin password, to secrets/ (not in git)
 python3 -I espo/seed/seed.py --users   # entities, fields, board, roles, teams, formulas, test users
-deploy/bridges.sh                  # kobo-espo-bridge's setup for each template, then the bridges</code></pre>
+deploy/bridges.sh                  # the bridge: one service for every connection, set up on the server</code></pre>
 <p>Each step can be run again: they all keep what's there and put back what they define.</p>
 <ul>
   <li><code>deploy/up.sh</code> generates the passwords on the server, the first time.</li>
   <li>The seed makes the <strong>Response</strong>, <strong>Site</strong> and <strong>Standard</strong> entities, the task board's columns, the five roles, the teams, and the formula scripts (<code>espo/formula/</code>).</li>
-  <li>Setup makes each form's fields, and an API user that can do only what that form needs.</li>
+  <li>The bridge sets each form up itself: its fields, its teams, and an API user that can do only what that form needs. It does it again when the template changes.</li>
 </ul>
 <div class="warning"><p>EspoCRM 10 doesn't install with all of <code>/var/www/html</code> on one volume (the "legacy" layout): mount <code>data</code>, <code>custom</code> and <code>client/custom</code> separately, as <code>docker-compose.yml</code> does. And publish it only once it has installed itself: its installer is open until then, and scanners found it within seconds.</p></div>
 </section>
@@ -42,6 +42,7 @@ deploy/bridges.sh                  # kobo-espo-bridge's setup for each template,
 <section id="templates">
 <h2>Templates</h2>
 <p>Each Kobo form has a template in <code>kobo/templates/</code>: which records it makes, its routes to teams, who's notified, its fields, its lists and follow-ups. kobo-espo-bridge's README describes every setting.</p>
+<p>A form can also be connected without a file: an admin makes a <strong>Kobo connection</strong> in EspoCRM and pastes the template in (<a href="#checking">below</a>). kobo-espo-bridge can propose a first template from the form itself (<code>propose.py</code>): a field for each question, with its type, and a list of what it left out and why.</p>
 <div class="table-scroll"><table>
   <thead><tr><th>Template</th><th>Form</th><th>Makes</th><th>API user</th></tr></thead>
   <tbody>
@@ -59,7 +60,7 @@ deploy/bridges.sh                  # kobo-espo-bridge's setup for each template,
 <ol>
   <li>Add its choice to the support form's project question, and redeploy it.</li>
   <li>Add a <code>[[route]]</code> to <code>support-request.toml</code>: the choice, its team ("Project: …"), who to notify and who to escalate to.</li>
-  <li>Run <code>deploy/bridges.sh</code>. It makes the team, and the case field gets the new choice from the form.</li>
+  <li>Run <code>deploy/bridges.sh</code>, which copies the template to the server. The bridge sets it up again within a minute: it makes the team, and the case field gets the new choice from the form.</li>
   <li>Give the consortium's people their role and that team (below).</li>
 </ol>
 <p><strong>A response</strong> (Workflow B):</p>

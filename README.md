@@ -9,14 +9,15 @@ The Kobo ↔ EspoCRM connection is [kobo-espo-bridge](../kobo-espo-bridge), shar
 this repository has the instance's setup, its forms and templates, and the tests.
 
 ```
-docker-compose.yml          EspoCRM 10.0.11 (apache), MariaDB 11.4, its scheduler, Caddy (TLS), the bridges
+docker-compose.yml          EspoCRM 10.0.11 (apache), MariaDB 11.4, its scheduler, Caddy (TLS), the bridge
 deploy/up.sh                the stack onto the droplet (ESPO_SSH), secrets generated there
-deploy/bridges.sh           kobo-espo-bridge's setup for each template, then the bridges (up | down | logs)
+deploy/bridges.sh           the bridge service, kobo-espo-bridge's `serve`: every connection, set up on the server (up | down | logs)
 espo/seed/seed.py           entities (Response, Site, Standard), fields, Task board, roles, teams, users
 espo/formula/               EspoCRM formula scripts, one file per entity and script type
 kobo/forms/                 the Kobo forms as XLSForm rows (.json; .xlsx from export.py)
-kobo/templates/             one bridge template per form
-tests/                      run_all.sh, cases/ (isolation, workflow_b, connection, latency), results/
+kobo/templates/             one bridge template per form (connections can also be made in EspoCRM)
+tests/                      run_all.sh, cases/ (isolation, workflow_b, agents, serve, connection, latency),
+                            test_propose.py, results/
 site/                       the manual: pages/, build.py, shots.py, demo-data.py
 agents/                     agents set up in EspoCRM (plans/espo-agents-plan.md): runner.py, llm.py,
                             tools.py, sync.py, setup/ (the example agents), models.toml
@@ -37,6 +38,12 @@ deploy/bridges.sh
 deploy/agents.sh            # ANTHROPIC_API_KEY in .env for agents with a model (or Bedrock, below)
 tests/run_all.sh            # or: tests/run_all.sh --kobo real
 ```
+
+**Kobo connections.** One bridge service runs every form's connection: the templates in
+`kobo/templates/`, and connections admins make in EspoCRM (Kobo connections, the
+template pasted in). It sets each one up when its template changes, and shows its status
+in its record. See the manual's [Running it](site/pages/running.html#checking) and
+kobo-espo-bridge's README (`serve`, and `propose` for a template from a form).
 
 Python 3.11+ (stdlib only, but the `anthropic` SDK for the agent runner, `openpyxl`, Pillow and Playwright for the forms' .xlsx,
 the demo photos and the screenshots). Secrets never go into git: `.env*` and `secrets/` are
