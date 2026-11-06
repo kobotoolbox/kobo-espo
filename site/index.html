@@ -63,11 +63,13 @@
 
 <section id="what">
 <h2>What it is</h2>
-<p>Three pieces:</p>
+<p>Three pieces, and two ways to do more with them:</p>
 <ul>
   <li><strong>KoboToolbox</strong>, unchanged: the forms people already use, on the web or in KoboCollect.</li>
   <li><strong>EspoCRM 10</strong>, open source, where staff, partners, roster experts and volunteers each see their own team's work. It has cases, contacts and accounts, and here also Responses, Sites and Standards, with a Kanban board for tasks.</li>
   <li><strong>kobo-espo-bridge</strong>, a small program that connects them. It polls Kobo for new submissions and turns each one into a record. It keeps lists from EspoCRM on Kobo forms. And it applies follow-up visits to the records they're about. It was taken from <a href="https://github.com/kobotoolbox">Kobo in a box</a>'s case management and made general, so this test, the box and later connections share one tested bridge.</li>
+  <li><strong>The EspoCRM MCP</strong>, part of kobo-espo-bridge, for administrators: with it and <a href="https://github.com/kobotoolbox/kobo-mcp">kobo-mcp</a>, Claude connects another Kobo form in one conversation, showing every change before it makes it. See <a href="connect.html">Connecting a form</a>.</li>
+  <li><strong>Agents</strong>, set up as records in EspoCRM: they screen grant applications and triage site visits, in dry run here. See <a href="running.html#agents">Running it</a>.</li>
 </ul>
 <p>Nothing changes in KoboToolbox's settings: no REST services or webhooks to set up. After either side has been down, the bridge catches up by itself, and never makes a record twice.</p>
 </section>
@@ -188,5 +190,6 @@
     </div>
   </div>
 </footer>
+<script src="static/site/menu.js" defer></script>
 </body>
 </html>

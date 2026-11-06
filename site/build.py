@@ -66,6 +66,7 @@ FOOT = """</main>
     </div>
   </div>
 </footer>
+<script src="static/site/menu.js" defer></script>
 </body>
 </html>
 """
