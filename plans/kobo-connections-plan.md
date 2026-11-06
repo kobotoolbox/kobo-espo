@@ -1,8 +1,9 @@
 # Connecting a Kobo form to EspoCRM in one conversation
 
-Status: 2026-11-06. Phases 0–2 done (setup() in kobo-espo-bridge 9829168; `bridge.py serve`
-and Kobo connections in EspoCRM 210c150; kobo-espo's droplet runs one bridge service). Phase 3
-next. See REPORT.md, "Kobo connections and one bridge service".
+Status: 2026-11-06. Phases 0–3 done (setup() in kobo-espo-bridge 9829168; `bridge.py serve`
+and Kobo connections in EspoCRM 210c150; propose/preview after it; kobo-espo's droplet runs
+one bridge service). Phase 4, the MCP, next. See REPORT.md, "Kobo connections and one
+bridge service".
 
 ## Goal
 
@@ -127,6 +128,19 @@ override.
 
 `preview(template, submission)` runs one submission through `to_record` without writing
 anything. It shows the record that would be made, the team, and who would be told.
+
+*Done 2026-11-06* (`propose.py`). Against kobo-espo's forms the proposal matches the
+hand-written templates but for three naming choices (`registeredAt`, `installedAt`, the
+case's name), after four defaults were fixed: short labels from the question's name, not
+its text; a Case's requester questions as `[requester]`, and `priority` as the case's own
+when the choices are EspoCRM's; only the name, match and requester's email required (a
+form's other required answers can be missing from older versions); a `..._code` question
+as `match` on custom entities. With the fields EspoCRM has, links and attachment fields
+are reused; a link from a list file gets a warning to check (ids or codes). site-visit,
+a follow-up form, has no default. `float` is new in the bridge (decimal questions).
+Tests: bridge unit tests 66 (13 new); kobo-espo `tests/test_propose.py`; serve.py K5, a
+proposed template for a form with every question type set up and run on the droplet,
+and the record exactly as `preview` said.
 
 ### 4. The EspoCRM MCP (in kobo-espo-bridge, `mcp/`)
 

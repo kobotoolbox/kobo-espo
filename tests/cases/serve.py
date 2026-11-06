@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-Kobo connections made in EspoCRM (plans/kobo-connections-plan.md, phase 2): K1-K4, with
-the fake Kobo, against the test droplet.
+Kobo connections made in EspoCRM (plans/kobo-connections-plan.md, phases 2 and 3): K1-K5,
+with the fake Kobo, against the test droplet. K5: a template proposed from a form with
+every question type (kobo-espo-bridge's propose.py) set up and run, on an entity made for
+the test (CSrvEvery, removed at the end), and the record compared with propose.preview().
 
     python3 -I tests/cases/serve.py
 
@@ -9,6 +11,7 @@ Makes "SRV ..." connection records for a service of its own (Run by: tests-serve
 `bridge.py serve once` as that service, and removes what it made (records, contacts, the
 connection's API user and role) at the end. Writes tests/results/serve.json.
 """
+import importlib.util
 import json
 import os
 import subprocess
@@ -71,7 +74,7 @@ def main():
     def get(rec):
         return a.call('GET', f'/CKoboConnection/{rec["id"]}')
 
-    made = []
+    made, entity_made = [], []
     try:
         # --- K1: a connection made in EspoCRM runs in the next pass, with its own API user -
         serve()  # the first serve on an instance makes the entity (made already: nothing)
@@ -128,6 +131,45 @@ def main():
         code, log = serve()
         check('K4', 'the template edited in EspoCRM: setup runs again in the next pass',
               code == 0 and 'setting up again' in log and get(rec).get('status') == 'ok', log[-800:])
+        a.call('PUT', f'/CKoboConnection/{rec["id"]}', body={'active': False})
+
+        # --- K5: a proposed template, as it is: set up, run, and as previewed ---------------
+        sys.path.insert(0, str(BRIDGE_DIR))
+        import bridge
+        import propose
+        spec = importlib.util.spec_from_file_location('bridge_test_propose', BRIDGE_DIR / 'tests' / 'test_propose.py')
+        every = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(every)
+        title = f'Every question (serve test {RUN})'
+        content = {**every.EVERY, 'settings': {'form_title': title}}
+        every_uid = kobo.add_form(title, content)
+        a.call('POST', '/EntityManager/action/createEntity', body={
+            'name': 'SrvEvery', 'type': 'Base', 'labelSingular': 'Srv every', 'labelPlural': 'Srv every', 'stream': True})
+        entity_made.append('CSrvEvery')
+        proposal = propose.propose(content, 'CSrvEvery', team='Internal Kobo')
+        conn = a.call('POST', '/CKoboConnection', body={'name': f'SRV Every {RUN}', 'runBy': NAME, 'active': True,
+                                                        'template': proposal['template']})
+        made.append(conn)
+        sub = kobo.submit(every_uid, {
+            'end': '2026-11-06T11:30:00.000+01:00', 'site_name': f'SRV Well {RUN}', 'notes': 'Line one\nline two',
+            'counts/people': 12, 'counts/litres_per_day': 3.5, 'counts/score': 7, 'visit_date': '2026-11-05',
+            'seen_at': '2026-11-05T09:15:00.000-05:00', 'opening_time': '08:00:00.000+01:00', 'working': 'no',
+            'risks': 'flood fire', 'site': 'EQ1-WP-001', 'location': '-1.28 36.82 1700 5', 'meter': 'M-42',
+            'consent': 'OK', 'photo': 'well.jpg'}, files={'well.jpg': (b'\xff\xd8\xff fake jpeg', 'image/jpeg')})
+        code, log = serve()
+        got = by(a, 'CSrvEvery', 'cKoboSubmissionUuid', sub['_uuid'])
+        record = a.call('GET', f'/CSrvEvery/{got[0]["id"]}') if got else {}
+        expected = propose.preview(bridge.parse_template(proposal['template']), sub, content, kobo.url, every_uid)
+        differ = {k: (v, record.get(k)) for k, v in expected.get('record', {}).items()
+                  if record.get(k) != v}
+        check('K5', 'a proposed template for every question type: set up and run as it is',
+              code == 0 and len(got) == 1 and get(conn).get('status') == 'ok', log[-1200:])
+        check('K5', 'the record is what the preview said', got and not differ, differ)
+        check('K5', 'the photo is copied onto it, in its Files from Kobo',
+              list((record.get('koboFilesNames') or {}).values()) == ['well.jpg'] == expected.get('files'),
+              {'record': record.get('koboFilesNames'), 'preview': expected.get('files')})
+        check('K5', 'in the route\'s team', record.get('teamsNames') and list(record['teamsNames'].values()) == ['Internal Kobo'],
+              record.get('teamsNames'))
     finally:
         kobo.stop()
         for email in (f'serve-{i}-{RUN}@example.org' for i in (1, 2, 3)):
@@ -140,6 +182,10 @@ def main():
             for r in by(a, 'Role', 'name', f'Kobo connection: {user}') if user else []:
                 a.call('DELETE', f'/Role/{r["id"]}')
             a.call('DELETE', f'/CKoboConnection/{rec["id"]}')
+        for entity in entity_made:
+            for row in a.call('GET', f'/{entity}', {'maxSize': 200, 'select': 'id'})['list']:
+                a.call('DELETE', f'/{entity}/{row["id"]}')
+            a.call('POST', '/EntityManager/action/removeEntity', body={'name': entity})
 
     path = ROOT / 'tests' / 'results' / 'serve.json'
     path.write_text(json.dumps(results, indent=2) + '\n')

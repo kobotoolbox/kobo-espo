@@ -328,6 +328,11 @@ gets an API user of its own (`kobo-conn-<name>`).
   (7 found in EspoCRM already, 58 recorded as waiting). That ledger was dropped and the
   old one moved into place. `deploy/bridges.sh` now moves the state before the service
   starts.
+- **Phase 3, a template from the form** (`propose.py`, 2026-11-06): for kobo-espo's
+  forms, the proposal matches the hand-written templates but for three naming choices
+  (`tests/test_propose.py`). A proposal for a form with every question type was set up
+  and run as it was, and the record matched its preview exactly (serve.py K5, 12/12).
+  Repeat groups, calculations and follow-ups have no default.
 - **Limits:** `kobo-edits` (edited submissions, cases only) is still one user for every
   Case template, so two Case connections would share its role. Still one bridge service
   per instance.
