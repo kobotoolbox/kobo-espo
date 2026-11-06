@@ -1,5 +1,9 @@
 """Running kobo-espo-bridge's setup.py and bridge.py (as processes, as in their containers)
-against the test droplet's EspoCRM, for the tests and the demo data."""
+against the test droplet's EspoCRM, for the tests and the demo data.
+
+A pass is `bridge.py serve once` with this template only, as the service "tests" (its
+connection records are its own, "Run by" tests), or with KOBO_ESPO_BRIDGE_CMD=once,
+`bridge.py once` as one template's bridge did before the service."""
 import json
 import os
 import subprocess
@@ -14,6 +18,7 @@ sys.path.insert(0, str(BRIDGE_DIR))
 import bridge  # noqa: E402
 
 SECRETS = ROOT / 'secrets' / 'bridge.secrets'
+CMD = os.environ.get('KOBO_ESPO_BRIDGE_CMD', 'serve')
 
 
 def ensure_secrets():
@@ -29,7 +34,12 @@ class Bridge:
         self.name, self.kobo_url = name, kobo_url
         self.template = ROOT / 'kobo' / 'templates' / f'{name}.toml'
         self.t = bridge.load_template(self.template)
-        self.state = Path(tempfile.mkdtemp(prefix=f'bridge-{name}-'))
+        root = Path(tempfile.mkdtemp(prefix=f'bridge-{name}-'))
+        self.state = root / name  # serve's state directory for this template file
+        self.state.mkdir()
+        self.templates = root / 'templates'  # this template only
+        self.templates.mkdir()
+        (self.templates / self.template.name).symlink_to(self.template)
         self.token_file = self.state / 'token'
         self.token_file.write_text(token)
         self.token_file.chmod(0o600)
@@ -54,10 +64,15 @@ class Bridge:
             e['ESPO_FOLLOWUP_API_KEY'] = s[fu.get('secret', 'ESPO_FOLLOWUP_API_KEY')]
         if self.t['entity'] == 'Case' and self.t.get('form'):
             e['ESPO_EDITS_API_KEY'] = s['ESPO_EDITS_API_KEY']
+        if CMD == 'serve':
+            e = {k: v for k, v in e.items() if not k.endswith('_API_KEY') and k != 'BRIDGE_TEMPLATE'}
+            e.update({'BRIDGE_TEMPLATES': str(self.templates), 'BRIDGE_STATE_DIR': str(self.state.parent),
+                      'BRIDGE_SECRETS': str(SECRETS), 'BRIDGE_NAME': 'tests'})
         return e
 
     def once(self, espo_url=URL):
-        out = subprocess.run([sys.executable, '-I', str(BRIDGE_DIR / 'bridge.py'), 'once'],
+        cmd = ['serve', 'once'] if CMD == 'serve' else ['once']
+        out = subprocess.run([sys.executable, '-I', str(BRIDGE_DIR / 'bridge.py'), *cmd],
                              env=self.env(espo_url), capture_output=True, text=True)
         status = json.loads((self.state / 'status.json').read_text())
         return out.returncode, out.stdout + out.stderr, status

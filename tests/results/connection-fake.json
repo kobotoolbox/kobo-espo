@@ -1,8 +1,8 @@
 {
-  "when": "2026-11-05T17:21:36Z",
+  "when": "2026-11-06T10:10:17Z",
   "espo": "https://espo-test.kobolabs.dev",
   "kobo": "fake",
-  "run": "899003",
+  "run": "959467",
   "passed": 73,
   "failed": 0,
   "results": [
@@ -17,7 +17,7 @@
       "check": "name, category, priority, project from the answers",
       "ok": true,
       "detail": {
-        "name": "Forms and XLSForm: Form will not deploy (899003)",
+        "name": "Forms and XLSForm: Form will not deploy (959467)",
         "cCategory": "forms",
         "priority": "High",
         "cProject": "consortium_a"
@@ -42,9 +42,9 @@
       "check": "requester Contact by email, with their name",
       "ok": true,
       "detail": {
-        "emailAddress": "req-a-899003@example.org",
+        "emailAddress": "req-a-959467@example.org",
         "firstName": "Test Requester",
-        "lastName": "899003"
+        "lastName": "959467"
       }
     },
     {
@@ -64,7 +64,7 @@
       "check": "media: the attached file is copied onto the case",
       "ok": true,
       "detail": {
-        "6aecba3c3ef2a1c71": "screenshot.png"
+        "6aeda676ec8eb5560": "screenshot.png"
       }
     },
     {
@@ -83,7 +83,7 @@
       "test": "T1",
       "check": "latency of one pass (submission -> case), seconds",
       "ok": true,
-      "detail": 10.4
+      "detail": 16.5
     },
     {
       "test": "T2",
@@ -103,7 +103,7 @@
         "statuses": 0,
         "merged": 0,
         "notified": 0,
-        "escalated": 3
+        "escalated": 11
       }
     },
     {
@@ -128,7 +128,7 @@
       "test": "T3",
       "check": "EspoCRM stopped: the pass fails, visibly",
       "ok": true,
-      "detail": "GET /Team: HTTP 502"
+      "detail": "setup: GET /Metadata: HTTP 502"
     },
     {
       "test": "T3",
@@ -151,7 +151,7 @@
           "statuses": 0,
           "merged": 0,
           "notified": 1,
-          "escalated": 0
+          "escalated": 1
         }
       }
     },
@@ -166,8 +166,8 @@
       "check": "the pass goes on (the good ones still go through)",
       "ok": true,
       "detail": {
-        "last_pass": "2026-11-05T17:18:49Z",
-        "last_success": "2026-11-05T17:18:49Z",
+        "last_pass": "2026-11-06T10:07:29Z",
+        "last_success": "2026-11-06T10:07:29Z",
         "ok": true,
         "error": null,
         "counts": {
@@ -188,7 +188,7 @@
         },
         "failed": 2,
         "failed_elsewhere": 0,
-        "oldest_failed": "2026-11-05T17:18:49Z",
+        "oldest_failed": "2026-11-06T10:07:29Z",
         "oldest_error": "required answer missing: summary"
       }
     },
@@ -196,7 +196,7 @@
       "test": "T4",
       "check": "missing answer: \"required answer missing: summary\" in the ledger",
       "ok": true,
-      "detail": "a563c85a4d20a43a38a9db  submission 4  since 2026-11-05T17:18:49Z  1 attempt(s), next 2026-11-05T17:19:49Z\n    required answer missing: summary\na563c85a4d20a43a38a9db  submission 5  since 2026-11-05T17:18:49Z  1 attempt(s), next 2026-11-05T17:19:49Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "a0bd0fa7e7905439ea222b  submission 4  since 2026-11-06T10:07:29Z  1 attempt(s), next 2026-11-06T10:08:29Z\n    required answer missing: summary\na0bd0fa7e7905439ea222b  submission 5  since 2026-11-06T10:07:29Z  1 attempt(s), next 2026-11-06T10:08:29Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -208,7 +208,7 @@
       "test": "T4",
       "check": "invalid email: refused by EspoCRM, recorded with its reason",
       "ok": true,
-      "detail": "a563c85a4d20a43a38a9db  submission 4  since 2026-11-05T17:18:49Z  1 attempt(s), next 2026-11-05T17:19:49Z\n    required answer missing: summary\na563c85a4d20a43a38a9db  submission 5  since 2026-11-05T17:18:49Z  1 attempt(s), next 2026-11-05T17:19:49Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "a0bd0fa7e7905439ea222b  submission 4  since 2026-11-06T10:07:29Z  1 attempt(s), next 2026-11-06T10:08:29Z\n    required answer missing: summary\na0bd0fa7e7905439ea222b  submission 5  since 2026-11-06T10:07:29Z  1 attempt(s), next 2026-11-06T10:08:29Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -227,6 +227,9 @@
       "check": "triager notified of the new Consortium A case (mention)",
       "ok": true,
       "detail": [
+        null,
+        null,
+        null,
         null,
         null,
         null,
@@ -523,16 +526,16 @@
       "ok": true,
       "detail": [
         {
-          "name": "6aecb926a413358ba",
-          "label": "AGT Response 181309"
+          "name": "6aed995653217dbaf",
+          "label": "AGT Response 100941"
         },
         {
-          "name": "6aecaf8f1c90f0aab",
-          "label": "Earthquake response, Testland North"
+          "name": "6aed99e640cbec2d6",
+          "label": "AGT Response follow-up 101205"
         },
         {
-          "name": "6aecaf90266298035",
-          "label": "Flood response, Testland South"
+          "name": "6aed86ae113111258",
+          "label": "BDR Response 085005"
         }
       ]
     },
@@ -587,7 +590,7 @@
       "check": "media: the site photo is on the site, with the answer's file name (Kobo stores site_photo_1.png)",
       "ok": true,
       "detail": {
-        "6aecbaeaed604aaa1": "site photo (1).png"
+        "6aeda75310e1bfcae": "site photo (1).png"
       }
     },
     {
@@ -615,7 +618,7 @@
       "test": "C2",
       "check": "a standard code EspoCRM has no record for: recorded, no site made",
       "ok": true,
-      "detail": "aa87d7998f748483b97ae9  submission 4  since 2026-11-05T17:21:01Z  1 attempt(s), next 2026-11-05T17:22:01Z\n    standard: 0 CStandard records with that code\n"
+      "detail": "aed5872e00148461e889c7  submission 4  since 2026-11-06T10:09:37Z  1 attempt(s), next 2026-11-06T10:10:37Z\n    standard: 0 CStandard records with that code\n"
     },
     {
       "test": "C2",
@@ -629,9 +632,45 @@
       "ok": true,
       "detail": [
         {
-          "name": "AGT-181314",
-          "label": "AGT-181314 \u00b7 AGT Site well 1",
+          "name": "BDR-085005-14",
+          "label": "BDR-085005-14 \u00b7 BDR Well north",
+          "status": "needs_repair",
+          "region": ""
+        },
+        {
+          "name": "BDR-085005-20",
+          "label": "BDR-085005-20 \u00b7 BDR Tap stand market",
           "status": "operational",
+          "region": ""
+        },
+        {
+          "name": "BDR-085819-14",
+          "label": "BDR-085819-14 \u00b7 BDR Well north",
+          "status": "needs_repair",
+          "region": ""
+        },
+        {
+          "name": "BDR-085819-20",
+          "label": "BDR-085819-20 \u00b7 BDR Tap stand market",
+          "status": "operational",
+          "region": ""
+        },
+        {
+          "name": "BDR-101558-14",
+          "label": "BDR-101558-14 \u00b7 BDR Well north",
+          "status": "needs_repair",
+          "region": ""
+        },
+        {
+          "name": "BDR-101558-20",
+          "label": "BDR-101558-20 \u00b7 BDR Tap stand market",
+          "status": "operational",
+          "region": ""
+        },
+        {
+          "name": "BDR-101558-pump",
+          "label": "BDR-101558-pump \u00b7 BDR Pump east",
+          "status": "needs_repair",
           "region": ""
         },
         {
@@ -667,6 +706,18 @@
         {
           "name": "EQ1-WP-899003",
           "label": "EQ1-WP-899003 \u00b7 Water point 899003",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-957507",
+          "label": "EQ1-WP-957507 \u00b7 Water point 957507",
+          "status": "planned",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-959467",
+          "label": "EQ1-WP-959467 \u00b7 Water point 959467",
           "status": "planned",
           "region": "North"
         },
@@ -704,7 +755,7 @@
       "check": "media: the visit's photo is on its note",
       "ok": true,
       "detail": {
-        "6aecbb10311ab4ddd": "leak.png"
+        "6aeda773516ef2ec3": "leak.png"
       }
     },
     {
@@ -719,9 +770,45 @@
       "ok": true,
       "detail": [
         {
-          "name": "AGT-181314",
-          "label": "AGT-181314 \u00b7 AGT Site well 1",
+          "name": "BDR-085005-14",
+          "label": "BDR-085005-14 \u00b7 BDR Well north",
+          "status": "needs_repair",
+          "region": ""
+        },
+        {
+          "name": "BDR-085005-20",
+          "label": "BDR-085005-20 \u00b7 BDR Tap stand market",
           "status": "operational",
+          "region": ""
+        },
+        {
+          "name": "BDR-085819-14",
+          "label": "BDR-085819-14 \u00b7 BDR Well north",
+          "status": "needs_repair",
+          "region": ""
+        },
+        {
+          "name": "BDR-085819-20",
+          "label": "BDR-085819-20 \u00b7 BDR Tap stand market",
+          "status": "operational",
+          "region": ""
+        },
+        {
+          "name": "BDR-101558-14",
+          "label": "BDR-101558-14 \u00b7 BDR Well north",
+          "status": "needs_repair",
+          "region": ""
+        },
+        {
+          "name": "BDR-101558-20",
+          "label": "BDR-101558-20 \u00b7 BDR Tap stand market",
+          "status": "operational",
+          "region": ""
+        },
+        {
+          "name": "BDR-101558-pump",
+          "label": "BDR-101558-pump \u00b7 BDR Pump east",
+          "status": "needs_repair",
           "region": ""
         },
         {
@@ -761,6 +848,18 @@
           "region": "North"
         },
         {
+          "name": "EQ1-WP-957507",
+          "label": "EQ1-WP-957507 \u00b7 Water point 957507",
+          "status": "planned",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-959467",
+          "label": "EQ1-WP-959467 \u00b7 Water point 959467",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
           "name": "ISO-S1",
           "label": "ISO-S1 \u00b7 ISO Site R1",
           "status": "planned",
@@ -772,7 +871,7 @@
       "test": "C3",
       "check": "a visit to an unknown site is recorded, not guessed",
       "ok": true,
-      "detail": "a96ec07f05e7b437e983ce  submission 2  since 2026-11-05T17:21:34Z  1 attempt(s), next 2026-11-05T17:22:34Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
+      "detail": "a0cd0180a538c4645b73fe  submission 2  since 2026-11-06T10:10:12Z  1 attempt(s), next 2026-11-06T10:11:12Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
     }
   ]
 }

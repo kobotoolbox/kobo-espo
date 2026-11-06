@@ -6,7 +6,7 @@
 #   espocrm         the web app (apache image), behind caddy
 #   espocrm-daemon  EspoCRM's scheduled jobs (notifications, emails, cleanup)
 #   caddy           TLS for ESPO_HOST (profile `tls`; Let's Encrypt)
-#   bridge          kobo-espo-bridge, polling Kobo (profile `bridge`; one per template)
+#   bridge          kobo-espo-bridge, polling Kobo for every connection (profile `bridge`)
 #   agent-runner    the agents set up in EspoCRM (profile `agents`; agents/runner.py)
 
 services:
@@ -79,12 +79,14 @@ services:
       espocrm:
         condition: service_healthy
 
-  # kobo-espo-bridge, one per template (deploy/bridges.sh starts them with the keys setup made)
-  bridge-intake: &bridge
+  # kobo-espo-bridge, one service for every connection: the templates in kobo/templates and
+  # the Kobo connections made in EspoCRM (bridge.py serve; it runs setup itself, as admin,
+  # and writes the API keys it makes to the secrets file)
+  bridge:
     profiles: [bridge]
     image: python:3.13-slim
     restart: unless-stopped
-    command: ["python3", "-I", "-u", "/bridge/bridge.py", "run"]  # -u: -I ignores PYTHONUNBUFFERED
+    command: ["python3", "-I", "-u", "/bridge/bridge.py", "serve"]  # -u: -I ignores PYTHONUNBUFFERED
     working_dir: /bridge
     depends_on:
       espocrm:
@@ -93,42 +95,18 @@ services:
       - /root/kobo-espo-bridge:/bridge:ro
       - ./kobo/templates:/templates:ro
       - /root/kobo-espo-kobo.token:/run/kobo.token:ro
+      - /root/kobo-espo-bridge.secrets:/run/bridge.secrets
       - bridge-state:/state
-    environment: &bridge-env
+    environment:
       ESPO_URL: http://espocrm
+      ESPO_ADMIN_PASSWORD: ${ESPO_ADMIN_PASSWORD}
       KOBO_URL: ${KOBO_URL}
       KOBO_TOKEN_FILE: /run/kobo.token
+      BRIDGE_SECRETS: /run/bridge.secrets
+      BRIDGE_TEMPLATES: /templates
+      BRIDGE_STATE_DIR: /state
       BRIDGE_POLL_SECONDS: ${BRIDGE_POLL_SECONDS:-30}
       BRIDGE_LIST_MIN_SECONDS: ${BRIDGE_LIST_MIN_SECONDS:-60}
-      BRIDGE_TEMPLATE: /templates/support-request.toml
-      BRIDGE_STATE_DIR: /state/intake
-      ESPO_API_KEY: ${ESPO_INTAKE_API_KEY}
-      ESPO_EDITS_API_KEY: ${ESPO_EDITS_API_KEY}
-
-  bridge-volunteers:
-    <<: *bridge
-    environment:
-      <<: *bridge-env
-      BRIDGE_TEMPLATE: /templates/volunteer.toml
-      BRIDGE_STATE_DIR: /state/volunteers
-      ESPO_API_KEY: ${ESPO_VOLUNTEERS_API_KEY}
-
-  bridge-sites:
-    <<: *bridge
-    environment:
-      <<: *bridge-env
-      BRIDGE_TEMPLATE: /templates/site-registration.toml
-      BRIDGE_STATE_DIR: /state/sites
-      ESPO_API_KEY: ${ESPO_SITES_API_KEY}
-
-  bridge-site-visits:
-    <<: *bridge
-    environment:
-      <<: *bridge-env
-      BRIDGE_TEMPLATE: /templates/site-visit.toml
-      BRIDGE_STATE_DIR: /state/site-visits
-      ESPO_API_KEY: ${ESPO_SITE_LISTS_API_KEY}
-      ESPO_FOLLOWUP_API_KEY: ${ESPO_SITE_VISITS_API_KEY}
 
   # The agents (plans/espo-agents-plan.md): one runner for every Agent whose runner is "droplet"
   # (deploy/agents.sh starts it with the keys agents/sync.py made)

@@ -112,11 +112,13 @@ deploy/bridges.sh                  # kobo-espo-bridge's setup for each template,
 
 <section id="checking">
 <h2>Checking on the bridge</h2>
-<pre><code>deploy/bridges.sh logs             # what each bridge did: ids and counts, never answers
-ssh root@&lt;droplet&gt; docker exec kobo-espo-bridge-intake-1 \
-    python3 -I /bridge/bridge.py failed /state/intake    # submissions waiting, and why</code></pre>
-<p>Each bridge writes <code>status.json</code> in its state directory: its last good pass, its counts, how many submissions are waiting and the oldest one's reason. A submission waiting for a fix (a choice missing in EspoCRM, a required answer missing) is retried by itself. It's retried at once when the template or the form changes.</p>
-<p>Run <strong>one bridge per template</strong>. Two at once could both make a record for the same new submission: each looks for it first, but neither can see the other's in flight.</p>
+<p>One service, <code>bridge</code>, runs every <strong>Kobo connection</strong>: the templates in <code>kobo/templates/</code>, and connections made in EspoCRM. Admins see them all in EspoCRM under <strong>Kobo connections</strong>: each one's status, its last pass, how many submissions are waiting, and the oldest one's reason. A template file's connection shows a copy of the file: change the file, not the record. Its <strong>Active</strong> box pauses it.</p>
+<pre><code>deploy/bridges.sh logs             # what it did: ids and counts, never answers
+ssh root@&lt;droplet&gt; docker exec kobo-espo-bridge-1 \
+    python3 -I /bridge/bridge.py failed /state/support-request   # submissions waiting, and why</code></pre>
+<p>A submission waiting for a fix (a choice missing in EspoCRM, a required answer missing) is retried by itself. It's retried at once when the template or the form changes. The service sets a connection up again when its template changes, and checks every 10 minutes whether its form has a new version.</p>
+<p><strong>A connection made in EspoCRM</strong>: Kobo connections → Create, a name and the template (the same format as the files, see kobo-espo-bridge's README). It starts within one pass (30 seconds), with an API user of its own. If its template or setup fails, its <strong>Last error</strong> says why.</p>
+<p>Run <strong>one bridge service per instance</strong>. Two at once could both make a record for the same new submission: each looks for it first, but neither can see the other's in flight. (The tests run their own, as "tests": a connection is run only by the service named in its <strong>Run by</strong>.)</p>
 </section>
 
 <section id="agents">
@@ -154,7 +156,7 @@ deploy/agents.sh up</code></pre>
 
 <section id="tests">
 <h2>The tests</h2>
-<pre><code>tests/run_all.sh                   # unit tests, seed, isolation, board, connection (fake Kobo)
+<pre><code>tests/run_all.sh                   # unit tests, seed, isolation, board, agents, connections, connection (fake Kobo)
 tests/run_all.sh --kobo real       # the connection tests on the Kobo account in .env
 python3 -I tests/cases/latency.py  # submission to record, through the running bridges</code></pre>
 <p>The tests make their own records (named "ISO …" and "WFB …", and cases with a run number). <code>site/demo-data.py</code> clears the instance and fills it with the made-up demo data again. <code>site/shots.py</code> takes this manual's screenshots, and <code>site/build.py</code> builds its pages.</p>

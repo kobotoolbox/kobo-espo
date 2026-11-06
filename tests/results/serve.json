@@ -1,0 +1,62 @@
+[
+  {
+    "test": "K1",
+    "check": "a connection made in EspoCRM: one pass, and the submission is a Contact",
+    "ok": true,
+    "detail": "bridge serve \"tests-serve\": connections in EspoCRM, from http://127.0.0.1:61838\nform or template changed: setting up again (a57a05801e92747448885a)\nlayouts: Contact page, list and filters\nteam exists: Roster and volunteers\nrole created: Kobo connection: kobo-conn-srv-volunteers-959333\napi user created: kobo-conn-srv-volunteers-959333\nwrote ESPO_KOBO_CONN_SRV_VOLUNTEERS_959333_API_KEY to /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-6cx8bkpm/bridge.secrets\nContact 6aeda5dc2a4fc98d2 for a57a05801e92747448885a submission 1 (-, 1 team(s))\nSRV Volunteers 959333: pass: seen 1, created 1, skipped 0, existing 0, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 1, escalated 0\n"
+  },
+  {
+    "test": "K1",
+    "check": "with an API user of its own (kobo-conn-<name>), not the shared default",
+    "ok": true,
+    "detail": "kobo-conn-srv-volunteers-959333"
+  },
+  {
+    "test": "K1",
+    "check": "its status in the record: OK, the last pass, what the template makes",
+    "ok": true,
+    "detail": {
+      "status": "ok",
+      "lastPass": "2026-11-06 10:02:48",
+      "recordEntity": "Contact",
+      "koboForm": "Volunteer sign-up (serve test 959333)",
+      "routeTeams": "Roster and volunteers",
+      "notifyUsers": "staff-1",
+      "lastCounts": "seen 1, created 1, notified 1",
+      "lastError": null
+    }
+  },
+  {
+    "test": "K2",
+    "check": "a template that isn't TOML: Setup failed, and Last error says why",
+    "ok": true,
+    "detail": {
+      "status": "setup_failed",
+      "lastError": "template: Expected ']' at the end of a table declaration (at line 1, column 6)"
+    }
+  },
+  {
+    "test": "K2",
+    "check": "the other connection still ran (and the pass exits 1)",
+    "ok": true,
+    "detail": "bridge serve \"tests-serve\": connections in EspoCRM, from http://127.0.0.1:61838\nSRV Broken 959333: template: Expected ']' at the end of a table declaration (at line 1, column 6)\nContact 6aeda5e883bad1c8c for a57a05801e92747448885a submission 2 (-, 1 team(s))\nSRV Volunteers 959333: pass: seen 1, created 1, skipped 0, existing 0, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 1, escalated 0\n"
+  },
+  {
+    "test": "K3",
+    "check": "paused: no Contact, the record says Paused",
+    "ok": true,
+    "detail": "paused"
+  },
+  {
+    "test": "K3",
+    "check": "active again: the waiting submission comes in",
+    "ok": true,
+    "detail": "bridge serve \"tests-serve\": connections in EspoCRM, from http://127.0.0.1:61838\nContact 6aeda5f8a9b0a6107 for a57a05801e92747448885a submission 3 (-, 1 team(s))\nSRV Volunteers 959333: pass: seen 1, created 1, skipped 0, existing 0, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 1, escalated 0\n"
+  },
+  {
+    "test": "K4",
+    "check": "the template edited in EspoCRM: setup runs again in the next pass",
+    "ok": true,
+    "detail": "bridge serve \"tests-serve\": connections in EspoCRM, from http://127.0.0.1:61838\nform or template changed: setting up again (a57a05801e92747448885a)\nlayouts: Contact page, list and filters\nteam exists: Roster and volunteers\nrole updated: Kobo connection: kobo-conn-srv-volunteers-959333\nwrote ESPO_KOBO_CONN_SRV_VOLUNTEERS_959333_API_KEY to /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-6cx8bkpm/bridge.secrets\ntemplate changed: retrying every failed submission\n"
+  }
+]
