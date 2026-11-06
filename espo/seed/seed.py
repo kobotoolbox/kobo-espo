@@ -496,7 +496,15 @@ def main():
     teams = {name: ensure(espo, 'Team', 'name', name, {'name': name})['id'] for name in TEAMS}
     roles = {}
     for name, spec in ROLES.items():
-        roles[name] = ensure(espo, 'Role', 'name', name, {'name': name, 'fieldData': {}, **spec}, update=True)['id']
+        # Access to entities defined elsewhere (a Kobo connection's, granted through the
+        # bridge's MCP) is kept: the seed puts back only what it defines
+        have = find(espo, 'Role', 'name', name)
+        have = espo.call('GET', f'/Role/{have["id"]}') if have else {}
+        mine = set(spec.get('data', {}))
+        data = {**{e: v for e, v in (have.get('data') or {}).items() if e not in mine}, **spec.get('data', {})}
+        fields = {**{e: v for e, v in (have.get('fieldData') or {}).items() if e not in mine}, **spec.get('fieldData', {})}
+        roles[name] = ensure(espo, 'Role', 'name', name, {'name': name, **spec, 'data': data, 'fieldData': fields},
+                             update=True)['id']
     print(f'teams: {len(teams)}, roles: {", ".join(roles)}')
     ensure_agents(espo, teams)
 
