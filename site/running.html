@@ -65,10 +65,10 @@ deploy/bridges.sh                  # the bridge: one service for every connectio
 
 <section id="templates">
 <h2>Templates</h2>
-<p>Each Kobo form has a template in <code>kobo/templates/</code>: which records it makes, its routes to teams, who's notified, its fields, its lists and follow-ups. kobo-espo-bridge's README describes every setting.</p>
-<p>A form can also be connected without a file: an admin makes a <strong>Kobo connection</strong> in EspoCRM and pastes the template in (<a href="#checking">below</a>). kobo-espo-bridge can propose a first template from the form itself (<code>propose.py</code>): a field for each question, with its type, and a list of what it left out and why.</p>
+<p>Each Kobo form has a template: which records it makes, its routes to teams, who's notified, its fields, its lists and follow-ups. kobo-espo-bridge's README describes every setting. The template is in the form's <strong>Kobo connection</strong>, a record in EspoCRM, and is edited there (<a href="#checking">below</a>). The four below were made from the files in <code>kobo/templates/</code> on the droplet's first deploy; the files are kept for the tests, and changing one doesn't change the droplet.</p>
+<p>An admin connects another form by making a Kobo connection and pasting its template in. kobo-espo-bridge can propose a first template from the form itself (<code>propose.py</code>): a field for each question, with its type, and a list of what it left out and why.</p>
 <div class="table-scroll"><table>
-  <thead><tr><th>Template</th><th>Form</th><th>Makes</th><th>API user</th></tr></thead>
+  <thead><tr><th>Connection (file)</th><th>Form</th><th>Makes</th><th>API user</th></tr></thead>
   <tbody>
     <tr><td><code>support-request.toml</code></td><td>Kobo support request</td><td>Cases, contacts, accounts</td><td><code>kobo-intake</code></td></tr>
     <tr><td><code>volunteer.toml</code></td><td>Volunteer availability</td><td>Contacts (volunteers)</td><td><code>kobo-volunteers</code></td></tr>
@@ -113,12 +113,12 @@ deploy/bridges.sh                  # the bridge: one service for every connectio
 
 <section id="checking">
 <h2>Checking on the bridge</h2>
-<p>One service, <code>bridge</code>, runs every <strong>Kobo connection</strong>: the templates in <code>kobo/templates/</code>, and connections made in EspoCRM. Admins see them all in EspoCRM under <strong>Kobo connections</strong>: each one's status, its last pass, how many submissions are waiting, and the oldest one's reason. A template file's connection shows a copy of the file: change the file, not the record. Its <strong>Active</strong> box pauses it.</p>
+<p>One service, <code>bridge</code>, runs every <strong>Kobo connection</strong>. Admins see them in EspoCRM under <strong>Kobo connections</strong>: each one's template, status, last pass, how many submissions are waiting, and the oldest one's reason. Its <strong>Active</strong> box pauses it.</p>
 <pre><code>deploy/bridges.sh logs             # what it did: ids and counts, never answers
 ssh root@&lt;droplet&gt; docker exec kobo-espo-bridge-1 \
-    python3 -I /bridge/bridge.py failed /state/support-request   # submissions waiting, and why</code></pre>
+    python3 -I /bridge/bridge.py failed /state/&lt;connection id&gt;   # submissions waiting, and why</code></pre>
 <p>A submission waiting for a fix (a choice missing in EspoCRM, a required answer missing) is retried by itself. It's retried at once when the template or the form changes. The service sets a connection up again when its template changes, and checks every 10 minutes whether its form has a new version.</p>
-<p><strong>A connection made in EspoCRM</strong>: Kobo connections → Create, a name and the template (the same format as the files, see kobo-espo-bridge's README). It starts within one pass (30 seconds), with an API user of its own. If its template or setup fails, its <strong>Last error</strong> says why.</p>
+<p><strong>A connection made in EspoCRM</strong>: Kobo connections → Create, a name and the template (kobo-espo-bridge's README describes the format). It starts within one pass (30 seconds), with an API user of its own. If its template or setup fails, its <strong>Last error</strong> says why.</p>
 <h3>Connecting a form from a conversation</h3>
 <p>The bridge has an MCP server for agents such as Claude Code, used together with <a href="https://github.com/kobotoolbox/kobo-mcp">kobo-mcp</a>: kobo-mcp builds, deploys and shares the Kobo form, and this one connects it to EspoCRM. Its prompt, <strong>Connect a Kobo form to EspoCRM</strong>, takes the agent through the steps: which form, what each submission becomes, which team and who's told, sharing the form with the bridge's Kobo account, the proposed template and a preview of a real submission, a test submission, and access for the people who'll work on the records.</p>
 <pre><code>ssh root@&lt;droplet&gt; "cd /root/kobo-espo && docker compose -p kobo-espo exec bridge-mcp \

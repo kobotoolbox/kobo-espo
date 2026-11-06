@@ -83,9 +83,9 @@ services:
       espocrm:
         condition: service_healthy
 
-  # kobo-espo-bridge, one service for every connection: the templates in kobo/templates and
-  # the Kobo connections made in EspoCRM (bridge.py serve; it runs setup itself, as admin,
-  # and writes the API keys it makes to the secrets file)
+  # kobo-espo-bridge, one service for every Kobo connection, the records in EspoCRM (bridge.py
+  # serve; it runs setup itself, as admin, and writes the API keys it makes to the secrets
+  # file). kobo/templates are only the first copies of kobo-espo's four (deploy/bridges.sh)
   bridge:
     profiles: [bridge]
     image: python:3.13-slim
@@ -97,7 +97,6 @@ services:
         condition: service_healthy
     volumes:
       - /root/kobo-espo-bridge:/bridge:ro
-      - ./kobo/templates:/templates:ro
       - /root/kobo-espo-kobo.token:/run/kobo.token:ro
       - /root/kobo-espo-bridge.secrets:/run/bridge.secrets
       - bridge-state:/state
@@ -107,7 +106,6 @@ services:
       KOBO_URL: ${KOBO_URL}
       KOBO_TOKEN_FILE: /run/kobo.token
       BRIDGE_SECRETS: /run/bridge.secrets
-      BRIDGE_TEMPLATES: /templates
       BRIDGE_STATE_DIR: /state
       BRIDGE_POLL_SECONDS: ${BRIDGE_POLL_SECONDS:-30}
       BRIDGE_LIST_MIN_SECONDS: ${BRIDGE_LIST_MIN_SECONDS:-60}

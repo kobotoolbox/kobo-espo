@@ -344,6 +344,13 @@ gets an API user of its own (`kobo-conn-<name>`).
   made-up key, a non-admin's key, another Host refused). The seed now keeps roles' access
   to entities it doesn't define (what `grant_access` gave). Not done yet: the acceptance
   run in Claude Code with kobo-mcp, from "I want a grant application form" to a record.
+- **Phase 7, the four templates as records** (2026-11-06): the droplet's bridge no longer
+  reads `kobo/templates/`. `bridge.py serve adopt` turned each file's connection into an
+  ordinary record, edited in EspoCRM (and with `update_connection`), under the same API
+  user, and moved its state to the record's: the first pass after found nothing new, and
+  the waiting counts were unchanged (16, 8, 3, 0). `deploy/bridges.sh` runs adopt on every
+  `up`: a new droplet gets its four connections from the files, and after that the files
+  are only the tests' fixtures. Tests: serve.py K6 (19/19 with K1–K5).
 - **Limits:** `kobo-edits` (edited submissions, cases only) is still one user for every
   Case template, so two Case connections would share its role. Still one bridge service
   per instance.

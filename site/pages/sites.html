@@ -125,7 +125,7 @@ forms = ["Site visit - Test EQ 1 (espo-kobo test)"]</code></pre>
 <h2>Limits</h2>
 <ul>
   <li><strong>The whole list goes to every phone with the form.</strong> Only the columns a template names are included. Never put personal data in a list.</li>
-  <li><strong>One list per team</strong> means one <code>[[list]]</code> per response. A new response's visit form needs its own entry (copy <code>kobo/templates/site-visit.toml</code>). One form for all responses could use one list and a <code>choice_filter</code> on the response, if its users may see every response's sites.</li>
+  <li><strong>One list per team</strong> means one <code>[[list]]</code> per response. A new response's visit form needs its own connection (copy the site-visit connection's template). One form for all responses could use one list and a <code>choice_filter</code> on the response, if its users may see every response's sites.</li>
   <li>The site visit form in Enketo or KoboCollect wasn't shown here (the test account's forms need a Kobo login). The lists were checked on the forms through KoboToolbox's API.</li>
 </ul>
 </section>

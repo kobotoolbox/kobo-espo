@@ -6,8 +6,10 @@
 #   deploy/bridges.sh down     stop them (EspoCRM keeps running)
 #   deploy/bridges.sh logs     their logs
 #
-# The service (kobo-espo-bridge's `bridge.py serve`) runs the templates in kobo/templates
-# and the Kobo connections made in EspoCRM, and does their setup itself, as admin.
+# The service (kobo-espo-bridge's `bridge.py serve`) runs the Kobo connections in EspoCRM
+# and does their setup itself, as admin. kobo-espo's four forms are connections like any
+# other: made from kobo/templates the first time (`serve adopt`), then edited in EspoCRM.
+# The files stay as the tests' fixtures; a change to one doesn't reach the droplet.
 # Needs KOBO_URL and KOBO_TOKEN in .env: a throwaway test account (on a production server
 # only with KOBO_TEST_ACCOUNT_ON_PRODUCTION=yes). The token goes to
 # /root/kobo-espo-kobo.token on the droplet (mode 600). The API keys setup makes are in
@@ -49,6 +51,12 @@ case $CMD in
             for p in intake:support-request volunteers:volunteer sites:site-registration site-visits:site-visit; do
                 o=${p%%:*}; n=${p#*:}; if [ -d "$o" ] && [ ! -e "$n" ]; then mv "$o" "$n"; echo "state: $o -> $n"; fi
             done'
+        # The templates as connection records: made from the files if there are none yet,
+        # and, where the service still ran them as files, their state moved to the records'
+        # (once; after that, the records are the connections)
+        compose run --rm --no-deps -v /root/kobo-espo/kobo/templates:/adopt:ro bridge \
+            sh -c 'python3 -I /bridge/bridge.py serve adopt /adopt/*.toml' \
+            || echo "adopt failed (above): those connections don't run until it's fixed" >&2
         # --no-deps: never recreate EspoCRM itself from here
         # restart too: the code is mounted, and a running bridge has the old one loaded
         compose up -d --no-deps --build bridge bridge-mcp

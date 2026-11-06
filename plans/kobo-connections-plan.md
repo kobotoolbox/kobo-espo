@@ -233,6 +233,10 @@ Each phase can be used on its own. Phase 2 already removes the plumbing.
    the template section of "Running it". The bridge's README: `serve`, connections, the MCP.
 7. **Move kobo-espo's four templates** into connection records, keeping the files as the
    tests' fixtures.
+   *Done 2026-11-06:* `bridge.py serve adopt FILE...` (the record kept, its state moved to
+   the record's; a file without a connection gets a new record; again, nothing), run by
+   `deploy/bridges.sh` on every `up`; the bridge service no longer mounts the files. On
+   the droplet, nothing was rescanned. serve.py K6.
 
 ## Risks and open questions
 

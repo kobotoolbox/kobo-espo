@@ -16,7 +16,8 @@ deploy/bridges.sh           the bridge service, kobo-espo-bridge's `serve`: ever
 espo/seed/seed.py           entities (Response, Site, Standard), fields, Task board, roles, teams, users
 espo/formula/               EspoCRM formula scripts, one file per entity and script type
 kobo/forms/                 the Kobo forms as XLSForm rows (.json; .xlsx from export.py)
-kobo/templates/             one bridge template per form (connections can also be made in EspoCRM)
+kobo/templates/             the four forms' bridge templates: the tests' fixtures, and the first copy of
+                            each connection on a new droplet (then edited in EspoCRM)
 tests/                      run_all.sh, cases/ (isolation, workflow_b, agents, serve, connection, latency),
                             test_propose.py, results/
 site/                       the manual: pages/, build.py, shots.py, demo-data.py
@@ -40,9 +41,10 @@ deploy/agents.sh            # ANTHROPIC_API_KEY in .env for agents with a model 
 tests/run_all.sh            # or: tests/run_all.sh --kobo real
 ```
 
-**Kobo connections.** One bridge service runs every form's connection: the templates in
-`kobo/templates/`, and connections admins make in EspoCRM (Kobo connections, the
-template pasted in). It sets each one up when its template changes, and shows its status
+**Kobo connections.** One bridge service runs every form's connection, each a record in
+EspoCRM (Kobo connections) with its template in it. kobo-espo's four were made from
+`kobo/templates/` (`serve adopt`, in `deploy/bridges.sh`) and are edited in EspoCRM now,
+like any connection an admin makes. It sets each one up when its template changes, and shows its status
 in its record. An admin can also connect a form from a conversation, with the bridge's
 EspoCRM MCP (`https://ESPO_HOST/bridge/mcp`, a key per admin) next to kobo-mcp. See the
 manual's [Running it](site/pages/running.html#checking) and kobo-espo-bridge's README

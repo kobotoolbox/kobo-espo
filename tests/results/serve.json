@@ -3,13 +3,13 @@
     "test": "K1",
     "check": "a connection made in EspoCRM: one pass, and the submission is a Contact",
     "ok": true,
-    "detail": "bridge serve \"tests-serve\": connections in EspoCRM, from http://127.0.0.1:65265\nform or template changed: setting up again (af9ac75b6d6cd455a985dd)\nlayouts: Contact page, list and filters\nteam exists: Roster and volunteers\nrole created: Kobo connection: kobo-conn-srv-volunteers-962565\napi user created: kobo-conn-srv-volunteers-962565\nwrote ESPO_KOBO_CONN_SRV_VOLUNTEERS_962565_API_KEY to /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-m3alw63s/bridge.secrets\nContact 6aedb26054059a034 for af9ac75b6d6cd455a985dd submission 1 (-, 1 team(s))\nSRV Volunteers 962565: pass: seen 1, created 1, skipped 0, existing 0, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 1, escalated 0\n"
+    "detail": "bridge serve \"tests-serve\": connections in EspoCRM, from http://127.0.0.1:55023\nform or template changed: setting up again (a097675a779d848e0a2558)\nlayouts: Contact page, list and filters\nteam exists: Roster and volunteers\nrole created: Kobo connection: kobo-conn-srv-volunteers-965966\napi user created: kobo-conn-srv-volunteers-965966\nwrote ESPO_KOBO_CONN_SRV_VOLUNTEERS_965966_API_KEY to /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-mu9rvpuu/bridge.secrets\nContact 6aedbfa906a85dfe4 for a097675a779d848e0a2558 submission 1 (-, 1 team(s))\nSRV Volunteers 965966: pass: seen 1, created 1, skipped 0, existing 0, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 1, escalated 0\n"
   },
   {
     "test": "K1",
     "check": "with an API user of its own (kobo-conn-<name>), not the shared default",
     "ok": true,
-    "detail": "kobo-conn-srv-volunteers-962565"
+    "detail": "kobo-conn-srv-volunteers-965966"
   },
   {
     "test": "K1",
@@ -17,9 +17,9 @@
     "ok": true,
     "detail": {
       "status": "ok",
-      "lastPass": "2026-11-06 10:56:09",
+      "lastPass": "2026-11-06 11:52:49",
       "recordEntity": "Contact",
-      "koboForm": "Volunteer sign-up (serve test 962565)",
+      "koboForm": "Volunteer sign-up (serve test 965966)",
       "routeTeams": "Roster and volunteers",
       "notifyUsers": "staff-1",
       "lastCounts": "seen 1, created 1, notified 1",
@@ -39,7 +39,7 @@
     "test": "K2",
     "check": "the other connection still ran (and the pass exits 1)",
     "ok": true,
-    "detail": "bridge serve \"tests-serve\": connections in EspoCRM, from http://127.0.0.1:65265\nSRV Broken 962565: template: Expected ']' at the end of a table declaration (at line 1, column 6)\nContact 6aedb26c6c7b9e0ed for af9ac75b6d6cd455a985dd submission 2 (-, 1 team(s))\nSRV Volunteers 962565: pass: seen 1, created 1, skipped 0, existing 0, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 1, escalated 0\n"
+    "detail": "bridge serve \"tests-serve\": connections in EspoCRM, from http://127.0.0.1:55023\nSRV Broken 965966: template: Expected ']' at the end of a table declaration (at line 1, column 6)\nContact 6aedbfb8442ce16a1 for a097675a779d848e0a2558 submission 2 (-, 1 team(s))\nSRV Volunteers 965966: pass: seen 1, created 1, skipped 0, existing 0, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 1, escalated 0\n"
   },
   {
     "test": "K3",
@@ -51,19 +51,19 @@
     "test": "K3",
     "check": "active again: the waiting submission comes in",
     "ok": true,
-    "detail": "bridge serve \"tests-serve\": connections in EspoCRM, from http://127.0.0.1:65265\nContact 6aedb27faff4e8a68 for af9ac75b6d6cd455a985dd submission 3 (-, 1 team(s))\nSRV Volunteers 962565: pass: seen 1, created 1, skipped 0, existing 0, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 1, escalated 0\n"
+    "detail": "bridge serve \"tests-serve\": connections in EspoCRM, from http://127.0.0.1:55023\nContact 6aedbfcba3d6284ff for a097675a779d848e0a2558 submission 3 (-, 1 team(s))\nSRV Volunteers 965966: pass: seen 1, created 1, skipped 0, existing 0, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 1, escalated 0\n"
   },
   {
     "test": "K4",
     "check": "the template edited in EspoCRM: setup runs again in the next pass",
     "ok": true,
-    "detail": "bridge serve \"tests-serve\": connections in EspoCRM, from http://127.0.0.1:65265\nform or template changed: setting up again (af9ac75b6d6cd455a985dd)\nlayouts: Contact page, list and filters\nteam exists: Roster and volunteers\nrole updated: Kobo connection: kobo-conn-srv-volunteers-962565\nwrote ESPO_KOBO_CONN_SRV_VOLUNTEERS_962565_API_KEY to /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-m3alw63s/bridge.secrets\ntemplate changed: retrying every failed submission\n"
+    "detail": "bridge serve \"tests-serve\": connections in EspoCRM, from http://127.0.0.1:55023\nform or template changed: setting up again (a097675a779d848e0a2558)\nlayouts: Contact page, list and filters\nteam exists: Roster and volunteers\nrole updated: Kobo connection: kobo-conn-srv-volunteers-965966\nwrote ESPO_KOBO_CONN_SRV_VOLUNTEERS_965966_API_KEY to /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-mu9rvpuu/bridge.secrets\ntemplate changed: retrying every failed submission\n"
   },
   {
     "test": "K5",
     "check": "a proposed template for every question type: set up and run as it is",
     "ok": true,
-    "detail": "ated: CSrvEvery.cKoboLink\nfield created: CSrvEvery.finishedAt\nfield created: CSrvEvery.notes\nfield created: CSrvEvery.people\nfield created: CSrvEvery.litresPerDay\nfield created: CSrvEvery.score\nfield created: CSrvEvery.visitDate\nfield created: CSrvEvery.seenAt\nfield created: CSrvEvery.openingTime\nfield created: CSrvEvery.working\nfield created: CSrvEvery.risks\nfield created: CSrvEvery.site\nfield created: CSrvEvery.location\nfield created: CSrvEvery.pipe\nfield created: CSrvEvery.area\nfield created: CSrvEvery.meter\nfield created: CSrvEvery.consent\nfield created: CSrvEvery.koboFiles\nlayouts: CSrvEvery page, list and filters\nbridge: its failed submissions are retried now\nteam exists: Internal Kobo\nrole created: Kobo connection: kobo-conn-srv-every-962565\napi user created: kobo-conn-srv-every-962565\nwrote ESPO_KOBO_CONN_SRV_EVERY_962565_API_KEY to /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-m3alw63s/bridge.secrets\nCSrvEvery 6aedb2d39659b105f for a61de5662e9444330b9a08 submission 1 (-, 1 team(s))\nSRV Every 962565: pass: seen 1, created 1, skipped 0, existing 0, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 0, escalated 0\n"
+    "detail": "ated: CSrvEvery.cKoboLink\nfield created: CSrvEvery.finishedAt\nfield created: CSrvEvery.notes\nfield created: CSrvEvery.people\nfield created: CSrvEvery.litresPerDay\nfield created: CSrvEvery.score\nfield created: CSrvEvery.visitDate\nfield created: CSrvEvery.seenAt\nfield created: CSrvEvery.openingTime\nfield created: CSrvEvery.working\nfield created: CSrvEvery.risks\nfield created: CSrvEvery.site\nfield created: CSrvEvery.location\nfield created: CSrvEvery.pipe\nfield created: CSrvEvery.area\nfield created: CSrvEvery.meter\nfield created: CSrvEvery.consent\nfield created: CSrvEvery.koboFiles\nlayouts: CSrvEvery page, list and filters\nbridge: its failed submissions are retried now\nteam exists: Internal Kobo\nrole created: Kobo connection: kobo-conn-srv-every-965966\napi user created: kobo-conn-srv-every-965966\nwrote ESPO_KOBO_CONN_SRV_EVERY_965966_API_KEY to /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-mu9rvpuu/bridge.secrets\nCSrvEvery 6aedc0257fd64012c for a8f2cb98c47844c109eab8 submission 1 (-, 1 team(s))\nSRV Every 965966: pass: seen 1, created 1, skipped 0, existing 0, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 0, escalated 0\n"
   },
   {
     "test": "K5",
@@ -77,7 +77,7 @@
     "ok": true,
     "detail": {
       "record": {
-        "6aedb2d322869383f": "well.jpg"
+        "6aedc024f1cef4190": "well.jpg"
       },
       "preview": [
         "well.jpg"
@@ -91,5 +91,54 @@
     "detail": {
       "6aec41f9eaeefdf65": "Internal Kobo"
     }
+  },
+  {
+    "test": "K6",
+    "check": "a template file: shown as a connection, and run",
+    "ok": true,
+    "detail": "ons in EspoCRM and the templates in /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-mu9rvpuu/templates, from http://127.0.0.1:55023\nsrv-file-965966.toml: shown in EspoCRM as a connection\nform or template changed: setting up again (a097675a779d848e0a2558)\nlayouts: Contact page, list and filters\nteam exists: Roster and volunteers\nrole created: Kobo srv file 965966\napi user created: kobo-srv-file-965966\nwrote ESPO_SRV_FILE_965966_API_KEY to /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-mu9rvpuu/bridge.secrets\nContact 6aedc04053e4762c6 for a097675a779d848e0a2558 submission 4 (-, 1 team(s))\nsrv-file-965966: pass: seen 4, created 1, skipped 0, existing 3, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 1, escalated 0\n"
+  },
+  {
+    "test": "K6",
+    "check": "adopt refused while the file is still in BRIDGE_TEMPLATES; nothing changed",
+    "ok": true,
+    "detail": "srv-file-965966.toml: not adopted: still in /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-mu9rvpuu/templates: remove it there first\n"
+  },
+  {
+    "test": "K6",
+    "check": "adopted: an EspoCRM connection, its API user the template's, its state moved to the record's",
+    "ok": true,
+    "detail": {
+      "log": "srv-file-965966.toml: now the connection \"srv-file-965966\" (6aedc02d79f4a6a45), edited in EspoCRM; API user kobo-srv-file-965966; its state moved to /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-mu9rvpuu/state/6aedc02d79f4a6a45\n",
+      "templateFile": null,
+      "apiUser": "kobo-srv-file-965966"
+    }
+  },
+  {
+    "test": "K6",
+    "check": "the next pass: only the new submission (the ledger and cursor kept), with the same API user",
+    "ok": true,
+    "detail": {
+      "log": "bridge serve \"tests-serve\": connections in EspoCRM and the templates in /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-mu9rvpuu/templates, from http://127.0.0.1:55023\nContact 6aedc050b95c845c0 for a097675a779d848e0a2558 submission 5 (-, 1 team(s))\nsrv-file-965966: pass: seen 1, created 1, skipped 0, existing 0, failed 0, retried 0, updated 0, closed_note 0, lists 0, edited 0, statuses 0, merged 0, notified 1, escalated 0\n",
+      "counts": "seen 1, created 1, notified 1"
+    }
+  },
+  {
+    "test": "K6",
+    "check": "adopt again: nothing (the file isn't read again)",
+    "ok": true,
+    "detail": "srv-file-965966.toml: adopted already, the connection \"srv-file-965966\"\n"
+  },
+  {
+    "test": "K6",
+    "check": "a file with no connection yet: a new record, its template the file's, run by this service",
+    "ok": true,
+    "detail": "srv-new-965966.toml: made the connection \"srv-new-965966\" (6aedc05e954e53227); API user kobo-conn-srv-new-965966\n"
+  },
+  {
+    "test": "K6",
+    "check": "and its template is edited in EspoCRM now: set up again",
+    "ok": true,
+    "detail": "bridge serve \"tests-serve\": connections in EspoCRM and the templates in /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-mu9rvpuu/templates, from http://127.0.0.1:55023\nform or template changed: setting up again (a097675a779d848e0a2558)\nlayouts: Contact page, list and filters\nteam exists: Roster and volunteers\nrole updated: Kobo srv file 965966\nwrote ESPO_SRV_FILE_965966_API_KEY to /var/folders/57/mt6wh2p53yqc5zwz1s1gxltr0000gn/T/bridge-serve-mu9rvpuu/bridge.secrets\ntemplate changed: retrying every failed submission\n"
   }
 ]

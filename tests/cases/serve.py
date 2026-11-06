@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Kobo connections made in EspoCRM (plans/kobo-connections-plan.md, phases 2 and 3): K1-K5,
+Kobo connections made in EspoCRM (plans/kobo-connections-plan.md, phases 2, 3 and 7): K1-K6,
 with the fake Kobo, against the test droplet. K5: a template proposed from a form with
 every question type (kobo-espo-bridge's propose.py) set up and run, on an entity made for
 the test (CSrvEvery, removed at the end), and the record compared with propose.preview().
+K6: a template file's connection adopted (`serve adopt`), as kobo-espo's four were.
 
     python3 -I tests/cases/serve.py
 
@@ -170,9 +171,71 @@ def main():
               {'record': record.get('koboFilesNames'), 'preview': expected.get('files')})
         check('K5', 'in the route\'s team', record.get('teamsNames') and list(record['teamsNames'].values()) == ['Internal Kobo'],
               record.get('teamsNames'))
+        a.call('PUT', f'/CKoboConnection/{conn["id"]}', body={'active': False})
+
+        # --- K6: a template file's connection adopted: a record from now on, nothing rescanned
+        files = work / 'templates'
+        files.mkdir()
+        fname = f'srv-file-{RUN}.toml'
+        fuser = f'kobo-srv-file-{RUN}'
+        (files / fname).write_text(template(form_name).replace(
+            '[form]', f'[bridge]\nuser = "{fuser}"\nrole = "Kobo srv file {RUN}"\nsecret = "ESPO_SRV_FILE_{RUN}_API_KEY"\n\n[form]', 1))
+        env['BRIDGE_TEMPLATES'] = str(files)
+        email6 = f'serve-6-{RUN}@example.org'
+        kobo.submit(uid, volunteer(email6))
+        code, log = serve()
+        filed = by(a, 'CKoboConnection', 'templateFile', fname)
+        made.extend(filed)
+        check('K6', 'a template file: shown as a connection, and run', code == 0 and len(filed) == 1
+              and len(by(a, 'Contact', 'emailAddress', email6)) == 1 and (work / 'state' / fname[:-5]).is_dir(), log[-800:])
+
+        def adopt():
+            out = subprocess.run([sys.executable, '-I', str(BRIDGE_DIR / 'bridge.py'), 'serve', 'adopt', fname],
+                                 env=env, capture_output=True, text=True)
+            return out.returncode, out.stdout + out.stderr
+        code, log = adopt()
+        check('K6', 'adopt refused while the file is still in BRIDGE_TEMPLATES; nothing changed',
+              code == 1 and 'remove it there first' in log and get(filed[0]).get('templateFile') == fname, log[-400:])
+        (files / fname).unlink()
+        code, log = adopt()
+        got = get(filed[0])
+        moved = work / 'state' / filed[0]['id']
+        check('K6', 'adopted: an EspoCRM connection, its API user the template\'s, its state moved to the record\'s',
+              code == 0 and not got.get('templateFile') and got.get('apiUser') == fuser
+              and (moved / 'bridge.sqlite').exists() and not (work / 'state' / fname[:-5]).exists(),
+              {'log': log[-400:], 'templateFile': got.get('templateFile'), 'apiUser': got.get('apiUser')})
+        email7 = f'serve-7-{RUN}@example.org'
+        kobo.submit(uid, volunteer(email7))
+        code, log = serve()
+        got = get(filed[0])
+        check('K6', 'the next pass: only the new submission (the ledger and cursor kept), with the same API user',
+              code == 0 and got.get('status') == 'ok' and got.get('lastCounts', '').startswith('seen 1,')
+              and len(by(a, 'Contact', 'emailAddress', email7)) == 1 and len(by(a, 'Contact', 'emailAddress', email6)) == 1
+              and not by(a, 'User', 'userName', f'kobo-conn-{fname[:-5]}'), {'log': log[-800:], 'counts': got.get('lastCounts')})
+        code, log = adopt()
+        check('K6', 'adopt again: nothing (the file isn\'t read again)', code == 0 and 'adopted already' in log
+              and len(by(a, 'CKoboConnection', 'name', fname[:-5])) == 1, log[-400:])
+        other = work / 'fixtures' / f'srv-new-{RUN}.toml'
+        other.parent.mkdir()
+        other.write_text(template(form_name))
+        out = subprocess.run([sys.executable, '-I', str(BRIDGE_DIR / 'bridge.py'), 'serve', 'adopt', str(other)],
+                             env=env, capture_output=True, text=True)
+        fresh = by(a, 'CKoboConnection', 'name', other.stem)
+        made.extend(fresh)
+        rec6 = get(fresh[0]) if fresh else {}
+        check('K6', 'a file with no connection yet: a new record, its template the file\'s, run by this service',
+              out.returncode == 0 and len(fresh) == 1 and rec6.get('template') == other.read_text()
+              and rec6.get('runBy') == NAME and not rec6.get('templateFile')
+              and rec6.get('apiUser') == f'kobo-conn-srv-new-{RUN}', out.stdout + out.stderr)
+        if fresh:
+            a.call('PUT', f'/CKoboConnection/{fresh[0]["id"]}', body={'active': False})
+        a.call('PUT', f'/CKoboConnection/{filed[0]["id"]}', body={'template': got['template'] + '\n# edited\n'})
+        code, log = serve()
+        check('K6', 'and its template is edited in EspoCRM now: set up again', code == 0 and 'setting up again' in log
+              and get(filed[0]).get('status') == 'ok', log[-800:])
     finally:
         kobo.stop()
-        for email in (f'serve-{i}-{RUN}@example.org' for i in (1, 2, 3)):
+        for email in (f'serve-{i}-{RUN}@example.org' for i in (1, 2, 3, 6, 7)):
             for c in by(a, 'Contact', 'emailAddress', email):
                 a.call('DELETE', f'/Contact/{c["id"]}')
         for rec in made:
@@ -180,6 +243,8 @@ def main():
             for u in by(a, 'User', 'userName', user) if user else []:
                 a.call('DELETE', f'/User/{u["id"]}')
             for r in by(a, 'Role', 'name', f'Kobo connection: {user}') if user else []:
+                a.call('DELETE', f'/Role/{r["id"]}')
+            for r in by(a, 'Role', 'name', f'Kobo srv file {RUN}'):
                 a.call('DELETE', f'/Role/{r["id"]}')
             a.call('DELETE', f'/CKoboConnection/{rec["id"]}')
         for entity in entity_made:
