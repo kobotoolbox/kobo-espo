@@ -132,15 +132,15 @@ def main():
                                           'siteType': 'water_point', 'status': 'operational', 'responseId': resp['id']})
     time.sleep(1.1)
 
-    visit(a, site, 'needs_repair', 'Pump handle broken, people use the other well.')
+    visit(a, site, 'needs_repair', 'Pump handle broken, people use the other well. FAKE_ROUTE=repair')
     calls = llm.Fake.calls
     runner.once()
     ts = tasks(a, resp['id'])
     r = runs(a, tri['id'], site['id'])
     check('E1', 'needs_repair: a Repair task on the response board, for its lead',
           [(t['name'], t['assignedUserId'] == users['staff-1']) for t in ts] == [('Repair: AGT Site well 1', True)], ts)
-    check('E1', 'taken by the rule, without the model',
-          len(r) == 1 and r[0]['routeBy'] == 'rule_before' and llm.Fake.calls == calls, r)
+    check('E1', 'the model read the visit (needs_repair alone doesn\'t decide: the notes may say more)',
+          len(r) == 1 and r[0]['routeBy'] == 'model' and llm.Fake.calls == calls + 1, r)
 
     visit(a, site, 'operational', 'Water looks fine but two children got sick after drinking from it. FAKE_ROUTE=ok')
     runner.once()
@@ -187,6 +187,14 @@ def main():
     route = a.call('GET', '/CAgentRoute', {**where(('equals', 'agentId', tri['id']), ('equals', 'name', 'ok'))})['list'][0]
     a.call('PUT', f'/CAgentRoute/{route["id"]}', body={'description': 'A routine visit, nothing to do.'})
     check('G2', 'changing a route raises the version too', a.call('GET', f'/CAgent/{tri["id"]}')['version'] == v1 + 1)
+
+    visit(a, site, 'needs_repair', 'The well cover is gone and children lean over the edge to look in. '
+          'FAKE_ROUTE=urgent_safety')  # no word the safety rule knows: only the model can see it
+    runner.once()
+    r = runs(a, tri['id'], site['id'])
+    urgent = [t for t in tasks(a, resp['id']) if t['name'].startswith('Urgent:')]
+    check('E5', 'needs_repair, but a danger the safety rule\'s words miss: the model escalates it',
+          r[-1]['route'] == 'urgent_safety' and r[-1]['routeBy'] == 'model' and len(urgent) == 2, r[-1:])
 
     # --- On a schedule: repair follow-up -------------------------------------------------
     fol = agents['Repair follow-up']

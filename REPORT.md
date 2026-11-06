@@ -234,8 +234,8 @@ the Application entity with its board and the Grants review team (staff-2); thre
 agents (`agents/setup/examples.json`: DD screening → DD research → review; site visit
 triage), **in dry run** on the droplet.
 
-**Tests.** `tests/cases/agents.py` 34/34 (fake model; 29 at first, W1–W4 with the schedule): triage E1–E4 (the repair rule
-without the model; the safety rule overriding the model's "ok"; routine; no repeats), dry
+**Tests.** `tests/cases/agents.py` 35/35 (fake model; 29 at first, W1–W4 with the schedule, E5 with the triage fix): triage E1–E5 (the
+model reads every visit, a needs-repair one too; the safety rule overriding the model's "ok"; routine; no repeats; a danger the safety words miss, escalated by the model), dry
 run, a version per change, the DD flow D1–D6 (clean, match, near miss, sent back, model
 failing → failure route), sloppy output fixed in code, guards S1/S3, on a schedule W1–W4 (nothing before
 switch-on, once per slot, the date condition). `agents/test_units.py` 14/14. After adding the agents: isolation 80/80, workflow B 8/8, connection 73/73 (fake Kobo).
@@ -270,15 +270,19 @@ the manual, "Running it" → "Agents".
 |---|---|---|---|
 | DD research, an application in Research | review | $0.025, 17 s | $0.009, 13 s |
 | Site visit triage, a routine visit | ok | $0.005 | $0.0025 |
-| Site visit triage, a broken well cover, children at the open hole | repair (rule, no model) | | |
+| Site visit triage, a broken well cover, children at the open hole | repair (rule, no model); after the fix, urgent_safety | | $0.003 |
 
 - **The dossier is useful without web access**: it says what it couldn't check, flags a new
   organisation, and asks the applicant sensible questions.
-- **Gap in the triage example:** the "before" rule (status `needs_repair` → repair) takes
-  the route without the model, so a visit that is a danger to people gets a routine repair
-  task. The "after" safety rule's words (sick, injured, contaminated, ...) don't catch
-  "children leaning over the open hole" either, and the model never saw it. Not changed:
-  see the open questions.
+- **Gap in the triage example, fixed the same day:** the "before" rule (status
+  `needs_repair` → repair) took the route without the model, so a visit that was a danger
+  to people got a routine repair task. The "after" safety rule's words (sick, injured,
+  contaminated, ...) didn't catch "children leaning over the open hole" either. Now the
+  model reads every visit: `repair` has no rule, and the instructions say a risk to people
+  comes first whatever condition was chosen. The safety rule stays, as a backstop for the
+  model. On Sonnet 5.5 the same visit went to urgent_safety, with the children at the open
+  well as its reason. A rule that skips the model is safe only where the field alone
+  settles it (DD screening's sanctions match), not where free text can say more.
 - **Bedrock on Kobo's AWS account:** Bedrock's newer endpoint ("Mantle", the SDK's
   `AnthropicBedrockMantle`) serves Opus 5.5 but not Sonnet 5.5 or Haiku 5.5, so the
   provider uses bedrock-runtime with the `us.anthropic.` inference profiles (both models
@@ -314,6 +318,5 @@ rather than wait (W1–W4).
    switch to it?
 8. **Teardown:** when to delete the droplet and DNS record, and the test projects on the
    Kobo account?
-9. **Site visit triage and danger to people:** should the model read every visit, the
-   repair rule applying only after it (the model can still escalate), or should the
-   safety rule's word list grow? (Bedrock results above.)
+9. ~~**Site visit triage and danger to people.**~~ Done 2026-11-06: the model reads every
+   visit (Bedrock results above).

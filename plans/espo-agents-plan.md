@@ -278,11 +278,12 @@ Only the role "Grants Approver" can set Approved or Rejected (formula).
   - `urgent_safety` (model, plus an `after` text rule for contamination, illness or injury
     wording in English, French and Spanish) → create Task `Urgent: {name}` on the Response board,
     assigned to the Response's lead, priority Urgent, with a `fixedNote`; notify the lead.
-  - `repair` (rule `before`: `status = needs_repair`) → create Task `Repair: {name}`, Backlog, for
-    the Response's team.
+  - `repair` (model) → create Task `Repair: {name}`, Backlog, for the Response's lead. (At first a
+    `before` rule, `status = needs_repair`; removed 2026-11-06: it kept the model from seeing a
+    danger in the notes. See REPORT.md.)
   - `ok` (model) → nothing; the Run records why.
-- A `before` rule that matches skips the model, so `repair` costs nothing; only visits without a
-  clear rule go to the model. "Assign to the Response's lead" is a route target taken from the
+- Every visit goes to the model: the condition a visitor picks doesn't say whether people are
+  at risk, the notes do. "Assign to the Response's lead" is a route target taken from the
   record (`response.lead`), not a fixed user; the guard checks it the same way.
 
 ## 5. Borrowed from Ponto
@@ -411,7 +412,9 @@ to the real model.
       dossier Note).
 
 **Triage**
-- [ ] E1: A visit with `needs_repair` → a Repair Task on the right Response board (rule, no model).
+- [ ] E1: A visit with `needs_repair` → a Repair Task on the right Response board (the model reads it).
+- [ ] E5: `needs_repair` and a danger the safety words miss (children at an open well) → the model
+      escalates it to `urgent_safety`.
 - [ ] E2: A visit with "children got sick after drinking from it" in the notes, and the fake LLM
       choosing `ok` → the `after` rule forces `urgent_safety`: an Urgent Task with the fixed Note
       for the Response's lead, who is notified; the Run records the override.
