@@ -362,6 +362,9 @@ gets an API user of its own (`kobo-conn-<name>`).
   the waiting counts were unchanged (16, 8, 3, 0). `deploy/bridges.sh` runs adopt on every
   `up`: a new droplet gets its four connections from the files, and after that the files
   are only the tests' fixtures. Tests: serve.py K6 (19/19 with K1–K5).
+- **Phase 6, the manual** (2026-11-06): a "Connecting a form" page, linked from the
+  overview, with an example conversation that is illustrative until the acceptance runs
+  give a real one. The connection record showed its template as Markdown; now raw text.
 - **Limits:** `kobo-edits` (edited submissions, cases only) is still one user for every
   Case template, so two Case connections would share its role. Still one bridge service
   per instance.

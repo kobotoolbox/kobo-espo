@@ -62,6 +62,10 @@ def main(only):
         'site': find(a, 'CSite', 'siteCode', 'EQ1-WP-001'),
         'role_volunteer': find(a, 'Role', 'name', 'Volunteer'),
         'volunteer': find(a, 'Contact', 'emailAddress', 'nadia.haddad@example.org'),
+        'connection': a.call('GET', '/CKoboConnection', {
+            'where[0][type]': 'equals', 'where[0][attribute]': 'name', 'where[0][value]': 'site-registration',
+            'where[1][type]': 'equals', 'where[1][attribute]': 'runBy', 'where[1][value]': 'main',
+            'select': 'id', 'maxSize': 1})['list'][0]['id'],
     }
     shots = {
         'cases-triager': ('triager', 'Case', None),
@@ -79,6 +83,7 @@ def main(only):
         'site': ('staff-1', f'CSite/view/{ids["site"]}', None),
         'standards': ('staff-1', 'CStandard', None),
         'role-volunteer': ('admin', f'Role/view/{ids["role_volunteer"]}', None),
+        'connection': ('admin', f'CKoboConnection/view/{ids["connection"]}', None),
     }
     with sync_playwright() as p:
         browser = p.chromium.launch()

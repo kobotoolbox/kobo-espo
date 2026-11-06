@@ -15,7 +15,8 @@ from pathlib import Path
 
 SITE = Path(__file__).resolve().parent
 NAV = [('index', 'Overview'), ('requests', 'Requests'), ('responses', 'Responses'),
-       ('sites', 'Sites and lists'), ('running', 'Running it')]
+       ('sites', 'Sites and lists'),
+       ('connect', 'Connecting a form'), ('running', 'Running it')]
 
 HEAD = """<!doctype html>
 <html lang="en">

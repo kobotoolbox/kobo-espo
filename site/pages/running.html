@@ -1,5 +1,5 @@
 <!-- title: Running it -->
-<!-- description: Setting up the EspoCRM and kobo-espo-bridge for Kobo requests, responses and sites: one command sequence, the templates, adding a consortium or a response, people and roles, checking on the bridge, and the tests. -->
+<!-- description: Setting up the EspoCRM and kobo-espo-bridge for Kobo requests, responses and sites: one command sequence, templates and connections, adding a consortium or a response, people and roles, checking on the bridge, agents, and the tests. -->
 <section class="banner">
   <div class="wrap">
     <h1>Running it</h1>
@@ -11,7 +11,7 @@
 <nav class="docs__nav" aria-label="On this page">
   <ul>
     <li><a href="#setup">From nothing</a></li>
-    <li><a href="#templates">Templates</a></li>
+    <li><a href="#templates">Templates and connections</a></li>
     <li><a href="#add">A new consortium or response</a></li>
     <li><a href="#people">People and roles</a></li>
     <li><a href="#checking">Checking on the bridge</a></li>
@@ -40,18 +40,8 @@ deploy/bridges.sh                  # the bridge: one service for every connectio
 </section>
 
 <section id="templates">
-<h2>Templates</h2>
-<p>Each Kobo form has a template: which records it makes, its routes to teams, who's notified, its fields, its lists and follow-ups. kobo-espo-bridge's README describes every setting. The template is in the form's <strong>Kobo connection</strong>, a record in EspoCRM, and is edited there (<a href="#checking">below</a>). The four below were made from the files in <code>kobo/templates/</code> on the droplet's first deploy; the files are kept for the tests, and changing one doesn't change the droplet.</p>
-<p>An admin connects another form by making a Kobo connection and pasting its template in. kobo-espo-bridge can propose a first template from the form itself (<code>propose.py</code>): a field for each question, with its type, and a list of what it left out and why.</p>
-<div class="table-scroll"><table>
-  <thead><tr><th>Connection (file)</th><th>Form</th><th>Makes</th><th>API user</th></tr></thead>
-  <tbody>
-    <tr><td><code>support-request.toml</code></td><td>Kobo support request</td><td>Cases, contacts, accounts</td><td><code>kobo-intake</code></td></tr>
-    <tr><td><code>volunteer.toml</code></td><td>Volunteer availability</td><td>Contacts (volunteers)</td><td><code>kobo-volunteers</code></td></tr>
-    <tr><td><code>site-registration.toml</code></td><td>Site registration</td><td>Sites; <code>responses.csv</code>, <code>standards.csv</code></td><td><code>kobo-sites</code></td></tr>
-    <tr><td><code>site-visit.toml</code></td><td>Site visit - Test EQ 1</td><td>Visit notes on sites; <code>sites.csv</code></td><td><code>kobo-site-lists</code>, <code>kobo-site-visits</code></td></tr>
-  </tbody>
-</table></div>
+<h2>Templates and connections</h2>
+<p>Each Kobo form's template says which records it makes, its routes to teams, who's notified, its fields, its lists and follow-ups. It's kept in the form's <strong>Kobo connection</strong>, a record in EspoCRM, and edited there or from a conversation with Claude. <a href="connect.html">Connecting a form</a> has how to connect one, what each question becomes, and this instance's four connections. kobo-espo-bridge's README describes every setting.</p>
 </section>
 
 <section id="add">
@@ -59,8 +49,8 @@ deploy/bridges.sh                  # the bridge: one service for every connectio
 <p><strong>A consortium</strong> (Workflow A):</p>
 <ol>
   <li>Add its choice to the support form's project question, and redeploy it.</li>
-  <li>Add a <code>[[route]]</code> to <code>support-request.toml</code>: the choice, its team ("Project: …"), who to notify and who to escalate to.</li>
-  <li>Run <code>deploy/bridges.sh</code>, which copies the template to the server. The bridge sets it up again within a minute: it makes the team, and the case field gets the new choice from the form.</li>
+  <li>Add a <code>[[route]]</code> to the template of the <strong>support-request</strong> connection (in EspoCRM, or ask Claude): the choice, its team ("Project: …"), who to notify and who to escalate to.</li>
+  <li>The bridge sets it up again in its next pass: it makes the team, and the case field gets the new choice from the form.</li>
   <li>Give the consortium's people their role and that team (below).</li>
 </ol>
 <p><strong>A response</strong> (Workflow B):</p>
@@ -68,7 +58,7 @@ deploy/bridges.sh                  # the bridge: one service for every connectio
   <li>Create its team ("Response: …") in Administration → Teams.</li>
   <li>Create the response, with that team and its lead. It starts with its four tasks.</li>
   <li>Give its people the team.</li>
-  <li>For its sites, copy <code>site-visit.toml</code> with the new team and its visit form's name, and run <code>deploy/bridges.sh</code>.</li>
+  <li>For its sites, make a new connection with a copy of the <strong>site-visit</strong> connection's template, changing the team and the visit form's name.</li>
 </ol>
 </section>
 
@@ -94,20 +84,8 @@ deploy/bridges.sh                  # the bridge: one service for every connectio
 ssh root@&lt;droplet&gt; docker exec kobo-espo-bridge-1 \
     python3 -I /bridge/bridge.py failed /state/&lt;connection id&gt;   # submissions waiting, and why</code></pre>
 <p>A submission waiting for a fix (a choice missing in EspoCRM, a required answer missing) is retried by itself. It's retried at once when the template or the form changes. The service sets a connection up again when its template changes, and checks every 10 minutes whether its form has a new version.</p>
-<p><strong>A connection made in EspoCRM</strong>: Kobo connections → Create, a name and the template (kobo-espo-bridge's README describes the format). It starts within one pass (30 seconds), with an API user of its own. If its template or setup fails, its <strong>Last error</strong> says why.</p>
-<h3>Connecting a form from a conversation</h3>
-<p>The bridge has an MCP server for agents such as Claude (claude.ai, Claude Desktop, Claude Code), used together with <a href="https://github.com/kobotoolbox/kobo-mcp">kobo-mcp</a>: kobo-mcp builds, deploys and shares the Kobo form, and this one connects it to EspoCRM. Its prompt, <strong>Connect a Kobo form to EspoCRM</strong>, takes the agent through the steps: which form, what each submission becomes, which team and who's told, sharing the form with the bridge's Kobo account, the proposed template and a preview of a real submission, a test submission, and access for the people who'll work on the records.</p>
-<p><strong>In claude.ai or Claude Desktop:</strong> Settings → Connectors → Add custom connector, with the URL <code>https://&lt;ESPO_HOST&gt;/bridge/mcp</code>. Claude opens the MCP's sign-in page: your EspoCRM username and password, and your two-factor code if you use one. EspoCRM checks them; they aren't kept. Add kobo-mcp the same way (<code>https://mcp.kobolabs.dev/mcp</code>).</p>
-<p><strong>In Claude Code</strong>, with a key of your own:</p>
-<pre><code>ssh root@&lt;droplet&gt; "cd /root/kobo-espo && docker compose -p kobo-espo exec bridge-mcp \
-    python3 -I espo_mcp/keys.py add &lt;your EspoCRM admin user&gt;"     # prints your key, once
-claude mcp add --transport http espocrm https://&lt;ESPO_HOST&gt;/bridge/mcp \
-    --header "Authorization: Bearer &lt;the key&gt;"</code></pre>
-<ul>
-  <li><strong>Admins only</strong>: signed in, or with their own key. Either stops working within a minute once the user is no longer an active admin in EspoCRM. To end everyone's sign-ins at once, delete <code>/state/mcp-oauth.key</code> in the bridge-mcp container and restart it.</li>
-  <li><strong>Every change is shown first</strong> and made only on a second call, once you've agreed. Nothing is deleted: a connection can be paused.</li>
-  <li>Access it gives is <strong>team level</strong> only: people see the records of their own teams. Giving them the team is still done by hand.</li>
-</ul>
+<p>To connect a new form, see <a href="connect.html">Connecting a form</a>: from a conversation with Claude (kobo-mcp and the bridge's EspoCRM MCP, at <code>https://&lt;ESPO_HOST&gt;/bridge/mcp</code>), or by hand.</p>
+<p>The EspoCRM MCP runs as its own service, <code>bridge-mcp</code>, behind Caddy. Admins sign in with their EspoCRM account (claude.ai, Claude Desktop) or use a key each (Claude Code, <code>espo_mcp/keys.py</code>). To end everyone's sign-ins at once, delete <code>/state/mcp-oauth.key</code> in the bridge-mcp container and restart it. To take one key away: <code>keys.py remove &lt;user&gt;</code>.</p>
 <p>Run <strong>one bridge service per instance</strong>. Two at once could both make a record for the same new submission: each looks for it first, but neither can see the other's in flight. (The tests run their own, as "tests": a connection is run only by the service named in its <strong>Run by</strong>.)</p>
 </section>
 

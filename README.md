@@ -47,7 +47,8 @@ EspoCRM (Kobo connections) with its template in it. kobo-espo's four were made f
 like any connection an admin makes. It sets each one up when its template changes, and shows its status
 in its record. An admin can also connect a form from a conversation, with the bridge's
 EspoCRM MCP (`https://ESPO_HOST/bridge/mcp`, a key per admin) next to kobo-mcp. See the
-manual's [Running it](site/pages/running.html#checking) and kobo-espo-bridge's README
+manual's [Connecting a form](site/pages/connect.html) and
+[Running it](site/pages/running.html#checking), and kobo-espo-bridge's README
 (`serve`, `propose`, `espo_mcp`).
 
 Python 3.11+ (stdlib only, but the `anthropic` SDK for the agent runner, `openpyxl`, Pillow and Playwright for the forms' .xlsx,

@@ -415,6 +415,16 @@ td:first-child { white-space: nowrap; }
 .prompts q { font-style: italic; quotes: "“" "”"; }
 .prompts small { display: block; color: var(--gray-40); margin-top: 0.15rem; }
 
+/* An example conversation: what's said, and the tools called in between */
+.chat { list-style: none; padding: 0; margin: 1.5rem 0; }
+.chat li { padding: 0.6rem 0.9rem; border-radius: 6px; margin: 0.5rem 0; }
+.chat .you { background: var(--bg-blue); margin-left: 3rem; }
+.chat .claude { background: var(--gray-96); margin-right: 3rem; }
+.chat .tools { font-size: 0.8125rem; color: var(--gray-40); padding: 0 0.9rem; margin: 0.25rem 0; }
+.chat .tools code { font-size: inherit; }
+.chat b.who { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gray-40); }
+.chat li > :last-child { margin-bottom: 0; }
+
 details {
   border-bottom: 1px solid var(--gray-92);
 }

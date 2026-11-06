@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connecting a form: Kobo and EspoCRM</title>
+<meta name="description" content="Connecting a KoboToolbox form to EspoCRM, so each submission becomes a record: in a conversation with Claude (kobo-mcp and the EspoCRM MCP), or by hand as a Kobo connection in EspoCRM. The three choices, what each question becomes, an example, and changing or pausing a connection.">
+<link rel="icon" href="static/site/icon.png" type="image/png">
+<link rel="stylesheet" href="static/site/home.css">
+</head>
+<body>
+<header class="header">
+  <div class="wrap">
+    <a class="header__brand" href="./"><img src="static/site/logo.svg" alt="KoboToolbox"><span class="header__product">+ EspoCRM</span></a>
+    <ul class="header__nav">
+      <li><a href="./">Overview</a></li>
+      <li><a href="requests.html">Requests</a></li>
+      <li><a href="responses.html">Responses</a></li>
+      <li><a href="sites.html">Sites and lists</a></li>
+      <li><a href="connect.html" aria-current="page">Connecting a form</a></li>
+      <li><a href="running.html">Running it</a></li>
+    </ul>
+    <a class="button button--filled button--m" href="https://espo-test.kobolabs.dev">Open the test EspoCRM</a>
+  </div>
+</header>
+
+<main>
+<section class="banner">
+  <div class="wrap">
+    <h1>Connecting a form</h1>
+    <p class="banner__lead">Any Kobo form can feed EspoCRM: each submission becomes a record (a case, a contact, a site, or a new kind of record) in a team, with people told. Setting one up takes three choices. Everything else has a default, and an agent can do the rest in one conversation: build or find the form, show what each submission will become, set it up, and make a test record.</p>
+  </div>
+</section>
+
+<section class="steps" aria-label="The three choices">
+  <div class="wrap">
+    <ol>
+      <li><h3>Which form</h3><p>An existing Kobo project, or one built in the conversation. It has to be deployed.</p></li>
+      <li><h3>What it becomes</h3><p>A contact, a case, a site, or a new kind of record such as "Grant application".</p></li>
+      <li><h3>Whose it is</h3><p>The team that owns the records, and who's told about each new one.</p></li>
+    </ol>
+  </div>
+</section>
+
+<div class="wrap docs">
+<nav class="docs__nav" aria-label="On this page">
+  <ul>
+    <li><a href="#claude">With Claude</a></li>
+    <li><a href="#example">An example</a></li>
+    <li><a href="#mapping">What each question becomes</a></li>
+    <li><a href="#safe">What the agent may do</a></li>
+    <li><a href="#connections">Kobo connections in EspoCRM</a></li>
+    <li><a href="#by-hand">Without an agent</a></li>
+    <li><a href="#limits">Limits</a></li>
+  </ul>
+</nav>
+
+<article class="prose">
+
+<section id="claude">
+<h2>With Claude</h2>
+<p>Two MCP servers work together. <a href="https://github.com/kobotoolbox/kobo-mcp">kobo-mcp</a> does the Kobo side, as you: it builds and deploys the form, shares it, and makes a test submission. The <strong>EspoCRM MCP</strong>, part of kobo-espo-bridge, does the EspoCRM side: it proposes what each question becomes, saves the connection, and shows the record that arrived. Only EspoCRM administrators can use it, because it adds fields and changes roles for the whole instance.</p>
+<p><strong>In claude.ai or Claude Desktop</strong>, add both under Settings → Connectors → Add custom connector:</p>
+<ul>
+  <li>kobo-mcp: <code>https://mcp.kobolabs.dev/mcp</code>, signing in with your Kobo API token;</li>
+  <li>the EspoCRM MCP: <code>https://&lt;your EspoCRM&gt;/bridge/mcp</code> (here, <code>https://espo-test.kobolabs.dev/bridge/mcp</code>). Claude opens its sign-in page: your EspoCRM username and password, and your two-factor code if you use one. EspoCRM checks them, and they aren't kept.</li>
+</ul>
+<p><strong>In Claude Code</strong>, the EspoCRM MCP takes a key of your own instead, made on the server:</p>
+<pre><code>ssh root@&lt;droplet&gt; "cd /root/kobo-espo && docker compose -p kobo-espo exec bridge-mcp \
+    python3 -I espo_mcp/keys.py add &lt;your EspoCRM admin user&gt;"     # prints your key, once
+claude mcp add --transport http espocrm https://&lt;your EspoCRM&gt;/bridge/mcp \
+    --header "Authorization: Bearer &lt;the key&gt;"</code></pre>
+<p>Then start with the prompt <strong>Connect a Kobo form to EspoCRM</strong>, or just say what you want. The prompt gives Claude the steps, in this order:</p>
+<ol>
+  <li>which Kobo server and account the bridge reads (<code>bridge_info</code>);</li>
+  <li>the form: found (<code>list_projects</code>) or built with you (<code>preview_form</code>, then <code>deploy_form</code>);</li>
+  <li>the three choices, asked one at a time unless you've said already; a new kind of record if needed (<code>create_entity</code>);</li>
+  <li>sharing the form with the bridge's Kobo account, after asking you (<code>share_project</code>, "View submissions");</li>
+  <li>the proposal: what each question becomes, what was left out and why, and a preview of the latest submission (<code>propose_connection</code>), changed as you ask, then saved (<code>create_connection</code>);</li>
+  <li>a dummy test submission (<code>create_submissions</code>), and the record it made (<code>test_connection</code>);</li>
+  <li>access for the roles of the people who'll work on the records (<code>grant_access</code>), and what's left by hand.</li>
+</ol>
+</section>
+
+<section id="example">
+<h2>An example</h2>
+<div class="note"><p>An example, shortened, to show the shape of the conversation. The steps and tools are the ones above, and the tests (<code>tests/cases/mcp.py</code>) run the same path from a form to a new kind of record. It isn't a transcript.</p></div>
+<ol class="chat">
+  <li class="you"><b class="who">You</b><p>I want a grant application form in Kobo. Each application should become a record in EspoCRM for the Grants review team, and staff-2 should be told about each one.</p></li>
+  <li class="tools">EspoCRM <code>bridge_info</code>, <code>list_entities</code>, <code>list_teams</code>, <code>list_users</code></li>
+  <li class="claude"><b class="who">Claude</b><p>The bridge reads kf.kobotoolbox.org as <code>bridge_acct</code>. EspoCRM has no kind of record for applications yet, so I'd make one, "Grant application". Grants review is a team, and staff-2 is in it. First the form: what should it ask?</p></li>
+  <li class="you"><b class="who">You</b><p>The organisation, a contact email, the country (Kenya or Uganda), the amount requested in USD, and what it's for.</p></li>
+  <li class="tools">Kobo <code>preview_form</code></li>
+  <li class="claude"><b class="who">Claude</b><p>Here's the form to try. Shall I deploy it as "Grant applications (espo-kobo test)"?</p></li>
+  <li class="you"><b class="who">You</b><p>Yes.</p></li>
+  <li class="tools">Kobo <code>deploy_form</code>. EspoCRM <code>create_entity</code> (shown first, then confirmed)</li>
+  <li class="claude"><b class="who">Claude</b><p>Deployed. "Grant application" would be a new kind of record for the whole instance, only visible to admins until access is given. Make it? <em>(You say yes.)</em> Done. To read the submissions, the bridge's account needs "View submissions" on the form. Share it?</p></li>
+  <li class="you"><b class="who">You</b><p>Go ahead.</p></li>
+  <li class="tools">Kobo <code>share_project</code>. EspoCRM <code>propose_connection</code></li>
+  <li class="claude"><b class="who">Claude</b><p>Here's what each application would become:</p>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Question</th><th>In EspoCRM</th></tr></thead>
+      <tbody>
+        <tr><td>Organisation</td><td>the record's name (required)</td></tr>
+        <tr><td>Email</td><td>a text field</td></tr>
+        <tr><td>Country</td><td>a list: Kenya, Uganda</td></tr>
+        <tr><td>Amount requested (USD)</td><td>a number with decimals</td></tr>
+        <tr><td>What is it for?</td><td>long text</td></tr>
+      </tbody>
+    </table></div>
+    <p>Left out: the "Thank you" note, which isn't an answer. Records go to Grants review, and staff-2 is told. There are no submissions yet, so nothing to preview. Save it?</p></li>
+  <li class="you"><b class="who">You</b><p>Yes, save it.</p></li>
+  <li class="tools">EspoCRM <code>create_connection</code> (shown first, then confirmed). Kobo <code>create_submissions</code>. EspoCRM <code>test_connection</code></li>
+  <li class="claude"><b class="who">Claude</b><p>Saved, and the bridge set it up in its next pass: the fields, the team, an API user of its own. I made one dummy application, "Test organisation", and it arrived 30 seconds later: <em>(a link to the record)</em>. staff-2 has a notification. Who should be able to see the applications?</p></li>
+  <li class="you"><b class="who">You</b><p>Internal Staff, and they should be able to edit them.</p></li>
+  <li class="tools">EspoCRM <code>grant_access</code> (shown first, then confirmed)</li>
+  <li class="claude"><b class="who">Claude</b><p>Internal Staff can now see and edit the applications of their own teams, but not create or delete them. What's left by hand: give the reviewers the Grants review team in EspoCRM, if they don't have it. You may also want to delete the test application.</p></li>
+</ol>
+</section>
+
+<section id="mapping">
+<h2>What each question becomes</h2>
+<p>The proposal makes a field for each question, labelled with a short form of the question's name, with a type from the question's type. A field EspoCRM already has with the right type is reused.</p>
+<div class="table-scroll"><table>
+  <thead><tr><th>Kobo question</th><th>EspoCRM field</th></tr></thead>
+  <tbody>
+    <tr><td>text</td><td>text (long text if multiline)</td></tr>
+    <tr><td>integer, decimal, range</td><td>a whole number, a number with decimals</td></tr>
+    <tr><td>date, dateTime</td><td>date, date and time (in UTC)</td></tr>
+    <tr><td>select_one, select_multiple</td><td>a list, or a multiple choice, with the form's choices</td></tr>
+    <tr><td>a choice from a file (<code>..._from_file</code>)</td><td>text, the chosen value (a link to a record by hand, if the list is of records)</td></tr>
+    <tr><td>image, audio, video, file</td><td>the record's attachments</td></tr>
+    <tr><td>geopoint</td><td>text, "lat lon"</td></tr>
+    <tr><td>end</td><td>"Form finished", date and time</td></tr>
+    <tr><td>note, calculate, hidden, start and other metadata</td><td>left out, each with the reason</td></tr>
+    <tr><td>repeat groups</td><td>left out, with a warning: the bridge doesn't map them</td></tr>
+  </tbody>
+</table></div>
+<ul>
+  <li>A question named like <code>name</code>, <code>title</code>, <code>summary</code> or <code>..._name</code> is the record's <strong>name</strong>.</li>
+  <li>On a <strong>contact</strong>, the full name, email and phone go to the contact's own fields, and the email finds an existing contact rather than making a second one.</li>
+  <li>On a <strong>case</strong>, the requester's name, email and organisation make or find its contact and account. A priority question with EspoCRM's own choices (Low, Normal, High, Urgent) is the case's priority.</li>
+  <li>On a <strong>new kind of record</strong>, a question named <code>code</code> or <code>..._code</code> finds an existing record, so submitting the same code again updates it.</li>
+  <li>Only the name, that matching question and a requester's email are required. A form's other required answers can be missing from submissions made with an older version of it.</li>
+</ul>
+<p>Anything can be changed before saving: in the conversation ("call it Applicant", "leave out the phone number") or in the template. The bridge's README describes every setting a template can have, including routes to several teams by an answer, escalation, lists from EspoCRM on the form, and follow-up forms. Those have no defaults: Claude can write them into the template when you ask.</p>
+</section>
+
+<section id="safe">
+<h2>What the agent may do</h2>
+<ul>
+  <li><strong>Every change is shown first.</strong> Saving a connection, changing one, pausing it, making a new kind of record and giving access each take two calls. The first only shows what would happen, and the second makes exactly that change, once you've agreed. A change other than the one shown is refused.</li>
+  <li><strong>Nothing is deleted.</strong> A connection can be paused; its records and its history stay.</li>
+  <li><strong>Access at team level only.</strong> People see the records of their own teams, never all, and the agent can't let them delete. Giving people a team stays a person's job.</li>
+  <li><strong>No general access to records.</strong> The tools are for connecting forms: there's no tool to read or change any record. A test shows the one record it made.</li>
+  <li><strong>No passwords or tokens in the chat.</strong> The bridge's Kobo token and EspoCRM's admin password stay on the server. You sign in on the MCP's own page, or with a key.</li>
+  <li><strong>Only while you're an admin.</strong> Every call checks you're still an active EspoCRM administrator. If someone's admin rights are taken away, their sign-in or key stops working within a minute.</li>
+</ul>
+</section>
+
+<section id="connections">
+<h2>Kobo connections in EspoCRM</h2>
+<p>Each connected form is a <strong>Kobo connection</strong>, a record in EspoCRM that only admins see. It holds the template and shows how the connection is doing, updated by the bridge on each pass.</p>
+<figure><a href="static/shots/connection.jpg"><img src="static/shots/connection.jpg" width="1440" height="1167" alt="The Kobo connection site-registration in EspoCRM: Active, run by main. Its template begins with comments and a [bridge] section, user kobo-sites. Status: Submissions waiting, 3 waiting since yesterday, last pass today, nothing new in the last pass. Last error: standard: 0 CStandard records with that code. From the template: Kobo form Site registration (espo-kobo test), makes CSite, API user kobo-sites."></a><figcaption>The site registration connection. Three test submissions are waiting on purpose: they name a standard EspoCRM doesn't have, and Last error says so.</figcaption></figure>
+<ul>
+  <li><strong>Status</strong>: OK, Submissions waiting, Pass failing, Setup failed or Paused, with the last pass and what it did.</li>
+  <li><strong>Waiting</strong>: submissions that couldn't become records yet, since when, and the oldest one's reason. They're retried by themselves, and at once when the template or the form changes.</li>
+  <li><strong>Active</strong>: untick it to pause the connection. Ticking it again picks up the submissions made meanwhile.</li>
+  <li><strong>Template</strong>: edit it here, or ask Claude (<code>update_connection</code> shows the change first). The bridge sets the connection up again in its next pass. It also checks every 10 minutes whether the form has a new version.</li>
+</ul>
+<p>This instance's four forms are connections like any other:</p>
+<div class="table-scroll"><table>
+  <thead><tr><th>Connection</th><th>Form</th><th>Makes</th><th>API user</th></tr></thead>
+  <tbody>
+    <tr><td>support-request</td><td>Kobo support request</td><td>Cases, contacts, accounts (<a href="requests.html">Requests</a>)</td><td><code>kobo-intake</code></td></tr>
+    <tr><td>volunteer</td><td>Volunteer availability</td><td>Contacts (volunteers)</td><td><code>kobo-volunteers</code></td></tr>
+    <tr><td>site-registration</td><td>Site registration</td><td>Sites; <code>responses.csv</code>, <code>standards.csv</code> (<a href="sites.html">Sites</a>)</td><td><code>kobo-sites</code></td></tr>
+    <tr><td>site-visit</td><td>Site visit - Test EQ 1</td><td>Visit notes on sites; <code>sites.csv</code></td><td><code>kobo-site-lists</code>, <code>kobo-site-visits</code></td></tr>
+  </tbody>
+</table></div>
+<p>They were made from the files in <code>kobo/templates/</code> on the droplet's first deploy (<code>serve adopt</code>, run by <code>deploy/bridges.sh</code>). The files are kept as the tests' fixtures; changing one doesn't change the droplet.</p>
+</section>
+
+<section id="by-hand">
+<h2>Without an agent</h2>
+<ol>
+  <li>Share the form with the bridge's Kobo account in KoboToolbox: "View submissions", and "Edit form" if the connection puts a list on it.</li>
+  <li>Write the template, or start from a proposal: kobo-espo-bridge's <code>propose.py</code> makes one from the form's deployed content, with what it left out and why.</li>
+  <li>In EspoCRM, Kobo connections → Create: a name, and the template pasted in.</li>
+</ol>
+<p>It starts within one pass (30 seconds), with an API user of its own that can do only what its template needs. If the template or the setup fails, <strong>Last error</strong> says why, and the other connections go on.</p>
+</section>
+
+<section id="limits">
+<h2>Limits</h2>
+<ul>
+  <li><strong>Admins only.</strong> Partners' staff can't connect their own forms. That would need a narrower role: connections for their team only, and no new kinds of record.</li>
+  <li><strong>One Kobo account and server per instance</strong> for the bridge. A form on the EU server, with the bridge reading the global one, can't be connected.</li>
+  <li><strong>Repeat groups</strong> aren't mapped, and lists from EspoCRM and follow-up forms have no defaults.</li>
+  <li><strong>Edited submissions</strong> update cases through one shared API user (<code>kobo-edits</code>), so two case connections share its role.</li>
+  <li><strong>One bridge service per instance.</strong> Two would both poll the same forms.</li>
+</ul>
+</section>
+
+</article>
+</div>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <img src="static/site/logo-white.svg" alt="KoboToolbox">
+      <p>Kobo and EspoCRM: request intake, response tasking and sites on one EspoCRM, connected to KoboToolbox by kobo-espo-bridge. A test, with made-up data.</p>
+    </div>
+    <div>
+      <span class="footer__label">KoboToolbox</span>
+      <ul>
+        <li><a href="https://www.kobotoolbox.org">kobotoolbox.org</a></li>
+        <li><a href="https://support.kobotoolbox.org">Help Center</a></li>
+        <li><a href="https://docs.espocrm.com">EspoCRM documentation</a></li>
+      </ul>
+    </div>
+    <div>
+      <span class="footer__label">On this site</span>
+      <ul>
+      <li><a href="./">Overview</a></li>
+      <li><a href="requests.html">Requests</a></li>
+      <li><a href="responses.html">Responses</a></li>
+      <li><a href="sites.html">Sites and lists</a></li>
+      <li><a href="connect.html" aria-current="page">Connecting a form</a></li>
+      <li><a href="running.html">Running it</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

@@ -2,8 +2,8 @@
 
 Status: 2026-11-06. Phases 0–3 and 7 done; 4 and 5 built and tested (the EspoCRM MCP,
 kobo-espo-bridge `espo_mcp/`, live on the test droplet at /bridge/mcp, with a key or by
-signing in); their acceptance runs, in Claude Code and claude.ai, are next. Phase 6 (a
-"Connect a form" page) is left. See REPORT.md, "Kobo connections and one bridge service".
+signing in); their acceptance runs, in Claude Code and claude.ai, are next. Phase 6, the
+manual's "Connecting a form" page, is done. See REPORT.md, "Kobo connections and one bridge service".
 
 ## Goal
 
@@ -236,6 +236,13 @@ Each phase can be used on its own. Phase 2 already removes the plumbing.
    discovery documents at the site's root. Tests: `mcp_http.py` H5–H8 (20/20 in all).
 6. **Manual.** A "Connect a form" page (the steps and an example conversation), replacing
    the template section of "Running it". The bridge's README: `serve`, connections, the MCP.
+   *Done 2026-11-06:* `site/pages/connect.html` ("Connecting a form": the three choices,
+   Claude's setup, an example conversation (illustrative, not a transcript: to replace with
+   one from the acceptance runs), what each question becomes, what the agent may do, the
+   connection record with a screenshot, by hand, limits). "Running it" points to it, and
+   its steps for a new consortium or response edit connections instead of files. Found on
+   the way: EspoCRM showed the template as Markdown (a TOML comment as a heading); its
+   text fields are now raw text, put right on existing instances by `ensure_entity`.
 7. **Move kobo-espo's four templates** into connection records, keeping the files as the
    tests' fixtures.
    *Done 2026-11-06:* `bridge.py serve adopt FILE...` (the record kept, its state moved to
