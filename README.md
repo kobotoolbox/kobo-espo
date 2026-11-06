@@ -11,6 +11,7 @@ this repository has the instance's setup, its forms and templates, and the tests
 ```
 docker-compose.yml          EspoCRM 10.0.11 (apache), MariaDB 11.4, its scheduler, Caddy (TLS), the bridge
 deploy/up.sh                the stack onto the droplet (ESPO_SSH), secrets generated there
+deploy/Caddyfile            TLS for ESPO_HOST: EspoCRM, and the bridge's EspoCRM MCP at /bridge/mcp
 deploy/bridges.sh           the bridge service, kobo-espo-bridge's `serve`: every connection, set up on the server (up | down | logs)
 espo/seed/seed.py           entities (Response, Site, Standard), fields, Task board, roles, teams, users
 espo/formula/               EspoCRM formula scripts, one file per entity and script type
@@ -42,8 +43,10 @@ tests/run_all.sh            # or: tests/run_all.sh --kobo real
 **Kobo connections.** One bridge service runs every form's connection: the templates in
 `kobo/templates/`, and connections admins make in EspoCRM (Kobo connections, the
 template pasted in). It sets each one up when its template changes, and shows its status
-in its record. See the manual's [Running it](site/pages/running.html#checking) and
-kobo-espo-bridge's README (`serve`, and `propose` for a template from a form).
+in its record. An admin can also connect a form from a conversation, with the bridge's
+EspoCRM MCP (`https://ESPO_HOST/bridge/mcp`, a key per admin) next to kobo-mcp. See the
+manual's [Running it](site/pages/running.html#checking) and kobo-espo-bridge's README
+(`serve`, `propose`, `espo_mcp`).
 
 Python 3.11+ (stdlib only, but the `anthropic` SDK for the agent runner, `openpyxl`, Pillow and Playwright for the forms' .xlsx,
 the demo photos and the screenshots). Secrets never go into git: `.env*` and `secrets/` are
