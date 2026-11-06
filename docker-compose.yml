@@ -111,7 +111,8 @@ services:
       BRIDGE_LIST_MIN_SECONDS: ${BRIDGE_LIST_MIN_SECONDS:-60}
 
   # kobo-espo-bridge's EspoCRM MCP (espo_mcp/), at https://ESPO_HOST/bridge/mcp: connecting
-  # forms from a conversation, next to kobo-mcp. Admins only, a key each
+  # forms from a conversation, next to kobo-mcp. Admins only: signing in with EspoCRM
+  # (claude.ai, Claude Desktop), or a key each for Claude Code
   # (docker compose exec bridge-mcp python3 -I espo_mcp/keys.py add <user>)
   bridge-mcp:
     profiles: [bridge]
@@ -133,6 +134,7 @@ services:
       KOBO_TOKEN_FILE: /run/kobo.token
       MCP_KEYS_FILE: /state/mcp-keys
       MCP_PUBLIC_URL: https://${ESPO_HOST}/bridge
+      MCP_CLIENT_IP_HEADER: X-Forwarded-For  # Caddy's: the sign-in page limits attempts per address
 
   # The agents (plans/espo-agents-plan.md): one runner for every Agent whose runner is "droplet"
   # (deploy/agents.sh starts it with the keys agents/sync.py made)

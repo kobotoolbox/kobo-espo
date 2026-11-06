@@ -344,6 +344,17 @@ gets an API user of its own (`kobo-conn-<name>`).
   made-up key, a non-admin's key, another Host refused). The seed now keeps roles' access
   to entities it doesn't define (what `grant_access` gave). Not done yet: the acceptance
   run in Claude Code with kobo-mcp, from "I want a grant application form" to a record.
+- **Phase 5, signing in** (2026-11-06, `espo_mcp/oauth.py`): claude.ai and Claude Desktop
+  connect with the MCP's URL alone. The MCP is its own OAuth server (the SDK's routes);
+  its sign-in page takes an EspoCRM admin's username, password and two-factor code,
+  EspoCRM checks them (`/App/user`, its session ended at once), and they're kept nowhere.
+  Tokens are sealed (AES-GCM), name the user, and every call and refresh checks the user
+  is still an active admin. Caddy routes the two discovery documents clients look for at
+  the site's root. Keys still work for Claude Code. Tests: `mcp_http.py` 20/20 (H5–H8:
+  discovery; the SDK's OAuth client signing in; a wrong password, a non-admin, a forged
+  form, an unregistered redirect refused; two-factor, PKCE, codes and refresh tokens used
+  once; admin rights taken away). Live: signed in through Caddy and called the tools.
+  Not done: the acceptance run in claude.ai.
 - **Phase 7, the four templates as records** (2026-11-06): the droplet's bridge no longer
   reads `kobo/templates/`. `bridge.py serve adopt` turned each file's connection into an
   ordinary record, edited in EspoCRM (and with `update_connection`), under the same API

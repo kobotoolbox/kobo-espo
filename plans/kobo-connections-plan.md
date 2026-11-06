@@ -1,8 +1,9 @@
 # Connecting a Kobo form to EspoCRM in one conversation
 
-Status: 2026-11-06. Phases 0–3 done, phase 4 built and tested (the EspoCRM MCP, kobo-espo-bridge
-`espo_mcp/`, live on the test droplet at /bridge/mcp); its acceptance run in Claude Code is
-next. See REPORT.md, "Kobo connections and one bridge service".
+Status: 2026-11-06. Phases 0–3 and 7 done; 4 and 5 built and tested (the EspoCRM MCP,
+kobo-espo-bridge `espo_mcp/`, live on the test droplet at /bridge/mcp, with a key or by
+signing in); their acceptance runs, in Claude Code and claude.ai, are next. Phase 6 (a
+"Connect a form" page) is left. See REPORT.md, "Kobo connections and one bridge service".
 
 ## Goal
 
@@ -229,6 +230,10 @@ Each phase can be used on its own. Phase 2 already removes the plumbing.
    Named espo_mcp, not mcp (it would shadow the SDK). Added: `preview_template`,
    `resume_connection`. Tests: kobo-espo `tests/cases/mcp.py` 21/21, `mcp_http.py` 8/8.
 5. **OAuth sign-in** with an EspoCRM admin account. Acceptance: the same task in claude.ai.
+   *Built 2026-11-06:* `espo_mcp/oauth.py`, on by default beside the keys; the sign-in page
+   checks the password and two-factor code with EspoCRM and keeps neither; sealed,
+   stateless tokens; admin rights checked on every call and refresh. Caddy serves the
+   discovery documents at the site's root. Tests: `mcp_http.py` H5–H8 (20/20 in all).
 6. **Manual.** A "Connect a form" page (the steps and an example conversation), replacing
    the template section of "Running it". The bridge's README: `serve`, connections, the MCP.
 7. **Move kobo-espo's four templates** into connection records, keeping the files as the

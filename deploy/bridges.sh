@@ -60,7 +60,11 @@ case $CMD in
         # --no-deps: never recreate EspoCRM itself from here
         # restart too: the code is mounted, and a running bridge has the old one loaded
         compose up -d --no-deps --build bridge bridge-mcp
-        compose restart bridge bridge-mcp ;;
+        compose restart bridge bridge-mcp
+        # Caddy has deploy/Caddyfile mounted as a file: it sees a new one only once restarted
+        if ! docker compose -p kobo-espo --profile tls exec -T caddy cat /etc/caddy/Caddyfile | cmp -s - deploy/Caddyfile; then
+            docker compose -p kobo-espo --profile tls restart caddy
+        fi ;;
     down) compose stop bridge bridge-mcp ;;
     logs) compose logs --tail 60 bridge bridge-mcp ;;
 esac

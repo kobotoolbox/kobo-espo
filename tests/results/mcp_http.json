@@ -101,13 +101,13 @@
     "test": "H3",
     "check": "bridge_info over MCP: the Kobo account to share with",
     "ok": true,
-    "detail": "{\n  \"espocrm\": \"https://espo-test.kobolabs.dev\",\n  \"kobo_server\": \"http://127.0.0.1:54594\",\n  \"kobo_account\": \"bridge_acct\",\n  \"share_forms_with\": \"bridge_acct\",\n  \"connections\": []\n}"
+    "detail": "{\n  \"espocrm\": \"https://espo-test.kobolabs.dev\",\n  \"kobo_server\": \"http://127.0.0.1:55544\",\n  \"kobo_account\": \"bridge_acct\",\n  \"share_forms_with\": \"bridge_acct\",\n  \"connections\": []\n}"
   },
   {
     "test": "H4",
     "check": "a refusal is a tool error with its message (what to share)",
     "ok": true,
-    "detail": "Error executing tool propose_connection: The bridge's Kobo account (bridge_acct on http://127.0.0.1:54594) can't see the form aNotSharedWithTheBridge1. With kobo-mcp, share it: share_project aNotSharedWithTheBridge1 with bridge_acct, permission \"View submissions\" (and \"Edit form\" too if the connecti"
+    "detail": "Error executing tool propose_connection: The bridge's Kobo account (bridge_acct on http://127.0.0.1:55544) can't see the form aNotSharedWithTheBridge1. With kobo-mcp, share it: share_project aNotSharedWithTheBridge1 with bridge_acct, permission \"View submissions\" (and \"Edit form\" too if the connecti"
   },
   {
     "test": "H4",
@@ -116,6 +116,134 @@
     "detail": {
       "forged": "Error executing tool create_entity: `confirm` isn't a valid token, or it has expired (they last 10 minutes). Nothing was changed. Call this tool again without `confirm` to get a new one, show the user",
       "made": false
+    }
+  },
+  {
+    "test": "H5",
+    "check": "a 401 names the resource metadata; it names this server as where to sign in",
+    "ok": true,
+    "detail": {
+      "resource": "http://127.0.0.1:55545/mcp",
+      "authorization_servers": [
+        "http://127.0.0.1:55545"
+      ],
+      "bearer_methods_supported": [
+        "header"
+      ]
+    }
+  },
+  {
+    "test": "H5",
+    "check": "the authorization server: sign-in, tokens, registration, PKCE (S256)",
+    "ok": true,
+    "detail": {
+      "issuer": "http://127.0.0.1:55545",
+      "authorization_endpoint": "http://127.0.0.1:55545/authorize",
+      "token_endpoint": "http://127.0.0.1:55545/token",
+      "registration_endpoint": "http://127.0.0.1:55545/register",
+      "response_types_supported": [
+        "code"
+      ],
+      "grant_types_supported": [
+        "authorization_code",
+        "refresh_token"
+      ],
+      "token_endpoint_auth_methods_supported": [
+        "client_secret_post",
+        "client_secret_basic"
+      ],
+      "code_challenge_methods_supported": [
+        "S256"
+      ]
+    }
+  },
+  {
+    "test": "H6",
+    "check": "signed in as admin (the page sends the browser back with a code), then the tools",
+    "ok": true,
+    "detail": {
+      "signin_status": 303,
+      "tools": 14
+    }
+  },
+  {
+    "test": "H6",
+    "check": "the tokens are sealed: neither names the user or can be read",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "H7",
+    "check": "a wrong password: the page again, saying so, and no code",
+    "ok": true,
+    "detail": 400
+  },
+  {
+    "test": "H7",
+    "check": "a user who isn't an admin, with their right password: refused, saying only admins",
+    "ok": true,
+    "detail": 400
+  },
+  {
+    "test": "H7",
+    "check": "refused: a forged form, a made-up sign-in link, an unregistered redirect, an http one",
+    "ok": true,
+    "detail": [
+      400,
+      400,
+      400,
+      400
+    ]
+  },
+  {
+    "test": "H8",
+    "check": "two-factor: without the code, the page asks for it",
+    "ok": true,
+    "detail": 400
+  },
+  {
+    "test": "H8",
+    "check": "with the code: back to the app with a code and its state; EspoCRM's session ended",
+    "ok": true,
+    "detail": {
+      "status": 303,
+      "sessions": [
+        {
+          "id": "6aedc3a314370a00f",
+          "isActive": false,
+          "lastAccess": "2026-11-06 12:10:11"
+        }
+      ]
+    }
+  },
+  {
+    "test": "H8",
+    "check": "the code: not without its PKCE verifier; with it, tokens; only once",
+    "ok": true,
+    "detail": [
+      400,
+      200,
+      400,
+      "{\"error\":\"invalid_grant\",\"error_description\":\"authorization code does not exist\"}"
+    ]
+  },
+  {
+    "test": "H8",
+    "check": "its token calls the tools; a refresh works once",
+    "ok": true,
+    "detail": [
+      "ok",
+      200,
+      400
+    ]
+  },
+  {
+    "test": "H8",
+    "check": "no longer an admin in EspoCRM: the token is refused, and so is a refresh",
+    "ok": true,
+    "detail": {
+      "after": 401,
+      "refresh": "{\"error\":\"invalid_grant\",\"error_description\":\"mcp-oauth-966977 is no longer an active EspoCRM admin.\"}"
     }
   }
 ]
