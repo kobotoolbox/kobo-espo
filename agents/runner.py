@@ -12,7 +12,8 @@ AGENTS_POLL_SECONDS; ANTHROPIC_API_KEY for real models; AGENTS_MODEL (instead of
 
 EspoCRM holds the setup and the state; the runner holds neither. On every pass it reads the
 Agents and their routes, and for each Agent finds its work: records in its stage, or
-records whose watched field changed (and, if it reads notes, with a note it hasn't seen).
+records whose watched field changed (and, if it reads notes, with a note it hasn't seen), or
+on a schedule (every hour, day or week, UTC) the records that fit its filter, once per time.
 Each piece of work is a Run record, keyed by the record and what triggered it, so the same
 work is never done twice and a run left "running" by a crash is taken again after a timeout.
 
@@ -26,6 +27,7 @@ model never names a person or a stage: routes, set up by people, do. The guard f
 """
 import base64
 import calendar
+import datetime
 import hashlib
 import json
 import os
@@ -42,6 +44,7 @@ import llm  # noqa: E402
 import tools  # noqa: E402
 from bridge import BridgeError, Espo  # noqa: E402
 
+WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 STALE_SECONDS = 15 * 60  # a run "running" longer than this was abandoned
 MAX_FILES, MAX_FILE_BYTES = 5, 10 * 1024 * 1024
 FILE_TYPES = {'application/pdf': 'document', 'image/png': 'image', 'image/jpeg': 'image', 'image/gif': 'image',
@@ -89,6 +92,7 @@ class Runner:
         self.site = os.environ.get('ESPO_SITE_URL', url)  # for links in notes and tasks
         self.provider = llm.provider(llm_kind)
         self.users = {}  # user id -> user name, for mentions
+        self.clock = time.time  # (the tests move it on to the next slot of a schedule)
 
     def keys(self):
         return read_secrets(self.secrets_path)
@@ -152,20 +156,32 @@ class Runner:
         conds = []
         if agent.get('filterField'):
             conds.append(('equals', agent['filterField'], agent.get('filterValue')))
-        if agent['trigger'] == 'stage':
+        since = agent.get('activeSince') or ''
+        if agent['trigger'] == 'schedule':
+            slot = schedule_slot(agent, self.clock())
+            if not slot or slot < since:  # not set up, or it hasn't come round since the agent was switched on
+                return
+            idle, days = agent.get('idleField'), agent.get('idleDays')
+            if idle and days:
+                fmt = '%Y-%m-%d' if (defs.get(idle) or {}).get('type') == 'date' else '%Y-%m-%d %H:%M:%S'
+                conds.append(('before', idle, utc(self.clock() - days * 86400).strftime(fmt)))
+                fields.append(idle)
+            params = {'orderBy': 'createdAt', 'order': 'asc', 'maxSize': 200}  # every record, once per slot
+        elif agent['trigger'] == 'stage':
             conds.append(('equals', 'stage', agent['triggerStage']))
             params = {'orderBy': 'createdAt', 'order': 'asc'}
         else:
             conds.append(('isNotNull', agent['watchField'], None))
             fields.append(agent['watchField'])
             params = {'orderBy': 'modifiedAt', 'order': 'desc'}
-        rows = espo.call('GET', f'/{entity}', {**where(*conds), **params, 'maxSize': 20,
+        rows = espo.call('GET', f'/{entity}', {**where(*conds), 'maxSize': 20, **params,
                                                'select': ','.join(dict.fromkeys(f for f in fields if f))})['list']
-        since = agent.get('activeSince') or ''
         for rec in rows:
             note = self.latest_note(espo, entity, rec['id']) if agent.get('readNotes') else None
             rec['_note'] = note
-            if agent['trigger'] == 'stage':
+            if agent['trigger'] == 'schedule':
+                yield rec, f'schedule:{slot}'
+            elif agent['trigger'] == 'stage':
                 yield rec, f'{rec["stage"]}@{rec["modifiedAt"]}'
             elif rec['modifiedAt'] >= since:
                 if agent.get('readNotes'):
@@ -393,6 +409,32 @@ def rule_text(route):
 
 def fill(template, rec):
     return re.sub(r'\{(\w+)\}', lambda m: str(rec.get(m.group(1)) or ''), template)
+
+
+def utc(ts):
+    return datetime.datetime.fromtimestamp(ts, datetime.timezone.utc)
+
+
+def schedule_slot(agent, now):
+    """When the agent's schedule last came round, at or before now (UTC, EspoCRM's format):
+    every hour at :MM, every day at HH:MM, or every week on a weekday at HH:MM. None if the
+    schedule isn't set up properly."""
+    every = agent.get('scheduleEvery')
+    m = re.fullmatch(r'(\d{1,2}):(\d{2})', (agent.get('scheduleAt') or '00:00').strip())
+    if every not in ('hour', 'day', 'week') or not m or int(m[1]) > 23 or int(m[2]) > 59:
+        return None
+    t = utc(now).replace(second=0, microsecond=0)
+    if every == 'hour':
+        slot, step = t.replace(minute=int(m[2])), datetime.timedelta(hours=1)
+    else:
+        slot, step = t.replace(hour=int(m[1]), minute=int(m[2])), datetime.timedelta(days=1)
+    if every == 'week':
+        day = WEEKDAYS.index(agent.get('scheduleWeekday') or 'Mon')
+        slot -= datetime.timedelta(days=(slot.weekday() - day) % 7)
+        step = datetime.timedelta(days=7)
+    if slot > t:
+        slot -= step
+    return slot.strftime('%Y-%m-%d %H:%M:%S')
 
 
 def age(espo_datetime):

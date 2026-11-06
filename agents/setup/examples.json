@@ -82,5 +82,33 @@
        "createTask": true, "taskName": "Check visit: {name}", "taskStatus": "Not Started", "taskPriority": "High",
        "taskAssignFrom": "response.lead"}
     ]
+  },
+  {
+    "name": "Repair follow-up",
+    "description": "Every Monday morning: a follow-up task for each site that still needs a repair and nobody has visited for a week.",
+    "mode": "dry_run",
+    "entity": "CSite",
+    "trigger": "schedule",
+    "scheduleEvery": "week",
+    "scheduleWeekday": "Mon",
+    "scheduleAt": "06:00",
+    "filterField": "status",
+    "filterValue": "needs_repair",
+    "idleField": "lastVisit",
+    "idleDays": 7,
+    "teams": ["Response: Test EQ 1"],
+    "readFields": ["name", "siteCode", "status", "lastVisit", "responseName"],
+    "outputFields": [],
+    "model": "",
+    "maxAttempts": 1,
+    "onFailure": "follow_up",
+    "routes": [
+      {"name": "follow_up", "order": 10,
+       "description": "Still needs a repair, and no visit for a week: the response lead follows it up.",
+       "ruleField": "status", "ruleOp": "equals", "ruleValue": "needs_repair", "ruleWhen": "before",
+       "createTask": true, "taskName": "Follow up repair: {name} (last visit {lastVisit})", "taskStatus": "Not Started",
+       "taskPriority": "Normal", "taskAssignFrom": "response.lead", "notify": true,
+       "fixedNote": "This site still needs a repair and nobody has visited it for over a week: a follow-up task for the response lead."}
+    ]
   }
 ]

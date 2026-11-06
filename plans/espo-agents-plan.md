@@ -9,7 +9,8 @@ Several patterns come from Ponto (`~/code/ponto`); section 5 lists what and wher
 and runs in EspoCRM; the runner with rules before and after the model; the fake model and the
 Claude provider; an API user and role per agent (sync); the guard formula; the three example
 agents; `tests/cases/agents.py`; 2026-11-06 a Bedrock provider (`AGENTS_LLM=bedrock`) and
-`AGENTS_MODEL` for cheaper test runs. Not yet (hardening): draft mode, scenarios and gates,
+`AGENTS_MODEL` for cheaper test runs; a `schedule` trigger (every hour, day or week, UTC) and the
+"Repair follow-up" example. Not yet (hardening): draft mode, scenarios and gates,
 `CAgentScenario`, the Kobo application form, the registry, real sanctions lists, export,
 the OpenAI-compatible provider, Agent Admin role, approve/reject by approvers only, manual pages.
 
@@ -452,7 +453,7 @@ to the real model.
   reviewing a volunteer sign-up.
 - A short reference applicants can type (e.g. `APP-7K3Q`, Ponto's `engine/refs.py`), for following
   up on another Kobo form.
-- Agents on a schedule (a `schedule` trigger) as well as stages and changes.
+- ~~Agents on a schedule (a `schedule` trigger) as well as stages and changes.~~ Done 2026-11-06.
 - A "test on this record" button on the Agent.
 - EspoCRM core webhooks to start a run at once instead of polling (Ponto's `webhook.py` has the
   signature check).

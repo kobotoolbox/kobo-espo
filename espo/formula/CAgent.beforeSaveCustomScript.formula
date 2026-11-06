@@ -6,7 +6,10 @@ if (!entity\isNew() && (entity\isAttributeChanged('instructions') || entity\isAt
         || entity\isAttributeChanged('trigger') || entity\isAttributeChanged('triggerStage')
         || entity\isAttributeChanged('watchField') || entity\isAttributeChanged('filterField')
         || entity\isAttributeChanged('filterValue') || entity\isAttributeChanged('readNotes')
-        || entity\isAttributeChanged('readAttachments') || entity\isAttributeChanged('onFailure'))) {
+        || entity\isAttributeChanged('readAttachments') || entity\isAttributeChanged('onFailure')
+        || entity\isAttributeChanged('scheduleEvery') || entity\isAttributeChanged('scheduleAt')
+        || entity\isAttributeChanged('scheduleWeekday') || entity\isAttributeChanged('idleField')
+        || entity\isAttributeChanged('idleDays'))) {
     version = version + 1;
 }
 // Switched on: it works only on what changes from now, not on every old record

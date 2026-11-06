@@ -6,7 +6,8 @@
     "detail": {
       "DD research": "agent-test-dd-research",
       "DD screening": "agent-test-dd-screening",
-      "Site visit triage": "agent-test-site-visit-triage"
+      "Site visit triage": "agent-test-site-visit-triage",
+      "Repair follow-up": "agent-test-repair-follow-up"
     }
   },
   {
@@ -15,11 +16,11 @@
     "ok": true,
     "detail": [
       {
-        "id": "6aed87d11e67d696e",
+        "id": "6aed907a62fbb5ad3",
         "name": "Repair: AGT Site well 1",
         "status": "Backlog",
         "priority": "Normal",
-        "createdAt": "2026-11-06 07:54:57",
+        "createdAt": "2026-11-06 08:31:54",
         "parentName": null,
         "createdById": "6aecb5b4a2e26fc7f",
         "assignedUserId": "6aec420cf14b4edc7"
@@ -32,37 +33,37 @@
     "ok": true,
     "detail": [
       {
-        "id": "6aed87cf634c4e39e",
+        "id": "6aed9079719e9c934",
         "name": "Test: Site visit triage: AGT Site well 1",
         "deleted": false,
         "description": null,
-        "createdAt": "2026-11-06 07:54:55",
-        "modifiedAt": "2026-11-06 07:54:58",
+        "createdAt": "2026-11-06 08:31:53",
+        "modifiedAt": "2026-11-06 08:31:55",
         "status": "done",
         "recordType": "CSite",
-        "recordId": "6aed87c60e6a4ba2f",
+        "recordId": "6aed906f096070a9e",
         "recordName": "AGT Site well 1",
-        "triggerKey": "note:6aed87c8eebb6beee",
+        "triggerKey": "note:6aed90718c6118774",
         "agentVersion": 5,
         "model": "claude-opus-5-5",
         "promptHash": null,
         "route": "repair",
         "routeBy": "rule_before",
         "reason": "Rule: status equals 'needs_repair' \u2192 repair.",
-        "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Repair: AGT Site well 1\",\n    \"status\": \"Backlog\",\n    \"priority\": \"Normal\",\n    \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aed87c60e6a4ba2f).\\n\\nRule: status equals 'needs_repair' \u2192 repair.\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aed87c094acdc0d5\"\n   }\n  }\n ]\n}",
+        "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Repair: AGT Site well 1\",\n    \"status\": \"Backlog\",\n    \"priority\": \"Normal\",\n    \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aed906f096070a9e).\\n\\nRule: status equals 'needs_repair' \u2192 repair.\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aed906a25057f052\"\n   }\n  }\n ]\n}",
         "error": null,
         "attempts": 0,
         "inputTokens": null,
         "outputTokens": null,
         "cost": null,
-        "durationS": 2.78,
+        "durationS": 1.96,
         "createdById": "6aecb5ad28e594818",
         "createdByName": "agent-runner",
         "modifiedById": "6aecb5ad28e594818",
         "modifiedByName": "agent-runner",
         "assignedUserId": null,
         "assignedUserName": null,
-        "agentId": "6aed8782b5aeda3f4",
+        "agentId": "6aed9021b170026bd",
         "agentName": "Test: Site visit triage"
       }
     ]
@@ -73,37 +74,37 @@
     "ok": true,
     "detail": [
       {
-        "id": "6aed87e24eb11881a",
+        "id": "6aed908d8bcbb3798",
         "name": "Test: Site visit triage: AGT Site well 1",
         "deleted": false,
         "description": null,
-        "createdAt": "2026-11-06 07:55:14",
-        "modifiedAt": "2026-11-06 07:55:16",
+        "createdAt": "2026-11-06 08:32:13",
+        "modifiedAt": "2026-11-06 08:32:15",
         "status": "done",
         "recordType": "CSite",
-        "recordId": "6aed87c60e6a4ba2f",
+        "recordId": "6aed906f096070a9e",
         "recordName": "AGT Site well 1",
-        "triggerKey": "note:6aed87dc8e7cb1893",
+        "triggerKey": "note:6aed9084bf14e26aa",
         "agentVersion": 5,
         "model": "fake",
         "promptHash": "c3f85f2ee930",
         "route": "urgent_safety",
         "routeBy": "rule_after",
         "reason": "Rule: text matches '\\\\b(sick|illness|ill|diarrh\\\\w*|vomit\\\\w*|cholera|contaminat\\\\w*|poison\\\\w*|injur\\\\w*|bleed\\\\w*|died|death|collaps\\\\w*|armed|attack\\\\w*|malade?s?|bless\u00e9\\\\w*|contamin\\\\w*|enferm\\\\w*|herid\\\\w*|muert\\\\w*)\\\\b' \u2192 urgent_safety (overrides ok: Fake model: chosen from the test markers.)",
-        "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Urgent: AGT Site well 1\",\n    \"status\": \"Not Started\",\n    \"priority\": \"Urgent\",\n    \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aed87c60e6a4ba2f).\\n\\nRule: text matches '\\\\\\\\b(sick|illness|ill|diarrh\\\\\\\\w*|vomit\\\\\\\\w*|cholera|contaminat\\\\\\\\w*|poison\\\\\\\\w*|injur\\\\\\\\w*|bleed\\\\\\\\w*|died|death|collaps\\\\\\\\w*|armed|attack\\\\\\\\w*|malade?s?|bless\u00e9\\\\\\\\w*|contamin\\\\\\\\w*|enferm\\\\\\\\w*|herid\\\\\\\\w*|muert\\\\\\\\w*)\\\\\\\\b' \u2192 urgent_safety (overrides ok: Fake model: chosen from the test markers.)\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aed87c094acdc0d5\"\n   }\n  }\n ]\n}",
+        "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Urgent: AGT Site well 1\",\n    \"status\": \"Not Started\",\n    \"priority\": \"Urgent\",\n    \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aed906f096070a9e).\\n\\nRule: text matches '\\\\\\\\b(sick|illness|ill|diarrh\\\\\\\\w*|vomit\\\\\\\\w*|cholera|contaminat\\\\\\\\w*|poison\\\\\\\\w*|injur\\\\\\\\w*|bleed\\\\\\\\w*|died|death|collaps\\\\\\\\w*|armed|attack\\\\\\\\w*|malade?s?|bless\u00e9\\\\\\\\w*|contamin\\\\\\\\w*|enferm\\\\\\\\w*|herid\\\\\\\\w*|muert\\\\\\\\w*)\\\\\\\\b' \u2192 urgent_safety (overrides ok: Fake model: chosen from the test markers.)\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aed906a25057f052\"\n   }\n  }\n ]\n}",
         "error": null,
         "attempts": 1,
         "inputTokens": 100,
         "outputTokens": 20,
         "cost": 0.0008,
-        "durationS": 2.55,
+        "durationS": 2.37,
         "createdById": "6aecb5ad28e594818",
         "createdByName": "agent-runner",
         "modifiedById": "6aecb5ad28e594818",
         "modifiedByName": "agent-runner",
         "assignedUserId": null,
         "assignedUserName": null,
-        "agentId": "6aed8782b5aeda3f4",
+        "agentId": "6aed9021b170026bd",
         "agentName": "Test: Site visit triage"
       }
     ]
@@ -114,21 +115,21 @@
     "ok": true,
     "detail": [
       {
-        "id": "6aed87e3d4e99d070",
+        "id": "6aed908ee70ea1fee",
         "name": "Urgent: AGT Site well 1",
         "status": "Not Started",
         "priority": "Urgent",
-        "createdAt": "2026-11-06 07:55:15",
+        "createdAt": "2026-11-06 08:32:14",
         "parentName": null,
         "createdById": "6aecb5b4a2e26fc7f",
         "assignedUserId": "6aec420cf14b4edc7"
       },
       {
-        "id": "6aed87d11e67d696e",
+        "id": "6aed907a62fbb5ad3",
         "name": "Repair: AGT Site well 1",
         "status": "Backlog",
         "priority": "Normal",
-        "createdAt": "2026-11-06 07:54:57",
+        "createdAt": "2026-11-06 08:31:54",
         "parentName": null,
         "createdById": "6aecb5b4a2e26fc7f",
         "assignedUserId": "6aec420cf14b4edc7"
@@ -139,7 +140,7 @@
     "test": "E2",
     "check": "the fixed note, mentioning the lead",
     "ok": true,
-    "detail": "**Test: Site visit triage** \u2192 urgent_safety\n\nUrgent: this visit report may describe a risk to people. A task has been created for the response lead.\n\nTask: [Urgent: AGT Site well 1](https://espo-test.kobolabs.dev/#Task/view/6aed87e3d4e99d070)\n\n@staff-1"
+    "detail": "**Test: Site visit triage** \u2192 urgent_safety\n\nUrgent: this visit report may describe a risk to people. A task has been created for the response lead.\n\nTask: [Urgent: AGT Site well 1](https://espo-test.kobolabs.dev/#Task/view/6aed908ee70ea1fee)\n\n@staff-1"
   },
   {
     "test": "E3",
@@ -147,17 +148,17 @@
     "ok": true,
     "detail": [
       {
-        "id": "6aed87f40a8868606",
+        "id": "6aed90a1cf9a60a7a",
         "name": "Test: Site visit triage: AGT Site well 1",
         "deleted": false,
         "description": null,
-        "createdAt": "2026-11-06 07:55:32",
-        "modifiedAt": "2026-11-06 07:55:33",
+        "createdAt": "2026-11-06 08:32:33",
+        "modifiedAt": "2026-11-06 08:32:34",
         "status": "done",
         "recordType": "CSite",
-        "recordId": "6aed87c60e6a4ba2f",
+        "recordId": "6aed906f096070a9e",
         "recordName": "AGT Site well 1",
-        "triggerKey": "note:6aed87ee8c12f333d",
+        "triggerKey": "note:6aed9099d3556bbba",
         "agentVersion": 5,
         "model": "fake",
         "promptHash": "c3f85f2ee930",
@@ -170,14 +171,14 @@
         "inputTokens": 100,
         "outputTokens": 20,
         "cost": 0.0008,
-        "durationS": 1.05,
+        "durationS": 0.97,
         "createdById": "6aecb5ad28e594818",
         "createdByName": "agent-runner",
         "modifiedById": "6aecb5ad28e594818",
         "modifiedByName": "agent-runner",
         "assignedUserId": null,
         "assignedUserName": null,
-        "agentId": "6aed8782b5aeda3f4",
+        "agentId": "6aed9021b170026bd",
         "agentName": "Test: Site visit triage"
       }
     ]
@@ -195,41 +196,41 @@
     "detail": {
       "run": [
         {
-          "id": "6aed88104b6cb0bbc",
+          "id": "6aed90c20744c26e5",
           "name": "Test: Site visit triage: AGT Site well 1",
           "deleted": false,
           "description": null,
-          "createdAt": "2026-11-06 07:56:00",
-          "modifiedAt": "2026-11-06 07:56:01",
+          "createdAt": "2026-11-06 08:33:06",
+          "modifiedAt": "2026-11-06 08:33:07",
           "status": "dry_run",
           "recordType": "CSite",
-          "recordId": "6aed87c60e6a4ba2f",
+          "recordId": "6aed906f096070a9e",
           "recordName": "AGT Site well 1",
-          "triggerKey": "note:6aed880a97f0f3a0b",
+          "triggerKey": "note:6aed90b9e3c06e0cf",
           "agentVersion": 5,
           "model": "claude-opus-5-5",
           "promptHash": null,
           "route": "repair",
           "routeBy": "rule_before",
           "reason": "Rule: status equals 'needs_repair' \u2192 repair.",
-          "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Repair: AGT Site well 1\",\n    \"status\": \"Backlog\",\n    \"priority\": \"Normal\",\n    \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aed87c60e6a4ba2f).\\n\\nRule: status equals 'needs_repair' \u2192 repair.\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aed87c094acdc0d5\"\n   }\n  }\n ]\n}",
+          "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Repair: AGT Site well 1\",\n    \"status\": \"Backlog\",\n    \"priority\": \"Normal\",\n    \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aed906f096070a9e).\\n\\nRule: status equals 'needs_repair' \u2192 repair.\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aed906a25057f052\"\n   }\n  }\n ]\n}",
           "error": null,
           "attempts": 0,
           "inputTokens": null,
           "outputTokens": null,
           "cost": null,
-          "durationS": 1.48,
+          "durationS": 1.42,
           "createdById": "6aecb5ad28e594818",
           "createdByName": "agent-runner",
           "modifiedById": "6aecb5ad28e594818",
           "modifiedByName": "agent-runner",
           "assignedUserId": null,
           "assignedUserName": null,
-          "agentId": "6aed8782b5aeda3f4",
+          "agentId": "6aed9021b170026bd",
           "agentName": "Test: Site visit triage"
         }
       ],
-      "note": "**Test: Site visit triage** \u2192 repair (dry run: nothing was changed)\n\nRule: status equals 'needs_repair' \u2192 repair.\n\nWould do: [{\"createTask\": {\"name\": \"Repair: AGT Site well 1\", \"status\": \"Backlog\", \"priority\": \"Normal\", \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aed87c60e6a4ba2f).\\n\\nRule: status equals 'needs_repair' \u2192 repair.\", \"assignedUserId\": \"6aec420cf14b4edc7\", \"cResponseId\": \"6aed87c094acdc0d5\"}}]"
+      "note": "**Test: Site visit triage** \u2192 repair (dry run: nothing was changed)\n\nRule: status equals 'needs_repair' \u2192 repair.\n\nWould do: [{\"createTask\": {\"name\": \"Repair: AGT Site well 1\", \"status\": \"Backlog\", \"priority\": \"Normal\", \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aed906f096070a9e).\\n\\nRule: status equals 'needs_repair' \u2192 repair.\", \"assignedUserId\": \"6aec420cf14b4edc7\", \"cResponseId\": \"6aed906a25057f052\"}}]"
     }
   },
   {
@@ -241,37 +242,37 @@
       "v1": 6,
       "run": [
         {
-          "id": "6aed8825c3ae6020a",
+          "id": "6aed90d8d67b2ff9f",
           "name": "Test: Site visit triage: AGT Site well 1",
           "deleted": false,
           "description": null,
-          "createdAt": "2026-11-06 07:56:21",
-          "modifiedAt": "2026-11-06 07:56:24",
+          "createdAt": "2026-11-06 08:33:28",
+          "modifiedAt": "2026-11-06 08:33:30",
           "status": "done",
           "recordType": "CSite",
-          "recordId": "6aed87c60e6a4ba2f",
+          "recordId": "6aed906f096070a9e",
           "recordName": "AGT Site well 1",
-          "triggerKey": "note:6aed88205efc83a7b",
+          "triggerKey": "note:6aed90d0d9a3df365",
           "agentVersion": 6,
           "model": "fake",
           "promptHash": "bdac393bb085",
           "route": "repair",
           "routeBy": "model",
           "reason": "Fake model: chosen from the test markers.",
-          "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Repair: AGT Site well 1\",\n    \"status\": \"Backlog\",\n    \"priority\": \"Normal\",\n    \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aed87c60e6a4ba2f).\\n\\nFake model: chosen from the test markers.\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aed87c094acdc0d5\"\n   }\n  }\n ]\n}",
+          "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Repair: AGT Site well 1\",\n    \"status\": \"Backlog\",\n    \"priority\": \"Normal\",\n    \"description\": \"From the agent \\\"Test: Site visit triage\\\" on Site \\\"AGT Site well 1\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aed906f096070a9e).\\n\\nFake model: chosen from the test markers.\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aed906a25057f052\"\n   }\n  }\n ]\n}",
           "error": null,
           "attempts": 1,
           "inputTokens": 100,
           "outputTokens": 20,
           "cost": 0.0008,
-          "durationS": 2.34,
+          "durationS": 1.97,
           "createdById": "6aecb5ad28e594818",
           "createdByName": "agent-runner",
           "modifiedById": "6aecb5ad28e594818",
           "modifiedByName": "agent-runner",
           "assignedUserId": null,
           "assignedUserName": null,
-          "agentId": "6aed8782b5aeda3f4",
+          "agentId": "6aed9021b170026bd",
           "agentName": "Test: Site visit triage"
         }
       ]
@@ -282,6 +283,88 @@
     "check": "changing a route raises the version too",
     "ok": true,
     "detail": ""
+  },
+  {
+    "test": "W1",
+    "check": "on a schedule: nothing for a time before the agent was switched on",
+    "ok": true,
+    "detail": []
+  },
+  {
+    "test": "W2",
+    "check": "the next slot: a follow-up task for the response lead, only for the site needing a repair and not visited for 7 days",
+    "ok": true,
+    "detail": [
+      {
+        "id": "6aed90fe20c56d760",
+        "name": "Follow up repair: AGT Site stale (last visit 2026-10-27)",
+        "status": "Not Started",
+        "priority": "Normal",
+        "createdAt": "2026-11-06 08:34:06",
+        "parentName": null,
+        "createdById": "6aed8e24c72773849",
+        "assignedUserId": "6aec420cf14b4edc7"
+      }
+    ]
+  },
+  {
+    "test": "W2",
+    "check": "taken by its rule (no model), keyed by the slot",
+    "ok": true,
+    "detail": [
+      {
+        "id": "6aed90fd2fe7b05b3",
+        "name": "Test: Repair follow-up: AGT Site stale",
+        "deleted": false,
+        "description": null,
+        "createdAt": "2026-11-06 08:34:05",
+        "modifiedAt": "2026-11-06 08:34:07",
+        "status": "done",
+        "recordType": "CSite",
+        "recordId": "6aed90e90679eba2b",
+        "recordName": "AGT Site stale",
+        "triggerKey": "schedule:2026-11-09 06:00:00",
+        "agentVersion": 2,
+        "model": null,
+        "promptHash": null,
+        "route": "follow_up",
+        "routeBy": "rule_before",
+        "reason": "Rule: status equals 'needs_repair' \u2192 follow_up.",
+        "output": "{\n \"output\": {},\n \"actions\": [\n  {\n   \"createTask\": {\n    \"name\": \"Follow up repair: AGT Site stale (last visit 2026-10-27)\",\n    \"status\": \"Not Started\",\n    \"priority\": \"Normal\",\n    \"description\": \"From the agent \\\"Test: Repair follow-up\\\" on Site \\\"AGT Site stale\\\" (https://espo-test.kobolabs.dev/#CSite/view/6aed90e90679eba2b).\\n\\nRule: status equals 'needs_repair' \u2192 follow_up.\",\n    \"assignedUserId\": \"6aec420cf14b4edc7\",\n    \"cResponseId\": \"6aed90e3ec65e51a1\"\n   }\n  }\n ]\n}",
+        "error": null,
+        "attempts": 0,
+        "inputTokens": null,
+        "outputTokens": null,
+        "cost": null,
+        "durationS": 2.02,
+        "createdById": "6aecb5ad28e594818",
+        "createdByName": "agent-runner",
+        "modifiedById": "6aecb5ad28e594818",
+        "modifiedByName": "agent-runner",
+        "assignedUserId": null,
+        "assignedUserName": null,
+        "agentId": "6aed9025a5d72c2a5",
+        "agentName": "Test: Repair follow-up"
+      }
+    ]
+  },
+  {
+    "test": "W3",
+    "check": "the same slot again: no new task",
+    "ok": true,
+    "detail": [
+      "Follow up repair: AGT Site stale (last visit 2026-10-27)"
+    ]
+  },
+  {
+    "test": "W4",
+    "check": "a week later: again for the stale site, and now for the other one too (its visit is 14 days old)",
+    "ok": true,
+    "detail": [
+      "Follow up repair: AGT Site fresh (last visit 2026-11-06)",
+      "Follow up repair: AGT Site stale (last visit 2026-10-27)",
+      "Follow up repair: AGT Site stale (last visit 2026-10-27)"
+    ]
   },
   {
     "test": "D1",
@@ -319,17 +402,17 @@
     "detail": {
       "screening": [
         {
-          "id": "6aed88431b6bf34a3",
+          "id": "6aed9143e8a0c0475",
           "name": "Test: DD screening: AGT Clear Water Partners",
           "deleted": false,
           "description": null,
-          "createdAt": "2026-11-06 07:56:51",
-          "modifiedAt": "2026-11-06 07:56:53",
+          "createdAt": "2026-11-06 08:35:15",
+          "modifiedAt": "2026-11-06 08:35:17",
           "status": "done",
           "recordType": "CApplication",
-          "recordId": "6aed883404b4ecbcd",
+          "recordId": "6aed91314e0a79cd6",
           "recordName": "AGT Clear Water Partners",
-          "triggerKey": "Screening@2026-11-06 07:56:36",
+          "triggerKey": "Screening@2026-11-06 08:34:57",
           "agentVersion": 4,
           "model": null,
           "promptHash": null,
@@ -342,30 +425,30 @@
           "inputTokens": null,
           "outputTokens": null,
           "cost": null,
-          "durationS": 2.2,
+          "durationS": 1.95,
           "createdById": "6aecb5ad28e594818",
           "createdByName": "agent-runner",
           "modifiedById": "6aecb5ad28e594818",
           "modifiedByName": "agent-runner",
           "assignedUserId": null,
           "assignedUserName": null,
-          "agentId": "6aed877ce43084b27",
+          "agentId": "6aed901ba8dc04936",
           "agentName": "Test: DD screening"
         }
       ],
       "research": [
         {
-          "id": "6aed8853a35aaa504",
+          "id": "6aed91535b9c31bee",
           "name": "Test: DD research: AGT Clear Water Partners",
           "deleted": false,
           "description": null,
-          "createdAt": "2026-11-06 07:57:07",
-          "modifiedAt": "2026-11-06 07:57:09",
+          "createdAt": "2026-11-06 08:35:31",
+          "modifiedAt": "2026-11-06 08:35:33",
           "status": "done",
           "recordType": "CApplication",
-          "recordId": "6aed883404b4ecbcd",
+          "recordId": "6aed91314e0a79cd6",
           "recordName": "AGT Clear Water Partners",
-          "triggerKey": "Research@2026-11-06 07:56:52",
+          "triggerKey": "Research@2026-11-06 08:35:16",
           "agentVersion": 2,
           "model": "fake",
           "promptHash": "4407515a3256",
@@ -378,14 +461,14 @@
           "inputTokens": 100,
           "outputTokens": 20,
           "cost": 0.0008,
-          "durationS": 1.65,
+          "durationS": 1.76,
           "createdById": "6aecb5ad28e594818",
           "createdByName": "agent-runner",
           "modifiedById": "6aecb5ad28e594818",
           "modifiedByName": "agent-runner",
           "assignedUserId": null,
           "assignedUserName": null,
-          "agentId": "6aed8779edb3f7b55",
+          "agentId": "6aed90195aeaaa3c6",
           "agentName": "Test: DD research"
         }
       ]
@@ -425,17 +508,17 @@
     "ok": true,
     "detail": [
       {
-        "id": "6aed8855c12335509",
+        "id": "6aed915599ece2a71",
         "name": "Test: DD research: AGT Broken Output Org",
         "deleted": false,
         "description": null,
-        "createdAt": "2026-11-06 07:57:09",
-        "modifiedAt": "2026-11-06 07:57:11",
+        "createdAt": "2026-11-06 08:35:33",
+        "modifiedAt": "2026-11-06 08:35:35",
         "status": "failed",
         "recordType": "CApplication",
-        "recordId": "6aed8838a1dba7d7f",
+        "recordId": "6aed91366852e3153",
         "recordName": "AGT Broken Output Org",
-        "triggerKey": "Research@2026-11-06 07:56:59",
+        "triggerKey": "Research@2026-11-06 08:35:24",
         "agentVersion": 2,
         "model": "fake",
         "promptHash": "4407515a3256",
@@ -448,14 +531,14 @@
         "inputTokens": 900,
         "outputTokens": 180,
         "cost": 0.0072,
-        "durationS": 1.5,
+        "durationS": 1.48,
         "createdById": "6aecb5ad28e594818",
         "createdByName": "agent-runner",
         "modifiedById": "6aecb5ad28e594818",
         "modifiedByName": "agent-runner",
         "assignedUserId": null,
         "assignedUserName": null,
-        "agentId": "6aed8779edb3f7b55",
+        "agentId": "6aed90195aeaaa3c6",
         "agentName": "Test: DD research"
       }
     ]
@@ -466,17 +549,17 @@
     "ok": true,
     "detail": [
       {
-        "id": "6aed8857b76a2bb3c",
+        "id": "6aed91578e30fba69",
         "name": "Test: DD research: AGT Sloppy Output Org",
         "deleted": false,
         "description": null,
-        "createdAt": "2026-11-06 07:57:11",
-        "modifiedAt": "2026-11-06 07:57:13",
+        "createdAt": "2026-11-06 08:35:35",
+        "modifiedAt": "2026-11-06 08:35:37",
         "status": "done",
         "recordType": "CApplication",
-        "recordId": "6aed883ae2d415382",
+        "recordId": "6aed913848df6c749",
         "recordName": "AGT Sloppy Output Org",
-        "triggerKey": "Research@2026-11-06 07:57:02",
+        "triggerKey": "Research@2026-11-06 08:35:26",
         "agentVersion": 2,
         "model": "fake",
         "promptHash": "4407515a3256",
@@ -489,14 +572,14 @@
         "inputTokens": 100,
         "outputTokens": 20,
         "cost": 0.0008,
-        "durationS": 1.65,
+        "durationS": 1.56,
         "createdById": "6aecb5ad28e594818",
         "createdByName": "agent-runner",
         "modifiedById": "6aecb5ad28e594818",
         "modifiedByName": "agent-runner",
         "assignedUserId": null,
         "assignedUserName": null,
-        "agentId": "6aed8779edb3f7b55",
+        "agentId": "6aed90195aeaaa3c6",
         "agentName": "Test: DD research"
       }
     ]

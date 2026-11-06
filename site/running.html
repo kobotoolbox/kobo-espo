@@ -125,6 +125,13 @@ ssh root@&lt;droplet&gt; docker exec kobo-espo-bridge-intake-1 \
 <pre><code>deploy/agents.sh                   # an API user and role per Agent (agents/sync.py), then the runner
 deploy/agents.sh sync              # only that, after adding an Agent
 deploy/agents.sh down | logs</code></pre>
+<p>An agent starts in one of three ways (its "Trigger"):</p>
+<ul>
+  <li><strong>Records in a stage</strong>: each record that reaches the stage, for example an application in Research.</li>
+  <li><strong>When a field changes</strong>: each time the watched field changes. If the agent reads notes, it runs once for each new note, for example a site visit.</li>
+  <li><strong>On a schedule</strong>: every hour, day or week at a set time in UTC ("Repeats", "At", "On"). Each time, it takes every record that fits its filter, once. "Only if this date is older than … days" keeps it to records nobody has touched for a while. It doesn't catch up on times before it was switched on. If the runner was down, it does the latest time it missed, once.</li>
+</ul>
+<p>The examples show each one. <strong>DD screening</strong> and <strong>DD research</strong> start from a stage, and <strong>Site visit triage</strong> from a new visit. <strong>Repair follow-up</strong> runs every Monday at 06:00 UTC. Each site still marked <em>needs repair</em> with no visit for 7 days gets a follow-up task for its response lead. It uses rules only, so it costs nothing to run. A site that stays broken gets a new follow-up task every week.</p>
 <p>Agents that use rules only need nothing else. Agents with a model call Claude, and there are two ways to reach it:</p>
 <ul>
   <li><strong>The Claude API</strong> (<code>AGENTS_LLM=real</code>, the default): <code>ANTHROPIC_API_KEY</code> in <code>.env</code>, which <code>deploy/agents.sh</code> copies to the droplet. This is the only way with web search and fetch, and with the fallback to another model when one declines.</li>
@@ -141,7 +148,7 @@ AGENTS_LLM=bedrock AGENTS_MODEL=claude-sonnet-5-5 \
   ESPO_URL=https://espo-test.kobolabs.dev ESPO_SITE_URL=https://espo-test.kobolabs.dev \
   .venv/bin/python -I -u agents/runner.py once
 deploy/agents.sh up</code></pre>
-<p><code>AGENTS_MODEL</code> overrides the model set on each Agent. Use <strong>Claude Sonnet 5.5 for test runs</strong> to keep the cost down. A pass over the three examples costs about one US cent on Sonnet 5.5, and about three on Opus 5.5. Each run (Administration → Agent runs) records the model, the tokens and the cost. The examples are in <strong>dry run</strong>: they post a note saying what they would do and change nothing else.</p>
+<p><code>AGENTS_MODEL</code> overrides the model set on each Agent. Use <strong>Claude Sonnet 5.5 for test runs</strong> to keep the cost down. A pass over the examples with a model costs about one US cent on Sonnet 5.5, and about three on Opus 5.5. Each run (Administration → Agent runs) records the model, the tokens and the cost. The examples are in <strong>dry run</strong>: they post a note saying what they would do and change nothing else.</p>
 <p>A record is worked on <strong>once per trigger</strong> (per stage reached, or per new visit note). To run an agent again, give it a new record or a new note; changing the agent doesn't redo old records.</p>
 </section>
 

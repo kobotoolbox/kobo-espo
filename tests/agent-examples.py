@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-Records for the three example agents (agents/setup/examples.json) to pick up: a site visit
-that needs a repair (and is a danger to people), a routine one, and an application waiting
-in Research. For trying the agents with a real model; it doesn't check anything itself.
+Records for the example agents (agents/setup/examples.json) to pick up: a site visit that
+needs a repair (and is a danger to people), a routine one, a site needing a repair that
+nobody has visited for 10 days (Repair follow-up: at its next time, Monday 06:00 UTC, or set
+it to every hour to see it sooner), and an application waiting in Research. For trying the agents with a real model; it doesn't check anything itself.
 
     python3 -I tests/agent-examples.py          # the two sites and the application
     python3 -I tests/agent-examples.py app      # only the application
@@ -39,6 +40,12 @@ if sys.argv[1:] != ['app']:
         a.call('POST', '/Note', body={'type': 'Post', 'parentType': 'CSite', 'parentId': site['id'],
                                       'post': f'**Site visit**\nBy: BDR tester\nCondition: {status}\nNotes: {text}'})
         print('site', name, site['id'])
+    # for Repair follow-up (on a schedule): needs a repair, nobody has been for 10 days
+    site = a.call('POST', '/CSite', body={'name': 'BDR Pump east', 'siteCode': f'BDR-{stamp}-pump',
+                                          'siteType': 'water_point', 'status': 'needs_repair',
+                                          'lastVisit': time.strftime('%Y-%m-%d', time.gmtime(time.time() - 10 * 86400)),
+                                          'responseId': resp['id'], 'teamsIds': [teams['Response: Test EQ 1']]})
+    print('site BDR Pump east', site['id'])
 
 org = 'Riverbend Community Water Trust'
 found = a.call('GET', '/Account', {'where[0][type]': 'equals', 'where[0][attribute]': 'name',

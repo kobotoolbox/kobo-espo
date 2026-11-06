@@ -234,11 +234,11 @@ the Application entity with its board and the Grants review team (staff-2); thre
 agents (`agents/setup/examples.json`: DD screening → DD research → review; site visit
 triage), **in dry run** on the droplet.
 
-**Tests.** `tests/cases/agents.py` 29/29 (fake model): triage E1–E4 (the repair rule
+**Tests.** `tests/cases/agents.py` 34/34 (fake model; 29 at first, W1–W4 with the schedule): triage E1–E4 (the repair rule
 without the model; the safety rule overriding the model's "ok"; routine; no repeats), dry
 run, a version per change, the DD flow D1–D6 (clean, match, near miss, sent back, model
-failing → failure route), sloppy output fixed in code, guards S1/S3. `agents/test_units.py`
-12/12. After adding the agents: isolation 80/80, workflow B 8/8, connection 73/73 (fake Kobo).
+failing → failure route), sloppy output fixed in code, guards S1/S3, on a schedule W1–W4 (nothing before
+switch-on, once per slot, the date condition). `agents/test_units.py` 14/14. After adding the agents: isolation 80/80, workflow B 8/8, connection 73/73 (fake Kobo).
 Tests use their own agent copies in teams the examples don't work in, so the droplet's
 runner never acts on test records.
 
@@ -284,6 +284,19 @@ the manual, "Running it" → "Agents".
   provider uses bedrock-runtime with the `us.anthropic.` inference profiles (both models
   work there). Bedrock has no web search or fetch and no server-side fallback on refusals:
   DD research there works from the record alone.
+
+### On a schedule (2026-11-06)
+
+A third trigger next to "stage" and "change": **On a schedule**, every hour, day or week at
+a time in UTC (Agent fields Repeats, At, On). At each time the agent takes every record that
+fits its filter once (the run's key is the slot, `schedule:<time>`), optionally only those
+whose date field is older than N days (`idleField`, `idleDays`). No catching up on times
+before it was switched on; after the runner was down, the latest time it missed, once. The
+example **Repair follow-up** (rules only, dry run on the droplet; its first time is Monday
+2026-11-09 06:00 UTC): each Monday, a follow-up task for the response lead on each site
+still marked needs repair with no visit for 7 days. A site that stays broken gets one every
+week, by design: a reminder that it's still open. The tests move the runner's clock on
+rather than wait (W1–W4).
 
 ## Open questions for Josh
 

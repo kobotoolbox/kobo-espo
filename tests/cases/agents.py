@@ -188,6 +188,46 @@ def main():
     a.call('PUT', f'/CAgentRoute/{route["id"]}', body={'description': 'A routine visit, nothing to do.'})
     check('G2', 'changing a route raises the version too', a.call('GET', f'/CAgent/{tri["id"]}')['version'] == v1 + 1)
 
+    # --- On a schedule: repair follow-up -------------------------------------------------
+    fol = agents['Repair follow-up']
+    resp2 = a.call('POST', '/CResponse', body={'name': f'AGT Response follow-up {time.strftime("%H%M%S")}',
+                                               'status': 'Active', 'teamsIds': [teams[TEST_TEAMS['CSite']]],
+                                               'leadId': users['staff-1']})
+    for t in tasks(a, resp2['id']):
+        a.call('DELETE', f'/Task/{t["id"]}')
+    day = 86400
+    ago = time.strftime('%Y-%m-%d', time.gmtime(time.time() - 10 * day))
+    today = time.strftime('%Y-%m-%d', time.gmtime())
+    sites = {}
+    for name, status, last in [('stale', 'needs_repair', ago), ('fresh', 'needs_repair', today), ('fine', 'operational', ago)]:
+        sites[name] = a.call('POST', '/CSite', body={'name': f'AGT Site {name}', 'siteCode': f'AGT-F-{name}',
+                                                     'siteType': 'water_point', 'status': status, 'lastVisit': last,
+                                                     'responseId': resp2['id']})
+
+    def follow_ups():
+        return sorted(t['name'] for t in tasks(a, resp2['id']) if t['name'].startswith('Follow up repair'))
+
+    runner.once()
+    check('W1', 'on a schedule: nothing for a time before the agent was switched on', follow_ups() == [], follow_ups())
+    now = time.time()
+    runner.clock = lambda: now + 7 * day  # the next Monday 06:00 UTC has come round
+    runner.once()
+    r = runs(a, fol['id'], sites['stale']['id'])
+    ts = [t for t in tasks(a, resp2['id']) if t['name'].startswith('Follow up repair')]
+    check('W2', 'the next slot: a follow-up task for the response lead, only for the site needing a repair and '
+          'not visited for 7 days', follow_ups() == [f'Follow up repair: AGT Site stale (last visit {ago})']
+          and ts[0]['assignedUserId'] == users['staff-1'], ts)
+    check('W2', 'taken by its rule (no model), keyed by the slot',
+          len(r) == 1 and r[0]['routeBy'] == 'rule_before' and r[0]['triggerKey'].startswith('schedule:'), r)
+    runner.once()
+    check('W3', 'the same slot again: no new task', len(follow_ups()) == 1, follow_ups())
+    runner.clock = lambda: now + 14 * day  # the Monday after
+    runner.once()
+    check('W4', 'a week later: again for the stale site, and now for the other one too (its visit is 14 days old)',
+          follow_ups() == [f'Follow up repair: AGT Site fresh (last visit {today})']
+          + [f'Follow up repair: AGT Site stale (last visit {ago})'] * 2, follow_ups())
+    runner.clock = time.time
+
     # --- Due diligence (Workflow D) --------------------------------------------------------
     scr, res = agents['DD screening'], agents['DD research']
 

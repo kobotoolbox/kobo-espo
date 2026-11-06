@@ -1,15 +1,17 @@
-"""Offline tests for the agents' code: sanctions matching, rules, checking model output.
+"""Offline tests for the agents' code: sanctions matching, rules, schedules, checking model output.
 
     python3 -I agents/test_units.py
 """
+import calendar
 import sys
+import time
 import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import llm  # noqa: E402
 import tools  # noqa: E402
-from runner import fill, matches  # noqa: E402
+from runner import fill, matches, schedule_slot  # noqa: E402
 
 
 class Sanctions(unittest.TestCase):
@@ -55,6 +57,28 @@ class Rules(unittest.TestCase):
 
     def test_fill(self):
         self.assertEqual(fill('Urgent: {name} ({missing})', {'name': 'Well 1'}), 'Urgent: Well 1 ()')
+
+
+class Schedule(unittest.TestCase):
+    def slot(self, now, **agent):
+        t = calendar.timegm(time.strptime(now, '%Y-%m-%d %H:%M'))
+        return schedule_slot(agent, t)
+
+    def test_every_hour_day_week(self):  # 2026-11-04 is a Wednesday
+        self.assertEqual(self.slot('2026-11-04 10:20', scheduleEvery='hour', scheduleAt='00:15'), '2026-11-04 10:15:00')
+        self.assertEqual(self.slot('2026-11-04 10:10', scheduleEvery='hour', scheduleAt='00:15'), '2026-11-04 09:15:00')
+        self.assertEqual(self.slot('2026-11-04 10:00', scheduleEvery='day', scheduleAt='06:00'), '2026-11-04 06:00:00')
+        self.assertEqual(self.slot('2026-11-04 05:59', scheduleEvery='day', scheduleAt='06:00'), '2026-11-03 06:00:00')
+        week = {'scheduleEvery': 'week', 'scheduleWeekday': 'Mon', 'scheduleAt': '06:00'}
+        self.assertEqual(self.slot('2026-11-04 10:00', **week), '2026-11-02 06:00:00')
+        self.assertEqual(self.slot('2026-11-02 06:00', **week), '2026-11-02 06:00:00')
+        self.assertEqual(self.slot('2026-11-02 05:00', **week), '2026-10-26 06:00:00')
+        self.assertEqual(self.slot('2026-11-08 23:00', **week), '2026-11-02 06:00:00')  # a Sunday
+
+    def test_not_set_up(self):
+        self.assertIsNone(self.slot('2026-11-04 10:00', scheduleEvery='', scheduleAt='06:00'))
+        self.assertIsNone(self.slot('2026-11-04 10:00', scheduleEvery='day', scheduleAt='6am'))
+        self.assertIsNone(self.slot('2026-11-04 10:00', scheduleEvery='day', scheduleAt='25:00'))
 
 
 class Output(unittest.TestCase):
