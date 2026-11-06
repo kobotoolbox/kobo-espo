@@ -7,8 +7,8 @@ The agent runner (plans/espo-agents-plan.md): runs every Agent set up in EspoCRM
 
 Settings (env): ESPO_URL (ESPO_SITE_URL for links); AGENTS_SECRETS (the keys agents/sync.py wrote: the runner's own,
 AGENT_RUNNER_API_KEY, and each agent's, AGENT_KEY_<USER>); AGENTS_RUNNER (which Agents:
-those whose "runner" is this, default droplet); AGENTS_LLM (real | fake);
-AGENTS_POLL_SECONDS; ANTHROPIC_API_KEY for real models.
+those whose "runner" is this, default droplet); AGENTS_LLM (real | bedrock | fake; bedrock: AWS credentials and AWS_REGION);
+AGENTS_POLL_SECONDS; ANTHROPIC_API_KEY for real models; AGENTS_MODEL (instead of each Agent's model, e.g. claude-sonnet-5-5 for test runs).
 
 EspoCRM holds the setup and the state; the runner holds neither. On every pass it reads the
 Agents and their routes, and for each Agent finds its work: records in its stage, or
@@ -104,6 +104,8 @@ class Runner:
         mine = [a for a in everyone if a['runner'] == self.runner and a['mode'] != 'off']
         for summary in mine:
             agent = self.me.call('GET', f'/CAgent/{summary["id"]}')
+            if agent.get('model') and os.environ.get('AGENTS_MODEL'):  # e.g. a cheaper model for test runs
+                agent['model'] = os.environ['AGENTS_MODEL']
             key = keys.get(key_name(agent.get('userName') or ''))
             if not agent.get('userId') or not key:
                 log(f'{agent["name"]}: no API user yet (run agents/sync.py)')
@@ -255,11 +257,16 @@ class Runner:
             text += f'\n<tool_results>\n{json.dumps(tool_values, ensure_ascii=False, indent=1)}\n</tool_results>'
         content.append({'type': 'text', 'text': text})
         server = [t for t in agent.get('tools') or [] if t in tools.SERVER_TOOLS]
+        skipped = [t for t in server if t in getattr(self.provider, 'skipped_tools', ())]
+        server = [t for t in server if t not in skipped]
         last = None
         for attempt in range(1, (agent.get('maxAttempts') or 3) + 1):
             result['attempts'] = attempt
             try:
-                return llm.decide(self.provider, agent['model'], system, content, schema, server, usage)
+                choice = llm.decide(self.provider, agent['model'], system, content, schema, server, usage)
+                if skipped:
+                    choice['reason'] += f' (Run without {", ".join(skipped)}: not available on this model provider.)'
+                return choice
             except llm.ModelError as e:
                 last = e
             except Exception as e:  # the provider's own errors (network, rate limits)

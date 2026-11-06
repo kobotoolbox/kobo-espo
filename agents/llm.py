@@ -142,6 +142,12 @@ class Claude:
         import anthropic
         self.client = anthropic.Anthropic()
 
+    def model_id(self, model):
+        return model['id']
+
+    def extra(self):
+        return {'betas': ['server-side-fallback-2026-07-01'], 'fallbacks': 'default'}
+
     def complete(self, alias, system, messages, schema, server_tools, usage):
         model = CONFIG['models'][alias]
         tools = []
@@ -152,11 +158,10 @@ class Claude:
         messages = list(messages)
         while True:
             r = self.client.beta.messages.create(
-                model=model['id'], max_tokens=16000, system=system, messages=messages,
+                model=self.model_id(model), max_tokens=16000, system=system, messages=messages,
                 thinking={'type': 'adaptive'},
                 output_config={'effort': 'medium', 'format': {'type': 'json_schema', 'schema': schema}},
-                betas=['server-side-fallback-2026-07-01'], fallbacks='default',
-                **({'tools': tools} if tools else {}))
+                **self.extra(), **({'tools': tools} if tools else {}))
             usage.model = r.model
             usage.input_tokens += r.usage.input_tokens + (r.usage.cache_read_input_tokens or 0)
             usage.output_tokens += r.usage.output_tokens
@@ -171,6 +176,26 @@ class Claude:
                 raise ModelError('the answer was cut off (max_tokens)')
             texts = [b.text for b in r.content if b.type == 'text']
             return (texts[-1] if texts else ''), r.content
+
+
+class Bedrock(Claude):
+    """Claude on Amazon Bedrock (the bedrock-runtime client, through the "us." inference profiles;
+    AWS credentials and AWS_REGION from the environment, e.g. an SSO profile). Not the Mantle
+    client: on Kobo's AWS account Mantle serves Opus 5.5 but not Sonnet 5.5. Bedrock has neither
+    the web tools nor server-side fallbacks: an Agent's web tools are left out (the run says so)
+    and a refusal fails the attempt."""
+    skipped_tools = ('web_search', 'web_fetch')
+
+    def __init__(self):
+        import os
+        from anthropic import AnthropicBedrock
+        self.client = AnthropicBedrock(aws_region=os.environ.get('AWS_REGION', 'us-east-1'))
+
+    def model_id(self, model):
+        return 'us.anthropic.' + model['id']
+
+    def extra(self):
+        return {}
 
 
 class Fake:
@@ -216,4 +241,4 @@ class Fake:
 
 
 def provider(kind):
-    return Fake() if kind == 'fake' else Claude()
+    return {'fake': Fake, 'bedrock': Bedrock}.get(kind, Claude)()

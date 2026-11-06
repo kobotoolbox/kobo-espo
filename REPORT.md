@@ -254,9 +254,36 @@ runner never acts on test records.
 
 **Not done yet** (plan status, top): draft mode, scenarios and gates, the Kobo application
 form, a real registry and the real sanctions lists, export, an OpenAI-compatible provider,
-the Agent Admin role, approving and rejecting by approvers only, manual pages. **No Claude API
-key on the droplet yet:** agents with a model fail their runs and take their failure route
-(in dry run, a note).
+the Agent Admin role, approving and rejecting by approvers only, manual pages beyond running
+them. **No Claude API key on the droplet yet:** agents with a model fail their runs there and
+take their failure route (in dry run, a note).
+
+### Real models through Bedrock (2026-11-06)
+
+No Anthropic key yet, so the examples ran on Claude through Amazon Bedrock, from a laptop
+(Josh's AWS SSO login), against the droplet's EspoCRM with its runner stopped. New: provider
+`AGENTS_LLM=bedrock` (`llm.py`), and `AGENTS_MODEL` to use another model than the Agent's
+(Sonnet 5.5 for test runs). Records from `tests/agent-examples.py` ("BDR ..."). How to run it:
+the manual, "Running it" → "Agents".
+
+| Agent, record | Route | Opus 5.5 | Sonnet 5.5 |
+|---|---|---|---|
+| DD research, an application in Research | review | $0.025, 17 s | $0.009, 13 s |
+| Site visit triage, a routine visit | ok | $0.005 | $0.0025 |
+| Site visit triage, a broken well cover, children at the open hole | repair (rule, no model) | | |
+
+- **The dossier is useful without web access**: it says what it couldn't check, flags a new
+  organisation, and asks the applicant sensible questions.
+- **Gap in the triage example:** the "before" rule (status `needs_repair` → repair) takes
+  the route without the model, so a visit that is a danger to people gets a routine repair
+  task. The "after" safety rule's words (sick, injured, contaminated, ...) don't catch
+  "children leaning over the open hole" either, and the model never saw it. Not changed:
+  see the open questions.
+- **Bedrock on Kobo's AWS account:** Bedrock's newer endpoint ("Mantle", the SDK's
+  `AnthropicBedrockMantle`) serves Opus 5.5 but not Sonnet 5.5 or Haiku 5.5, so the
+  provider uses bedrock-runtime with the `us.anthropic.` inference profiles (both models
+  work there). Bedrock has no web search or fetch and no server-side fallback on refusals:
+  DD research there works from the record alone.
 
 ## Open questions for Josh
 
@@ -274,3 +301,6 @@ key on the droplet yet:** agents with a model fail their runs and take their fai
    switch to it?
 8. **Teardown:** when to delete the droplet and DNS record, and the test projects on the
    Kobo account?
+9. **Site visit triage and danger to people:** should the model read every visit, the
+   repair rule applying only after it (the model can still escalate), or should the
+   safety rule's word list grow? (Bedrock results above.)

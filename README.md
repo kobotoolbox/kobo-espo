@@ -34,10 +34,13 @@ deploy/up.sh                # needs a host with Docker and ESPO_HOST's DNS point
 tests/fetch-secrets.sh
 python3 -I espo/seed/seed.py --users
 deploy/bridges.sh
-deploy/agents.sh            # ANTHROPIC_API_KEY in .env for agents with a model
+deploy/agents.sh            # ANTHROPIC_API_KEY in .env for agents with a model (or Bedrock, below)
 tests/run_all.sh            # or: tests/run_all.sh --kobo real
 ```
 
 Python 3.11+ (stdlib only, but the `anthropic` SDK for the agent runner, `openpyxl`, Pillow and Playwright for the forms' .xlsx,
 the demo photos and the screenshots). Secrets never go into git: `.env*` and `secrets/` are
 ignored; the droplet keeps its own in `/root/kobo-espo*.secrets` (mode 600).
+
+Agents with a real model, from your own machine through Amazon Bedrock (your AWS login, no
+Anthropic key; Sonnet 5.5 for test runs): the manual's "Running it" → "Agents".

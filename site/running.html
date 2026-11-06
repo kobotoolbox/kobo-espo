@@ -39,6 +39,7 @@
     <li><a href="#add">A new consortium or response</a></li>
     <li><a href="#people">People and roles</a></li>
     <li><a href="#checking">Checking on the bridge</a></li>
+    <li><a href="#agents">Agents</a></li>
     <li><a href="#tests">The tests</a></li>
     <li><a href="#rules">Rules worth keeping</a></li>
   </ul>
@@ -116,6 +117,32 @@ ssh root@&lt;droplet&gt; docker exec kobo-espo-bridge-intake-1 \
     python3 -I /bridge/bridge.py failed /state/intake    # submissions waiting, and why</code></pre>
 <p>Each bridge writes <code>status.json</code> in its state directory: its last good pass, its counts, how many submissions are waiting and the oldest one's reason. A submission waiting for a fix (a choice missing in EspoCRM, a required answer missing) is retried by itself. It's retried at once when the template or the form changes.</p>
 <p>Run <strong>one bridge per template</strong>. Two at once could both make a record for the same new submission: each looks for it first, but neither can see the other's in flight.</p>
+</section>
+
+<section id="agents">
+<h2>Agents</h2>
+<p>Agents are set up in EspoCRM (Administration → Agents): what a record must look like for one to start, its instructions, its routes and which model it uses. One runner, <code>agents/runner.py</code>, does the work for all of them. On the droplet it's the <code>agent-runner</code> container:</p>
+<pre><code>deploy/agents.sh                   # an API user and role per Agent (agents/sync.py), then the runner
+deploy/agents.sh sync              # only that, after adding an Agent
+deploy/agents.sh down | logs</code></pre>
+<p>Agents that use rules only need nothing else. Agents with a model call Claude, and there are two ways to reach it:</p>
+<ul>
+  <li><strong>The Claude API</strong> (<code>AGENTS_LLM=real</code>, the default): <code>ANTHROPIC_API_KEY</code> in <code>.env</code>, which <code>deploy/agents.sh</code> copies to the droplet. This is the only way with web search and fetch, and with the fallback to another model when one declines.</li>
+  <li><strong>Amazon Bedrock</strong> (<code>AGENTS_LLM=bedrock</code>): your AWS login (for example an SSO profile, with <code>AWS_PROFILE</code> and <code>AWS_REGION</code> set), no Anthropic key. Bedrock has no web tools: an agent that lists them runs without them, and its note says so. A model that declines fails the attempt.</li>
+</ul>
+<p>Without either, an agent with a model fails its runs and takes its failure route.</p>
+
+<h3>Running the agents on your own machine</h3>
+<p>For trying agents with a real model before the droplet has a key. Your runner works on the droplet's EspoCRM, so stop the droplet's runner first. Otherwise both runners pick up the same records.</p>
+<pre><code>python3 -m venv .venv && .venv/bin/pip install "anthropic[bedrock]"
+deploy/agents.sh down
+python3 -I tests/agent-examples.py         # records for the example agents ("BDR …")
+AGENTS_LLM=bedrock AGENTS_MODEL=claude-sonnet-5-5 \
+  ESPO_URL=https://espo-test.kobolabs.dev ESPO_SITE_URL=https://espo-test.kobolabs.dev \
+  .venv/bin/python -I -u agents/runner.py once
+deploy/agents.sh up</code></pre>
+<p><code>AGENTS_MODEL</code> overrides the model set on each Agent. Use <strong>Claude Sonnet 5.5 for test runs</strong> to keep the cost down. A pass over the three examples costs about one US cent on Sonnet 5.5, and about three on Opus 5.5. Each run (Administration → Agent runs) records the model, the tokens and the cost. The examples are in <strong>dry run</strong>: they post a note saying what they would do and change nothing else.</p>
+<p>A record is worked on <strong>once per trigger</strong> (per stage reached, or per new visit note). To run an agent again, give it a new record or a new note; changing the agent doesn't redo old records.</p>
 </section>
 
 <section id="tests">
