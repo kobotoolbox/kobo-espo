@@ -40,15 +40,14 @@ set -a; source /root/kobo-espo.secrets; ESPO_SITE_URL=https://$ESPO_HOST; set +a
 compose() { docker compose -p kobo-espo --profile bridge "$@"; }
 case $CMD in
     up)
-        # Before the one service: a container per template, with its state named after it
-        old=$(docker ps -aq --filter name='^kobo-espo-bridge-(intake|volunteers|sites|site-visits)-1$')
-        if [[ -n $old ]]; then
-            docker rm -f $old >/dev/null
-            compose run --rm --no-deps -T --entrypoint sh bridge -c 'cd /state &&
-                for p in intake:support-request volunteers:volunteer sites:site-registration site-visits:site-visit; do
-                    o=${p%%:*}; n=${p#*:}; if [ -d "$o" ] && [ ! -e "$n" ]; then mv "$o" "$n"; echo "state: $o -> $n"; fi
-                done'
-        fi
+        # Before the one service there was a container per template, its state named after
+        # it (up.sh has removed those containers as orphans): the state moves to the names
+        # serve uses, before it starts, so nothing is rescanned
+        compose stop bridge >/dev/null 2>&1 || true
+        docker run --rm -v kobo-espo_bridge-state:/state python:3.13-slim sh -c 'cd /state &&
+            for p in intake:support-request volunteers:volunteer sites:site-registration site-visits:site-visit; do
+                o=${p%%:*}; n=${p#*:}; if [ -d "$o" ] && [ ! -e "$n" ]; then mv "$o" "$n"; echo "state: $o -> $n"; fi
+            done'
         # --no-deps: never recreate EspoCRM itself from here
         # restart too: the code is mounted, and a running bridge has the old one loaded
         compose up -d --no-deps bridge

@@ -302,6 +302,36 @@ still marked needs repair with no visit for 7 days. A site that stays broken get
 week, by design: a reminder that it's still open. The tests move the runner's clock on
 rather than wait (W1–W4).
 
+## Kobo connections and one bridge service (2026-11-06)
+
+Phases 0–2 of `plans/kobo-connections-plan.md`. kobo-espo-bridge's `bridge.py serve` runs
+every connection in one process. A connection is either a template in `kobo/templates/`
+or a **Kobo connection** record in EspoCRM (an admin pastes the template in). On the
+droplet, the four bridge containers are now one, `bridge`. It does setup on the server,
+as admin, when a template is new or changed and every 10 minutes, so `deploy/bridges.sh`
+has no list of bridges and no setup loop. Each connection shows its status in its record:
+Status, Last pass, Waiting, Waiting since and Last error. A connection made in EspoCRM
+gets an API user of its own (`kobo-conn-<name>`).
+
+- **Phase 0:** setup needs the admin password. EspoCRM refuses every admin call to an
+  API user, whatever its role, and an API user changed to admin loses its key. Making an
+  entity through the API works.
+- **Tests:** connection 73/73 (fake Kobo) and 72/72 (kf.kobotoolbox.org) through `serve`; `tests/cases/serve.py` 8/8 (a
+  connection made in EspoCRM runs in the next pass; a broken template; paused; edited).
+- **Found in EspoCRM 10.0.11:** a field marked read-only is ignored by the API, for
+  admins too. The status fields are ordinary fields, in panels labelled "written by the
+  bridge".
+- **Switching the droplet:** each container's state folder (ledger and cursor) was moved
+  to the name `serve` uses (`intake` → `support-request`, ...). At the first try,
+  `deploy/up.sh` had removed the old containers first, so the move was skipped and
+  site-registration rescanned its 65 submissions with a new ledger. Nothing was written
+  (7 found in EspoCRM already, 58 recorded as waiting). That ledger was dropped and the
+  old one moved into place. `deploy/bridges.sh` now moves the state before the service
+  starts.
+- **Limits:** `kobo-edits` (edited submissions, cases only) is still one user for every
+  Case template, so two Case connections would share its role. Still one bridge service
+  per instance.
+
 ## Open questions for Josh
 
 1. **The real instance:** apply this to `espo.kobolabs.dev`, alongside its demo, or start a

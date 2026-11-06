@@ -1,6 +1,8 @@
 # Connecting a Kobo form to EspoCRM in one conversation
 
-Status: plan, 2026-11-06. Phase 0 (checks) done; phase 1 next.
+Status: 2026-11-06. Phases 0–2 done (setup() in kobo-espo-bridge 9829168; `bridge.py serve`
+and Kobo connections in EspoCRM 210c150; kobo-espo's droplet runs one bridge service). Phase 3
+next. See REPORT.md, "Kobo connections and one bridge service".
 
 ## Goal
 
