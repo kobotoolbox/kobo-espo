@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Start (or restart) the bridge on the test droplet, polling Kobo staging.
 #
-#   deploy/bridges.sh          compose --profile bridge up: one service for every connection
-#   deploy/bridges.sh down     stop it (EspoCRM keeps running)
-#   deploy/bridges.sh logs     its log
+#   deploy/bridges.sh          compose --profile bridge up: one service for every connection,
+#                              and the EspoCRM MCP (https://ESPO_HOST/bridge/mcp)
+#   deploy/bridges.sh down     stop them (EspoCRM keeps running)
+#   deploy/bridges.sh logs     their logs
 #
 # The service (kobo-espo-bridge's `bridge.py serve`) runs the templates in kobo/templates
 # and the Kobo connections made in EspoCRM, and does their setup itself, as admin.
@@ -50,9 +51,9 @@ case $CMD in
             done'
         # --no-deps: never recreate EspoCRM itself from here
         # restart too: the code is mounted, and a running bridge has the old one loaded
-        compose up -d --no-deps bridge
-        compose restart bridge ;;
-    down) compose stop bridge ;;
-    logs) compose logs --tail 60 bridge ;;
+        compose up -d --no-deps --build bridge bridge-mcp
+        compose restart bridge bridge-mcp ;;
+    down) compose stop bridge bridge-mcp ;;
+    logs) compose logs --tail 60 bridge bridge-mcp ;;
 esac
 REMOTE

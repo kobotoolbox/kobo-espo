@@ -95,6 +95,17 @@ ssh root@&lt;droplet&gt; docker exec kobo-espo-bridge-1 \
     python3 -I /bridge/bridge.py failed /state/support-request   # submissions waiting, and why</code></pre>
 <p>A submission waiting for a fix (a choice missing in EspoCRM, a required answer missing) is retried by itself. It's retried at once when the template or the form changes. The service sets a connection up again when its template changes, and checks every 10 minutes whether its form has a new version.</p>
 <p><strong>A connection made in EspoCRM</strong>: Kobo connections → Create, a name and the template (the same format as the files, see kobo-espo-bridge's README). It starts within one pass (30 seconds), with an API user of its own. If its template or setup fails, its <strong>Last error</strong> says why.</p>
+<h3>Connecting a form from a conversation</h3>
+<p>The bridge has an MCP server for agents such as Claude Code, used together with <a href="https://github.com/kobotoolbox/kobo-mcp">kobo-mcp</a>: kobo-mcp builds, deploys and shares the Kobo form, and this one connects it to EspoCRM. Its prompt, <strong>Connect a Kobo form to EspoCRM</strong>, takes the agent through the steps: which form, what each submission becomes, which team and who's told, sharing the form with the bridge's Kobo account, the proposed template and a preview of a real submission, a test submission, and access for the people who'll work on the records.</p>
+<pre><code>ssh root@&lt;droplet&gt; "cd /root/kobo-espo && docker compose -p kobo-espo exec bridge-mcp \
+    python3 -I espo_mcp/keys.py add &lt;your EspoCRM admin user&gt;"     # prints your key, once
+claude mcp add --transport http espocrm https://&lt;ESPO_HOST&gt;/bridge/mcp \
+    --header "Authorization: Bearer &lt;the key&gt;"</code></pre>
+<ul>
+  <li><strong>Admins only</strong>, each with their own key. A key stops working when its user is no longer an active admin in EspoCRM.</li>
+  <li><strong>Every change is shown first</strong> and made only on a second call, once you've agreed. Nothing is deleted: a connection can be paused.</li>
+  <li>Access it gives is <strong>team level</strong> only: people see the records of their own teams. Giving them the team is still done by hand.</li>
+</ul>
 <p>Run <strong>one bridge service per instance</strong>. Two at once could both make a record for the same new submission: each looks for it first, but neither can see the other's in flight. (The tests run their own, as "tests": a connection is run only by the service named in its <strong>Run by</strong>.)</p>
 </section>
 
@@ -133,7 +144,7 @@ deploy/agents.sh up</code></pre>
 
 <section id="tests">
 <h2>The tests</h2>
-<pre><code>tests/run_all.sh                   # unit tests, seed, isolation, board, agents, connections, connection (fake Kobo)
+<pre><code>tests/run_all.sh                   # unit tests, seed, isolation, board, agents, connections, MCP, connection (fake Kobo)
 tests/run_all.sh --kobo real       # the connection tests on the Kobo account in .env
 python3 -I tests/cases/latency.py  # submission to record, through the running bridges</code></pre>
 <p>The tests make their own records (named "ISO …" and "WFB …", and cases with a run number). <code>site/demo-data.py</code> clears the instance and fills it with the made-up demo data again. <code>site/shots.py</code> takes this manual's screenshots, and <code>site/build.py</code> builds its pages.</p>

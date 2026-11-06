@@ -5,8 +5,9 @@
 #   db              MariaDB, only on this project's network
 #   espocrm         the web app (apache image), behind caddy
 #   espocrm-daemon  EspoCRM's scheduled jobs (notifications, emails, cleanup)
-#   caddy           TLS for ESPO_HOST (profile `tls`; Let's Encrypt)
+#   caddy           TLS for ESPO_HOST (profile `tls`; Let's Encrypt; deploy/Caddyfile)
 #   bridge          kobo-espo-bridge, polling Kobo for every connection (profile `bridge`)
+#   bridge-mcp      its EspoCRM MCP, at /bridge/mcp (profile `bridge`)
 #   agent-runner    the agents set up in EspoCRM (profile `agents`; agents/runner.py)
 
 services:
@@ -69,10 +70,13 @@ services:
     profiles: [tls]
     image: caddy:2.10
     restart: unless-stopped
-    command: caddy reverse-proxy --from ${ESPO_HOST} --to espocrm:80
+    command: caddy run --adapter caddyfile --config /etc/caddy/Caddyfile
+    environment:
+      ESPO_HOST: ${ESPO_HOST}
     ports: ["80:80", "443:443"]
     volumes:
       - caddy:/data
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
     # Not published before EspoCRM has installed itself: its /install/ page is open until
     # then, and scanners found it within seconds on the first try
     depends_on:
@@ -107,6 +111,30 @@ services:
       BRIDGE_STATE_DIR: /state
       BRIDGE_POLL_SECONDS: ${BRIDGE_POLL_SECONDS:-30}
       BRIDGE_LIST_MIN_SECONDS: ${BRIDGE_LIST_MIN_SECONDS:-60}
+
+  # kobo-espo-bridge's EspoCRM MCP (espo_mcp/), at https://ESPO_HOST/bridge/mcp: connecting
+  # forms from a conversation, next to kobo-mcp. Admins only, a key each
+  # (docker compose exec bridge-mcp python3 -I espo_mcp/keys.py add <user>)
+  bridge-mcp:
+    profiles: [bridge]
+    build: /root/kobo-espo-bridge/espo_mcp
+    restart: unless-stopped
+    working_dir: /bridge
+    depends_on:
+      espocrm:
+        condition: service_healthy
+    volumes:
+      - /root/kobo-espo-bridge:/bridge:ro
+      - /root/kobo-espo-kobo.token:/run/kobo.token:ro
+      - bridge-state:/state
+    environment:
+      ESPO_URL: http://espocrm
+      ESPO_SITE_URL: https://${ESPO_HOST}
+      ESPO_ADMIN_PASSWORD: ${ESPO_ADMIN_PASSWORD}
+      KOBO_URL: ${KOBO_URL}
+      KOBO_TOKEN_FILE: /run/kobo.token
+      MCP_KEYS_FILE: /state/mcp-keys
+      MCP_PUBLIC_URL: https://${ESPO_HOST}/bridge
 
   # The agents (plans/espo-agents-plan.md): one runner for every Agent whose runner is "droplet"
   # (deploy/agents.sh starts it with the keys agents/sync.py made)

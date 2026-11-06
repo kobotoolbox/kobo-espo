@@ -333,6 +333,17 @@ gets an API user of its own (`kobo-conn-<name>`).
   (`tests/test_propose.py`). A proposal for a form with every question type was set up
   and run as it was, and the record matched its preview exactly (serve.py K5, 12/12).
   Repeat groups, calculations and follow-ups have no default.
+- **Phase 4, the EspoCRM MCP** (kobo-espo-bridge `espo_mcp/`, 2026-11-06): 14 tools and the
+  prompt "Connect a Kobo form to EspoCRM", at `https://espo-test.kobolabs.dev/bridge/mcp`
+  (Caddy routes `/bridge/*` to the `bridge-mcp` service). Admins only, a key each (hashes
+  only on the server, checked against EspoCRM on every call); every change in two calls
+  with a signed token for exactly what was shown; no delete; access at team level only.
+  `test_connection` waits for the service's pass, so one process still polls each form.
+  Tests: `tests/cases/mcp.py` 21/21 (the tools, a whole connection made from a form to a
+  new entity), `tests/cases/mcp_http.py` 8/8 (over HTTP with the SDK's client: no key, a
+  made-up key, a non-admin's key, another Host refused). The seed now keeps roles' access
+  to entities it doesn't define (what `grant_access` gave). Not done yet: the acceptance
+  run in Claude Code with kobo-mcp, from "I want a grant application form" to a record.
 - **Limits:** `kobo-edits` (edited submissions, cases only) is still one user for every
   Case template, so two Case connections would share its role. Still one bridge service
   per instance.

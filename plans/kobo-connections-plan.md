@@ -1,9 +1,8 @@
 # Connecting a Kobo form to EspoCRM in one conversation
 
-Status: 2026-11-06. Phases 0–3 done (setup() in kobo-espo-bridge 9829168; `bridge.py serve`
-and Kobo connections in EspoCRM 210c150; propose/preview after it; kobo-espo's droplet runs
-one bridge service). Phase 4, the MCP, next. See REPORT.md, "Kobo connections and one
-bridge service".
+Status: 2026-11-06. Phases 0–3 done, phase 4 built and tested (the EspoCRM MCP, kobo-espo-bridge
+`espo_mcp/`, live on the test droplet at /bridge/mcp); its acceptance run in Claude Code is
+next. See REPORT.md, "Kobo connections and one bridge service".
 
 ## Goal
 
@@ -224,6 +223,11 @@ Each phase can be used on its own. Phase 2 already removes the plumbing.
    and the Kobo test account: in Claude Code with kobo-mcp and this MCP, from *"I want a
    grant application form"* to a record in EspoCRM in under 10 minutes, with no file
    edited and no ssh.
+   *Built 2026-11-06:* `espo_mcp/` (tools.py, confirm.py, keys.py, server.py), a separate
+   `bridge-mcp` service (the bridge stays stdlib only; the MCP SDK is in its image), not
+   in `serve` itself: test_connection waits for the service's pass instead of running one.
+   Named espo_mcp, not mcp (it would shadow the SDK). Added: `preview_template`,
+   `resume_connection`. Tests: kobo-espo `tests/cases/mcp.py` 21/21, `mcp_http.py` 8/8.
 5. **OAuth sign-in** with an EspoCRM admin account. Acceptance: the same task in claude.ai.
 6. **Manual.** A "Connect a form" page (the steps and an example conversation), replacing
    the template section of "Running it". The bridge's README: `serve`, connections, the MCP.

@@ -1,0 +1,8 @@
+# TLS for ESPO_HOST (Let's Encrypt): EspoCRM, and kobo-espo-bridge's EspoCRM MCP at
+# /bridge/mcp (admins only, each with their own key; the service checks it)
+{$ESPO_HOST} {
+	handle_path /bridge/* {
+		reverse_proxy bridge-mcp:8000
+	}
+	reverse_proxy espocrm:80
+}

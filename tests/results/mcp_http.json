@@ -1,0 +1,121 @@
+[
+  {
+    "test": "H1",
+    "check": "no key, a made-up key, a non-admin's key: 401; an admin's: in",
+    "ok": true,
+    "detail": {
+      "none": 401,
+      "made up": 401,
+      "non-admin": 401,
+      "admin": 200
+    }
+  },
+  {
+    "test": "H1",
+    "check": "another Host header (DNS rebinding): refused",
+    "ok": true,
+    "detail": 421
+  },
+  {
+    "test": "H2",
+    "check": "the tools and the prompt",
+    "ok": true,
+    "detail": [
+      "bridge_info",
+      "connection_status",
+      "create_connection",
+      "create_entity",
+      "grant_access",
+      "list_entities",
+      "list_teams",
+      "list_users",
+      "pause_connection",
+      "preview_template",
+      "propose_connection",
+      "resume_connection",
+      "test_connection",
+      "update_connection"
+    ]
+  },
+  {
+    "test": "H2",
+    "check": "each parameter described for the agent (propose_connection)",
+    "ok": true,
+    "detail": {
+      "properties": {
+        "form": {
+          "description": "The Kobo form: its uid, or a link to it.",
+          "title": "Form",
+          "type": "string"
+        },
+        "entity": {
+          "description": "What each submission becomes: an entity from list_entities, e.g. Case, Contact, CSite, or one made with create_entity (C<name>).",
+          "title": "Entity",
+          "type": "string"
+        },
+        "team": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The team that owns the records (list_teams).",
+          "title": "Team"
+        },
+        "notify": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Users told of each new record (list_users).",
+          "title": "Notify"
+        }
+      },
+      "required": [
+        "form",
+        "entity"
+      ],
+      "type": "object",
+      "title": "propose_connectionArguments"
+    }
+  },
+  {
+    "test": "H2",
+    "check": "the prompt: the steps across both servers",
+    "ok": true,
+    "detail": "Help me connect a Kobo form to EspoCRM (Grant applications).\n\n1. bridge_info (EspoCRM MCP): which Kobo server the bridge reads, and its Kobo account.\n2. The form: find it with kobo-mcp (list_projects), or build it with me (preview_form,\n   then deploy_form once I'm happy). It has to be deployed.\n3. "
+  },
+  {
+    "test": "H3",
+    "check": "bridge_info over MCP: the Kobo account to share with",
+    "ok": true,
+    "detail": "{\n  \"espocrm\": \"https://espo-test.kobolabs.dev\",\n  \"kobo_server\": \"http://127.0.0.1:54594\",\n  \"kobo_account\": \"bridge_acct\",\n  \"share_forms_with\": \"bridge_acct\",\n  \"connections\": []\n}"
+  },
+  {
+    "test": "H4",
+    "check": "a refusal is a tool error with its message (what to share)",
+    "ok": true,
+    "detail": "Error executing tool propose_connection: The bridge's Kobo account (bridge_acct on http://127.0.0.1:54594) can't see the form aNotSharedWithTheBridge1. With kobo-mcp, share it: share_project aNotSharedWithTheBridge1 with bridge_acct, permission \"View submissions\" (and \"Edit form\" too if the connecti"
+  },
+  {
+    "test": "H4",
+    "check": "create_entity: the first call returns a token; a forged one changes nothing",
+    "ok": true,
+    "detail": {
+      "forged": "Error executing tool create_entity: `confirm` isn't a valid token, or it has expired (they last 10 minutes). Nothing was changed. Call this tool again without `confirm` to get a new one, show the user",
+      "made": false
+    }
+  }
+]
