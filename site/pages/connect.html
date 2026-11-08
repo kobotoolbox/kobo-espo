@@ -38,7 +38,7 @@
 <p><strong>In claude.ai or Claude Desktop</strong>, add both under Settings → Connectors → Add custom connector:</p>
 <ul>
   <li>kobo-mcp: <code>https://mcp.kobolabs.dev/mcp</code>, signing in with your Kobo API token;</li>
-  <li>the EspoCRM MCP: <code>https://&lt;your EspoCRM&gt;/bridge/mcp</code> (here, <code>https://espo-test.kobolabs.dev/bridge/mcp</code>). Claude opens its sign-in page: your EspoCRM username and password, and your two-factor code if you use one. EspoCRM checks them, and they aren't kept.</li>
+  <li>the EspoCRM MCP: <code>https://&lt;your EspoCRM&gt;/bridge/mcp</code> (here, <code>https://staging.respond.kobolabs.dev/bridge/mcp</code>). Claude opens its sign-in page: your EspoCRM username and password, and your two-factor code if you use one. EspoCRM checks them, and they aren't kept.</li>
 </ul>
 <p><strong>In Claude Code</strong>, the EspoCRM MCP takes a key of your own instead, made on the server:</p>
 <pre><code>ssh root@&lt;droplet&gt; "cd /root/kobo-espo && docker compose -p kobo-espo exec bridge-mcp \

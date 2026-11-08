@@ -37,7 +37,7 @@ that must stay on its own server, not for isolation between projects or response
 | | |
 |---|---|
 | EspoCRM | 10.0.11 (`espocrm/espocrm:10.0.11-apache`), MariaDB 11.4.13, Caddy 2.10 (TLS), daemon container for scheduled jobs |
-| Where | Throwaway droplet `espo-kobo-test` (DigitalOcean nyc1, s-1vcpu-2gb, 137.184.130.173), `https://espo-test.kobolabs.dev` (A record in kobolabs.dev). Teardown: docs/manual-steps.md |
+| Where | Throwaway droplet `espo-kobo-test` (DigitalOcean nyc1, s-1vcpu-2gb, 137.184.130.173), `https://staging.respond.kobolabs.dev` (A record in kobolabs.dev; `espo-test.kobolabs.dev` until 2026-11-08). Teardown: docs/manual-steps.md |
 | Kobo | `kf.kobotoolbox.org` (production server), throwaway test account `bob_kobo`, its own projects named "... (espo-kobo test)" |
 | Bridge | [kobo-espo-bridge](../kobo-espo-bridge) (stdlib Python 3.13, `python:3.13-slim`), one container per template, polling every 30 s |
 | Advanced Pack | Not installed, here or on `espo.kobolabs.dev` (no modules beyond Crm): everything is core EspoCRM |

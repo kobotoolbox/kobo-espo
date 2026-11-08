@@ -28,7 +28,7 @@ def env(key, default=None):
     return default
 
 
-URL = env('ESPO_URL') or f'https://{env("ESPO_HOST", "espo-test.kobolabs.dev")}'
+URL = env('ESPO_URL') or f'https://{env("ESPO_HOST", "staging.respond.kobolabs.dev")}'
 
 
 def admin():

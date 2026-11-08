@@ -3,7 +3,7 @@
 Give every Agent set up in EspoCRM its own API user and role, made from its setup, and the
 runner its user. Admin only; run it after adding an Agent or changing what it writes.
 
-    python3 -I agents/sync.py [--url https://espo-test.kobolabs.dev] [--secrets secrets/agents.secrets]
+    python3 -I agents/sync.py [--url https://staging.respond.kobolabs.dev] [--secrets secrets/agents.secrets]
 
 Each agent's role (plan §4 "Sync"):
   - the entity it works on: read, edit and stream for its teams (the Agent's own teams),

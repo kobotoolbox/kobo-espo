@@ -141,7 +141,7 @@ deploy/agents.sh down | logs</code></pre>
 deploy/agents.sh down
 python3 -I tests/agent-examples.py         # records for the example agents ("BDR …")
 AGENTS_LLM=bedrock AGENTS_MODEL=claude-sonnet-5-5 \
-  ESPO_URL=https://espo-test.kobolabs.dev ESPO_SITE_URL=https://espo-test.kobolabs.dev \
+  ESPO_URL=https://staging.respond.kobolabs.dev ESPO_SITE_URL=https://staging.respond.kobolabs.dev \
   .venv/bin/python -I -u agents/runner.py once
 deploy/agents.sh up</code></pre>
 <p><code>AGENTS_MODEL</code> overrides the model set on each Agent. Use <strong>Claude Sonnet 5.5 for test runs</strong> to keep the cost down. A pass over the examples with a model costs about one US cent on Sonnet 5.5, and about three on Opus 5.5. Each run (Administration → Agent runs) records the model, the tokens and the cost. The examples are in <strong>dry run</strong>: they post a note saying what they would do and change nothing else.</p>

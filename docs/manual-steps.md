@@ -56,7 +56,7 @@ A new response's site visit form needs its own `[[list]]` entry (its team) and
 
 ```bash
 doctl compute droplet delete espo-kobo-test
-doctl compute domain records list kobolabs.dev | grep espo-test   # note its ID
+doctl compute domain records list kobolabs.dev | grep -E "staging.respond|espo-test"   # note their IDs
 doctl compute domain records delete kobolabs.dev <ID>
 ```
 
