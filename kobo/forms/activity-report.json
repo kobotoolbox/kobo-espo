@@ -1,239 +1,2275 @@
 {
  "settings": {
-  "form_title": "Activity report - Test EQ 1 (espo-kobo test)",
-  "form_id": "activity_report_eq1",
-  "version": "1"
+  "form_title": "5W activity report (espo-kobo test)",
+  "form_id": "fivew_activity_report",
+  "version": "1",
+  "style": "theme-grid pages"
  },
  "survey": [
+  {
+   "type": "start",
+   "name": "start"
+  },
+  {
+   "type": "end",
+   "name": "end"
+  },
   {
    "type": "today",
    "name": "today"
   },
   {
-   "type": "select_one_from_file responders.csv",
-   "name": "responder",
-   "label": "Your organisation",
+   "type": "deviceid",
+   "name": "deviceid"
+  },
+  {
+   "type": "select_one_from_file responses.csv",
+   "name": "response",
+   "label": "Which response is this for?",
    "required": "true"
   },
   {
-   "type": "select_one_from_file projects.csv",
-   "name": "project",
-   "label": "Cluster",
+   "type": "calculate",
+   "name": "view_permission",
+   "required": "false",
+   "calculation": "\"yes\""
+  },
+  {
+   "type": "calculate",
+   "name": "import",
+   "required": "false",
+   "calculation": "\"no\""
+  },
+  {
+   "type": "begin_group",
+   "name": "INTRO",
+   "label": "INSTRUCTIONS TO FILL THE FORM",
+   "required": "false",
+   "appearance": "field-list w4"
+  },
+  {
+   "type": "note",
+   "name": "Version",
+   "label": "**Version: 1.9 **\n 05 Dec 2025 at 16:30 **Updates:** Added new WASH related organisations to the dropdown list.\n- 03 Dec 2025 at 18:00 **Updates:** Added new WASH sector activity types (assessment, household water storage, household water distribution, and maintenance/rehabilitation of water systems). Added multiple new WASH-related organisations, including national and international actors.\n- 25 Nov 2025 at 17:30 **Updates:** Added “Child Protection” sector, new related dropdown options, and additional national organizations.\n- 24 Nov 2025 at 14:00 **Updates:** changed UK-Med to \"UK EMT - United Kingdom Emergency Medical Team\"\n- 19 Nov 2025 at 12:00 **Updates:** added The Salvation Army to list of organizations; modified non-food items reource list; added Emergency Telecommunications to sector list.\n- 14 Nov 2025 at 21:00 **Updates:** set to load the most recently submitted organization details by default; added nutrition sector; added type of location for the activity; added summary figures for population targeted and reached.",
+   "required": "false"
+  },
+  {
+   "type": "note",
+   "name": "Intro_instructions",
+   "label": "Thank you for taking the time to register your organisation’s response to Hurricane Melissa in Jamaica.\nPlease note that each submission should represent one single activity.\n\nData is aggregated at the community level, therefore, if your activity covers multiple communities, you will need to enter disaggregated figures for each community. A looping section in the form will guide you through this process.\n\nIf you encounter any issues while completing the form, please contact 5W Support Team at [melissa-5w-support@undac.org](mailto:melissa-5w-support@undac.org) for assistance.",
+   "required": "false"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "begin_group",
+   "name": "org_details",
+   "required": "false",
+   "appearance": "field-list w4"
+  },
+  {
+   "type": "begin_group",
+   "name": "ORAGANIZATION_LEAD",
+   "label": "LEAD / MAIN ORGANIZATION",
+   "required": "false"
+  },
+  {
+   "type": "select_one org_types",
+   "name": "LeadOrganization_type",
+   "label": "Organization type",
+   "required": "true",
+   "appearance": "w2 minimal",
+   "default": "${last-saved#LeadOrganization_type}"
+  },
+  {
+   "type": "text",
+   "name": "LeadOrganization_type_2",
+   "label": "Specify organization type",
+   "required": "true",
+   "appearance": "w2",
+   "default": "${last-saved#LeadOrganization_type_2}",
+   "relevant": "${LeadOrganization_type} = 'other'"
+  },
+  {
+   "type": "select_one_from_file organisations.csv",
+   "name": "LeadOrganization_name",
+   "label": "Organization name",
+   "hint": "Organization that implements the activity(ies)",
+   "required": "true",
+   "appearance": "minimal",
+   "default": "${last-saved#LeadOrganization_name}",
+   "choice_filter": "org_type=${LeadOrganization_type} or name='other'"
+  },
+  {
+   "type": "text",
+   "name": "LeadOrganization_name_2",
+   "label": "Specify organization name",
+   "required": "true",
+   "appearance": "w2",
+   "default": "${last-saved#LeadOrganization_name_2}",
+   "relevant": "${LeadOrganization_name} = 'other'"
+  },
+  {
+   "type": "select_one yes_no",
+   "name": "same_as_lead",
+   "label": "Is the implementing organization the same as the lead organization?",
    "required": "true"
   },
   {
-   "type": "select_one activity_type",
+   "type": "end_group"
+  },
+  {
+   "type": "begin_group",
+   "name": "ORAGANIZATION_IMPLEMENTING",
+   "label": "IMPLEMENTING ORGANIZATION",
+   "required": "false",
+   "relevant": "${same_as_lead} = 'no'"
+  },
+  {
+   "type": "select_one org_types",
+   "name": "ImplementingOrganization_type",
+   "label": "Organization type",
+   "required": "true",
+   "appearance": "w2 minimal",
+   "default": "${last-saved#ImplementingOrganization_type}"
+  },
+  {
+   "type": "text",
+   "name": "ImplementingOrganization_type_2",
+   "label": "Specify organization type",
+   "required": "true",
+   "appearance": "w2",
+   "default": "${last-saved#ImplementingOrganization_type_2}",
+   "relevant": "${ImplementingOrganization_type} = 'other'"
+  },
+  {
+   "type": "select_one_from_file organisations.csv",
+   "name": "ImplementingOrganization_name",
+   "label": "Organization name",
+   "hint": "Organization that implements the activity(ies)",
+   "required": "true",
+   "appearance": "minimal",
+   "default": "${last-saved#ImplementingOrganization_name}",
+   "choice_filter": "org_type=${ImplementingOrganization_type} or name='other'"
+  },
+  {
+   "type": "text",
+   "name": "ImplementingOrganization_name_2",
+   "label": "Specify organization name",
+   "required": "true",
+   "appearance": "w2",
+   "default": "${last-saved#ImplementingOrganization_name_2}",
+   "relevant": "${ImplementingOrganization_name} = 'other'"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "begin_repeat",
+   "name": "FOCAL_POINTS",
+   "label": "FOCAL POINTS",
+   "required": "false"
+  },
+  {
+   "type": "text",
+   "name": "name",
+   "label": "Focal point name",
+   "required": "true",
+   "appearance": "w2",
+   "default": "${last-saved#name}"
+  },
+  {
+   "type": "text",
+   "name": "email",
+   "label": "Focal point email",
+   "required": "true",
+   "appearance": "w2",
+   "default": "${last-saved#email}",
+   "constraint": "regex(., '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')",
+   "constraint_message": "Please enter a valid email address."
+  },
+  {
+   "type": "text",
+   "name": "phone",
+   "label": "Focal point phone",
+   "hint": "Include country code.",
+   "required": "true",
+   "appearance": "w2",
+   "default": "${last-saved#phone}"
+  },
+  {
+   "type": "text",
+   "name": "job_title",
+   "label": "Job title",
+   "required": "true",
+   "appearance": "w2",
+   "default": "${last-saved#job_title}"
+  },
+  {
+   "type": "end_repeat"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "begin_group",
+   "name": "RESPONSES",
+   "label": "RESPONSES",
+   "required": "false",
+   "appearance": "field-list w4"
+  },
+  {
+   "type": "select_one sectors",
+   "name": "sector",
+   "label": "Sectors",
+   "required": "true",
+   "appearance": "w2 minimal",
+   "default": "${last-saved#sector}"
+  },
+  {
+   "type": "calculate",
+   "name": "sector_label",
+   "required": "false",
+   "calculation": "jr:choice-name(${sector}, '${sector}')"
+  },
+  {
+   "type": "text",
+   "name": "scetor_2",
+   "label": "Please specify the sector",
+   "required": "true",
+   "appearance": "w2",
+   "default": "${last-saved#scetor_2}",
+   "relevant": "${sector} = 'other_sector'"
+  },
+  {
+   "type": "select_one activity_types",
    "name": "activity_type",
-   "label": "What did you do?",
-   "required": "true"
+   "label": "Activity type",
+   "required": "true",
+   "appearance": "w2 minimal",
+   "choice_filter": "contains(sector,${sector})"
   },
   {
-   "type": "select_one status",
-   "name": "status",
-   "label": "Status",
-   "required": "true"
+   "type": "text",
+   "name": "activity_type_other",
+   "label": "Specify other type of activity",
+   "required": "false",
+   "appearance": "w4",
+   "relevant": "${activity_type} = 'other'"
+  },
+  {
+   "type": "text",
+   "name": "activity_title",
+   "label": "Activity title",
+   "required": "false",
+   "appearance": "w2"
+  },
+  {
+   "type": "select_one activity_status",
+   "name": "activity_Status",
+   "label": "Activity Status",
+   "required": "true",
+   "appearance": "w2 minimal"
+  },
+  {
+   "type": "text",
+   "name": "comments",
+   "label": "Comments / Description",
+   "required": "false",
+   "appearance": "w2 multiline"
+  },
+  {
+   "type": "text",
+   "name": "URL_to_important_resources",
+   "label": "URL to important resources",
+   "hint": "(web page, report document, photos, press articles, Google Drive folder ...)",
+   "required": "false",
+   "appearance": "w2"
+  },
+  {
+   "type": "select_one resource_type",
+   "name": "resource_type",
+   "label": "Type of resource related to the activity",
+   "required": "true",
+   "appearance": "w2 minimal"
+  },
+  {
+   "type": "text",
+   "name": "resource_type_other",
+   "label": "Please specify the resource type",
+   "required": "true",
+   "appearance": "w2",
+   "relevant": "${resource_type} = 'other'"
+  },
+  {
+   "type": "select_one resource_unit_type",
+   "name": "resource_unit_type",
+   "label": "Unit of the resource",
+   "required": "false",
+   "appearance": "w2 minimal",
+   "choice_filter": "contains(resource_type,${resource_type})"
+  },
+  {
+   "type": "text",
+   "name": "resource_unit_type_other",
+   "label": "Please specify the unit",
+   "required": "true",
+   "appearance": "w2",
+   "relevant": "${resource_unit_type} = 'other'"
+  },
+  {
+   "type": "note",
+   "name": "date_warning1",
+   "label": "⚠️ The start date is in the future but the activity is not planned.",
+   "required": "false",
+   "relevant": "${start_date} != '' and ${activity_Status} != 'PLANNED' and ${start_date} > today()"
+  },
+  {
+   "type": "note",
+   "name": "date_warning2",
+   "label": "⚠️For planned activities, the start date can be in the future. For ongoing or completed activities, it must be between 28 Oct 2025 and today.",
+   "required": "false",
+   "relevant": "${start_date} != '' and not((${activity_Status} = 'PLANNED' and ${start_date} > date('2025-10-28')) or ((${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED') and ${start_date} >= date('2025-10-28') and ${start_date} <= today()))"
+  },
+  {
+   "type": "note",
+   "name": "date_warning3",
+   "label": "⚠️End date must be after the start date. It can be in the future only if the activity is planned or in progress.",
+   "required": "false",
+   "relevant": "${end_date} != '' and not((${activity_Status} = 'COMPLETED' and ${end_date} >= ${start_date} and ${end_date} <= today()) or ((${activity_Status} = 'PLANNED' or ${activity_Status} = 'IN_PROGRESS') and ${end_date} >= ${start_date}))"
   },
   {
    "type": "date",
    "name": "start_date",
-   "label": "Started on",
-   "required": "true"
+   "label": "Start date",
+   "required": "true",
+   "appearance": "w2",
+   "constraint": "(    (${activity_Status} = 'PLANNED' and . >= date('2025-10-28')) or    ((${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED') and . >= date('2025-10-28') and . <= today()))",
+   "constraint_message": "For planned activities, the start date can be in the future. For ongoing or completed activities, it must be between 28 Oct 2025 and today."
   },
   {
    "type": "date",
    "name": "end_date",
-   "label": "Ended on (if it has)",
-   "constraint": ". >= ${start_date}",
-   "constraint_message": "On or after the start"
+   "label": "End date",
+   "required": "true",
+   "appearance": "w2",
+   "constraint": "(    (${activity_Status} = 'COMPLETED' and . >= ${start_date} and . <= today()) or    ((${activity_Status} = 'PLANNED' or ${activity_Status} = 'IN_PROGRESS') and . >= ${start_date}))",
+   "constraint_message": "End date must be after the start date. It can be in the future only if the activity is planned or in progress."
+  },
+  {
+   "type": "begin_repeat",
+   "name": "FIGURES_COMMUNITY",
+   "label": "Figures by Community for the ${sector_label} sector",
+   "required": "false",
+   "appearance": "w4"
+  },
+  {
+   "type": "calculate",
+   "name": "position",
+   "required": "false",
+   "calculation": "position(..)"
+  },
+  {
+   "type": "note",
+   "name": "intro_community",
+   "label": ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ___COMMUNITY NUMBER ${position}___  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<",
+   "required": "false",
+   "appearance": "w4"
   },
   {
    "type": "select_one_from_file areas.csv",
    "name": "parish",
-   "label": "Parish",
-   "required": "true"
+   "label": "Parish:",
+   "required": "true",
+   "appearance": "w1 minimal",
+   "choice_filter": "level='admin1'"
+  },
+  {
+   "type": "select_one_from_file areas.csv",
+   "name": "community",
+   "label": "Community:",
+   "required": "true",
+   "appearance": "w1 minimal",
+   "choice_filter": "parent=${parish}"
+  },
+  {
+   "type": "select_one location_types",
+   "name": "location_type",
+   "label": "Location type",
+   "required": "true",
+   "appearance": "w1 minimal"
+  },
+  {
+   "type": "text",
+   "name": "location_type_other",
+   "label": "Specify other location type",
+   "required": "false",
+   "appearance": "w1 minimal",
+   "relevant": "${location_type} = 'other_location_type'"
+  },
+  {
+   "type": "text",
+   "name": "location_address_comments",
+   "label": "Location address or comments",
+   "required": "false",
+   "appearance": "w4 minimal"
   },
   {
    "type": "text",
    "name": "site_code",
-   "label": "Site code (if at a registered site)"
+   "label": "Site code (if at a registered site)",
+   "appearance": "w2"
   },
   {
    "type": "begin_group",
-   "name": "reached",
-   "label": "People reached"
+   "name": "quantities",
+   "label": "Quantities resources distributed",
+   "required": "false"
   },
   {
    "type": "integer",
-   "name": "girls",
-   "label": "Girls (under 18)",
-   "constraint": ". >= 0"
+   "name": "quantity_resource",
+   "label": "Quantity (${resource_type} / ${resource_unit_type})",
+   "required": "false",
+   "appearance": "w2",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
   },
   {
    "type": "integer",
-   "name": "boys",
-   "label": "Boys (under 18)",
-   "constraint": ". >= 0"
+   "name": "budget_resource",
+   "label": "Budget/Value of the ${quantity_resource}  ${resource_unit_type}  (${resource_type}) in USD",
+   "required": "false",
+   "appearance": "w2",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "begin_group",
+   "name": "total_pop",
+   "label": "Summary of Total Population Targeted and Reached",
+   "required": "false"
   },
   {
    "type": "integer",
-   "name": "women",
-   "label": "Women (18-59)",
-   "constraint": ". >= 0"
+   "name": "total_population_targeted",
+   "label": "Total population targeted",
+   "required": "false",
+   "appearance": "w2",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
   },
   {
    "type": "integer",
-   "name": "men",
-   "label": "Men (18-59)",
-   "constraint": ". >= 0"
+   "name": "total_population_reached",
+   "label": "Total population reached",
+   "required": "false",
+   "appearance": "w2",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
   },
   {
-   "type": "integer",
-   "name": "elderly_women",
-   "label": "Women (60+)",
-   "constraint": ". >= 0"
+   "type": "end_group"
   },
   {
-   "type": "integer",
-   "name": "elderly_men",
-   "label": "Men (60+)",
-   "constraint": ". >= 0"
+   "type": "begin_group",
+   "name": "people",
+   "label": "Disaggregated data on the population targeted and the population reached by the activity in the selected community.",
+   "required": "false"
   },
   {
-   "type": "integer",
-   "name": "households",
-   "label": "Households",
-   "constraint": ". >= 0"
-  },
-  {
-   "type": "end_group",
-   "name": "reached"
-  },
-  {
-   "type": "decimal",
-   "name": "quantity",
-   "label": "How many (e.g. kits, litres, sessions)?"
+   "type": "select_multiple cat_people",
+   "name": "category_of_people",
+   "label": "Category of targeted people",
+   "required": "false",
+   "appearance": "w2 minimal"
   },
   {
    "type": "text",
-   "name": "unit",
-   "label": "Of what (the unit)?"
+   "name": "category_of_people_specify",
+   "label": "Specify the type of people targeted",
+   "required": "false",
+   "appearance": "w2",
+   "relevant": "selected(${category_of_people}, 'other')"
+  },
+  {
+   "type": "begin_group",
+   "name": "idp",
+   "label": "IDP",
+   "required": "false",
+   "relevant": "selected(${category_of_people}, 'idp')"
+  },
+  {
+   "type": "begin_group",
+   "name": "shelter_household_idp",
+   "label": "Household figures only apply to Shelter and NFIs sector",
+   "required": "false",
+   "relevant": "${sector} = 'SHELTER'"
+  },
+  {
+   "type": "integer",
+   "name": "idp_household_targeted",
+   "label": "Number of households targeted",
+   "required": "false",
+   "appearance": "w2",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "idp_household_reached",
+   "label": "Number of households reached",
+   "required": "false",
+   "appearance": "w2",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "note",
+   "name": "warn_idp_targeted",
+   "label": "⚠️ The total number of IDPs targeted does not match the sum of women, men and children. Please review if the information is available.",
+   "required": "false",
+   "relevant": "${idp_people_targeted} != '' and ${idp_people_targeted} != ${idp_women_targeted} + ${idp_men_targeted} + ${idp_children_targeted}"
+  },
+  {
+   "type": "integer",
+   "name": "idp_people_targeted",
+   "label": "Total people targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "idp_women_targeted",
+   "label": "Total women targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "idp_men_targeted",
+   "label": "Total men targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "idp_children_targeted",
+   "label": "Total children targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "note",
+   "name": "warn_idp_reached",
+   "label": "⚠️ The total number of IDPs reached does not match the sum of women, men and children. Please review if the information is available.",
+   "required": "false",
+   "relevant": "${idp_people_reached} != '' and ${idp_people_reached} != ${idp_women_reached} + ${idp_men_reached} + ${idp_children_reached} and (${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED')"
+  },
+  {
+   "type": "integer",
+   "name": "idp_people_reached",
+   "label": "Total people reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "idp_women_reached",
+   "label": "Total women reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "idp_men_reached",
+   "label": "Total men reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "idp_children_reached",
+   "label": "Total children reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "begin_group",
+   "name": "people_hosting",
+   "label": "PEOPLE HOSTING",
+   "required": "false",
+   "relevant": "selected(${category_of_people}, 'hosting')"
+  },
+  {
+   "type": "begin_group",
+   "name": "shelter_household_people_hosting",
+   "label": "Household figures only apply to Shelter and NFIs sector",
+   "required": "false",
+   "relevant": "${sector} = 'SHELTER'"
+  },
+  {
+   "type": "integer",
+   "name": "people_hosting_household_targeted",
+   "label": "Number of households targeted",
+   "required": "false",
+   "appearance": "w2",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "people_hosting_household_reached",
+   "label": "Number of households reached",
+   "required": "false",
+   "appearance": "w2",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "note",
+   "name": "warn_hosting_targeted",
+   "label": "⚠️ The total number of people hosting targeted does not match the sum of women, men and children. Please review if the information is available.",
+   "required": "false",
+   "relevant": "${hosting_people_targeted} != '' and ${hosting_people_targeted} != ${hosting_women_targeted} + ${hosting_men_targeted} + ${hosting_children_targeted}"
+  },
+  {
+   "type": "integer",
+   "name": "hosting_people_targeted",
+   "label": "Total people targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "hosting_women_targeted",
+   "label": "Total women targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "hosting_men_targeted",
+   "label": "Total men targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "hosting_children_targeted",
+   "label": "Total children targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "note",
+   "name": "warn_hosting_reached",
+   "label": "⚠️ The total number of people hosting reached does not match the sum of women, men and children. Please review if the information is available.",
+   "required": "false",
+   "relevant": "${hosting_people_reached} != '' and ${hosting_people_reached} != ${hosting_women_reached} + ${hosting_men_reached} + ${hosting_children_reached} and (${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED')"
+  },
+  {
+   "type": "integer",
+   "name": "hosting_people_reached",
+   "label": "Total people reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "hosting_women_reached",
+   "label": "Total women reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "hosting_men_reached",
+   "label": "Total men reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "hosting_children_reached",
+   "label": "Total children reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "begin_group",
+   "name": "non_displaced",
+   "label": "NON DISPLACED PEOPLE",
+   "required": "false",
+   "relevant": "selected(${category_of_people}, 'ndp')"
+  },
+  {
+   "type": "begin_group",
+   "name": "non_displaced_household_people_hosting",
+   "label": "Household figures only apply to Shelter and NFIs sector",
+   "required": "false",
+   "relevant": "${sector} = 'SHELTER'"
+  },
+  {
+   "type": "integer",
+   "name": "non_displaced_household_targeted",
+   "label": "Number of households targeted",
+   "required": "false",
+   "appearance": "w2",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "non_displaced_household_reached",
+   "label": "Number of households reached",
+   "required": "false",
+   "appearance": "w2",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "note",
+   "name": "warn_ndp_targeted",
+   "label": "⚠️ The total number of non-displaced people targeted does not match the sum of women, men and children. Please review if the information is available.",
+   "required": "false",
+   "relevant": "${ndp_people_targeted} != '' and ${ndp_people_targeted} != ${ndp_women_targeted} + ${ndp_men_targeted} + ${ndp_children_targeted}"
+  },
+  {
+   "type": "integer",
+   "name": "ndp_people_targeted",
+   "label": "Total people targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "ndp_women_targeted",
+   "label": "Total women targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "ndp_men_targeted",
+   "label": "Total men targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "ndp_children_targeted",
+   "label": "Total children targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "note",
+   "name": "warn_ndp_reached",
+   "label": "⚠️ The total number of non-displaced people reached does not match the sum of women, men and children. Please review if the information is available.",
+   "required": "false",
+   "relevant": "${ndp_people_reached} != '' and ${ndp_people_reached} != ${ndp_women_reached} + ${ndp_men_reached} + ${ndp_children_reached} and (${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED')"
+  },
+  {
+   "type": "integer",
+   "name": "ndp_people_reached",
+   "label": "Total people reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "ndp_women_reached",
+   "label": "Total women reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "ndp_men_reached",
+   "label": "Total men reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "ndp_children_reached",
+   "label": "Total children reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "begin_group",
+   "name": "other_population",
+   "label": "OTHER",
+   "required": "false",
+   "relevant": "selected(${category_of_people}, 'other')"
+  },
+  {
+   "type": "begin_group",
+   "name": "other_population_household_people_hosting",
+   "label": "Household figures only apply to Shelter and NFIs sector",
+   "required": "false",
+   "relevant": "${sector} = 'SHELTER'"
+  },
+  {
+   "type": "integer",
+   "name": "other_population_household_targeted",
+   "label": "Number of households targeted",
+   "required": "false",
+   "appearance": "w2",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "other_population_household_reached",
+   "label": "Number of households reached",
+   "required": "false",
+   "appearance": "w2",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "note",
+   "name": "warn_other_targeted",
+   "label": "⚠️ The total number of other people targeted does not match the sum of women, men and children. Please review if the information is available.",
+   "required": "false",
+   "relevant": "${other_people_targeted} != '' and ${other_people_targeted} != ${other_women_targeted} + ${other_men_targeted} + ${other_children_targeted}"
+  },
+  {
+   "type": "integer",
+   "name": "other_people_targeted",
+   "label": "Total people targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "other_women_targeted",
+   "label": "Total women targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "other_men_targeted",
+   "label": "Total men targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "other_children_targeted",
+   "label": "Total children targeted",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "note",
+   "name": "warn_other_reached",
+   "label": "⚠️ The total number of other people reached does not match the sum of women, men and children. Please review if the information is available.",
+   "required": "false",
+   "relevant": "${other_people_reached} != '' and ${other_people_reached} != ${other_women_reached} + ${other_men_reached} + ${other_children_reached} and (${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED')"
+  },
+  {
+   "type": "integer",
+   "name": "other_people_reached",
+   "label": "Total people reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "other_women_reached",
+   "label": "Total women reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "other_men_reached",
+   "label": "Total men reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "integer",
+   "name": "other_children_reached",
+   "label": "Total children reached",
+   "required": "false",
+   "appearance": "w1",
+   "default": "0",
+   "relevant": "${activity_Status} = 'IN_PROGRESS' or ${activity_Status} = 'COMPLETED'",
+   "constraint": ". >= 0",
+   "constraint_message": "Enter a value greater than or equal to 0."
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "end_repeat"
+  },
+  {
+   "type": "note",
+   "name": "instruction_add_community",
+   "label": "Click on the + button to add another Community for this activity",
+   "required": "false"
+  },
+  {
+   "type": "end_group"
   }
  ],
  "choices": [
   {
-   "list_name": "activity_type",
-   "name": "etc_connectivity",
-   "label": "ETC: internet connectivity for responders"
+   "list_name": "org_types",
+   "name": "NATIONAL_NGO",
+   "label": "National NGO"
   },
   {
-   "list_name": "activity_type",
-   "name": "etc_radio",
-   "label": "ETC: radio network"
+   "list_name": "org_types",
+   "name": "INTERNATIONAL_NGO",
+   "label": "International NGO"
   },
   {
-   "list_name": "activity_type",
-   "name": "etc_charging",
-   "label": "ETC: charging station"
+   "list_name": "org_types",
+   "name": "UN_AGENCY",
+   "label": "UN Agency"
   },
   {
-   "list_name": "activity_type",
-   "name": "etc_helpdesk",
-   "label": "ETC: user support / help desk"
+   "list_name": "org_types",
+   "name": "GOVERNMENT",
+   "label": "Government"
   },
   {
-   "list_name": "activity_type",
-   "name": "wash_water_trucking",
-   "label": "WASH: water trucking"
+   "list_name": "org_types",
+   "name": "RED_CROSS_MOVEMENT",
+   "label": "Red Cross/Red Cresent Movment"
   },
   {
-   "list_name": "activity_type",
-   "name": "wash_water_point",
-   "label": "WASH: water point repair or installation"
+   "list_name": "org_types",
+   "name": "DONOR",
+   "label": "Donor"
   },
   {
-   "list_name": "activity_type",
-   "name": "wash_hygiene_kits",
-   "label": "WASH: hygiene kits"
+   "list_name": "org_types",
+   "name": "PRIVATE_SECTOR",
+   "label": "Private Sector"
   },
   {
-   "list_name": "activity_type",
-   "name": "wash_latrines",
-   "label": "WASH: latrines"
-  },
-  {
-   "list_name": "activity_type",
-   "name": "shelter_kits",
-   "label": "Shelter: emergency shelter kits"
-  },
-  {
-   "list_name": "activity_type",
-   "name": "shelter_tarpaulins",
-   "label": "Shelter: tarpaulins"
-  },
-  {
-   "list_name": "activity_type",
-   "name": "shelter_repair",
-   "label": "Shelter: repair support"
-  },
-  {
-   "list_name": "activity_type",
-   "name": "health_mobile_clinic",
-   "label": "Health: mobile clinic"
-  },
-  {
-   "list_name": "activity_type",
-   "name": "health_consultations",
-   "label": "Health: consultations"
-  },
-  {
-   "list_name": "activity_type",
-   "name": "food_distribution",
-   "label": "Food: food distribution"
-  },
-  {
-   "list_name": "activity_type",
-   "name": "food_cash",
-   "label": "Food: cash for food"
-  },
-  {
-   "list_name": "activity_type",
-   "name": "log_storage",
-   "label": "Logistics: storage"
-  },
-  {
-   "list_name": "activity_type",
-   "name": "log_transport",
-   "label": "Logistics: transport"
-  },
-  {
-   "list_name": "activity_type",
-   "name": "protection_pss",
-   "label": "Protection: psychosocial support"
-  },
-  {
-   "list_name": "activity_type",
-   "name": "cccm_site_management",
-   "label": "CCCM: site management"
-  },
-  {
-   "list_name": "activity_type",
+   "list_name": "org_types",
    "name": "other",
    "label": "Other"
   },
   {
-   "list_name": "status",
-   "name": "planned",
+   "list_name": "yes_no",
+   "name": "yes",
+   "label": "Yes"
+  },
+  {
+   "list_name": "yes_no",
+   "name": "no",
+   "label": "No"
+  },
+  {
+   "list_name": "sectors",
+   "name": "CASH",
+   "label": "Cash Transfer"
+  },
+  {
+   "list_name": "sectors",
+   "name": "CHILD_PROTECTION",
+   "label": "Child Protection"
+  },
+  {
+   "list_name": "sectors",
+   "name": "COORDINATION",
+   "label": "Coordination"
+  },
+  {
+   "list_name": "sectors",
+   "name": "EARLY_RECOVERY",
+   "label": "Early recovery"
+  },
+  {
+   "list_name": "sectors",
+   "name": "EDUCATION",
+   "label": "Education"
+  },
+  {
+   "list_name": "sectors",
+   "name": "EMERGENCY_TELECOMS",
+   "label": "Emergency Telecommunications"
+  },
+  {
+   "list_name": "sectors",
+   "name": "FOOD_SECURITY",
+   "label": "Food Security"
+  },
+  {
+   "list_name": "sectors",
+   "name": "HEALTH",
+   "label": "Health"
+  },
+  {
+   "list_name": "sectors",
+   "name": "NUTRITION",
+   "label": "Nutrition"
+  },
+  {
+   "list_name": "sectors",
+   "name": "PROTECTION",
+   "label": "Protection"
+  },
+  {
+   "list_name": "sectors",
+   "name": "SHELTER",
+   "label": "Shelter & NFIs"
+  },
+  {
+   "list_name": "sectors",
+   "name": "WASH",
+   "label": "WASH"
+  },
+  {
+   "list_name": "sectors",
+   "name": "other_sector",
+   "label": "Other"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "agricultural_input_support_seeds_tools_fertilizers",
+   "label": "Agricultural input support (seeds, tools, fertilizers)",
+   "sector": "FOOD_SECURITY"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "livestock_support_or_restocking",
+   "label": "Agricultural input support (seeds, tools, fertilizers)",
+   "sector": "FOOD_SECURITY"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "back_to_school_campaign",
+   "label": "Back-to-school campaign",
+   "sector": "EDUCATION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "capacity_building_for_local_institutions",
+   "label": "Capacity building for local institutions",
+   "sector": "EARLY_RECOVERY"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "cash_for_education_support",
+   "label": "Cash for education support",
+   "sector": "CASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "cash_for_shelter_repair",
+   "label": "Cash for shelter repair",
+   "sector": "CASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "child_protection_case_management",
+   "label": "Child protection case management",
+   "sector": "PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "childcare_facility_support",
+   "label": "Child/Foster Care facility rehabilitation or support",
+   "sector": "CHILD_PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "community_awareness_on_protection_risks",
+   "label": "Community awareness on protection risks",
+   "sector": "PROTECTION CHILD_PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "conditional_cash_for_work",
+   "label": "Conditional cash for work",
+   "sector": "CASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "permanent",
+   "label": "Construction of Permanent Shelter / Housing Units",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "collective",
+   "label": "Construction or Rehabilitation of Collective Centers",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "debris_clearance_and_community_clean_up",
+   "label": "Debris clearance and community clean-up",
+   "sector": "EARLY_RECOVERY"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "debris",
+   "label": "Debris Removal",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "delivery_of_anthropometric_equipment",
+   "label": "Delivery of anthropometric equipment",
+   "sector": "NUTRITION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "dignity_kit",
+   "label": "Dignity kit distribution",
+   "sector": "CHILD_PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "disease_surveillance_outbreak_response",
+   "label": "Disease surveillance / outbreak response",
+   "sector": "HEALTH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "distribution_of_household_water_treatment_material",
+   "label": "Distribution of household water treatment material (disinfectant, filters)",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "distribution_of_hygiene_kits",
+   "label": "Distribution of hygiene kits",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "distribution_of_micronutrients_supplementation_and_anemia_prevention",
+   "label": "Distribution of micronutrients supplementation and anemia prevention",
+   "sector": "NUTRITION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "distritbution_of_iycf_materials_and_mother_baby_kits",
+   "label": "Distritbution of IYCF materials and mother baby kits",
+   "sector": "NUTRITION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "emergency",
+   "label": "Emergency Shelter Support",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "environmental_rehabilitation",
+   "label": "Environmental rehabilitation",
+   "sector": "EARLY_RECOVERY"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "fishing_gear_replacement",
+   "label": "Fishing gear replacement",
+   "sector": "FOOD_SECURITY"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "food_parcel_distribution",
+   "label": "Food parcel distribution",
+   "sector": "FOOD_SECURITY"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "gender_based_violence_gbv_prevention_and_response",
+   "label": "Gender-based violence (GBV) prevention and response",
+   "sector": "PROTECTION CHILD_PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "health_facility_rehabilitation_or_support",
+   "label": "Health facility rehabilitation or support",
+   "sector": "HEALTH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "hh_water_distribution",
+   "label": "HH Water distribution (Bottles, Cases)",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "hh_water_storage",
+   "label": "HH Water storage (Buckets, Jerrycans)",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "hot_meal_provision",
+   "label": "Hot meal provision",
+   "sector": "FOOD_SECURITY"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "hlp",
+   "label": "Housing, Land, and Property (HLP) Services (e.g., access to documentation, tenure security)",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "hygiene_promotion_awareness_campaigns",
+   "label": "Hygiene promotion / awareness campaigns",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "infant_and_young_child_feeding_iycf_counselling",
+   "label": "Infant and young child Feeding (IYCF)  Counselling",
+   "sector": "NUTRITION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "information_management_support",
+   "label": "Information management support",
+   "sector": "COORDINATION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "installation_water_storage",
+   "label": "Installation of Water Storage",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "inter_agency_planning_or_reporting",
+   "label": "Inter-agency planning or reporting",
+   "sector": "COORDINATION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "joint_assessments_data_collection",
+   "label": "Joint assessments / data collection",
+   "sector": "COORDINATION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "learning_material_distribution",
+   "label": "Learning material distribution",
+   "sector": "EDUCATION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "legal_assistance_documentation_support",
+   "label": "Legal assistance / documentation support",
+   "sector": "PROTECTION CHILD_PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "liaison_with_local_authorities",
+   "label": "Liaison with local authorities",
+   "sector": "COORDINATION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "livelihood_restoration_cash_for_work_small_grants",
+   "label": "Livelihood restoration (cash-for-work, small grants)",
+   "sector": "EARLY_RECOVERY"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "maintenance_water_systems",
+   "label": "Maintenance of water systems",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "medical_supply_or_medicine_distribution",
+   "label": "Medical supply or medicine distribution",
+   "sector": "HEALTH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "mental_health_and_psychosocial_support_mhpss",
+   "label": "Mental health and psychosocial support (MHPSS)",
+   "sector": "HEALTH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "mhpss",
+   "label": "Mental health and psychosocial support (MHPSS)",
+   "sector": "CHILD_PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "mobile_clinic_outreach_services",
+   "label": "Mobile clinic / outreach services",
+   "sector": "HEALTH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "mobile_outreach",
+   "label": "Mobile outreach services",
+   "sector": "CHILD_PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "mobile_water_treatment_plant_installation",
+   "label": "Mobile water treatment plant installation",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "multi_purpose_cash_assistance",
+   "label": "Multi-purpose cash assistance",
+   "sector": "CASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "nfi",
+   "label": "NFI Distribution (e.g., tarpaulins, solar lamps, blankets, kitchen sets, hygiene kits)",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "protection_monitoring",
+   "label": "Protection monitoring",
+   "sector": "PROTECTION CHILD_PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "temp_shelter",
+   "label": "Provision of Temporary Shelters in Collective Sites",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "psychosocial_support_in_schools",
+   "label": "Psychosocial support in schools",
+   "sector": "EDUCATION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "child_referral_special_care",
+   "label": "Referral of children in need of specialized care",
+   "sector": "CHILD_PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "rehabilitation_of_community_infrastructure",
+   "label": "Rehabilitation of community infrastructure",
+   "sector": "EARLY_RECOVERY"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "rehabilitation_of_water_systems",
+   "label": "Rehabilitation of water systems",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "rental",
+   "label": "Rental Assistance (e.g., cash for rent)",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "restoring_centralized_water_supply",
+   "label": "Restoring centralized water supply",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "safe_space_children_pwd",
+   "label": "Safe space establishment (for children, or persons with disabilities)",
+   "sector": "CHILD_PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "safe_space_women",
+   "label": "Safe space establishment (for women)",
+   "sector": "CHILD_PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "safe_space_establishment_for_women_children_or_persons_with_disabilities",
+   "label": "Safe space establishment (for women, children, or persons with disabilities)",
+   "sector": "PROTECTION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "school_feeding_support",
+   "label": "School feeding support",
+   "sector": "FOOD_SECURITY"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "school_rehabilitation_and_repairs",
+   "label": "School rehabilitation and repairs",
+   "sector": "EDUCATION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "screening_and_management_of_acute_malnutrition",
+   "label": "Screening and management of acute Malnutrition",
+   "sector": "NUTRITION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "sector_coordination_meetings",
+   "label": "Sector coordination meetings",
+   "sector": "COORDINATION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "sexual_and_reproductive_health_services",
+   "label": "Sexual and reproductive health services",
+   "sector": "HEALTH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "extension",
+   "label": "Shelter Extension Assistance",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "toolkits",
+   "label": "Shelter Repair or Reconstruction Toolkits Distributed",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "repair_heavy",
+   "label": "Shelter Repairs - Heavy",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "repair_light",
+   "label": "Shelter Repairs - Light",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "repair_medium",
+   "label": "Shelter Repairs - Medium",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "temporary_accom",
+   "label": "Short-Term Accommodation Support (e.g., Airbnb, guesthouse vouchers)",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "solid_waste_management",
+   "label": "Solid waste management",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "teacher_support_or_training",
+   "label": "Teacher support or training",
+   "sector": "EDUCATION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "technical",
+   "label": "Technical Assistance for Safe Reconstruction",
+   "sector": "SHELTER"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "temporary_learning_space_establishment",
+   "label": "Temporary learning space establishment",
+   "sector": "EDUCATION"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "toilets_installation_construction_or_repair",
+   "label": "Toilets installation, construction or repair",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "unconditional_cash_transfer",
+   "label": "Unconditional cash transfer",
+   "sector": "CASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "unspecified_activity",
+   "label": "Unspecified Activity",
+   "sector": "NOT_SPECIFIED"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "vector_control_supplies",
+   "label": "Vector control supplies",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "wash_assessment",
+   "label": "WASH Assessment",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "water_trucking",
+   "label": "Water trucking",
+   "sector": "WASH"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "other_sector_activity",
+   "label": "Other (please specify)",
+   "sector": "other_sector"
+  },
+  {
+   "list_name": "activity_types",
+   "name": "other",
+   "label": "Other",
+   "sector": "FOOD_SECURITY NUTRITION HEALTH SHELTER EDUCATION PROTECTION COORDINATION EARLY_RECOVERY CASH NOT_SPECIFIED other_sector WASH"
+  },
+  {
+   "list_name": "activity_status",
+   "name": "PLANNED",
    "label": "Planned"
   },
   {
-   "list_name": "status",
-   "name": "ongoing",
-   "label": "Ongoing"
+   "list_name": "activity_status",
+   "name": "IN_PROGRESS",
+   "label": "In progress"
   },
   {
-   "list_name": "status",
-   "name": "completed",
+   "list_name": "activity_status",
+   "name": "COMPLETED",
    "label": "Completed"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "assessments",
+   "label": "Assessments"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "financial",
+   "label": "Financial"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "food",
+   "label": "Food Assistance"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "human",
+   "label": "Human Resources"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "it",
+   "label": "Information Technology (IT)"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "informative",
+   "label": "Information, Education & Communication (IEC)"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "medical",
+   "label": "Medical & Health Supplies"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "non_food",
+   "label": "Non-Food Items (NFI)"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "other",
+   "label": "Other"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "specialized_services",
+   "label": "Specialized Services"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "technical",
+   "label": "Technical Assistance"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "transport",
+   "label": "Transport & Logistics"
+  },
+  {
+   "list_name": "resource_type",
+   "name": "wash",
+   "label": "Water, Sanitation & Hygiene (WASH)"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "aircraft",
+   "label": "Aircraft",
+   "resource_type": "transport"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "report",
+   "label": "Assessment / Report",
+   "resource_type": "informative"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "campaign",
+   "label": "Awareness Campaign / Social Media",
+   "resource_type": "informative"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "boat",
+   "label": "Boat / Ship",
+   "resource_type": "transport"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "package_food",
+   "label": "Box / Package",
+   "resource_type": "food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "package_nfi",
+   "label": "Box / Package / Unit",
+   "resource_type": "non_food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "package_med",
+   "label": "Box / Package / Unit",
+   "resource_type": "medical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "cash",
+   "label": "Cash",
+   "resource_type": "financial"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "cheque",
+   "label": "Cheque",
+   "resource_type": "financial"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "cleaning_kit",
+   "label": "Cleaning Kit",
+   "resource_type": "non_food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "communication",
+   "label": "Communication Devices (Phones / Radios)",
+   "resource_type": "it"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "materials",
+   "label": "Communication Material (Leaflet, Poster, Radio, Video)",
+   "resource_type": "informative"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "computer",
+   "label": "Computer Equipment (Laptops / Tablets)",
+   "resource_type": "it"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "construction",
+   "label": "Construction / Repair / Debris Removal",
+   "resource_type": "technical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "ss_dignity_kit",
+   "label": "Dignity kit",
+   "resource_type": "specialized_services"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "observation",
+   "label": "Direct Observation",
+   "resource_type": "assessments"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "fgd",
+   "label": "Focus Group Discussion (FGD)",
+   "resource_type": "assessments"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "food_kit",
+   "label": "Food Kit / Ration",
+   "resource_type": "food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "fuel",
+   "label": "Fuel / Maintenance Support",
+   "resource_type": "transport"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "generator",
+   "label": "Generator / Equipment",
+   "resource_type": "non_food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "hh_survey",
+   "label": "Household Survey",
+   "resource_type": "assessments"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "cleaning_kit_med",
+   "label": "Hygiene / Cleaning Kit",
+   "resource_type": "medical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "hygiene_kit",
+   "label": "Hygiene Kit",
+   "resource_type": "non_food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "hygiene_promo",
+   "label": "Hygiene Promotion / Awareness",
+   "resource_type": "technical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "hygiene",
+   "label": "Hygiene Promotion Activity",
+   "resource_type": "wash"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "infant_kit",
+   "label": "Infant Kit",
+   "resource_type": "non_food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "itkit",
+   "label": "IT Kit / Package",
+   "resource_type": "it"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "jerrycan",
+   "label": "Jerry Can / Bucket",
+   "resource_type": "wash"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "kii",
+   "label": "Key Informant Interview (KII)",
+   "resource_type": "assessments"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "kilogram",
+   "label": "Kilogram (kg)",
+   "resource_type": "food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "kitchen_set",
+   "label": "Kitchen Set",
+   "resource_type": "non_food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "kits_wash",
+   "label": "Kits",
+   "resource_type": "wash"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "litres",
+   "label": "Litres (Disinfectants)",
+   "resource_type": "medical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "mattress",
+   "label": "Mattress / Bedding",
+   "resource_type": "non_food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "meals",
+   "label": "Meals",
+   "resource_type": "food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "equipment",
+   "label": "Medical Equipment / Machines",
+   "resource_type": "medical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "medical_kit",
+   "label": "Medical Kit / Health Kit",
+   "resource_type": "medical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "medicine",
+   "label": "Medicines (Pills / Bottles / Vials)",
+   "resource_type": "medical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "metric_ton",
+   "label": "Metric Tonne (MT)",
+   "resource_type": "food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "mobile_money",
+   "label": "Mobile Money / Bank Transfer",
+   "resource_type": "financial"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "mosquito_net",
+   "label": "Mosquito Net",
+   "resource_type": "non_food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "motorcycle",
+   "label": "Motorcycle",
+   "resource_type": "transport"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "network",
+   "label": "Network Equipment (Router / Antenna)",
+   "resource_type": "it"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "other",
+   "label": "Other",
+   "resource_type": "financial human food non_food medical wash transport informative it technical assessments"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "ppe",
+   "label": "PPE (Protective Equipment)",
+   "resource_type": "medical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "prepaid_card",
+   "label": "Pre-paid Card",
+   "resource_type": "financial"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "purification",
+   "label": "Purification Tablets / Filters",
+   "resource_type": "wash"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "remote",
+   "label": "Remote Assessment / Call",
+   "resource_type": "assessments"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "ss_safe_space",
+   "label": "Safe space",
+   "resource_type": "specialized_services"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "sanitation",
+   "label": "Sanitation / Handwashing Facility",
+   "resource_type": "wash"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "shelter_kit",
+   "label": "Shelter Kit (Tarpaulin + fixing kit)",
+   "resource_type": "non_food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "software",
+   "label": "Software / Digital Tools",
+   "resource_type": "it"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "specialist_tech",
+   "label": "Specialist / Expert Support",
+   "resource_type": "technical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "specialist",
+   "label": "Specialists / Experts",
+   "resource_type": "human"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "ss_specialized_services",
+   "label": "Specialized Services",
+   "resource_type": "specialized_services"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "staff",
+   "label": "Staff (General / Support)",
+   "resource_type": "human"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "tarpaulin",
+   "label": "Tarpaulin",
+   "resource_type": "non_food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "teams",
+   "label": "Teams / Surge Units",
+   "resource_type": "human"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "assessment_tech",
+   "label": "Technical Assessment / Study",
+   "resource_type": "technical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "advisor",
+   "label": "Technical Staff / Advisor",
+   "resource_type": "technical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "tent",
+   "label": "Tent / Temporary Shelter",
+   "resource_type": "non_food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "test_kit",
+   "label": "Test Kits",
+   "resource_type": "medical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "tools",
+   "label": "Tool Kit / Fixing Kit",
+   "resource_type": "non_food"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "training_info",
+   "label": "Training / Workshop",
+   "resource_type": "informative"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "training_tech",
+   "label": "Training / Workshop / Session",
+   "resource_type": "technical"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "training",
+   "label": "Training / Workshops",
+   "resource_type": "human"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "truck",
+   "label": "Truck / Vehicle",
+   "resource_type": "transport"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "volunteers",
+   "label": "Volunteers",
+   "resource_type": "human"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "voucher",
+   "label": "Voucher (E-Voucher / Product / Value)",
+   "resource_type": "financial"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "water",
+   "label": "Water (Litres / Gallons / m³)",
+   "resource_type": "wash"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "container",
+   "label": "Water Container / Bladder / Tank",
+   "resource_type": "wash"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "pump",
+   "label": "Water Pump / Motobomba",
+   "resource_type": "wash"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "treatment",
+   "label": "Water Treatment Unit / Plant",
+   "resource_type": "wash"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "unspecified",
+   "label": "Unspecified Resource",
+   "resource_type": "other"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "gallons",
+   "label": "Gallons",
+   "resource_type": "wash"
+  },
+  {
+   "list_name": "resource_unit_type",
+   "name": "misc",
+   "label": "Miscellaneous Support",
+   "resource_type": "other"
+  },
+  {
+   "list_name": "location_types",
+   "name": "shelter",
+   "label": "Emergency Shelter (Not School)"
+  },
+  {
+   "list_name": "location_types",
+   "name": "general_community",
+   "label": "General Community"
+  },
+  {
+   "list_name": "location_types",
+   "name": "health_facility",
+   "label": "Health Care Facility"
+  },
+  {
+   "list_name": "location_types",
+   "name": "school",
+   "label": "School"
+  },
+  {
+   "list_name": "location_types",
+   "name": "church",
+   "label": "Church"
+  },
+  {
+   "list_name": "location_types",
+   "name": "utilities_systems",
+   "label": "Utilities/systems"
+  },
+  {
+   "list_name": "location_types",
+   "name": "other_location_type",
+   "label": "Other"
+  },
+  {
+   "list_name": "cat_people",
+   "name": "idp",
+   "label": "Internally Displaced People"
+  },
+  {
+   "list_name": "cat_people",
+   "name": "hosting",
+   "label": "People Hosting"
+  },
+  {
+   "list_name": "cat_people",
+   "name": "ndp",
+   "label": "Non Displaced People (Resident)"
+  },
+  {
+   "list_name": "cat_people",
+   "name": "other",
+   "label": "Other"
   }
  ]
 }

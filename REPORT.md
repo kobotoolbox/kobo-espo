@@ -409,6 +409,31 @@ its own team managing its sites and tasks.
   first. Both now take only the records of the connection's forms (unit test extended).
 - **Next:** Workflow E, the response's 5W (`plans/workflow-e-5w-plan.md`).
 
+## Workflow E: the response's 5W, on the Hurricane Melissa form (2026-11-08)
+
+Plan: `plans/workflow-e-5w-plan.md`. Built on the real Melissa 5W form (v1.9, `ref/`),
+with its codes; our form is made from it (`kobo/forms/melissa.py`).
+
+- **Organisations** are a list (`COrganisation`: the form's 137, `ORG_` codes and types),
+  put on the forms by EspoCRM and filtered by type as the Melissa form does; one typed in
+  becomes a task to add it. Organisations can also **register** for a response and its
+  sectors (`CResponder`), which puts them in those sectors' projects' teams.
+- **An activity** (a submission) goes to its response's project for its sector, and its
+  teams. **Each community row** of the form's repeat is an `CActivityLocation` (parish and
+  community by P-code, people by group × women, men, children, targeted and reached); the
+  activity keeps the totals. **Focal points** are their own records, which viewers can't read.
+- **Repeat groups in the bridge** (`[[repeat]]`): a record per row, matched by submission
+  and row on a retry, rows a shorter version lost removed, a row that fails recorded with
+  its number while the rest stay.
+- **Short codes** (RSP-, PRJ-, REG-, ACT-, TSK-, APP-) are Kobo lists' choice names.
+- **Found:** Jamaica's P-codes are not ISO's order: JM17 is Kingston, JM08 St. Andrew,
+  JM01 Clarendon (and there are no JM03, JM05, JM06). The first draft had them wrong; the
+  seed now takes the 14 parishes and 775 communities from the Melissa form and removes the
+  rest. EspoCRM's API pages at 200 records at most.
+- The 5W dashboard is kobo-dash's, with EspoCRM as a source (kobo-dash
+  `plans/espo-source-plan.md`); its step 1 (map-point and multi-choice table columns) is
+  done there (branch `espo-source`, 845 tests).
+
 ## Open questions for Josh
 
 1. **The real instance:** apply this to `espo.kobolabs.dev`, alongside its demo, or start a

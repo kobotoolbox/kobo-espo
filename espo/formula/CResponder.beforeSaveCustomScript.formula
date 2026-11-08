@@ -1,5 +1,5 @@
 // A responding organisation is in its response's teams and in those of the response's
-// projects in the clusters it works in: those clusters' people see it, and the coordinators
+// projects in the sectors it works in: those sectors' people see it, and the coordinators
 if (responseId && (entity\isNew() || entity\isAttributeChanged('responseId') || entity\isAttributeChanged('clusters'))) {
     $teams = record\attribute('CResponse', responseId, 'teamsIds');
     $projects = record\findMany('CProject', 200, 'createdAt', 'asc', 'responseId=', responseId);
@@ -20,5 +20,17 @@ if (responseId && (entity\isNew() || entity\isAttributeChanged('responseId') || 
     }
     if (array\length($teams) > 0) {
         teamsIds = $teams;
+    }
+}
+
+// Named after its organisation in the list (or the one it typed), with its type
+if (organisationId && (entity\isNew() || entity\isAttributeChanged('organisationId'))) {
+    if (record\attribute('COrganisation', organisationId, 'code') == 'other') {
+        if (organisationOther) {
+            name = organisationOther;
+        }
+    } else {
+        name = record\attribute('COrganisation', organisationId, 'name');
+        orgType = record\attribute('COrganisation', organisationId, 'orgType');
     }
 }

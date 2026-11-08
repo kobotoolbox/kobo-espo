@@ -1,8 +1,10 @@
-# Workflow E: an organisation's activity in one response (Test EQ 1), one per submission:
-# what, where (parish by P-code, and the site if it's at one), when, for how many people.
-# It goes into its project's teams (formula), its people reached are summed, and its
-# organisation's last report moves on. The form picks the organisation and the project
-# from that response's lists, by their codes (ORG-..., PRJ-...).
+# Workflow E (plans/workflow-e-5w-plan.md): a 5W activity report, our form modelled on the
+# Hurricane Melissa 5W form with its codes (kobo/forms/melissa.py). One submission is one
+# Activity (who, what, when, with what), linked to its response, organisations by their
+# ORG_ codes, and through its sector to the response's project (formula). Each row of its
+# FIGURES_COMMUNITY repeat is an Activity location (parish and community by P-code, the
+# people by group, targeted and reached); each FOCAL_POINTS row a Focal point. Organisations
+# not in the list become a task for the response's lead.
 
 [bridge]
 user = "kobo-activities"
@@ -10,49 +12,90 @@ role = "Kobo activities"
 secret = "ESPO_ACTIVITIES_API_KEY"
 
 [form]
-name = "Activity report - Test EQ 1 (espo-kobo test)"
+name = "5W activity report (espo-kobo test)"
 
 [record]
 entity = "CActivity"
 panel = "Report"
-name = "{activity_type} · {start_date}"
-required = ["responder", "project", "activity_type", "start_date", "parish"]
+name = "{activity_type}"
+required = ["response", "LeadOrganization_name", "sector", "activity_type", "activity_Status", "start_date"]
 
 [[field]]
-kobo = "responder"
-espo = "responder"
+kobo = "response"
+espo = "response"
 type = "link"
-entity = "CResponder"
+entity = "CResponse"
 lookup = "code"
 
 [[field]]
-kobo = "project"
-espo = "project"
+kobo = "LeadOrganization_name"
+espo = "leadOrganisation"
 type = "link"
-entity = "CProject"
+entity = "COrganisation"
 lookup = "code"
 
 [[field]]
-kobo = "parish"
-espo = "adminArea"
-type = "link"
-entity = "CAdminArea"
-lookup = "pcode"
+kobo = "LeadOrganization_name_2"
+espo = "leadOrganisationOther"
 
-[[field]]  # optional: the site, by its site code
-kobo = "site_code"
-espo = "site"
+[[field]]
+kobo = "ImplementingOrganization_name"
+espo = "implementingOrganisation"
 type = "link"
-entity = "CSite"
-lookup = "siteCode"
+entity = "COrganisation"
+lookup = "code"
+
+[[field]]
+kobo = "ImplementingOrganization_name_2"
+espo = "implementingOrganisationOther"
+
+[[field]]
+kobo = "sector"
+espo = "sector"
+
+[[field]]
+kobo = "scetor_2"
+espo = "sectorOther"
 
 [[field]]
 kobo = "activity_type"
 espo = "activityType"
 
 [[field]]
-kobo = "status"
+kobo = "activity_type_other"
+espo = "activityTypeOther"
+
+[[field]]
+kobo = "activity_title"
+espo = "title"
+
+[[field]]
+kobo = "activity_Status"
 espo = "status"
+
+[[field]]
+kobo = "comments"
+espo = "comments"
+
+[[field]]
+kobo = "URL_to_important_resources"
+espo = "resourceUrl"
+
+[[field]]
+kobo = "resource_type"
+espo = "resourceType"
+
+[[field]]
+kobo = "resource_type_other"
+espo = "resourceTypeOther"
+
+[[field]]
+kobo = "resource_unit_type"
+espo = "resourceUnit"
+
+[[field]]
+kobo = "resource_unit_type_other"
+espo = "resourceUnitOther"
 
 [[field]]
 kobo = "start_date"
@@ -66,71 +109,313 @@ espo = "endDate"
 kobo = "today"
 espo = "reportDate"
 
-[[field]]
-kobo = "girls"
-espo = "girls"
-type = "int"
+# One record per community, and per focal point
+[[repeat]]
+group = "FIGURES_COMMUNITY"
+entity = "CActivityLocation"
+link = "activity"
+name = "{community}"
 
-[[field]]
-kobo = "boys"
-espo = "boys"
-type = "int"
+[[repeat.field]]
+kobo = "parish"
+espo = "parish"
+type = "link"
+entity = "CAdminArea"
+lookup = "pcode"
 
-[[field]]
-kobo = "women"
-espo = "women"
-type = "int"
+[[repeat.field]]
+kobo = "community"
+espo = "community"
+type = "link"
+entity = "CAdminArea"
+lookup = "pcode"
 
-[[field]]
-kobo = "men"
-espo = "men"
-type = "int"
+[[repeat.field]]
+kobo = "site_code"
+espo = "site"
+type = "link"
+entity = "CSite"
+lookup = "siteCode"
 
-[[field]]
-kobo = "elderly_women"
-espo = "elderlyWomen"
-type = "int"
+[[repeat.field]]
+kobo = "location_type"
+espo = "locationType"
 
-[[field]]
-kobo = "elderly_men"
-espo = "elderlyMen"
-type = "int"
+[[repeat.field]]
+kobo = "location_type_other"
+espo = "locationTypeOther"
 
-[[field]]
-kobo = "households"
-espo = "households"
-type = "int"
+[[repeat.field]]
+kobo = "location_address_comments"
+espo = "locationComments"
 
-[[field]]
-kobo = "quantity"
+[[repeat.field]]
+kobo = "quantity_resource"
 espo = "quantity"
 type = "float"
 
-[[field]]
-kobo = "unit"
-espo = "unit"
+[[repeat.field]]
+kobo = "budget_resource"
+espo = "budget"
+type = "float"
 
-# The response's organisations and projects (its team), and the country's parishes
-[[list]]
-file = "responders.csv"
-entity = "CResponder"
-team = "Response: Test EQ 1"
-order_by = "acronym"
-columns = { name = "code", label = "{acronym} · {name}" }
-forms = ["Activity report - Test EQ 1 (espo-kobo test)"]
+[[repeat.field]]
+kobo = "total_population_targeted"
+espo = "populationTargeted"
+type = "int"
 
+[[repeat.field]]
+kobo = "total_population_reached"
+espo = "populationReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "category_of_people"
+espo = "populationGroups"
+type = "multiEnum"
+
+[[repeat.field]]
+kobo = "category_of_people_specify"
+espo = "populationGroupsOther"
+
+[[repeat.field]]
+kobo = "idp_people_targeted"
+espo = "idpPeopleTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "idp_women_targeted"
+espo = "idpWomenTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "idp_men_targeted"
+espo = "idpMenTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "idp_children_targeted"
+espo = "idpChildrenTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "idp_household_targeted"
+espo = "idpHouseholdsTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "idp_people_reached"
+espo = "idpPeopleReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "idp_women_reached"
+espo = "idpWomenReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "idp_men_reached"
+espo = "idpMenReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "idp_children_reached"
+espo = "idpChildrenReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "idp_household_reached"
+espo = "idpHouseholdsReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "hosting_people_targeted"
+espo = "hostingPeopleTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "hosting_women_targeted"
+espo = "hostingWomenTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "hosting_men_targeted"
+espo = "hostingMenTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "hosting_children_targeted"
+espo = "hostingChildrenTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "people_hosting_household_targeted"
+espo = "hostingHouseholdsTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "hosting_people_reached"
+espo = "hostingPeopleReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "hosting_women_reached"
+espo = "hostingWomenReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "hosting_men_reached"
+espo = "hostingMenReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "hosting_children_reached"
+espo = "hostingChildrenReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "people_hosting_household_reached"
+espo = "hostingHouseholdsReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "ndp_people_targeted"
+espo = "ndpPeopleTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "ndp_women_targeted"
+espo = "ndpWomenTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "ndp_men_targeted"
+espo = "ndpMenTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "ndp_children_targeted"
+espo = "ndpChildrenTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "non_displaced_household_targeted"
+espo = "ndpHouseholdsTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "ndp_people_reached"
+espo = "ndpPeopleReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "ndp_women_reached"
+espo = "ndpWomenReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "ndp_men_reached"
+espo = "ndpMenReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "ndp_children_reached"
+espo = "ndpChildrenReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "non_displaced_household_reached"
+espo = "ndpHouseholdsReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "other_people_targeted"
+espo = "otherPeopleTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "other_women_targeted"
+espo = "otherWomenTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "other_men_targeted"
+espo = "otherMenTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "other_children_targeted"
+espo = "otherChildrenTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "other_population_household_targeted"
+espo = "otherHouseholdsTargeted"
+type = "int"
+
+[[repeat.field]]
+kobo = "other_people_reached"
+espo = "otherPeopleReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "other_women_reached"
+espo = "otherWomenReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "other_men_reached"
+espo = "otherMenReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "other_children_reached"
+espo = "otherChildrenReached"
+type = "int"
+
+[[repeat.field]]
+kobo = "other_population_household_reached"
+espo = "otherHouseholdsReached"
+type = "int"
+
+[[repeat]]
+group = "FOCAL_POINTS"
+entity = "CFocalPoint"
+link = "activity"
+name = "{name}"
+
+[[repeat.field]]
+kobo = "email"
+espo = "emailAddress"
+
+[[repeat.field]]
+kobo = "phone"
+espo = "phone"
+
+[[repeat.field]]
+kobo = "job_title"
+espo = "jobTitle"
+
+# EspoCRM's lists on the form: the responses, the organisations (by type, as the Melissa
+# form filters them) and the country's parishes and communities
 [[list]]
-file = "projects.csv"
-entity = "CProject"
-team = "Response: Test EQ 1"
+file = "responses.csv"
+entity = "CResponse"
 where = { status = ["Planning", "Active"] }
 order_by = "name"
 columns = { name = "code", label = "name" }
-forms = ["Activity report - Test EQ 1 (espo-kobo test)"]
+forms = ["5W activity report (espo-kobo test)"]
+
+[[list]]
+file = "organisations.csv"
+entity = "COrganisation"
+order_by = "name"
+columns = { name = "code", label = "name", org_type = "orgType" }
+forms = ["5W activity report (espo-kobo test)"]
 
 [[list]]
 file = "areas.csv"
 entity = "CAdminArea"
 order_by = "pcode"
 columns = { name = "pcode", label = "name", level = "level", parent = "parentPcode" }
-forms = ["Activity report - Test EQ 1 (espo-kobo test)"]
+forms = ["5W activity report (espo-kobo test)"]

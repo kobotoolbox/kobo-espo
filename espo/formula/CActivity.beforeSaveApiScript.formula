@@ -1,15 +1,10 @@
-// An activity's dates and organisation must make sense. API Before Save runs for every save
-// through the API: the bridge's, an import's, and the UI's
+// An activity's dates must make sense. API Before Save runs for every save through the
+// API: the bridge's, an import's, and the UI's
 if (startDate && endDate && datetime\diff(endDate, startDate, 'days') < 0) {
     recordService\throwBadRequest('The activity ends before it starts.');
 }
-// The organisation must be registered in the project's response, for the project's cluster
-if (responderId && projectId && (entity\isNew() || entity\isAttributeChanged('responderId')
-        || entity\isAttributeChanged('projectId'))) {
-    if (record\attribute('CResponder', responderId, 'responseId') != record\attribute('CProject', projectId, 'responseId')) {
-        recordService\throwBadRequest('The organisation is not registered in this project\'s response.');
-    }
-    if (!array\includes(record\attribute('CResponder', responderId, 'clusters'), record\attribute('CProject', projectId, 'cluster'))) {
-        recordService\throwBadRequest('The organisation is not registered for this project\'s cluster.');
-    }
+// Its registration, if set, must be the organisation's in the same response
+if (responderId && responseId && (entity\isNew() || entity\isAttributeChanged('responderId'))
+        && record\attribute('CResponder', responderId, 'responseId') != responseId) {
+    recordService\throwBadRequest('That registration is for another response.');
 }

@@ -1,8 +1,9 @@
 # Workflow E (plans/workflow-e-5w-plan.md): an organisation registers as responding in a
-# response, for the clusters it works in. It becomes a Responding organisation (CResponder),
-# linked to its Account and its focal point's Contact, in the teams of the response and of
-# the response's projects in those clusters (formula). Registering again with the same
-# response and acronym updates it. The response is picked by its code from responses.csv.
+# response, for the sectors it works in. It becomes a Responding organisation (CResponder),
+# linked to the organisation in EspoCRM's list (organisations.csv, the 5W form's ORG_
+# codes, by type) and its focal point's Contact, in the teams of the response and of the
+# response's projects in those sectors (formula). Registering again for the same response
+# and organisation updates it. The response is picked by its code from responses.csv.
 
 [bridge]
 user = "kobo-responders"
@@ -15,14 +16,13 @@ name = "Responding organisation registration (espo-kobo test)"
 [record]
 entity = "CResponder"
 panel = "Registration"
-name = "{org_name}"
+name = "{organisation}"  # then the organisation's name (formula)
 match = { registrationKey = "registration_key" }
-required = ["response", "org_name", "org_acronym", "clusters", "focal_email"]
+required = ["response", "organisation", "sectors", "focal_email"]
 
-[requester]  # the Account named by the organisation, the focal point's Contact by email
+[requester]  # the focal point's Contact, by email
 email = "focal_email"
 name = "focal_name"
-organisation = "org_name"
 
 [[field]]  # by its code (RSP-...), as the list gives it
 kobo = "response"
@@ -30,6 +30,17 @@ espo = "response"
 type = "link"
 entity = "CResponse"
 lookup = "code"
+
+[[field]]  # by its ORG_ code, as the list gives it
+kobo = "organisation"
+espo = "organisation"
+type = "link"
+entity = "COrganisation"
+lookup = "code"
+
+[[field]]
+kobo = "organisation_other"
+espo = "organisationOther"
 
 [[field]]
 kobo = "org_acronym"
@@ -40,7 +51,7 @@ kobo = "org_type"
 espo = "orgType"
 
 [[field]]
-kobo = "clusters"
+kobo = "sectors"
 espo = "clusters"
 type = "multiEnum"
 
@@ -62,4 +73,11 @@ entity = "CResponse"
 where = { status = ["Planning", "Active"] }
 order_by = "name"
 columns = { name = "code", label = "name" }
+forms = ["Responding organisation registration (espo-kobo test)"]
+
+[[list]]
+file = "organisations.csv"
+entity = "COrganisation"
+order_by = "name"
+columns = { name = "code", label = "name", org_type = "orgType" }
 forms = ["Responding organisation registration (espo-kobo test)"]

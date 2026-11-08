@@ -107,8 +107,8 @@ def run(a, inst):
           done.get('changed') and set(a.call('GET', f'/CProject/{proj["id"]}')['teamsIds']) == {pteam.get('id'), team['id']},
           done)
     check('U3', "the cluster asked for by its label is stored as its code",
-          a.call('GET', f'/CProject/{proj["id"]}').get('cluster') == 'etc')
-    by_code = tools.create_project(inst, a.call('GET', f'/CResponse/{resp["id"]}')['code'], 'WASH', cluster='wash')
+          a.call('GET', f'/CProject/{proj["id"]}').get('cluster') == 'EMERGENCY_TELECOMS')
+    by_code = tools.create_project(inst, a.call('GET', f'/CResponse/{resp["id"]}')['code'], 'WASH', cluster='WASH')
     check('U3', "the response named by its short code (first call only)",
           by_code.get('would_create', {}).get('response') == RESPONSE, by_code)
     listed = next((r for r in tools.list_projects(inst)['responses'] if r['response'] == RESPONSE), {})

@@ -1,0 +1,46 @@
+// A location is its activity's: its project, response and teams
+if (activityId && (entity\isNew() || entity\isAttributeChanged('activityId'))) {
+    $teams = record\attribute('CActivity', activityId, 'teamsIds');
+    if (array\length($teams) > 0) {
+        teamsIds = $teams;
+    }
+    projectId = record\attribute('CActivity', activityId, 'projectId');
+    responseId = record\attribute('CActivity', activityId, 'responseId');
+}
+
+// The parish from the community, if it wasn't given; named after them
+if (communityId && !parishId) {
+    parishId = record\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', record\attribute('CAdminArea', communityId, 'parentPcode'));
+}
+if (communityId && (entity\isNew() || entity\isAttributeChanged('communityId'))) {
+    name = string\concatenate(record\attribute('CAdminArea', communityId, 'name'),
+        ifThenElse(parishId, string\concatenate(', ', record\attribute('CAdminArea', parishId, 'name')), ''));
+}
+
+// The activity's totals: this location and its others
+if (activityId) {
+    $ids = record\findMany('CActivityLocation', 500, 'createdAt', 'asc', 'activityId=', activityId);
+    $n = 1;
+    $reached = ifThenElse(populationReached, populationReached, 0);
+    $targeted = ifThenElse(populationTargeted, populationTargeted, 0);
+    $quantity = ifThenElse(quantity, quantity, 0);
+    $budget = ifThenElse(budget, budget, 0);
+    $i = 0;
+    while ($i < array\length($ids)) {
+        $o = array\at($ids, $i);
+        if ($o != id) {
+            $n = $n + 1;
+            $reached = $reached + ifThenElse(record\attribute('CActivityLocation', $o, 'populationReached'),
+                record\attribute('CActivityLocation', $o, 'populationReached'), 0);
+            $targeted = $targeted + ifThenElse(record\attribute('CActivityLocation', $o, 'populationTargeted'),
+                record\attribute('CActivityLocation', $o, 'populationTargeted'), 0);
+            $quantity = $quantity + ifThenElse(record\attribute('CActivityLocation', $o, 'quantity'),
+                record\attribute('CActivityLocation', $o, 'quantity'), 0);
+            $budget = $budget + ifThenElse(record\attribute('CActivityLocation', $o, 'budget'),
+                record\attribute('CActivityLocation', $o, 'budget'), 0);
+        }
+        $i = $i + 1;
+    }
+    record\update('CActivity', activityId, 'communities', $n, 'peopleReached', $reached,
+        'peopleTargeted', $targeted, 'quantity', $quantity, 'budget', $budget);
+}

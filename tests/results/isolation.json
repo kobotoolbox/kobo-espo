@@ -1,6 +1,6 @@
 {
-  "when": "2026-11-08T13:48:03Z",
-  "espo": "https://espo-test.kobolabs.dev",
+  "when": "2026-11-08T15:43:14Z",
+  "espo": "https://staging.respond.kobolabs.dev",
   "passed": 80,
   "failed": 0,
   "results": [

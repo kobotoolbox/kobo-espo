@@ -2,7 +2,7 @@
  "settings": {
   "form_title": "Responding organisation registration (espo-kobo test)",
   "form_id": "responder_registration",
-  "version": "1"
+  "version": "2"
  },
  "survey": [
   {
@@ -16,29 +16,36 @@
    "required": "true"
   },
   {
+   "type": "select_one org_types",
+   "name": "org_type",
+   "label": "Organization type",
+   "required": "true",
+   "appearance": "minimal"
+  },
+  {
+   "type": "select_one_from_file organisations.csv",
+   "name": "organisation",
+   "label": "Organization name",
+   "required": "true",
+   "appearance": "minimal",
+   "choice_filter": "org_type=${org_type} or name='other'"
+  },
+  {
    "type": "text",
-   "name": "org_name",
-   "label": "Organisation name",
-   "required": "true"
+   "name": "organisation_other",
+   "label": "Specify organization name",
+   "required": "true",
+   "relevant": "${organisation} = 'other'"
   },
   {
    "type": "text",
    "name": "org_acronym",
-   "label": "Acronym",
-   "required": "true",
-   "constraint": "regex(., '^[A-Z0-9&-]{2,15}$')",
-   "constraint_message": "Capitals and digits, e.g. RCJ"
+   "label": "Acronym"
   },
   {
-   "type": "select_one org_type",
-   "name": "org_type",
-   "label": "Type of organisation",
-   "required": "true"
-  },
-  {
-   "type": "select_multiple cluster",
-   "name": "clusters",
-   "label": "Which clusters do you work in?",
+   "type": "select_multiple sectors",
+   "name": "sectors",
+   "label": "Which sectors do you work in?",
    "required": "true"
   },
   {
@@ -51,7 +58,8 @@
    "type": "text",
    "name": "focal_email",
    "label": "Focal point: email",
-   "required": "true"
+   "required": "true",
+   "constraint": "regex(., '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')"
   },
   {
    "type": "text",
@@ -61,103 +69,113 @@
   {
    "type": "calculate",
    "name": "registration_key",
-   "calculation": "concat(${response}, '/', ${org_acronym})"
+   "calculation": "concat(${response}, '/', if(${organisation} = 'other', ${organisation_other}, ${organisation}))"
   }
  ],
  "choices": [
   {
-   "list_name": "org_type",
-   "name": "un",
-   "label": "UN agency"
-  },
-  {
-   "list_name": "org_type",
-   "name": "ingo",
-   "label": "International NGO"
-  },
-  {
-   "list_name": "org_type",
-   "name": "nngo",
+   "list_name": "org_types",
+   "name": "NATIONAL_NGO",
    "label": "National NGO"
   },
   {
-   "list_name": "org_type",
-   "name": "rcrc",
-   "label": "Red Cross / Red Crescent"
+   "list_name": "org_types",
+   "name": "INTERNATIONAL_NGO",
+   "label": "International NGO"
   },
   {
-   "list_name": "org_type",
-   "name": "government",
+   "list_name": "org_types",
+   "name": "UN_AGENCY",
+   "label": "UN Agency"
+  },
+  {
+   "list_name": "org_types",
+   "name": "GOVERNMENT",
    "label": "Government"
   },
   {
-   "list_name": "org_type",
-   "name": "private",
-   "label": "Private sector"
+   "list_name": "org_types",
+   "name": "RED_CROSS_MOVEMENT",
+   "label": "Red Cross/Red Cresent Movment"
   },
   {
-   "list_name": "org_type",
+   "list_name": "org_types",
+   "name": "DONOR",
+   "label": "Donor"
+  },
+  {
+   "list_name": "org_types",
+   "name": "PRIVATE_SECTOR",
+   "label": "Private Sector"
+  },
+  {
+   "list_name": "org_types",
    "name": "other",
    "label": "Other"
   },
   {
-   "list_name": "cluster",
-   "name": "cccm",
-   "label": "CCCM"
+   "list_name": "sectors",
+   "name": "CASH",
+   "label": "Cash Transfer"
   },
   {
-   "list_name": "cluster",
-   "name": "early_recovery",
-   "label": "Early Recovery"
+   "list_name": "sectors",
+   "name": "CHILD_PROTECTION",
+   "label": "Child Protection"
   },
   {
-   "list_name": "cluster",
-   "name": "education",
+   "list_name": "sectors",
+   "name": "COORDINATION",
+   "label": "Coordination"
+  },
+  {
+   "list_name": "sectors",
+   "name": "EARLY_RECOVERY",
+   "label": "Early recovery"
+  },
+  {
+   "list_name": "sectors",
+   "name": "EDUCATION",
    "label": "Education"
   },
   {
-   "list_name": "cluster",
-   "name": "etc",
+   "list_name": "sectors",
+   "name": "EMERGENCY_TELECOMS",
    "label": "Emergency Telecommunications"
   },
   {
-   "list_name": "cluster",
-   "name": "food_security",
+   "list_name": "sectors",
+   "name": "FOOD_SECURITY",
    "label": "Food Security"
   },
   {
-   "list_name": "cluster",
-   "name": "health",
+   "list_name": "sectors",
+   "name": "HEALTH",
    "label": "Health"
   },
   {
-   "list_name": "cluster",
-   "name": "logistics",
-   "label": "Logistics"
-  },
-  {
-   "list_name": "cluster",
-   "name": "nutrition",
+   "list_name": "sectors",
+   "name": "NUTRITION",
    "label": "Nutrition"
   },
   {
-   "list_name": "cluster",
-   "name": "protection",
+   "list_name": "sectors",
+   "name": "PROTECTION",
    "label": "Protection"
   },
   {
-   "list_name": "cluster",
-   "name": "shelter",
-   "label": "Shelter"
+   "list_name": "sectors",
+   "name": "SHELTER",
+   "label": "Shelter & NFIs"
   },
   {
-   "list_name": "cluster",
-   "name": "wash",
+   "list_name": "sectors",
+   "name": "WASH",
    "label": "WASH"
   },
   {
-   "list_name": "cluster",
-   "name": "other",
+   "list_name": "sectors",
+   "name": "other_sector",
    "label": "Other"
   }
  ]

@@ -1,100 +1,5525 @@
 [
  {
-  "name": "Kingston",
+  "name": "CLARENDON",
   "pcode": "JM01",
   "level": "admin1",
   "parentPcode": "JM",
   "country": "JAM"
  },
  {
-  "name": "Saint Andrew",
+  "name": "HANOVER",
   "pcode": "JM02",
   "level": "admin1",
   "parentPcode": "JM",
   "country": "JAM"
  },
  {
-  "name": "Saint Thomas",
-  "pcode": "JM03",
+  "name": "KINGSTON",
+  "pcode": "JM17",
   "level": "admin1",
   "parentPcode": "JM",
   "country": "JAM"
  },
  {
-  "name": "Portland",
+  "name": "MANCHESTER",
   "pcode": "JM04",
   "level": "admin1",
   "parentPcode": "JM",
   "country": "JAM"
  },
  {
-  "name": "Saint Mary",
-  "pcode": "JM05",
-  "level": "admin1",
-  "parentPcode": "JM",
-  "country": "JAM"
- },
- {
-  "name": "Saint Ann",
-  "pcode": "JM06",
-  "level": "admin1",
-  "parentPcode": "JM",
-  "country": "JAM"
- },
- {
-  "name": "Trelawny",
+  "name": "PORTLAND",
   "pcode": "JM07",
   "level": "admin1",
   "parentPcode": "JM",
   "country": "JAM"
  },
  {
-  "name": "Saint James",
+  "name": "ST.ANDREW",
   "pcode": "JM08",
   "level": "admin1",
   "parentPcode": "JM",
   "country": "JAM"
  },
  {
-  "name": "Hanover",
+  "name": "ST.ANN",
   "pcode": "JM09",
   "level": "admin1",
   "parentPcode": "JM",
   "country": "JAM"
  },
  {
-  "name": "Westmoreland",
+  "name": "ST.CATHERINE",
   "pcode": "JM10",
   "level": "admin1",
   "parentPcode": "JM",
   "country": "JAM"
  },
  {
-  "name": "Saint Elizabeth",
+  "name": "ST.ELIZABETH",
   "pcode": "JM11",
   "level": "admin1",
   "parentPcode": "JM",
   "country": "JAM"
  },
  {
-  "name": "Manchester",
+  "name": "ST.JAMES",
   "pcode": "JM12",
   "level": "admin1",
   "parentPcode": "JM",
   "country": "JAM"
  },
  {
-  "name": "Clarendon",
+  "name": "ST.MARY",
   "pcode": "JM13",
   "level": "admin1",
   "parentPcode": "JM",
   "country": "JAM"
  },
  {
-  "name": "Saint Catherine",
+  "name": "ST.THOMAS",
   "pcode": "JM14",
   "level": "admin1",
   "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "TRELAWNY",
+  "pcode": "JM15",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "WESTMORELAND",
+  "pcode": "JM16",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Aberdeen",
+  "pcode": "JM11002",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Aboukir",
+  "pcode": "JM09001",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Above Rocks",
+  "pcode": "JM10001",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Accompong",
+  "pcode": "JM11003",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Adelphi",
+  "pcode": "JM12001",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Aenon Town",
+  "pcode": "JM01002",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Airy Castle",
+  "pcode": "JM14002",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Albert Town",
+  "pcode": "JM15038",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Albion",
+  "pcode": "JM14003",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Albion",
+  "pcode": "JM12002",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Albion Mountain",
+  "pcode": "JM13001",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Alderton",
+  "pcode": "JM09002",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Alexandria",
+  "pcode": "JM09003",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Alley",
+  "pcode": "JM01003",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Alligator Pond",
+  "pcode": "JM04001",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Allman Town",
+  "pcode": "JM17001",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Alston",
+  "pcode": "JM01004",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Alva",
+  "pcode": "JM09004",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Amiel Town",
+  "pcode": "JM13002",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Amity Bethel Town",
+  "pcode": "JM16001",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Amity Hall",
+  "pcode": "JM14004",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Amity Savanna-la-mar",
+  "pcode": "JM16002",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Anchovy",
+  "pcode": "JM12003",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Angels/Crescent",
+  "pcode": "JM10002",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Annotto Bay Town Centre",
+  "pcode": "JM13003",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Arcadia",
+  "pcode": "JM14005",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Arcadia",
+  "pcode": "JM12004",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Ashley",
+  "pcode": "JM01005",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Ashton",
+  "pcode": "JM16003",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Asia",
+  "pcode": "JM04002",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Askenish",
+  "pcode": "JM02027",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Auchtembeddie",
+  "pcode": "JM04003",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "August Town",
+  "pcode": "JM08001",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Baileys Vale",
+  "pcode": "JM13004",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Balaclava",
+  "pcode": "JM11004",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Balcarres",
+  "pcode": "JM07001",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Ballards Valley",
+  "pcode": "JM11005",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Bamboo",
+  "pcode": "JM09005",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Banana Ground",
+  "pcode": "JM04004",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Bangor Ridge",
+  "pcode": "JM07002",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Baptist",
+  "pcode": "JM14006",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Barbican",
+  "pcode": "JM08002",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Barbury Hall",
+  "pcode": "JM11006",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Barking Lodge",
+  "pcode": "JM14007",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Barneyside",
+  "pcode": "JM16004",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Barrett Hall",
+  "pcode": "JM12005",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Barrett Town",
+  "pcode": "JM12006",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Bartons",
+  "pcode": "JM10003",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Bath",
+  "pcode": "JM14008",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Bath",
+  "pcode": "JM16005",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Bath Mountain",
+  "pcode": "JM16006",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Beaufort",
+  "pcode": "JM16007",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Beckford Kraal",
+  "pcode": "JM01006",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Beecher Town",
+  "pcode": "JM09006",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Beeston Spring",
+  "pcode": "JM16008",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Belfield",
+  "pcode": "JM13005",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Bellas Gate",
+  "pcode": "JM10004",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Bellefield",
+  "pcode": "JM04005",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Bellevue",
+  "pcode": "JM07003",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Belmont",
+  "pcode": "JM12007",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Belvedere",
+  "pcode": "JM07004",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Belvedere",
+  "pcode": "JM16009",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Bensonston",
+  "pcode": "JM09007",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Berkshire",
+  "pcode": "JM16010",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Bernard Lodge",
+  "pcode": "JM10005",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Bethany",
+  "pcode": "JM04006",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Bethel Town",
+  "pcode": "JM16011",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Bickersteth",
+  "pcode": "JM12008",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Big Bridge",
+  "pcode": "JM16012",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Bigwoods",
+  "pcode": "JM11007",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Bito",
+  "pcode": "JM08003",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Black Hill",
+  "pcode": "JM07005",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Black River",
+  "pcode": "JM11008",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Blackstonedge",
+  "pcode": "JM09008",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Bloxborough",
+  "pcode": "JM08004",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Blue Mountain",
+  "pcode": "JM04007",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Bluefields",
+  "pcode": "JM16013",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Bog",
+  "pcode": "JM16014",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Bog Walk",
+  "pcode": "JM10006",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Bogue",
+  "pcode": "JM11009",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Bogue",
+  "pcode": "JM12009",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Bohemia",
+  "pcode": "JM09009",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Bombay",
+  "pcode": "JM04008",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Bonny Gate",
+  "pcode": "JM13006",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Borobridge",
+  "pcode": "JM09010",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Boscobel",
+  "pcode": "JM13007",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Boucher Park",
+  "pcode": "JM08005",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Boundbrook",
+  "pcode": "JM07006",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Bounty Hall",
+  "pcode": "JM15002",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Braes River",
+  "pcode": "JM11010",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Braeton",
+  "pcode": "JM10007",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Brainerd",
+  "pcode": "JM13008",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Brampton",
+  "pcode": "JM15003",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Brandon Hill",
+  "pcode": "JM01007",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Brandon Hill",
+  "pcode": "JM08006",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Brandon Hill",
+  "pcode": "JM12010",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Breastworks",
+  "pcode": "JM07007",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Bridgeport",
+  "pcode": "JM10008",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Brighton",
+  "pcode": "JM11011",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Brixton Hill",
+  "pcode": "JM01008",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Broadgate",
+  "pcode": "JM13009",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Broadleaf",
+  "pcode": "JM04009",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Brompton",
+  "pcode": "JM11012",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Broughton",
+  "pcode": "JM16015",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Browns Hall",
+  "pcode": "JM10009",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Browns Town",
+  "pcode": "JM09011",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Bucknor",
+  "pcode": "JM01009",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Buff Bay",
+  "pcode": "JM07008",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Bull Bay",
+  "pcode": "JM08007",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Bull Savannah",
+  "pcode": "JM11013",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Bunker's Hill",
+  "pcode": "JM15004",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Burnt Savannah",
+  "pcode": "JM11014",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Burnt Savannah",
+  "pcode": "JM16016",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Bushy Park",
+  "pcode": "JM01010",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Bushy Park",
+  "pcode": "JM10010",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Butt-Up",
+  "pcode": "JM04010",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Bybrook",
+  "pcode": "JM07009",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Cacoon",
+  "pcode": "JM02014",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Cacoon Castle",
+  "pcode": "JM02024",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Cairn Curran",
+  "pcode": "JM16017",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Calderwood",
+  "pcode": "JM09012",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Caledonia",
+  "pcode": "JM16018",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Camberwell",
+  "pcode": "JM13010",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Cambridge",
+  "pcode": "JM12011",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Cane River",
+  "pcode": "JM08008",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Canterbury",
+  "pcode": "JM12012",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Carisbrook",
+  "pcode": "JM11015",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Carmel",
+  "pcode": "JM16019",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Carron Hall",
+  "pcode": "JM13011",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Cascade",
+  "pcode": "JM02036",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Cascade",
+  "pcode": "JM07010",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Cascade",
+  "pcode": "JM09013",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Cash Hill",
+  "pcode": "JM02026",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Castle Comfort",
+  "pcode": "JM07011",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Castleton",
+  "pcode": "JM13012",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Catadupa",
+  "pcode": "JM12013",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Catherine Hall",
+  "pcode": "JM12014",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Catherine Mount",
+  "pcode": "JM12015",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Cauldwell",
+  "pcode": "JM02009",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Cavaliers",
+  "pcode": "JM08009",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Cave",
+  "pcode": "JM16020",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Cave Valley",
+  "pcode": "JM09014",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Caymanas",
+  "pcode": "JM10011",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Cedar Grove",
+  "pcode": "JM04011",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Cedar Valley",
+  "pcode": "JM14009",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Central Downtown",
+  "pcode": "JM17002",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Central Port Antonio",
+  "pcode": "JM07012",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Central Village",
+  "pcode": "JM10012",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Chalky Hill",
+  "pcode": "JM09015",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Chambers Pen",
+  "pcode": "JM02029",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Chantilly",
+  "pcode": "JM04012",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Chantilly",
+  "pcode": "JM16021",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Chapelton",
+  "pcode": "JM01011",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Charles Town",
+  "pcode": "JM07013",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Charles Town",
+  "pcode": "JM13013",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Chatteau",
+  "pcode": "JM01012",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Chester",
+  "pcode": "JM09016",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Chester Castle",
+  "pcode": "JM02015",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Christiana",
+  "pcode": "JM04013",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Chudleigh",
+  "pcode": "JM04014",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Church Corner",
+  "pcode": "JM14010",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Claremont",
+  "pcode": "JM09017",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Clarks Town",
+  "pcode": "JM15005",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Claverty Cottage",
+  "pcode": "JM07014",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Clonmel",
+  "pcode": "JM13014",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Cobbla",
+  "pcode": "JM04015",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Cockpit",
+  "pcode": "JM01013",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Coffee Piece",
+  "pcode": "JM01014",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Colegate",
+  "pcode": "JM09018",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Coleyville",
+  "pcode": "JM04016",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Colonels Ridge",
+  "pcode": "JM01015",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Comfort",
+  "pcode": "JM04017",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Comfort Castle",
+  "pcode": "JM07015",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Comfort Hall",
+  "pcode": "JM04018",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Comfort Hall",
+  "pcode": "JM12016",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Constant Spring",
+  "pcode": "JM08010",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Constitution Hill",
+  "pcode": "JM08011",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Content",
+  "pcode": "JM02034",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Content",
+  "pcode": "JM16022",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Content Gap",
+  "pcode": "JM08012",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Content Gardens",
+  "pcode": "JM09019",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Cooreville",
+  "pcode": "JM08013",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Copse",
+  "pcode": "JM02017",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Coral Gardens",
+  "pcode": "JM12017",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Cornwall",
+  "pcode": "JM12018",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Cornwall Mountain",
+  "pcode": "JM16023",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Cotterwood",
+  "pcode": "JM11016",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Cousins Cove",
+  "pcode": "JM02012",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Coxswain",
+  "pcode": "JM01016",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Craighead",
+  "pcode": "JM04019",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Crawford",
+  "pcode": "JM11017",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Crofts Hill",
+  "pcode": "JM01017",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Cromarty",
+  "pcode": "JM10013",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Crooked River",
+  "pcode": "JM01018",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Cross Keys",
+  "pcode": "JM04020",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Cross Roads",
+  "pcode": "JM08014",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Cuffie Ridge",
+  "pcode": "JM09020",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Cumberland",
+  "pcode": "JM01019",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Cumberland",
+  "pcode": "JM10014",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Curatoe Hill",
+  "pcode": "JM01020",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Dallas",
+  "pcode": "JM08015",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Dalvey",
+  "pcode": "JM14011",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Daniel Town",
+  "pcode": "JM15006",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Danvers Pen",
+  "pcode": "JM14012",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Darliston",
+  "pcode": "JM16024",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Dawkins",
+  "pcode": "JM01021",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Deeside",
+  "pcode": "JM15007",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Delacree Pen",
+  "pcode": "JM08016",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Delveland",
+  "pcode": "JM16025",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Denham Town",
+  "pcode": "JM17003",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Devon",
+  "pcode": "JM04021",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Devon Pen",
+  "pcode": "JM13015",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Dias",
+  "pcode": "JM02028",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Dillion Bigwoods",
+  "pcode": "JM16026",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Discovery Bay",
+  "pcode": "JM09021",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Dover",
+  "pcode": "JM13016",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Downs",
+  "pcode": "JM04022",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Drapers",
+  "pcode": "JM07016",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Drewsland",
+  "pcode": "JM08017",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Duanvale",
+  "pcode": "JM15008",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Duckensfield",
+  "pcode": "JM14013",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Duhaney Park",
+  "pcode": "JM08018",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Duhaney Pen",
+  "pcode": "JM14014",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Dumfries",
+  "pcode": "JM12019",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Duncans",
+  "pcode": "JM15009",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Dundee",
+  "pcode": "JM16027",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Durham",
+  "pcode": "JM07017",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Easington",
+  "pcode": "JM14015",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Edgewater",
+  "pcode": "JM10015",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Effortville",
+  "pcode": "JM01022",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Elderslie",
+  "pcode": "JM11018",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Eleven Miles",
+  "pcode": "JM14016",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Ellen Street",
+  "pcode": "JM04023",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Enfield",
+  "pcode": "JM13017",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Enfield",
+  "pcode": "JM16028",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Ensom",
+  "pcode": "JM10016",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Epsom",
+  "pcode": "JM13018",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Epworth",
+  "pcode": "JM09022",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Evergreen",
+  "pcode": "JM04024",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Ewarton",
+  "pcode": "JM10017",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Exchange",
+  "pcode": "JM09023",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Fairfield",
+  "pcode": "JM04025",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Fairfield",
+  "pcode": "JM12020",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Fairy Hill",
+  "pcode": "JM07018",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Faiths Pen",
+  "pcode": "JM09024",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Falmouth",
+  "pcode": "JM15010",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Farm Heights",
+  "pcode": "JM12021",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Farm Pen",
+  "pcode": "JM16029",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Fellowship",
+  "pcode": "JM07019",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Ferris",
+  "pcode": "JM16030",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Ferry",
+  "pcode": "JM08019",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Flagstaff",
+  "pcode": "JM12022",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Flamstead Gardens",
+  "pcode": "JM12023",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Flanker",
+  "pcode": "JM12024",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Fletchers Land",
+  "pcode": "JM17004",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Flint River",
+  "pcode": "JM13019",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Flower Hill",
+  "pcode": "JM12025",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Font Hill",
+  "pcode": "JM14017",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Fort William",
+  "pcode": "JM16031",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Four Paths",
+  "pcode": "JM01023",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Frankfield",
+  "pcode": "JM01024",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Franklyn Town",
+  "pcode": "JM17005",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Free Hill",
+  "pcode": "JM13020",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Free Town",
+  "pcode": "JM01025",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Freeman's Hall",
+  "pcode": "JM15001",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "French Park",
+  "pcode": "JM04026",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Friendship Gap",
+  "pcode": "JM13021",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Frome",
+  "pcode": "JM16032",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Fruitfulvale",
+  "pcode": "JM07020",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Fullersfield/Alma",
+  "pcode": "JM16033",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Fullerswood",
+  "pcode": "JM11019",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Galina",
+  "pcode": "JM13022",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Garlands",
+  "pcode": "JM12026",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Gayle",
+  "pcode": "JM13023",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "George's Valley",
+  "pcode": "JM04027",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Georges Plain",
+  "pcode": "JM16034",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Gibraltar East",
+  "pcode": "JM09025",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Gibraltar West",
+  "pcode": "JM09026",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Giddy Hall",
+  "pcode": "JM11020",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Gimme-mi-bit",
+  "pcode": "JM01026",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Ginger Hill",
+  "pcode": "JM11021",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Ginger Ridge",
+  "pcode": "JM10018",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Glendevon",
+  "pcode": "JM12027",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Glengoffe",
+  "pcode": "JM10019",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Glenmuir",
+  "pcode": "JM01027",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Golden Acres",
+  "pcode": "JM10020",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Golden Grove",
+  "pcode": "JM14018",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Golden Grove",
+  "pcode": "JM09027",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Golden Spring",
+  "pcode": "JM08020",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Goodwill",
+  "pcode": "JM12028",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Gordon Town",
+  "pcode": "JM08021",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Goshen",
+  "pcode": "JM11022",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Grange",
+  "pcode": "JM16035",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Grange Hill",
+  "pcode": "JM16036",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Grantham",
+  "pcode": "JM01028",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Granville",
+  "pcode": "JM12029",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Granville",
+  "pcode": "JM15011",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Gravel Hill",
+  "pcode": "JM01029",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Great Pond",
+  "pcode": "JM09028",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Great Valley",
+  "pcode": "JM02023",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Greater Portmore",
+  "pcode": "JM10021",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Green Island",
+  "pcode": "JM02011",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Green Pond",
+  "pcode": "JM12030",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Greendale",
+  "pcode": "JM10022",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Greenvale",
+  "pcode": "JM04028",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Greenwich Town",
+  "pcode": "JM17006",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Greenwood",
+  "pcode": "JM12031",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Gregory Park",
+  "pcode": "JM10023",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Grey Ground",
+  "pcode": "JM04029",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Grove Place",
+  "pcode": "JM04030",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Grove Town",
+  "pcode": "JM04031",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Guys Hill",
+  "pcode": "JM10024",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Haddington",
+  "pcode": "JM02019",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Haddo",
+  "pcode": "JM16037",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Hagley Gap",
+  "pcode": "JM14019",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Half Way Tree",
+  "pcode": "JM08022",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Halse Hall",
+  "pcode": "JM01030",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Hampden",
+  "pcode": "JM15012",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Hampstead",
+  "pcode": "JM13024",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Hampton Green",
+  "pcode": "JM10025",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Hannah Town",
+  "pcode": "JM17007",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Harbour View",
+  "pcode": "JM08023",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Harewood",
+  "pcode": "JM10026",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Harkers Hall",
+  "pcode": "JM10027",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Harmons",
+  "pcode": "JM04032",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Harry Watch",
+  "pcode": "JM04033",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Hatfield",
+  "pcode": "JM04034",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Hayes",
+  "pcode": "JM01031",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Hayfield",
+  "pcode": "JM14020",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Hazard",
+  "pcode": "JM01032",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Hectors River",
+  "pcode": "JM07021",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Hellshire",
+  "pcode": "JM10028",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Hertford",
+  "pcode": "JM16038",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Hibernia",
+  "pcode": "JM04035",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Higgins Land",
+  "pcode": "JM09029",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Highgate",
+  "pcode": "JM13025",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Hillside",
+  "pcode": "JM14021",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Hinds Town",
+  "pcode": "JM09030",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Holland",
+  "pcode": "JM11023",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Hope Bay",
+  "pcode": "JM07022",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Hopeton",
+  "pcode": "JM11024",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Hopeton",
+  "pcode": "JM12032",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Hopewell",
+  "pcode": "JM02025",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Hughenden/Arlene Gardens",
+  "pcode": "JM08024",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Huntley",
+  "pcode": "JM04036",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Independence City",
+  "pcode": "JM10029",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Inverness",
+  "pcode": "JM09031",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Irish Town",
+  "pcode": "JM08025",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Ironshore",
+  "pcode": "JM12033",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Irwin",
+  "pcode": "JM12034",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Islington",
+  "pcode": "JM13026",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Jacks Hill",
+  "pcode": "JM08026",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Jack's River",
+  "pcode": "JM13027",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Jackson Town",
+  "pcode": "JM15013",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "James Hill",
+  "pcode": "JM01033",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Jeffery Town",
+  "pcode": "JM13028",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Jericho",
+  "pcode": "JM02033",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Jerusalem Heights/Jerusalem Mountain",
+  "pcode": "JM16039",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Joe Hut",
+  "pcode": "JM15014",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Johns Hall",
+  "pcode": "JM01034",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Johns Hall",
+  "pcode": "JM12035",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Johns Town",
+  "pcode": "JM14022",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Johnson Mountain",
+  "pcode": "JM14023",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Jones Pen",
+  "pcode": "JM14024",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Jones Town",
+  "pcode": "JM08027",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Junction",
+  "pcode": "JM11025",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Kellits",
+  "pcode": "JM01035",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Kencot",
+  "pcode": "JM08028",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Kendal",
+  "pcode": "JM04037",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Kendal",
+  "pcode": "JM02007",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Kensington",
+  "pcode": "JM07023",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Kentucky",
+  "pcode": "JM16040",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Keystone",
+  "pcode": "JM10030",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Kilmarmock",
+  "pcode": "JM16041",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Kingsvale",
+  "pcode": "JM02010",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Kinloss",
+  "pcode": "JM15015",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Kitson Town",
+  "pcode": "JM10031",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Knockpatrick",
+  "pcode": "JM04038",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Labyrinth",
+  "pcode": "JM13029",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Lacovia",
+  "pcode": "JM11026",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Lambs River",
+  "pcode": "JM16042",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Lancaster",
+  "pcode": "JM04039",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Lances Bay",
+  "pcode": "JM02013",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Lawrence Tavern",
+  "pcode": "JM08029",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Leamington",
+  "pcode": "JM16043",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Leeds",
+  "pcode": "JM11027",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Leith Hall",
+  "pcode": "JM14025",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Lennox Bigwoods",
+  "pcode": "JM16044",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Liguanea",
+  "pcode": "JM08030",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Lilliput",
+  "pcode": "JM12036",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Lime Hall",
+  "pcode": "JM09032",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Lime Tree Garden",
+  "pcode": "JM09033",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Linstead",
+  "pcode": "JM10032",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Linton Park",
+  "pcode": "JM09034",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Lionel Town",
+  "pcode": "JM01036",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Litchfield",
+  "pcode": "JM04040",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Lititz",
+  "pcode": "JM11028",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Little London",
+  "pcode": "JM16045",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Llandewey",
+  "pcode": "JM14026",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Llandilo",
+  "pcode": "JM16046",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Lloyds",
+  "pcode": "JM14027",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Lluidas Vale",
+  "pcode": "JM10033",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Logwood",
+  "pcode": "JM02003",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Long Bay",
+  "pcode": "JM07024",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Long Road",
+  "pcode": "JM07025",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Long Road",
+  "pcode": "JM13030",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Longville Park",
+  "pcode": "JM01037",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Longwood",
+  "pcode": "JM01038",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Lorrimers",
+  "pcode": "JM15016",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Lottery",
+  "pcode": "JM12037",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Lucea",
+  "pcode": "JM02001",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Lucky Hill",
+  "pcode": "JM13031",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Lyndhurst",
+  "pcode": "JM04041",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Lyssons",
+  "pcode": "JM14028",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Madras",
+  "pcode": "JM09035",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Mafoota",
+  "pcode": "JM12038",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Maggotty",
+  "pcode": "JM11029",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Maidstone",
+  "pcode": "JM04042",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Majesty Gardens",
+  "pcode": "JM08031",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Maldon",
+  "pcode": "JM12039",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Malvern",
+  "pcode": "JM11030",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Manchioneal",
+  "pcode": "JM07026",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Mandeville",
+  "pcode": "JM04043",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Mango Valley",
+  "pcode": "JM13032",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Mannings Hills",
+  "pcode": "JM08032",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Mansfield",
+  "pcode": "JM09036",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "March Town",
+  "pcode": "JM02004",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Marlie Hill",
+  "pcode": "JM04044",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Maroon Town",
+  "pcode": "JM12040",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Martha Brae",
+  "pcode": "JM15017",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Martin",
+  "pcode": "JM13033",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Marverly",
+  "pcode": "JM08033",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Maryland",
+  "pcode": "JM02030",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Maryland",
+  "pcode": "JM08034",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Mason Hall",
+  "pcode": "JM13034",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Mavis Bank",
+  "pcode": "JM08035",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Maxfield Park",
+  "pcode": "JM08036",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "May Day",
+  "pcode": "JM04045",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "May Pen",
+  "pcode": "JM01039",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "McField",
+  "pcode": "JM16047",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "McNie",
+  "pcode": "JM09037",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Meadowbrook/Havendale",
+  "pcode": "JM08037",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Mearnsville/Auldayr",
+  "pcode": "JM16048",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Medina",
+  "pcode": "JM04046",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Merrywood",
+  "pcode": "JM11031",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Middle Quarters",
+  "pcode": "JM11032",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Middleton",
+  "pcode": "JM14029",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Mike Town",
+  "pcode": "JM04047",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Mile Gully",
+  "pcode": "JM04048",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Mile Gully",
+  "pcode": "JM13035",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Milk River",
+  "pcode": "JM01040",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Mineral Heights",
+  "pcode": "JM01041",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Mitchell Town",
+  "pcode": "JM01042",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Mocho",
+  "pcode": "JM12041",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Molynes Gardens",
+  "pcode": "JM08038",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Mona",
+  "pcode": "JM08039",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Moneague",
+  "pcode": "JM09038",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Montego Bay Business District",
+  "pcode": "JM12042",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Montpelier",
+  "pcode": "JM12043",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Moore Town",
+  "pcode": "JM07027",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Moores",
+  "pcode": "JM01043",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Morant Bay",
+  "pcode": "JM14030",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Morgans Forest",
+  "pcode": "JM01044",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Morgans Pass",
+  "pcode": "JM01045",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Mount Airy",
+  "pcode": "JM01046",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Mount Airy",
+  "pcode": "JM16049",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Mount James",
+  "pcode": "JM08040",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Mount Lebanus",
+  "pcode": "JM14031",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Mount Peace",
+  "pcode": "JM02031",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Mount Peto",
+  "pcode": "JM02018",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Mount Pleasant",
+  "pcode": "JM07028",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Mount Stewart",
+  "pcode": "JM16050",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Mountain Veiw",
+  "pcode": "JM08041",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Mountainside",
+  "pcode": "JM11033",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Moy Hall",
+  "pcode": "JM12044",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Mt Moriah",
+  "pcode": "JM09039",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Mt Zion/Mines",
+  "pcode": "JM09040",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Mt. Carey",
+  "pcode": "JM12045",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Mt. Horeb",
+  "pcode": "JM12046",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Mt. Salem",
+  "pcode": "JM12047",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Mulgrave",
+  "pcode": "JM11034",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Myersville",
+  "pcode": "JM11035",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Naggo Head",
+  "pcode": "JM10034",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Nain",
+  "pcode": "JM11036",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Negril",
+  "pcode": "JM16051",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "New Denbigh (Race Track)",
+  "pcode": "JM01047",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "New Forest",
+  "pcode": "JM04049",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "New Green",
+  "pcode": "JM04050",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "New Haven",
+  "pcode": "JM08042",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "New Kingston",
+  "pcode": "JM08043",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "New Longsville",
+  "pcode": "JM01048",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "New Market",
+  "pcode": "JM11037",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "New Road",
+  "pcode": "JM16052",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "New Works",
+  "pcode": "JM16053",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Newell",
+  "pcode": "JM11038",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Newport",
+  "pcode": "JM04051",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Newton",
+  "pcode": "JM11039",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Niagara",
+  "pcode": "JM12048",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Nonsuch",
+  "pcode": "JM07029",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Norwich",
+  "pcode": "JM07030",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Norwood",
+  "pcode": "JM12049",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Ocho Rios",
+  "pcode": "JM09041",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Old Denbigh",
+  "pcode": "JM01049",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Old England",
+  "pcode": "JM04052",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Old Harbour",
+  "pcode": "JM10035",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Old Harbour Bay",
+  "pcode": "JM10036",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Old Harbour Road",
+  "pcode": "JM10037",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Olympic Gardens",
+  "pcode": "JM08044",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Oracabessa",
+  "pcode": "JM13036",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Orange",
+  "pcode": "JM12050",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Orange Bay",
+  "pcode": "JM02002",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Orange Bay",
+  "pcode": "JM07031",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Orange Hill",
+  "pcode": "JM01050",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Orange Hill",
+  "pcode": "JM16054",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Orange Irwin",
+  "pcode": "JM12051",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Osbourne Store",
+  "pcode": "JM01051",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Oxford",
+  "pcode": "JM04053",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Paisley",
+  "pcode": "JM01052",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Palmers Cross",
+  "pcode": "JM01053",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Pamphret",
+  "pcode": "JM14032",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Papine",
+  "pcode": "JM08045",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Parade Gardens",
+  "pcode": "JM17008",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Paradise",
+  "pcode": "JM12052",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Parks Road",
+  "pcode": "JM08046",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Parottee",
+  "pcode": "JM11040",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Parry Town",
+  "pcode": "JM09042",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Passage Fort",
+  "pcode": "JM10038",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Patrick Gardens",
+  "pcode": "JM08047",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Paul Island",
+  "pcode": "JM16055",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Pear Tree Grove",
+  "pcode": "JM10039",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Pear Tree River",
+  "pcode": "JM14033",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Peckham",
+  "pcode": "JM01079",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Pedro Plains",
+  "pcode": "JM11041",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Pell River",
+  "pcode": "JM02008",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Pembrook Hall",
+  "pcode": "JM08048",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Pennants",
+  "pcode": "JM01055",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Pepper",
+  "pcode": "JM11001",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Perth Town",
+  "pcode": "JM15018",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Petersfield",
+  "pcode": "JM16056",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Petersville",
+  "pcode": "JM16057",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Philadelphia",
+  "pcode": "JM09043",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Pike",
+  "pcode": "JM04054",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Pimento Walk/Nepotism",
+  "pcode": "JM09044",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Pisgah",
+  "pcode": "JM11042",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Pitfour",
+  "pcode": "JM12053",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Pleasant Hill/Baxter Mountain",
+  "pcode": "JM13037",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Pleasant Valley",
+  "pcode": "JM01056",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Plowden",
+  "pcode": "JM04055",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Point Hill",
+  "pcode": "JM10040",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Pondside",
+  "pcode": "JM11043",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Pondside",
+  "pcode": "JM02022",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Poormans Corner",
+  "pcode": "JM14034",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Port Maria",
+  "pcode": "JM13038",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Port Morant",
+  "pcode": "JM14035",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Port Royal",
+  "pcode": "JM17009",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Porters Mountain",
+  "pcode": "JM16058",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Portland Cottage",
+  "pcode": "JM01057",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Porto Bello",
+  "pcode": "JM12054",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Porus",
+  "pcode": "JM04056",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Potsdam",
+  "pcode": "JM11044",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Priory",
+  "pcode": "JM09045",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Prospect",
+  "pcode": "JM04057",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Prospect",
+  "pcode": "JM14036",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Prospect",
+  "pcode": "JM07032",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Prospect",
+  "pcode": "JM13039",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Providence",
+  "pcode": "JM13040",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Quick Step",
+  "pcode": "JM11045",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Race Course",
+  "pcode": "JM01058",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Rae Town",
+  "pcode": "JM17010",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Ramble",
+  "pcode": "JM14001",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Ramble",
+  "pcode": "JM02016",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Reach",
+  "pcode": "JM07033",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Reading",
+  "pcode": "JM12055",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Red Bank",
+  "pcode": "JM11046",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Red Hills",
+  "pcode": "JM08049",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Red Hills",
+  "pcode": "JM16059",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Red Hills Garden",
+  "pcode": "JM08050",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Redwood",
+  "pcode": "JM10041",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Refuge",
+  "pcode": "JM15019",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Retirement",
+  "pcode": "JM11047",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Retirement",
+  "pcode": "JM12056",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Retreat",
+  "pcode": "JM14037",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Retreat",
+  "pcode": "JM13041",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Retrieve",
+  "pcode": "JM12057",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Revival",
+  "pcode": "JM16060",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Richmond",
+  "pcode": "JM04058",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Richmond",
+  "pcode": "JM13042",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Richmond Park",
+  "pcode": "JM01059",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Richmond Park",
+  "pcode": "JM08051",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Richmond Vale",
+  "pcode": "JM14038",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Rio Bueno",
+  "pcode": "JM15020",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Ritchies",
+  "pcode": "JM01001",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "River Head",
+  "pcode": "JM09046",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Riversdale",
+  "pcode": "JM10042",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Riverton Meadows",
+  "pcode": "JM08052",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Roaring River",
+  "pcode": "JM16061",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Robins Bay",
+  "pcode": "JM13043",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Robins Hall",
+  "pcode": "JM04059",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Rock",
+  "pcode": "JM01060",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Rock Hall",
+  "pcode": "JM08053",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Rock Hall",
+  "pcode": "JM07034",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Rock River",
+  "pcode": "JM01061",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Rock Spring",
+  "pcode": "JM02006",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Rockfort",
+  "pcode": "JM17011",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Rocky Point",
+  "pcode": "JM01062",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Roehampton",
+  "pcode": "JM12058",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Rollington Town",
+  "pcode": "JM17012",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Rose Gardens",
+  "pcode": "JM17013",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Rose Hall",
+  "pcode": "JM11048",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Rose Hall",
+  "pcode": "JM12059",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Rose Heights",
+  "pcode": "JM12060",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Rose Hill",
+  "pcode": "JM04060",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Rosemount",
+  "pcode": "JM12061",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Rosemount Gardens",
+  "pcode": "JM12062",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Roses Valley",
+  "pcode": "JM11049",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Rosewell",
+  "pcode": "JM01063",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Rowlandsfield",
+  "pcode": "JM14039",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Royal Flat",
+  "pcode": "JM04061",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Runaway Bay",
+  "pcode": "JM09047",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Russells",
+  "pcode": "JM11050",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Salt Marsh",
+  "pcode": "JM15021",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Salt River",
+  "pcode": "JM01064",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Salt Spring",
+  "pcode": "JM12063",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Samuel Prospect",
+  "pcode": "JM15022",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Sandside",
+  "pcode": "JM13044",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Sandy Bay",
+  "pcode": "JM01065",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Sandy Bay",
+  "pcode": "JM02032",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Sanguinetti",
+  "pcode": "JM01066",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Santa Cruz",
+  "pcode": "JM11051",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Santoy",
+  "pcode": "JM02005",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Savanna-la-mar Business District",
+  "pcode": "JM16062",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Sawyers",
+  "pcode": "JM15023",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Scotts Hall",
+  "pcode": "JM13045",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Scotts Pass",
+  "pcode": "JM04062",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Seaford Town",
+  "pcode": "JM16063",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Seaforth",
+  "pcode": "JM14040",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Seaview Gardens",
+  "pcode": "JM08054",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Seivwright",
+  "pcode": "JM08055",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Seven Rivers",
+  "pcode": "JM12064",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Seymour Lands",
+  "pcode": "JM08056",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Sheffield",
+  "pcode": "JM16064",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Sherwood Content",
+  "pcode": "JM15024",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Sherwood Forest",
+  "pcode": "JM07035",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Shirley Castle",
+  "pcode": "JM07036",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Silent Hill/Moravia",
+  "pcode": "JM01067",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Siloah",
+  "pcode": "JM11052",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Skibo/Chepstowe",
+  "pcode": "JM07037",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Sligoville",
+  "pcode": "JM10043",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Slipe",
+  "pcode": "JM11053",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Smithfield",
+  "pcode": "JM16065",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Smithville",
+  "pcode": "JM01068",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Snow Hill",
+  "pcode": "JM07038",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Snowdon",
+  "pcode": "JM04063",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Somerset",
+  "pcode": "JM04064",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Somerset",
+  "pcode": "JM14041",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Somerton",
+  "pcode": "JM12065",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Southfield",
+  "pcode": "JM11054",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Spalding",
+  "pcode": "JM01069",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Spanish Town Central",
+  "pcode": "JM10044",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Spicy Hill",
+  "pcode": "JM15025",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Spot Valley",
+  "pcode": "JM12066",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Spring Garden",
+  "pcode": "JM12067",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Spring Gardens",
+  "pcode": "JM14042",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Spring Gardens",
+  "pcode": "JM15026",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Spring Ground",
+  "pcode": "JM04065",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Spring Hill",
+  "pcode": "JM07039",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Springfield",
+  "pcode": "JM11055",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Springfield Gardens",
+  "pcode": "JM17014",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Spur Tree",
+  "pcode": "JM04066",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "St Ann's Bay",
+  "pcode": "JM09048",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "St D'Acre",
+  "pcode": "JM09049",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "St. Johns East",
+  "pcode": "JM10045",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "St. Johns West",
+  "pcode": "JM10046",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "St. Leonards",
+  "pcode": "JM16066",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "St. Margarets Bay",
+  "pcode": "JM07040",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "St. Paul's",
+  "pcode": "JM04067",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "St. Peter's",
+  "pcode": "JM08057",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "St. Vincent",
+  "pcode": "JM15027",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "State and Ziadie Gardens",
+  "pcode": "JM08058",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Steer Town",
+  "pcode": "JM09050",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Stettin",
+  "pcode": "JM15028",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Stewart Town",
+  "pcode": "JM15029",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Stonehenge",
+  "pcode": "JM12068",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Stony Hill",
+  "pcode": "JM08059",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Stratbogie",
+  "pcode": "JM16067",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Strawberry",
+  "pcode": "JM16068",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Struie",
+  "pcode": "JM16069",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Sturge Town",
+  "pcode": "JM09051",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Sucess",
+  "pcode": "JM02020",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Summer Hill",
+  "pcode": "JM12069",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Summerfield",
+  "pcode": "JM01070",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Sunderland",
+  "pcode": "JM12070",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Sunning Hill",
+  "pcode": "JM14043",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Swaby's Hope",
+  "pcode": "JM04068",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Swallowfield",
+  "pcode": "JM08060",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Swift River",
+  "pcode": "JM07041",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Sydenham",
+  "pcode": "JM10047",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Tangle River",
+  "pcode": "JM12071",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Temple Hall",
+  "pcode": "JM08061",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "The Alps",
+  "pcode": "JM15030",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Thompson Town",
+  "pcode": "JM01071",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Thornton",
+  "pcode": "JM11056",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Three Miles River",
+  "pcode": "JM16070",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Tivoli Gardens",
+  "pcode": "JM17015",
+  "level": "admin2",
+  "parentPcode": "JM17",
+  "country": "JAM"
+ },
+ {
+  "name": "Tollgate",
+  "pcode": "JM01072",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Top Hill",
+  "pcode": "JM04069",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Top Hill",
+  "pcode": "JM11057",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Tower Hill",
+  "pcode": "JM12072",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Town Head",
+  "pcode": "JM16071",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Tranquility",
+  "pcode": "JM07042",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Treadlight",
+  "pcode": "JM01073",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Treadways",
+  "pcode": "JM10048",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Treasure Beach",
+  "pcode": "JM11058",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Trench Town",
+  "pcode": "JM08062",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Trinityville",
+  "pcode": "JM14044",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Troja",
+  "pcode": "JM10049",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Trout Hall",
+  "pcode": "JM01074",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Troy",
+  "pcode": "JM15031",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Truro",
+  "pcode": "JM16072",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Tucker",
+  "pcode": "JM12073",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Turners",
+  "pcode": "JM01075",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Tweedside",
+  "pcode": "JM01054",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Ulster Spring",
+  "pcode": "JM15032",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Unity Hall",
+  "pcode": "JM12074",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Vaughansfield",
+  "pcode": "JM12075",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Victoria Town",
+  "pcode": "JM04070",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Vineyard Town",
+  "pcode": "JM08063",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Wait-A-Bit",
+  "pcode": "JM15033",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Wakefield",
+  "pcode": "JM15034",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Walderston",
+  "pcode": "JM04071",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Walkers Wood",
+  "pcode": "JM09052",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Waltham",
+  "pcode": "JM04072",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Waltham Gardens/Mandela",
+  "pcode": "JM08064",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Warminster",
+  "pcode": "JM11059",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Warsop",
+  "pcode": "JM15035",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Washington Gardens",
+  "pcode": "JM08065",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Watchwell",
+  "pcode": "JM11060",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "Water Lane",
+  "pcode": "JM01076",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Water Works",
+  "pcode": "JM16073",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Waterford",
+  "pcode": "JM10050",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Waterhouse",
+  "pcode": "JM08066",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Watermount",
+  "pcode": "JM10051",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Watt Town",
+  "pcode": "JM09053",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "Welcome Hall",
+  "pcode": "JM12076",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "West Cumberland",
+  "pcode": "JM10052",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "West Green",
+  "pcode": "JM12077",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Westgate Hills",
+  "pcode": "JM12078",
+  "level": "admin2",
+  "parentPcode": "JM12",
+  "country": "JAM"
+ },
+ {
+  "name": "Wheelersfield",
+  "pcode": "JM14045",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "White Hill",
+  "pcode": "JM11061",
+  "level": "admin2",
+  "parentPcode": "JM11",
+  "country": "JAM"
+ },
+ {
+  "name": "White Horses",
+  "pcode": "JM14046",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Whitehall",
+  "pcode": "JM14047",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Whitehall Gardens",
+  "pcode": "JM08067",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Whitehouse",
+  "pcode": "JM16074",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Whitfield Town",
+  "pcode": "JM08068",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Whithorn",
+  "pcode": "JM16075",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Williamsfield",
+  "pcode": "JM04073",
+  "level": "admin2",
+  "parentPcode": "JM04",
+  "country": "JAM"
+ },
+ {
+  "name": "Williamsfield",
+  "pcode": "JM16076",
+  "level": "admin2",
+  "parentPcode": "JM16",
+  "country": "JAM"
+ },
+ {
+  "name": "Willowdene",
+  "pcode": "JM10053",
+  "level": "admin2",
+  "parentPcode": "JM10",
+  "country": "JAM"
+ },
+ {
+  "name": "Wilmington",
+  "pcode": "JM14048",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Wilson's Run",
+  "pcode": "JM15036",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Winchester",
+  "pcode": "JM14049",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "Windsor",
+  "pcode": "JM07043",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Windsor Castle",
+  "pcode": "JM07044",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Windsor Forest",
+  "pcode": "JM07045",
+  "level": "admin2",
+  "parentPcode": "JM07",
+  "country": "JAM"
+ },
+ {
+  "name": "Wirefence",
+  "pcode": "JM15037",
+  "level": "admin2",
+  "parentPcode": "JM15",
+  "country": "JAM"
+ },
+ {
+  "name": "Wood Hall",
+  "pcode": "JM01077",
+  "level": "admin2",
+  "parentPcode": "JM01",
+  "country": "JAM"
+ },
+ {
+  "name": "Woodford",
+  "pcode": "JM08069",
+  "level": "admin2",
+  "parentPcode": "JM08",
+  "country": "JAM"
+ },
+ {
+  "name": "Woodlands",
+  "pcode": "JM02035",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Woodpark",
+  "pcode": "JM13046",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Woodside",
+  "pcode": "JM13047",
+  "level": "admin2",
+  "parentPcode": "JM13",
+  "country": "JAM"
+ },
+ {
+  "name": "Woodsville",
+  "pcode": "JM02021",
+  "level": "admin2",
+  "parentPcode": "JM02",
+  "country": "JAM"
+ },
+ {
+  "name": "Yallahs",
+  "pcode": "JM14050",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "York",
+  "pcode": "JM14051",
+  "level": "admin2",
+  "parentPcode": "JM14",
+  "country": "JAM"
+ },
+ {
+  "name": "York Castle",
+  "pcode": "JM09054",
+  "level": "admin2",
+  "parentPcode": "JM09",
+  "country": "JAM"
+ },
+ {
+  "name": "York Town",
+  "pcode": "JM01078",
+  "level": "admin2",
+  "parentPcode": "JM01",
   "country": "JAM"
  }
 ]

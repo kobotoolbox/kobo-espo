@@ -1,14 +1,14 @@
 [
   {
     "test": "W1",
-    "check": "every new record has its short code (RSP-, PRJ-, ORG-, ACT-, TSK-)",
+    "check": "every new record has its short code (RSP-, PRJ-, REG-, ACT-, TSK-)",
     "ok": true,
     "detail": {
-      "CResponse": "RSP-6YCR",
-      "CProject": "PRJ-XBB9",
-      "CResponder": "ORG-6Z4F",
-      "CActivity": "ACT-VFPP",
-      "Task": "TSK-G3CM"
+      "CResponse": "RSP-XKZ4",
+      "CProject": "PRJ-YBAP",
+      "CResponder": "REG-GKSH",
+      "CActivity": "ACT-DHCT",
+      "Task": "TSK-2DHR"
     }
   },
   {
@@ -23,32 +23,26 @@
     "ok": true,
     "detail": [
       {
-        "id": "6af07bf2853903a6c",
+        "id": "6af0950632e8d6b1c",
         "name": "FIVEW ETC",
-        "createdAt": "2026-11-08 13:41:06",
+        "createdAt": "2026-11-08 15:28:06",
         "createdById": "6aec3ee286e4b3936",
         "assignedUserId": null
       }
     ]
   },
   {
-    "test": "W1",
-    "check": "codes are unique (organisations)",
-    "ok": true,
-    "detail": 2
-  },
-  {
     "test": "W2",
-    "check": "TELCO (ETC): the response's team and the ETC project's",
+    "check": "registered: named after the organisation in the list, with its type",
     "ok": true,
     "detail": [
-      "6aec41fec6f7a5f27",
-      "6af050644bc5ab8e6"
+      "ADRA - Adventist Development and Relief Agency",
+      "INTERNATIONAL_NGO"
     ]
   },
   {
     "test": "W2",
-    "check": "RCJ (ETC, WASH): both projects' teams",
+    "check": "in the response's team and both sectors' projects'",
     "ok": true,
     "detail": [
       "6aec41fec6f7a5f27",
@@ -58,208 +52,234 @@
   },
   {
     "test": "W2",
-    "check": "RCJ no longer in ETC: the ETC team goes",
+    "check": "no longer in Emergency Telecommunications: its team goes",
     "ok": true,
-    "detail": [
-      "6aec41fec6f7a5f27",
-      "6af050661f10ba21a"
-    ]
+    "detail": ""
   },
   {
     "test": "W2",
-    "check": "a new Shelter project: RCJ (in Shelter) gets its team, TELCO doesn't",
+    "check": "a new Shelter project: the organisation (in Shelter) gets its team",
     "ok": true,
-    "detail": [
-      [
-        "6aec41fec6f7a5f27",
-        "6af050644bc5ab8e6",
-        "6af050661f10ba21a",
-        "6af07c14cf0a4eaf0"
-      ],
-      [
-        "6aec41fec6f7a5f27",
-        "6af050644bc5ab8e6"
-      ]
-    ]
+    "detail": ""
   },
   {
     "test": "W3",
-    "check": "an activity: its project's teams and response",
+    "check": "its sector's project (WASH), and that project's teams",
+    "ok": true,
+    "detail": {
+      "projectId": "6af09507422ea041a",
+      "teamsIds": [
+        "6af050661f10ba21a",
+        "6aec41fec6f7a5f27"
+      ]
+    }
+  },
+  {
+    "test": "W3",
+    "check": "the lead organisation implements it when no other is named",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W3",
+    "check": "named after its organisation's code",
+    "ok": true,
+    "detail": "ADRA \u00b7 Water trucking"
+  },
+  {
+    "test": "W3",
+    "check": "linked to the organisation's registration, whose last report moves on",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W3",
+    "check": "a sector with no project in the response: the response's team only (coordinators)",
+    "ok": true,
+    "detail": {
+      "projectId": null,
+      "teamsIds": [
+        "6aec41fec6f7a5f27"
+      ]
+    }
+  },
+  {
+    "test": "W4",
+    "check": "a location: its activity's teams, project and response",
     "ok": true,
     "detail": {
       "teamsIds": [
         "6af050661f10ba21a",
         "6aec41fec6f7a5f27"
       ],
-      "responseId": "6af07bf15c4cd006f"
+      "projectId": "6af09507422ea041a",
+      "responseId": "6af0950527c67a151"
     }
   },
   {
-    "test": "W3",
-    "check": "people reached: the six groups summed (62)",
+    "test": "W4",
+    "check": "its parish from the community, and named after both",
     "ok": true,
-    "detail": 62
+    "detail": {
+      "parishId": "6af08d61e414c2498",
+      "name": "Allman Town, KINGSTON"
+    }
   },
   {
-    "test": "W3",
-    "check": "named after its organisation's acronym",
-    "ok": true,
-    "detail": "RCJ \u00b7 Hygiene kits"
-  },
-  {
-    "test": "W3",
-    "check": "the organisation's last report and status follow",
+    "test": "W4",
+    "check": "the activity's totals: 2 communities, 100 reached, 150 targeted, 15 units, 750 budget",
     "ok": true,
     "detail": [
-      "2026-11-04",
-      "active"
+      2,
+      100,
+      150,
+      15,
+      750
     ]
   },
   {
-    "test": "W3",
-    "check": "an older report leaves the last report as it was",
-    "ok": true,
-    "detail": ""
-  },
-  {
-    "test": "W3",
-    "check": "changed: summed again (72)",
+    "test": "W4",
+    "check": "a location changed: the totals follow (120 reached)",
     "ok": true,
     "detail": ""
   },
   {
     "test": "W4",
+    "check": "a focal point: its activity's teams",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W5",
+    "check": "an organisation typed in: a task for the response's lead to add it to the list",
+    "ok": true,
+    "detail": [
+      "Add to the organisations list: Kingston Kitchen Collective",
+      "Agree site list and standards",
+      "Comms plan",
+      "Confirm the roster",
+      "Set up the Kobo project"
+    ]
+  },
+  {
+    "test": "W5",
+    "check": "the activity named after the organisation typed",
+    "ok": true,
+    "detail": [
+      "Kingston Kitchen Collective \u00b7 Hot meals",
+      "ADRA \u00b7 Clinic",
+      "AMERICARES \u00b7 Connectivity",
+      "ADRA \u00b7 Water trucking"
+    ]
+  },
+  {
+    "test": "W6",
     "check": "an activity that ends before it starts: refused",
     "ok": true,
     "detail": ""
   },
   {
-    "test": "W4",
-    "check": "TELCO (ETC only) reporting under the WASH project: refused",
-    "ok": true,
-    "detail": ""
-  },
-  {
-    "test": "W4",
-    "check": "an organisation of another response under this response's project: refused",
-    "ok": true,
-    "detail": ""
-  },
-  {
-    "test": "W5",
+    "test": "W7",
     "check": "cluster-lead (ETC): the ETC activity only",
     "ok": true,
     "detail": [
-      "TELCO \u00b7 Connectivity"
+      "AMERICARES \u00b7 Connectivity"
     ]
   },
   {
-    "test": "W5",
-    "check": "cluster-lead (ETC): the organisations in ETC",
-    "ok": true,
-    "detail": [
-      "FIVEW Red Cross Jamaica",
-      "FIVEW Telecom Partners"
-    ]
-  },
-  {
-    "test": "W5",
-    "check": "cluster-lead: a WASH activity by id refused",
+    "test": "W7",
+    "check": "cluster-lead: a WASH location by id refused",
     "ok": true,
     "detail": ""
   },
   {
-    "test": "W5",
+    "test": "W7",
     "check": "cluster-partner (ETC): the ETC activity only",
     "ok": true,
     "detail": [
-      "TELCO \u00b7 Connectivity"
+      "AMERICARES \u00b7 Connectivity"
     ]
   },
   {
-    "test": "W5",
-    "check": "cluster-partner (ETC): the organisations in ETC",
-    "ok": true,
-    "detail": [
-      "FIVEW Red Cross Jamaica",
-      "FIVEW Telecom Partners"
-    ]
-  },
-  {
-    "test": "W5",
-    "check": "cluster-partner: a WASH activity by id refused",
+    "test": "W7",
+    "check": "cluster-partner: a WASH location by id refused",
     "ok": true,
     "detail": ""
   },
   {
-    "test": "W5",
-    "check": "cluster-viewer (WASH): the WASH activities, and RCJ only",
+    "test": "W7",
+    "check": "cluster-viewer (WASH): the WASH activities' locations, and not their focal points",
     "ok": true,
     "detail": [
-      [
-        "RCJ \u00b7 Hygiene kits",
-        "RCJ \u00b7 Older report"
-      ],
-      [
-        "FIVEW Red Cross Jamaica"
-      ]
+      "Allman Town, KINGSTON",
+      "Central Downtown, KINGSTON"
     ]
   },
   {
-    "test": "W5",
-    "check": "cluster-viewer: editing an activity refused",
+    "test": "W7",
+    "check": "cluster-viewer: editing a location refused",
     "ok": true,
     "detail": ""
   },
   {
-    "test": "W5",
+    "test": "W7",
     "check": "staff-1 (the response's team): every activity",
     "ok": true,
     "detail": [
-      "RCJ \u00b7 Hygiene kits",
-      "RCJ \u00b7 Older report",
-      "TELCO \u00b7 Connectivity"
+      "ADRA \u00b7 Clinic",
+      "ADRA \u00b7 Water trucking",
+      "AMERICARES \u00b7 Connectivity",
+      "Kingston Kitchen Collective \u00b7 Hot meals"
     ]
   },
   {
-    "test": "W5",
-    "check": "cluster-partner: reports an ETC activity, in the project's teams",
+    "test": "W7",
+    "check": "cluster-partner: reports an activity in their project, in its teams and response",
     "ok": true,
-    "detail": ""
+    "detail": {
+      "teamsIds": [
+        "6af050644bc5ab8e6",
+        "6aec41fec6f7a5f27"
+      ],
+      "responseId": "6af0950527c67a151"
+    }
   },
   {
-    "test": "W5",
+    "test": "W7",
     "check": "cluster-partner: edits their own activity, not one they didn't make",
     "ok": true,
     "detail": ""
   },
   {
-    "test": "W5",
-    "check": "cluster-lead: edits any of the project's activities",
+    "test": "W8",
+    "check": "Jamaica's 14 parishes and 775 communities, Melissa's P-codes (JM17 Kingston)",
     "ok": true,
-    "detail": ""
+    "detail": [
+      789,
+      "KINGSTON"
+    ]
   },
   {
-    "test": "W6",
-    "check": "cluster-viewer: reads Jamaica's 14 parishes",
+    "test": "W8",
+    "check": "cluster-viewer: reads the organisations (137) and the parishes",
     "ok": true,
-    "detail": 14
+    "detail": [
+      137,
+      14
+    ]
   },
   {
-    "test": "W6",
-    "check": "cluster-partner: reads Jamaica's 14 parishes",
+    "test": "W8",
+    "check": "cluster-partner: reads the organisations (137) and the parishes",
     "ok": true,
-    "detail": 14
+    "detail": [
+      137,
+      14
+    ]
   },
   {
-    "test": "W6",
-    "check": "staff-1: reads Jamaica's 14 parishes",
-    "ok": true,
-    "detail": 14
-  },
-  {
-    "test": "W6",
-    "check": "cluster-partner: editing a parish refused",
+    "test": "W8",
+    "check": "cluster-partner: editing an organisation refused",
     "ok": true,
     "detail": ""
   }

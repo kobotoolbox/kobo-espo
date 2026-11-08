@@ -84,10 +84,10 @@ def main():
 def run(a, team, user, eq1, etc, wash, ca):
     resp = a.call('POST', '/CResponse', body={'name': 'PRJ Hurricane', 'status': 'Active', 'teamsIds': [eq1],
                                               'leadId': user['staff-1']})
-    p_etc = a.call('POST', '/CProject', body={'name': 'PRJ Hurricane ETC', 'cluster': 'etc',
+    p_etc = a.call('POST', '/CProject', body={'name': 'PRJ Hurricane ETC', 'cluster': 'EMERGENCY_TELECOMS',
                                               'status': 'Active', 'responseId': resp['id'], 'teamsIds': [etc],
                                               'leadId': user['cluster-lead']})
-    p_wash = a.call('POST', '/CProject', body={'name': 'PRJ Hurricane WASH', 'cluster': 'wash', 'status': 'Active',
+    p_wash = a.call('POST', '/CProject', body={'name': 'PRJ Hurricane WASH', 'cluster': 'WASH', 'status': 'Active',
                                                'responseId': resp['id'], 'teamsIds': [wash]})
     s_etc = a.call('POST', '/CSite', body={'name': 'PRJ VSAT hub', 'siteCode': 'PRJ-E1', 'projectId': p_etc['id']})
     s_wash = a.call('POST', '/CSite', body={'name': 'PRJ Water point', 'siteCode': 'PRJ-W1', 'projectId': p_wash['id']})

@@ -1,43 +1,42 @@
 # Workflow E: a response's 5W (who does what, where, when, for whom)
 
-Status: 2026-11-08. Phases 1–3 built (organisations, admin areas, activities, one per
-submission), with a draft of phase 0's activity types; next phases 4 (repeat groups) and 6
-(the dashboard, in kobo-dash). It builds on cluster projects (`CProject`, the cluster roles,
-`tests/cases/projects.py`; manual page "Cluster projects").
+Status: 2026-11-08. Phases 0–4 built on the **Hurricane Melissa 5W form** (v1.9, 5 Dec
+2025, `ref/`): organisations, admin areas, activities with their communities and focal
+points (repeat groups in the bridge). Next: phase 5 (the "not reported" follow-up) and 6
+(the dashboard, kobo-dash's `plans/espo-source-plan.md`, step 1 done).
 
-Built (2026-11-08), and what changed from the design below:
-- **Organisations are `CResponder` ("Responding organisation"), not Account fields.** One
-  per organisation *and response*: an organisation in two responses registers twice, and
-  its Account (EspoCRM's own, found or made by name through `[requester]`) is shared. Its
-  focal point is a Contact. It's in the response's team and in the teams of the response's
-  projects in the clusters it works in (formula; a new project in one of its clusters adds
-  its team too). Registering again (the same response and acronym, `registrationKey`)
-  updates it. Form `kobo/forms/responder-registration.json`, template
-  `responder-registration.toml`.
-- **Clusters are codes** (`etc`, `wash`... with labels), since Kobo choice names have no
-  spaces; projects made before were migrated by the seed.
-- **Short codes** on responses, projects, organisations, activities, tasks and applications
-  (`RSP-7K3Q`, as Ponto's; `espo/formula/_code.formula`): read-only, unique, searchable,
-  and what Kobo lists use as choice names (a list's `name = "code"`, a link's
-  `lookup = "code"`), instead of EspoCRM's 17-character ids. Sites keep their site code,
-  admin areas their P-code.
-- **Admin areas**: `CAdminArea` (P-code, level, parent, country), seeded from
-  `espo/seed/data/admin-areas-<iso3>.json`; Jamaica's 14 parishes (JM01 Kingston ...
-  JM14 Saint Catherine) for the tests. Check them against the COD-AB (the humanitarian
-  geocoder's admin1 CSV, `~/Desktop/work/repos/jamaica-geocoder`) before real use; that
-  service's per-level CSVs (`name,label` by P-code) are the import for other countries.
-- **Activities** (`CActivity`): organisation, project, response, admin area, site, type
-  (a draft list, `ACTIVITY_TYPES` in the seed, prefixed by cluster), status, dates, the six
-  sex and age groups, people reached (summed by the formula), households, quantity and
-  unit. In the project's teams; named "ACRONYM · type · date"; the organisation's last
-  report moves on. Refused (API Before Save): ending before it starts, an organisation of
-  another response, or not registered for the project's cluster. Form
-  `activity-report.json`, per response like the site visit (`team = "Response: …"` lists:
-  `responders.csv`, `projects.csv`, `areas.csv`).
-- Roles: Cluster Lead edits the project's activities and organisations; Cluster Partner
-  reports and edits their own; Cluster Viewer reads; everyone reads admin areas.
-- Tests: `tests/cases/fivew.py` 33/33 (codes, teams from clusters, activities, guards,
-  who sees what, admin areas); `connection.py` W7–W10 (the two forms through the bridge).
+Built, and what the Melissa form changed in the design below (Josh, 2026-11-08: our form
+modelled on it, organisations as a list plus registration):
+- **EspoCRM uses the form's own codes** (`espo/seed/data/fivew-melissa.json`, extracted
+  from it): its 13 sectors (`EMERGENCY_TELECOMS`, `WASH`, `SHELTER`...), which are now a
+  project's sector (the `cluster` field; earlier codes migrated), 84 activity types, 3
+  statuses (`PLANNED`, `IN_PROGRESS`, `COMPLETED`), 13 resource types and 76 units, 7
+  location types, 4 groups of people.
+- **Organisations are a list** (`COrganisation`, the form's 137 with their `ORG_` codes and
+  types, read by everyone), on the forms as `organisations.csv` filtered by type as the
+  Melissa form does. One typed in as "other" becomes a task for the response's lead to add
+  it. **Registration** (`CResponder`) stays: an organisation from the list (or typed), the
+  sectors it works in, its focal point; it's in those sectors' projects' teams.
+- **An activity is a submission** (`CActivity`): its response, lead and implementing
+  organisation (the lead when none is named), sector, activity type, title, status,
+  resource type and unit, dates. It goes into its response's project for its sector and
+  that project's teams (with no project for the sector, the response's: coordinators
+  only), and to its organisation's registration, if any, whose last report moves on.
+- **Where and for how many is a row of the form's FIGURES_COMMUNITY repeat**
+  (`CActivityLocation`, through the bridge's new `[[repeat]]`): parish and community
+  (P-codes), the site if it's a registered one, location type, quantity, budget, people
+  targeted and reached, and by group (displaced, hosting, non-displaced, other) × people,
+  women, men, children, households, targeted and reached. In its activity's teams; the
+  activity keeps the totals (communities, people, quantity, budget). **Focal points**
+  (FOCAL_POINTS repeat) are `CFocalPoint`s, which viewers can't read (people's contacts).
+- **Admin areas** are Jamaica's 14 parishes and 775 communities with Melissa's P-codes
+  (JM17 Kingston, JM08 St. Andrew...). The first draft's JM01–JM14 were wrong.
+- **Short codes** (RSP-, PRJ-, REG-, ACT-, TSK-, APP-; `_code.formula`, as Ponto's) on
+  responses, projects, registrations, activities, tasks, applications: what Kobo lists use
+  as choice names.
+- Forms: `kobo/forms/activity-report.json` (from the Melissa form by
+  `kobo/forms/melissa.py`), `responder-registration.json`; templates of the same names.
+- Tests: `tests/cases/fivew.py`; `connection.py` W7–W10.
 
 ## Goal
 

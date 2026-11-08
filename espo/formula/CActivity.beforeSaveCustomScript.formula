@@ -1,29 +1,61 @@
-// An activity is in its project's teams, and in its project's response: the cluster's
-// people and the coordinators see it, nobody else
+// An activity is in its response's project for its sector, and in that project's teams:
+// the sector's people and the coordinators see it. With no project for its sector, it's in
+// the response's teams (coordinators only)
+if (responseId && sector && !projectId) {
+    $project = record\findOne('CProject', 'createdAt', 'asc', 'responseId=', responseId, 'cluster=', sector);
+    if ($project) {
+        projectId = $project;
+    }
+}
 if (projectId && (entity\isNew() || entity\isAttributeChanged('projectId'))) {
     $teams = record\attribute('CProject', projectId, 'teamsIds');
     if (array\length($teams) > 0) {
         teamsIds = $teams;
     }
     responseId = record\attribute('CProject', projectId, 'responseId');
-}
-
-// People reached: the sum of the six groups
-peopleReached = ifThenElse(girls, girls, 0) + ifThenElse(boys, boys, 0) + ifThenElse(women, women, 0)
-    + ifThenElse(men, men, 0) + ifThenElse(elderlyWomen, elderlyWomen, 0) + ifThenElse(elderlyMen, elderlyMen, 0);
-
-// Named after its organisation and what it is, e.g. "RCJ · WASH: hygiene kits · 2026-11-03"
-if (entity\isNew() && responderId) {
-    $acronym = record\attribute('CResponder', responderId, 'acronym');
-    if ($acronym && !string\contains(name, $acronym)) {
-        name = string\concatenate($acronym, ' · ', name);
+} else if (!projectId && responseId && (entity\isNew() || entity\isAttributeChanged('responseId'))) {
+    $teams = record\attribute('CResponse', responseId, 'teamsIds');
+    if (array\length($teams) > 0) {
+        teamsIds = $teams;
     }
 }
 
-// The organisation's last report: what the "not reported" follow-up reads
+// The lead organisation implements it unless another one is named (the form asks only then)
+if (!implementingOrganisationId && !implementingOrganisationOther && leadOrganisationId) {
+    implementingOrganisationId = leadOrganisationId;
+}
+
+// Its organisation's registration in the response, if it registered: its last report moves on
+if (responseId && leadOrganisationId && !responderId) {
+    responderId = record\findOne('CResponder', 'createdAt', 'asc', 'responseId=', responseId,
+        'organisationId=', leadOrganisationId);
+}
 if (responderId && reportDate) {
     $last = record\attribute('CResponder', responderId, 'lastReport');
     if (!$last || datetime\diff(reportDate, $last, 'days') > 0) {
         record\update('CResponder', responderId, 'lastReport', reportDate, 'status', 'active');
+    }
+}
+
+// Named after its organisation, e.g. "ADRA · Water trucking"
+if (entity\isNew() && leadOrganisationId) {
+    $org = string\replace(record\attribute('COrganisation', leadOrganisationId, 'code'), 'ORG_', '');
+    if ($org == 'other' && leadOrganisationOther) {
+        $org = leadOrganisationOther;
+    }
+    if (!string\contains(name, $org)) {
+        name = string\concatenate($org, ' · ', name);
+    }
+}
+
+// An organisation not in the list yet: a task for the response's lead to add it
+if (entity\isNew() && responseId && (leadOrganisationOther || implementingOrganisationOther)) {
+    $lead = record\attribute('CResponse', responseId, 'leadId');
+    if ($lead) {
+        record\create('Task', 'name', string\concatenate('Add to the organisations list: ',
+            ifThenElse(leadOrganisationOther, leadOrganisationOther, implementingOrganisationOther)),
+            'status', 'Backlog', 'cResponseId', responseId, 'teamsIds', record\attribute('CResponse', responseId, 'teamsIds'),
+            'assignedUserId', $lead,
+            'description', 'Named in a 5W report as not in the list (Organisations). Add it with its code and type.');
     }
 }

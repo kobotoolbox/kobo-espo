@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 The Kobo -> EspoCRM connection end to end: T1-T7, T12, Workflow C (sites and lists), and
-Workflow E's forms (W7-W10: an organisation registers, then reports an activity).
+Workflow E's forms (W7-W10: an organisation registers, then reports an activity on the
+Hurricane Melissa 5W model, with its communities and focal points as repeat groups).
 
     python3 -I tests/cases/connection.py [--kobo fake|real] [--skip-espo-down]
 
@@ -401,74 +402,109 @@ def main():
     check('C3', 'a visit to an unknown site is recorded, not guessed', f'submission {bad["_id"]}' in visits.failed()
           and '0 CSite records' in visits.failed(), visits.failed())
 
-    # --- Workflow E: an organisation registers, then reports an activity ---------------------
+    # --- Workflow E: an organisation registers, then reports an activity (the Melissa 5W) -----
     etc_team, wash_team = team['Cluster: Test EQ 1 ETC'], team['Cluster: Test EQ 1 WASH']
     projects = {}
-    for cluster, t_id in (('etc', etc_team), ('wash', wash_team)):
-        name = f'Test EQ 1 {cluster.upper()}'
-        projects[cluster] = (by(a, 'CProject', 'name', name) or [a.call('POST', '/CProject', body={
-            'name': name, 'cluster': cluster, 'status': 'Active', 'responseId': resp[0]['id'], 'teamsIds': [t_id]})])[0]
-    acronym = f'T{RUN}'
-    reg = {'response': resp[0]['code'], 'org_name': f'Telecom Partners {RUN}', 'org_acronym': acronym, 'org_type': 'ingo',
-           'clusters': 'etc', 'focal_name': 'Fola Point', 'focal_email': f'focal-{RUN}@example.org',
-           'focal_phone': '+1 876 555 0100', 'registration_key': f'{resp[0]["code"]}/{acronym}'}
+    for sector, t_id, short in (('EMERGENCY_TELECOMS', etc_team, 'ETC'), ('WASH', wash_team, 'WASH')):
+        name = f'Test EQ 1 {short}'
+        projects[sector] = (by(a, 'CProject', 'name', name) or [a.call('POST', '/CProject', body={
+            'name': name, 'cluster': sector, 'status': 'Active', 'responseId': resp[0]['id'], 'teamsIds': [t_id]})])[0]
+    org_name = f'Telecom Partners {RUN}'
+    reg = {'response': resp[0]['code'], 'org_type': 'INTERNATIONAL_NGO', 'organisation': 'other',
+           'organisation_other': org_name, 'org_acronym': f'T{RUN}', 'sectors': 'EMERGENCY_TELECOMS',
+           'focal_name': 'Fola Point', 'focal_email': f'focal-{RUN}@example.org', 'focal_phone': '+1 876 555 0100',
+           'registration_key': f'{resp[0]["code"]}/{org_name}'}
     submit(uids['responder-registration'], reg)
     code, log, st = orgs.once()
     org = by(a, 'CResponder', 'registrationKey', reg['registration_key'])
     org = a.call('GET', f'/CResponder/{org[0]["id"]}') if org else {}
-    check('W7', 'a registration makes a Responding organisation, in its response, with its code',
-          org.get('responseId') == resp[0]['id'] and org.get('acronym') == acronym and org.get('clusters') == ['etc']
-          and (org.get('code') or '').startswith('ORG-'), {k: org.get(k) for k in ('responseId', 'acronym', 'clusters', 'code')}
-          or log[-300:])
-    check('W7', 'linked to its Account and its focal point\'s Contact',
-          org.get('accountName') == f'Telecom Partners {RUN}' and bool(org.get('contactId')),
-          {k: org.get(k) for k in ('accountName', 'contactId')})
-    check('W7', "in the response's team and the ETC project's (its cluster), not WASH's",
+    check('W7', 'a registration makes a Responding organisation, named as typed (not in the list), with its code',
+          org.get('responseId') == resp[0]['id'] and org.get('name') == org_name and org.get('organisationName') == 'Other'
+          and org.get('clusters') == ['EMERGENCY_TELECOMS'] and (org.get('code') or '').startswith('REG-'),
+          {k: org.get(k) for k in ('responseId', 'name', 'organisationName', 'clusters', 'code')} or log[-300:])
+    check('W7', "its focal point's Contact", bool(org.get('contactId')), org.get('contactId'))
+    check('W7', "in the response's team and the ETC project's (its sector), not WASH's",
           set(org.get('teamsIds') or []) == {team['Response: Test EQ 1'], etc_team}, org.get('teamsNames'))
-    submit(uids['responder-registration'], {**reg, 'clusters': 'etc wash'})
+    submit(uids['responder-registration'], {**reg, 'sectors': 'EMERGENCY_TELECOMS WASH'})
     code, log, st = orgs.once()
     again = by(a, 'CResponder', 'registrationKey', reg['registration_key'])
-    check('W7', 'registering again (now ETC and WASH): the same record, updated, in both projects\' teams',
-          len(again) == 1 and a.call('GET', f'/CResponder/{again[0]["id"]}')['clusters'] == ['etc', 'wash']
+    check('W7', "registering again (now with WASH): the same record, updated, in both projects' teams",
+          len(again) == 1 and a.call('GET', f'/CResponder/{again[0]["id"]}')['clusters'] == ['EMERGENCY_TELECOMS', 'WASH']
           and wash_team in a.call('GET', f'/CResponder/{again[0]["id"]}')['teamsIds'], [r['id'] for r in again])
 
     code, log, st = reports.once()
     media = kobo.media_of(uids['activity-report']) if hasattr(kobo, 'media_of') else kobo.media[uids['activity-report']]
-    lists = {f: list(csv.DictReader(io.StringIO(media.get(f, b'').decode()))) for f in ('responders.csv', 'projects.csv', 'areas.csv')}
-    check('W8', "responders.csv: the response's organisations by code, \"acronym · name\"",
-          any(r['name'] == org.get('code') and r['label'] == f'{acronym} · Telecom Partners {RUN}' for r in lists['responders.csv'])
-          and all(r['name'].startswith('ORG-') for r in lists['responders.csv']), lists['responders.csv'][:3])
-    check('W8', "projects.csv: this response's projects by code, not another response's",
-          {r['label'] for r in lists['projects.csv']} >= {'Test EQ 1 ETC', 'Test EQ 1 WASH'}
-          and all(r['name'].startswith('PRJ-') for r in lists['projects.csv']), lists['projects.csv'])
-    check('W8', 'areas.csv: the 14 parishes by P-code, with level and parent',
-          len(lists['areas.csv']) == 14 and lists['areas.csv'][0] == {'name': 'JM01', 'label': 'Kingston', 'level': 'admin1',
-                                                                    'parent': 'JM'}, lists['areas.csv'][:2])
-    rep_a = submit(uids['activity-report'], {
-        'today': '2026-11-06', 'responder': org['code'], 'project': projects['etc']['code'],
-        'activity_type': 'etc_connectivity', 'status': 'ongoing', 'start_date': '2026-11-04', 'parish': 'JM01',
-        'site_code': code_1, 'reached/girls': '5', 'reached/boys': '4', 'reached/women': '30', 'reached/men': '40',
-        'reached/elderly_women': '1', 'reached/elderly_men': '2', 'reached/households': '25', 'quantity': '3',
-        'unit': 'VSAT terminals'})
+    lists = {f: list(csv.DictReader(io.StringIO(media.get(f, b'').decode())))
+             for f in ('responses.csv', 'organisations.csv', 'areas.csv')}
+    check('W8', "organisations.csv: the 5W form's 137 organisations by ORG_ code, with their type (the form filters on it)",
+          len(lists['organisations.csv']) == 137 and {'name': 'ORG_ADRA', 'label': 'ADRA - Adventist Development and Relief Agency',
+                                                     'org_type': 'INTERNATIONAL_NGO'} in lists['organisations.csv'],
+          lists['organisations.csv'][:2])
+    check('W8', "areas.csv: Jamaica's parishes and communities by P-code, each community with its parish",
+          len(lists['areas.csv']) == 789 and {'name': 'JM17', 'label': 'KINGSTON', 'level': 'admin1', 'parent': 'JM'}
+          in lists['areas.csv'] and all(r['parent'].startswith('JM') for r in lists['areas.csv']), lists['areas.csv'][:2])
+    check('W8', 'responses.csv: by code', all(r['name'].startswith('RSP-') for r in lists['responses.csv']))
+    kingston = [r['name'] for r in lists['areas.csv'] if r['parent'] == 'JM17'][:1]
+    standrew = [r['name'] for r in lists['areas.csv'] if r['parent'] == 'JM08'][:1]
+    R, L = 'RESPONSES/FIGURES_COMMUNITY', 'org_details'
+
+    def report(start, end=None, communities=(), **extra):
+        return {'today': '2026-11-06', 'response': resp[0]['code'],
+                f'{L}/ORAGANIZATION_LEAD/LeadOrganization_type': 'INTERNATIONAL_NGO',
+                f'{L}/ORAGANIZATION_LEAD/LeadOrganization_name': 'ORG_AMERICARES',
+                f'{L}/ORAGANIZATION_LEAD/same_as_lead': 'yes',
+                f'{L}/FOCAL_POINTS': [{f'{L}/FOCAL_POINTS/name': 'Ama Focal', f'{L}/FOCAL_POINTS/email': f'ama-{RUN}@example.org',
+                                       f'{L}/FOCAL_POINTS/phone': '+1 876 555 0101', f'{L}/FOCAL_POINTS/job_title': 'Coordinator'}],
+                'RESPONSES/sector': 'EMERGENCY_TELECOMS', 'RESPONSES/activity_type': 'other',
+                'RESPONSES/activity_type_other': 'VSAT connectivity', 'RESPONSES/activity_title': f'VSAT for shelters {RUN}',
+                'RESPONSES/activity_Status': 'IN_PROGRESS', 'RESPONSES/resource_type': 'it',
+                'RESPONSES/resource_unit_type': 'communication', 'RESPONSES/start_date': start,
+                **({'RESPONSES/end_date': end} if end else {}),
+                R: [{f'{R}/parish': par, f'{R}/community': com, f'{R}/location_type': 'shelter',
+                     **({f'{R}/site_code': site_c} if site_c else {}),
+                     f'{R}/quantities/quantity_resource': str(q), f'{R}/total_pop/total_population_targeted': str(t),
+                     f'{R}/total_pop/total_population_reached': str(r), f'{R}/people/category_of_people': 'idp',
+                     f'{R}/people/idp/idp_women_reached': str(r // 2), f'{R}/people/idp/idp_men_reached': str(r - r // 2)}
+                    for par, com, site_c, q, t, r in communities], **extra}
+    rep_a = submit(uids['activity-report'], report('2026-11-04', communities=[
+        ('JM17', kingston[0], code_1, 3, 200, 120), ('JM08', standrew[0], None, 2, 100, 80)]))
     code, log, st = reports.once()
     act = by(a, 'CActivity', 'cKoboSubmissionUuid', rep_a['_uuid'])
     act = a.call('GET', f'/CActivity/{act[0]["id"]}') if act else {}
-    kingston = by(a, 'CAdminArea', 'pcode', 'JM01')[0]
-    check('W9', 'an activity report makes an Activity: its organisation, project, parish and site, by their codes',
-          act.get('responderId') == org['id'] and act.get('projectId') == projects['etc']['id']
-          and act.get('adminAreaId') == kingston['id'] and act.get('siteId') == site.get('id'),
-          {k: act.get(k) for k in ('responderId', 'projectId', 'adminAreaId', 'siteId')} or log[-300:])
-    check('W9', "in the ETC project's teams; people reached summed (82); its organisation's last report",
-          set(act.get('teamsIds') or []) == {team['Response: Test EQ 1'], etc_team} and act.get('peopleReached') == 82
-          and a.call('GET', f'/CResponder/{org["id"]}').get('lastReport') == '2026-11-06',
-          {k: act.get(k) for k in ('teamsIds', 'peopleReached')})
-    bad = submit(uids['activity-report'], {'today': '2026-11-06', 'responder': org['code'], 'project': projects['wash']['code'],
-                                           'activity_type': 'wash_hygiene_kits', 'status': 'ongoing',
-                                           'start_date': '2026-11-10', 'end_date': '2026-11-01', 'parish': 'JM02'})
+    americares = by(a, 'COrganisation', 'code', 'ORG_AMERICARES')[0]
+    check('W9', "a report makes an Activity: its response, lead and implementing organisation (by ORG_ code), "
+          "its sector's project and teams",
+          act.get('responseId') == resp[0]['id'] and act.get('leadOrganisationId') == americares['id']
+          and act.get('implementingOrganisationId') == americares['id'] and act.get('projectId') == projects['EMERGENCY_TELECOMS']['id']
+          and set(act.get('teamsIds') or []) == {team['Response: Test EQ 1'], etc_team},
+          {k: act.get(k) for k in ('responseId', 'leadOrganisationId', 'projectId', 'teamsIds')} or log[-400:])
+    locs = by(a, 'CActivityLocation', 'activityId', act.get('id', '-'))
+    locs = sorted((a.call('GET', f'/CActivityLocation/{x["id"]}') for x in locs), key=lambda x: x.get('cKoboRow') or 0)
+    k_area = by(a, 'CAdminArea', 'pcode', kingston[0])[0]
+    check('W9', 'one Activity location per community row: the community and parish by P-code, the site by its code',
+          len(locs) == 2 and locs[0].get('communityId') == k_area['id'] and locs[0].get('siteId') == site.get('id')
+          and locs[0].get('locationType') == 'shelter' and locs[0].get('populationGroups') == ['idp'],
+          [{k: x.get(k) for k in ('cKoboRow', 'communityId', 'parishId', 'siteId', 'locationType')} for x in locs])
+    check('W9', "the figures by group, and the activity's totals (2 communities, 200 reached, 300 targeted, 5 units)",
+          locs and (locs[0].get('idpWomenReached'), locs[0].get('idpMenReached')) == (60, 60)
+          and [a.call('GET', f'/CActivity/{act["id"]}').get(k) for k in ('communities', 'peopleReached', 'peopleTargeted', 'quantity')]
+          == [2, 200, 300, 5], [a.call('GET', f'/CActivity/{act["id"]}').get(k)
+                                for k in ('communities', 'peopleReached', 'peopleTargeted', 'quantity')] if act else '')
+    fps = by(a, 'CFocalPoint', 'activityId', act.get('id', '-'))
+    check('W9', 'its focal point, in its teams', len(fps) == 1 and fps[0].get('name') == 'Ama Focal'
+          and fps[0].get('emailAddress') == f'ama-{RUN}@example.org', fps)
+    bad = submit(uids['activity-report'], report('2026-11-10', '2026-11-01'))
+    unknown = submit(uids['activity-report'], report('2026-11-04', communities=[
+        ('JM17', kingston[0], None, 1, 10, 10), ('JM17', 'JM99999', None, 1, 10, 10)]))
     code, log, st = reports.once()
-    check('W10', 'an activity that ends before it starts: recorded with its reason, not made',
-          f'submission {bad["_id"]}' in reports.failed() and 'ends before it starts' in reports.failed()
-          and not by(a, 'CActivity', 'cKoboSubmissionUuid', bad['_uuid']), reports.failed()[-300:])
+    failed = reports.failed()
+    check('W10', 'a report that ends before it starts: recorded with its reason, not made',
+          f'submission {bad["_id"]}' in failed and 'ends before it starts' in failed
+          and not by(a, 'CActivity', 'cKoboSubmissionUuid', bad['_uuid']), failed[-400:])
+    made = by(a, 'CActivity', 'cKoboSubmissionUuid', unknown['_uuid'])
+    check('W10', "a community P-code EspoCRM doesn't have: recorded with its row, the good row kept, retried later",
+          f'submission {unknown["_id"]}' in failed and 'FIGURES_COMMUNITY row 2' in failed and len(made) == 1
+          and len(by(a, 'CActivityLocation', 'activityId', made[0]['id'])) == 1, failed[-400:])
 
     out = ROOT / 'tests' / 'results' / f'connection-{args.kobo}.json'
     out.parent.mkdir(exist_ok=True)
