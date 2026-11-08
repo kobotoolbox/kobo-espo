@@ -48,6 +48,11 @@ services:
       - espo-data:/var/www/html/data
       - espo-custom:/var/www/html/custom
       - espo-client-custom:/var/www/html/client/custom
+      # Kobo's look (espo/look/, plans/espo-kobo-look-plan.md): a module with the
+      # metadata, and the stylesheet, logo and favicon it points to (not :ro: the
+      # image's entrypoint chowns custom/ and client/custom/, and stops if it can't)
+      - ./espo/look/module:/var/www/html/custom/Espo/Modules/KoboLook
+      - ./espo/look/client:/var/www/html/client/custom/kobo-look
     ports: ["127.0.0.1:${ESPO_PORT:-8085}:80"]
     healthcheck:
       test: ["CMD", "bin/command", "app-check"]

@@ -15,10 +15,11 @@ deploy/Caddyfile            TLS for ESPO_HOST: EspoCRM, and the bridge's EspoCRM
 deploy/bridges.sh           the bridge service, kobo-espo-bridge's `serve`: every connection, set up on the server (up | down | logs)
 espo/seed/seed.py           entities (Response, Site, Standard), fields, Task board, roles, teams, users
 espo/formula/               EspoCRM formula scripts, one file per entity and script type
+espo/look/                  Kobo's look: a module (metadata) and kobo.css, logo, favicon (plans/espo-kobo-look-plan.md)
 kobo/forms/                 the Kobo forms as XLSForm rows (.json; .xlsx from export.py)
 kobo/templates/             the four forms' bridge templates: the tests' fixtures, and the first copy of
                             each connection on a new droplet (then edited in EspoCRM)
-tests/                      run_all.sh, cases/ (isolation, workflow_b, agents, serve, connection, latency),
+tests/                      run_all.sh, cases/ (look, isolation, workflow_b, agents, serve, connection, latency),
                             test_propose.py, results/
 site/                       the manual: pages/, build.py, shots.py, demo-data.py
 agents/                     agents set up in EspoCRM (plans/espo-agents-plan.md): runner.py, llm.py,

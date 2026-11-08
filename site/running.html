@@ -58,7 +58,8 @@ python3 -I espo/seed/seed.py --users   # entities, fields, board, roles, teams, 
 deploy/bridges.sh                  # the bridge: one service for every connection, set up on the server</code></pre>
 <p>Each step can be run again: they all keep what's there and put back what they define.</p>
 <ul>
-  <li><code>deploy/up.sh</code> generates the passwords on the server, the first time.</li>
+  <li><code>deploy/up.sh</code> generates the passwords on the server, the first time. It also sets everyone's theme to EspoCRM's light one, which Kobo's look is made for.</li>
+  <li><strong>Kobo's look</strong> (colours, logo, favicon) is <code>espo/look/</code>, mounted from the repository: a stylesheet of EspoCRM's own colour variables, and a small module that loads it. A company logo set in Administration → User Interface shows instead of Kobo's.</li>
   <li>The seed makes the <strong>Response</strong>, <strong>Site</strong> and <strong>Standard</strong> entities, the task board's columns, the five roles, the teams, and the formula scripts (<code>espo/formula/</code>).</li>
   <li>The bridge sets each form up itself: its fields, its teams, and an API user that can do only what that form needs. It does it again when the template changes.</li>
 </ul>

@@ -1,0 +1,56 @@
+[
+  {
+    "test": "L1",
+    "check": "the stylesheet is served and sets Kobo blue as primary",
+    "ok": true,
+    "detail": 200
+  },
+  {
+    "test": "L1",
+    "check": "logo.svg is served",
+    "ok": true,
+    "detail": 200
+  },
+  {
+    "test": "L1",
+    "check": "favicon.svg is served",
+    "ok": true,
+    "detail": 200
+  },
+  {
+    "test": "L1",
+    "check": "favicon.png is served",
+    "ok": true,
+    "detail": 200
+  },
+  {
+    "test": "L2",
+    "check": "the page loads the stylesheet after EspoCRM's",
+    "ok": true,
+    "detail": [
+      "<link rel=\"stylesheet\" href=\"client/css/espo/espo.css?r=1794147168\" id='main-stylesheet'>",
+      "<link rel=\"stylesheet\" href=\"client/custom/kobo-look/kobo.css?r=1793867488\">"
+    ]
+  },
+  {
+    "test": "L2",
+    "check": "the page's favicon is Kobo's",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "L3",
+    "check": "the light theme's logo is Kobo's (shown when no company logo is set)",
+    "ok": true,
+    "detail": "client/custom/kobo-look/logo.svg"
+  },
+  {
+    "test": "L4",
+    "check": "everyone's theme is the light theme, users can't pick another",
+    "ok": true,
+    "detail": {
+      "theme": "Espo",
+      "userThemesDisabled": true
+    }
+  }
+]

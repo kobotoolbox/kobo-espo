@@ -36,7 +36,13 @@ set -a; source "$SECRETS"; ESPO_SITE_URL=https://$ESPO_HOST; set +a
 export ESPO_HOST
 compose() { docker compose -p kobo-espo --profile tls "$@"; }
 case $CMD in
-    up) compose up -d --remove-orphans ;;
+    up) compose up -d --remove-orphans
+        # Kobo's look (espo/look/) is for the light theme, so that's everyone's theme;
+        # the cache clear rereads its metadata
+        e() { compose exec -T espocrm bin/command "$@"; }
+        e config:set theme Espo
+        e config:set userThemesDisabled true --type=bool
+        e clear-cache ;;
     down) compose down ;;
     destroy) compose down -v ;;
 esac

@@ -1,0 +1,75 @@
+/*
+ * Kobo's look for EspoCRM's light theme ("Espo"): only EspoCRM's own CSS variables,
+ * with Kobo's palette (kpi jsapp/scss/colors.scss, kobotoolbox.org setup/colors.scss).
+ * See plans/espo-kobo-look-plan.md. EspoCRM already uses Inter, the website's font.
+ */
+:root {
+    /* Primary: Kobo blue, hover and pressed in Kobo's darker blues */
+    --brand-primary: #2095f3;
+    --brand-primary-5: #1987e0;
+    --brand-primary-10: #1977c2;
+    --brand-primary-lighten-10: #8fcaf9;
+    --brand-primary-lighten-30: #d2e9fc;
+    --btn-primary-bg: #2095f3;
+    --btn-primary-border: #2095f3;
+    --btn-primary-hover-bg: #1977c2;
+    --btn-primary-hover-border: #1977c2;
+    --btn-primary-active-bg: #135991;
+    --btn-primary-active-border: #135991;
+
+    /* Links: Kobo dark blue; links to records in Kobo's text grey */
+    --link-color: #135991;
+    --link-hover-color: #1977c2;
+    --text-link-color: #135991;
+    --text-link-hover-color: #1977c2;
+    --link-record-color: #333847;
+    --link-record-hover-color: #135991;
+
+    /* Text: Kobo's greys, slightly blue */
+    --text-color: #333847;
+    --text-solid-color: #333847;
+    --text-gray-color: #5a627d;
+    --text-muted-color: #828ba5;
+    --panel-default-text: #333847;
+    --dropdown-link-color: #333847;
+    --input-color: #333847;
+
+    /* Surfaces and lines */
+    --body-bg: #edeef2;
+    --default-heading-bg-color: #e8f4fd;
+    --default-border-color: #e1e3ea;
+    --main-gray: #e1e3ea;
+    --panel-default-border: #e1e3ea;
+    --dropdown-border: #e1e3ea;
+    --table-bg-accent: #f9f9fb;
+
+    /* Navbar: KPI's light sidebar greys, the active tab in Kobo's pale blue */
+    --navbar-bg: #edeef2;
+    --navbar-inverse-bg: #edeef2;
+    --navbar-inverse-border: #e1e3ea;
+    --navbar-inverse-link-color: #333847;
+    --navbar-inverse-link-hover-color: #333847;
+    --navbar-inverse-link-hover-bg: #e1e3ea;
+    --navbar-inverse-link-active-bg: #d2e9fc;
+    --navbar-inverse-link-icon-color: #5a627d;
+    --navbar-inverse-link-icon-hover-color: #333847;
+    --navbar-inverse-toggle-hover-bg: #e1e3ea;
+
+    /* Inputs */
+    --input-border: #cacdd9;
+    --input-border-focus: #2095f3;
+    --input-border-focus-rgba: rgba(32, 149, 243, 0.4);
+
+    /* Status labels (pale background, dark text), in Kobo's tones */
+    --state-primary-bg: #e8f4fd;
+    --state-primary-text: #135991;
+    --state-primary-border: #d2e9fc;
+    --state-success-bg: #e3f9db;
+    --state-success-text: #178949;
+    --state-danger-bg: #ffe9e9;
+    --state-danger-text: #9d0000;
+    --state-warning-bg: #ffe8cc;
+    --state-warning-text: #803f00;
+    --state-info-bg: #eef0f6;
+    --state-info-text: #4f608d;
+}

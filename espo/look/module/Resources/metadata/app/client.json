@@ -1,0 +1,8 @@
+{
+    "cssList": [
+        "__APPEND__",
+        "client/custom/kobo-look/kobo.css"
+    ],
+    "favicon": "client/custom/kobo-look/favicon.svg",
+    "faviconAlternate": "client/custom/kobo-look/favicon.png"
+}
