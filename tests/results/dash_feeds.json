@@ -1,0 +1,211 @@
+[
+  {
+    "test": "D1",
+    "check": "a feed of CFocalPoint: refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "D1",
+    "check": "a feed of Contact: refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "D1",
+    "check": "a feed of User: refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "D1",
+    "check": "a file field: refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "D1",
+    "check": "a field that isn't there: refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "D1",
+    "check": "first call: what it would read (the ETC project's team), changing nothing",
+    "ok": true,
+    "detail": {
+      "would_create": {
+        "api_user": "dash-prj-8h8n-csite",
+        "reads": "CSite records of the team Cluster: Test EQ 1 ETC",
+        "fields": [
+          "latitude",
+          "longitude",
+          "name",
+          "project",
+          "siteCode",
+          "status"
+        ],
+        "writes": "nothing"
+      },
+      "note": "Dashboards show what this user reads to anyone their link or password reaches: EspoCRM's teams no longer apply there. Keep personal data out.",
+      "changed": false,
+      "confirm_required": true,
+      "confirm": "eyJleHAiOiAxNzk0MTU5MjA5LCAiZiI6IHsiYWN0aW9uIjogImNyZWF0ZV9kYXNoYm9hcmRfZmVlZCIsICJlbnRpdHkiOiAiQ1NpdGUiLCAiZmllbGRzIjogWyJsYXRpdHVkZSIsICJsb25naXR1ZGUiLCAicHJvamVjdCIsICJzaXRlQ29kZSIsICJzdGF0dXMiXSwgInRlYW0iOiAiNmFmMDUwNjQ0YmM1YWI4ZTYiLCAidXNlciI6ICJkYXNoLXByai04aDhuLWNzaXRlIn19.s4ZZ3v3-UZKoTZ2pPTFpJlr_xYZhgtM7Hq0Rb9D5bUE",
+      "next": "Show the user this, and call again with `confirm` only once they have agreed."
+    }
+  },
+  {
+    "test": "D1",
+    "check": "its answer has no key: where to find it, and what to do next",
+    "ok": true,
+    "detail": {
+      "changed": true,
+      "api_user": "dash-prj-8h8n-csite",
+      "reads": "CSite of Cluster: Test EQ 1 ETC",
+      "fields": [
+        "siteCode",
+        "status",
+        "latitude",
+        "longitude",
+        "project"
+      ],
+      "its_key": "https://staging.respond.kobolabs.dev/#ApiUser/view/6af0b0257dd069b48 (an admin sees it there)",
+      "next": "Ask the owner to open that page, copy the API key, and paste it into the dashboards admin page (EspoCRM card) with the address https://staging.respond.kobolabs.dev. Never ask for the key in the chat. Then kobo-mcp create_espo_feed with entity CSite and these fields."
+    }
+  },
+  {
+    "test": "D2",
+    "check": "an API user, not an admin (kobo-dash accepts it)",
+    "ok": true,
+    "detail": {
+      "id": "6af0b0257dd069b48",
+      "name": "dash-prj-8h8n-csite",
+      "deleted": false,
+      "userName": "dash-prj-8h8n-csite",
+      "type": "api",
+      "salutationName": null,
+      "firstName": null,
+      "lastName": "dash-prj-8h8n-csite",
+      "isActive": true,
+      "title": null,
+      "emailAddress": null,
+      "phoneNumber": null,
+      "ipAddress": "172.18.0.5",
+      "avatarColor": null,
+      "createdAt": "2026-11-08 17:23:49",
+      "modifiedAt": "2026-11-08 17:23:49",
+      "middleName": null,
+      "emailAddressIsOptedOut": null,
+      "emailAddressIsInvalid": null,
+      "phoneNumberIsOptedOut": null,
+      "phoneNumberIsInvalid": null,
+      "defaultTeamId": "6af050644bc5ab8e6",
+      "defaultTeamName": "Cluster: Test EQ 1 ETC",
+      "teamsIds": [
+        "6af050644bc5ab8e6"
+      ],
+      "teamsNames": {
+        "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC"
+      },
+      "teamsColumns": {
+        "6af050644bc5ab8e6": {
+          "role": null
+        }
+      },
+      "contactId": null,
+      "contactName": null,
+      "avatarId": null,
+      "avatarName": null,
+      "createdById": "6aec3ee286e4b3936",
+      "createdByName": "Admin",
+      "workingTimeCalendarId": null,
+      "emailAddressList": [],
+      "userEmailAddressList": [],
+      "excludeFromReplyEmailAddressList": []
+    }
+  },
+  {
+    "test": "D2",
+    "check": "its key reads the ETC project's sites only",
+    "ok": true,
+    "detail": [
+      "DASHF 158581 VSAT hub"
+    ]
+  },
+  {
+    "test": "D2",
+    "check": "with the fields chosen, not the others (equipment)",
+    "ok": true,
+    "detail": [
+      {
+        "id": "6af0affdf2d60db79",
+        "name": "DASHF 158581 VSAT hub",
+        "createdAt": "2026-11-08 17:23:09",
+        "siteCode": "DF-158581-E",
+        "status": "operational",
+        "latitude": 18,
+        "longitude": -76.8,
+        "projectName": "DASHF 158581 ETC"
+      }
+    ]
+  },
+  {
+    "test": "D2",
+    "check": "another entity's records refused (CActivity)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "D2",
+    "check": "writes nothing: editing its own site refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "D2",
+    "check": "it reads CSite's metadata and option labels (kobo-dash makes its columns from them)",
+    "ok": true,
+    "detail": {
+      "fields": 27,
+      "labels": [
+        "status"
+      ]
+    }
+  },
+  {
+    "test": "D3",
+    "check": "a response's feed (its coordinators' team) reads every project's sites",
+    "ok": true,
+    "detail": "{'DASHF 158581 VSAT hub', 'DASHF 158581 Water point'}"
+  },
+  {
+    "test": "D3",
+    "check": "a second feed for the same scope and entity: refused (remove it first)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "D4",
+    "check": "list_dashboard_feeds: both",
+    "ok": true,
+    "detail": [
+      "dash-prj-8h8n-csite",
+      "dash-rsp-7men-csite"
+    ]
+  },
+  {
+    "test": "D4",
+    "check": "removed: the user and its role gone, its key refused at once",
+    "ok": true,
+    "detail": {
+      "changed": true,
+      "removed": "dash-prj-8h8n-csite"
+    }
+  },
+  {
+    "test": "D4",
+    "check": "remove_dashboard_feed: only feed users (not the bridge's)",
+    "ok": true,
+    "detail": ""
+  }
+]
