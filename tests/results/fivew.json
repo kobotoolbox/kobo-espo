@@ -1,0 +1,266 @@
+[
+  {
+    "test": "W1",
+    "check": "every new record has its short code (RSP-, PRJ-, ORG-, ACT-, TSK-)",
+    "ok": true,
+    "detail": {
+      "CResponse": "RSP-6YCR",
+      "CProject": "PRJ-XBB9",
+      "CResponder": "ORG-6Z4F",
+      "CActivity": "ACT-VFPP",
+      "Task": "TSK-G3CM"
+    }
+  },
+  {
+    "test": "W1",
+    "check": "a code can't be changed through the API (read-only)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W1",
+    "check": "a project found by its code in the list's search",
+    "ok": true,
+    "detail": [
+      {
+        "id": "6af07bf2853903a6c",
+        "name": "FIVEW ETC",
+        "createdAt": "2026-11-08 13:41:06",
+        "createdById": "6aec3ee286e4b3936",
+        "assignedUserId": null
+      }
+    ]
+  },
+  {
+    "test": "W1",
+    "check": "codes are unique (organisations)",
+    "ok": true,
+    "detail": 2
+  },
+  {
+    "test": "W2",
+    "check": "TELCO (ETC): the response's team and the ETC project's",
+    "ok": true,
+    "detail": [
+      "6aec41fec6f7a5f27",
+      "6af050644bc5ab8e6"
+    ]
+  },
+  {
+    "test": "W2",
+    "check": "RCJ (ETC, WASH): both projects' teams",
+    "ok": true,
+    "detail": [
+      "6aec41fec6f7a5f27",
+      "6af050644bc5ab8e6",
+      "6af050661f10ba21a"
+    ]
+  },
+  {
+    "test": "W2",
+    "check": "RCJ no longer in ETC: the ETC team goes",
+    "ok": true,
+    "detail": [
+      "6aec41fec6f7a5f27",
+      "6af050661f10ba21a"
+    ]
+  },
+  {
+    "test": "W2",
+    "check": "a new Shelter project: RCJ (in Shelter) gets its team, TELCO doesn't",
+    "ok": true,
+    "detail": [
+      [
+        "6aec41fec6f7a5f27",
+        "6af050644bc5ab8e6",
+        "6af050661f10ba21a",
+        "6af07c14cf0a4eaf0"
+      ],
+      [
+        "6aec41fec6f7a5f27",
+        "6af050644bc5ab8e6"
+      ]
+    ]
+  },
+  {
+    "test": "W3",
+    "check": "an activity: its project's teams and response",
+    "ok": true,
+    "detail": {
+      "teamsIds": [
+        "6af050661f10ba21a",
+        "6aec41fec6f7a5f27"
+      ],
+      "responseId": "6af07bf15c4cd006f"
+    }
+  },
+  {
+    "test": "W3",
+    "check": "people reached: the six groups summed (62)",
+    "ok": true,
+    "detail": 62
+  },
+  {
+    "test": "W3",
+    "check": "named after its organisation's acronym",
+    "ok": true,
+    "detail": "RCJ \u00b7 Hygiene kits"
+  },
+  {
+    "test": "W3",
+    "check": "the organisation's last report and status follow",
+    "ok": true,
+    "detail": [
+      "2026-11-04",
+      "active"
+    ]
+  },
+  {
+    "test": "W3",
+    "check": "an older report leaves the last report as it was",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W3",
+    "check": "changed: summed again (72)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W4",
+    "check": "an activity that ends before it starts: refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W4",
+    "check": "TELCO (ETC only) reporting under the WASH project: refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W4",
+    "check": "an organisation of another response under this response's project: refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W5",
+    "check": "cluster-lead (ETC): the ETC activity only",
+    "ok": true,
+    "detail": [
+      "TELCO \u00b7 Connectivity"
+    ]
+  },
+  {
+    "test": "W5",
+    "check": "cluster-lead (ETC): the organisations in ETC",
+    "ok": true,
+    "detail": [
+      "FIVEW Red Cross Jamaica",
+      "FIVEW Telecom Partners"
+    ]
+  },
+  {
+    "test": "W5",
+    "check": "cluster-lead: a WASH activity by id refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W5",
+    "check": "cluster-partner (ETC): the ETC activity only",
+    "ok": true,
+    "detail": [
+      "TELCO \u00b7 Connectivity"
+    ]
+  },
+  {
+    "test": "W5",
+    "check": "cluster-partner (ETC): the organisations in ETC",
+    "ok": true,
+    "detail": [
+      "FIVEW Red Cross Jamaica",
+      "FIVEW Telecom Partners"
+    ]
+  },
+  {
+    "test": "W5",
+    "check": "cluster-partner: a WASH activity by id refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W5",
+    "check": "cluster-viewer (WASH): the WASH activities, and RCJ only",
+    "ok": true,
+    "detail": [
+      [
+        "RCJ \u00b7 Hygiene kits",
+        "RCJ \u00b7 Older report"
+      ],
+      [
+        "FIVEW Red Cross Jamaica"
+      ]
+    ]
+  },
+  {
+    "test": "W5",
+    "check": "cluster-viewer: editing an activity refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W5",
+    "check": "staff-1 (the response's team): every activity",
+    "ok": true,
+    "detail": [
+      "RCJ \u00b7 Hygiene kits",
+      "RCJ \u00b7 Older report",
+      "TELCO \u00b7 Connectivity"
+    ]
+  },
+  {
+    "test": "W5",
+    "check": "cluster-partner: reports an ETC activity, in the project's teams",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W5",
+    "check": "cluster-partner: edits their own activity, not one they didn't make",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W5",
+    "check": "cluster-lead: edits any of the project's activities",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W6",
+    "check": "cluster-viewer: reads Jamaica's 14 parishes",
+    "ok": true,
+    "detail": 14
+  },
+  {
+    "test": "W6",
+    "check": "cluster-partner: reads Jamaica's 14 parishes",
+    "ok": true,
+    "detail": 14
+  },
+  {
+    "test": "W6",
+    "check": "staff-1: reads Jamaica's 14 parishes",
+    "ok": true,
+    "detail": 14
+  },
+  {
+    "test": "W6",
+    "check": "cluster-partner: editing a parish refused",
+    "ok": true,
+    "detail": ""
+  }
+]

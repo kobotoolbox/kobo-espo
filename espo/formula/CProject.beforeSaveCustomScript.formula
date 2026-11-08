@@ -49,3 +49,25 @@ if (!entity\isNew() && entity\isAttributeChanged('status') && status == 'Closed'
         }
     }
 }
+
+// A new project, or its cluster changed: the response's organisations in that cluster get
+// its teams (the formula on organisations does the same when they register or change)
+if (responseId && cluster && (entity\isNew() || entity\isAttributeChanged('cluster'))) {
+    $orgs = record\findMany('CResponder', 500, 'createdAt', 'asc', 'responseId=', responseId);
+    $i = 0;
+    while ($i < array\length($orgs)) {
+        $o = array\at($orgs, $i);
+        if (array\includes(record\attribute('CResponder', $o, 'clusters'), cluster)) {
+            $have = record\attribute('CResponder', $o, 'teamsIds');
+            $j = 0;
+            while ($j < array\length(teamsIds)) {
+                if (!array\includes($have, array\at(teamsIds, $j))) {
+                    $have = array\push($have, array\at(teamsIds, $j));
+                }
+                $j = $j + 1;
+            }
+            record\update('CResponder', $o, 'teamsIds', $have);
+        }
+        $i = $i + 1;
+    }
+}

@@ -1,0 +1,100 @@
+[
+ {
+  "name": "Kingston",
+  "pcode": "JM01",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Saint Andrew",
+  "pcode": "JM02",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Saint Thomas",
+  "pcode": "JM03",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Portland",
+  "pcode": "JM04",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Saint Mary",
+  "pcode": "JM05",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Saint Ann",
+  "pcode": "JM06",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Trelawny",
+  "pcode": "JM07",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Saint James",
+  "pcode": "JM08",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Hanover",
+  "pcode": "JM09",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Westmoreland",
+  "pcode": "JM10",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Saint Elizabeth",
+  "pcode": "JM11",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Manchester",
+  "pcode": "JM12",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Clarendon",
+  "pcode": "JM13",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ },
+ {
+  "name": "Saint Catherine",
+  "pcode": "JM14",
+  "level": "admin1",
+  "parentPcode": "JM",
+  "country": "JAM"
+ }
+]

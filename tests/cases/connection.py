@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-The Kobo -> EspoCRM connection end to end: T1-T7, T12, and Workflow C (sites and lists).
+The Kobo -> EspoCRM connection end to end: T1-T7, T12, Workflow C (sites and lists), and
+Workflow E's forms (W7-W10: an organisation registers, then reports an activity).
 
     python3 -I tests/cases/connection.py [--kobo fake|real] [--skip-espo-down]
 
@@ -30,9 +31,11 @@ from lib import ROOT, URL, BridgeError, Espo, admin, as_user, env, secrets  # no
 from bridges import SECRETS, Bridge, by, notifications  # noqa: E402
 
 FORMS = {k: json.loads((ROOT / 'kobo' / 'forms' / f'{k}.json').read_text())
-         for k in ('support-request', 'volunteer-availability', 'site-registration', 'site-visit')}
+         for k in ('support-request', 'volunteer-availability', 'site-registration', 'site-visit',
+                   'responder-registration', 'activity-report')}
 TEMPLATES = {'support-request': 'support-request', 'volunteer-availability': 'volunteer',
-             'site-registration': 'site-registration', 'site-visit': 'site-visit'}
+             'site-registration': 'site-registration', 'site-visit': 'site-visit',
+             'responder-registration': 'responder-registration', 'activity-report': 'activity-report'}
 RUN = str(int(time.time()))[-6:]  # makes this run's emails and site codes its own
 results = []
 
@@ -112,7 +115,7 @@ def main():
     for b in bridges.values():
         b.setup()
     print(f'setup done for {len(bridges)} templates; Kobo {args.kobo} at {kobo_url}')
-    intake, vol, sites, visits = (bridges[k] for k in FORMS)
+    intake, vol, sites, visits, orgs, reports = (bridges[k] for k in FORMS)
     team = {t['name']: t['id'] for t in a.call('GET', '/Team', {'maxSize': 50})['list']}
     user = {u['userName']: u['id'] for u in a.call('GET', '/User', {'maxSize': 200, 'select': 'userName'})['list']}
 
@@ -313,20 +316,20 @@ def main():
     code, log, st = sites.once()
     media = kobo.media_of(uids['site-registration']) if hasattr(kobo, 'media_of') else kobo.media[uids['site-registration']]
     rows = list(csv.DictReader(io.StringIO(media.get('responses.csv', b'').decode())))
-    check('C1', 'responses.csv on the registration form: the active responses, id and name only',
+    check('C1', 'responses.csv on the registration form: the active responses, code and name only',
           {r['label'] for r in rows} >= {'Test EQ 1 response', 'Test EQ 2 response'}
-          and all(set(r) == {'name', 'label'} for r in rows), rows[:3])
+          and all(set(r) == {'name', 'label'} for r in rows) and all(r['name'].startswith('RSP-') for r in rows), rows[:3])
     std = list(csv.DictReader(io.StringIO(media.get('standards.csv', b'').decode())))
     check('C1', 'standards.csv: code, label, requirement, category', {r['name'] for r in std} >= {'WASH-1', 'ENRG-1'}
           and std[0].keys() == {'name', 'label', 'requirement', 'category'}, std[:2])
     code_1, code_2 = f'EQ1-WP-{RUN}', f'EQ2-SP-{RUN}'
-    s_a = submit(uids['site-registration'], {'response': resp[0]['id'], 'site_code': code_1, 'site_name': f'Water point {RUN}',
+    s_a = submit(uids['site-registration'], {'response': resp[0]['code'], 'site_code': code_1, 'site_name': f'Water point {RUN}',
                                               'site_type': 'water_point', 'region': 'North', 'installed': '2026-11-01',
                                               'equipment': 'Hand pump, model X', 'location': '1.23 4.56 0 5',
                                               'standard': 'WASH-2', 'end': '2026-11-05T14:21:06.502+05:30',
                                               'photo': 'site photo (1).png'},
                files={'site photo (1).png': (png((40, 120, 200)), 'image/png')})
-    submit(uids['site-registration'], {'response': resp2[0]['id'], 'site_code': code_2, 'site_name': f'Solar {RUN}',
+    submit(uids['site-registration'], {'response': resp2[0]['code'], 'site_code': code_2, 'site_name': f'Solar {RUN}',
                                        'site_type': 'solar', 'region': 'South', 'installed': '2026-11-02',
                                        'equipment': '4 panels, 1 battery'})
     code, log, st = sites.once()
@@ -344,14 +347,14 @@ def main():
     check('C2', "in its response's team (Site formula)", site.get('teamsIds') == [team['Response: Test EQ 1']])
     check('C2', "media: the site photo is on the site, with the answer's file name (Kobo stores site_photo_1.png)",
           list((site.get('photosNames') or {}).values()) == ['site photo (1).png'], site.get('photosNames'))
-    submit(uids['site-registration'], {'response': resp[0]['id'], 'site_code': code_1, 'site_name': f'Water point {RUN}',
+    submit(uids['site-registration'], {'response': resp[0]['code'], 'site_code': code_1, 'site_name': f'Water point {RUN}',
                                        'site_type': 'water_point', 'region': 'North', 'installed': '2026-11-01',
                                        'equipment': 'Hand pump, model X; new seal'})
     code, log, st = sites.once()
     check('C2', 'registering the same code again updates that site', len(by(a, 'CSite', 'siteCode', code_1)) == 1
           and 'new seal' in a.call('GET', f'/CSite/{site["id"]}')['equipment'] and st['counts']['merged'] == 1, st['counts'])
     code_3 = f'EQ1-XX-{RUN}'
-    bad_std = submit(uids['site-registration'], {'response': resp[0]['id'], 'site_code': code_3, 'site_name': f'Unknown std {RUN}',
+    bad_std = submit(uids['site-registration'], {'response': resp[0]['code'], 'site_code': code_3, 'site_name': f'Unknown std {RUN}',
                                                  'site_type': 'other', 'region': 'North', 'installed': '2026-11-01',
                                                  'equipment': 'x', 'standard': 'NO-SUCH-STD'})
     code, log, st = sites.once()
@@ -397,6 +400,75 @@ def main():
     code, log, st = visits.once()
     check('C3', 'a visit to an unknown site is recorded, not guessed', f'submission {bad["_id"]}' in visits.failed()
           and '0 CSite records' in visits.failed(), visits.failed())
+
+    # --- Workflow E: an organisation registers, then reports an activity ---------------------
+    etc_team, wash_team = team['Cluster: Test EQ 1 ETC'], team['Cluster: Test EQ 1 WASH']
+    projects = {}
+    for cluster, t_id in (('etc', etc_team), ('wash', wash_team)):
+        name = f'Test EQ 1 {cluster.upper()}'
+        projects[cluster] = (by(a, 'CProject', 'name', name) or [a.call('POST', '/CProject', body={
+            'name': name, 'cluster': cluster, 'status': 'Active', 'responseId': resp[0]['id'], 'teamsIds': [t_id]})])[0]
+    acronym = f'T{RUN}'
+    reg = {'response': resp[0]['code'], 'org_name': f'Telecom Partners {RUN}', 'org_acronym': acronym, 'org_type': 'ingo',
+           'clusters': 'etc', 'focal_name': 'Fola Point', 'focal_email': f'focal-{RUN}@example.org',
+           'focal_phone': '+1 876 555 0100', 'registration_key': f'{resp[0]["code"]}/{acronym}'}
+    submit(uids['responder-registration'], reg)
+    code, log, st = orgs.once()
+    org = by(a, 'CResponder', 'registrationKey', reg['registration_key'])
+    org = a.call('GET', f'/CResponder/{org[0]["id"]}') if org else {}
+    check('W7', 'a registration makes a Responding organisation, in its response, with its code',
+          org.get('responseId') == resp[0]['id'] and org.get('acronym') == acronym and org.get('clusters') == ['etc']
+          and (org.get('code') or '').startswith('ORG-'), {k: org.get(k) for k in ('responseId', 'acronym', 'clusters', 'code')}
+          or log[-300:])
+    check('W7', 'linked to its Account and its focal point\'s Contact',
+          org.get('accountName') == f'Telecom Partners {RUN}' and bool(org.get('contactId')),
+          {k: org.get(k) for k in ('accountName', 'contactId')})
+    check('W7', "in the response's team and the ETC project's (its cluster), not WASH's",
+          set(org.get('teamsIds') or []) == {team['Response: Test EQ 1'], etc_team}, org.get('teamsNames'))
+    submit(uids['responder-registration'], {**reg, 'clusters': 'etc wash'})
+    code, log, st = orgs.once()
+    again = by(a, 'CResponder', 'registrationKey', reg['registration_key'])
+    check('W7', 'registering again (now ETC and WASH): the same record, updated, in both projects\' teams',
+          len(again) == 1 and a.call('GET', f'/CResponder/{again[0]["id"]}')['clusters'] == ['etc', 'wash']
+          and wash_team in a.call('GET', f'/CResponder/{again[0]["id"]}')['teamsIds'], [r['id'] for r in again])
+
+    code, log, st = reports.once()
+    media = kobo.media_of(uids['activity-report']) if hasattr(kobo, 'media_of') else kobo.media[uids['activity-report']]
+    lists = {f: list(csv.DictReader(io.StringIO(media.get(f, b'').decode()))) for f in ('responders.csv', 'projects.csv', 'areas.csv')}
+    check('W8', "responders.csv: the response's organisations by code, \"acronym · name\"",
+          any(r['name'] == org.get('code') and r['label'] == f'{acronym} · Telecom Partners {RUN}' for r in lists['responders.csv'])
+          and all(r['name'].startswith('ORG-') for r in lists['responders.csv']), lists['responders.csv'][:3])
+    check('W8', "projects.csv: this response's projects by code, not another response's",
+          {r['label'] for r in lists['projects.csv']} >= {'Test EQ 1 ETC', 'Test EQ 1 WASH'}
+          and all(r['name'].startswith('PRJ-') for r in lists['projects.csv']), lists['projects.csv'])
+    check('W8', 'areas.csv: the 14 parishes by P-code, with level and parent',
+          len(lists['areas.csv']) == 14 and lists['areas.csv'][0] == {'name': 'JM01', 'label': 'Kingston', 'level': 'admin1',
+                                                                    'parent': 'JM'}, lists['areas.csv'][:2])
+    rep_a = submit(uids['activity-report'], {
+        'today': '2026-11-06', 'responder': org['code'], 'project': projects['etc']['code'],
+        'activity_type': 'etc_connectivity', 'status': 'ongoing', 'start_date': '2026-11-04', 'parish': 'JM01',
+        'site_code': code_1, 'reached/girls': '5', 'reached/boys': '4', 'reached/women': '30', 'reached/men': '40',
+        'reached/elderly_women': '1', 'reached/elderly_men': '2', 'reached/households': '25', 'quantity': '3',
+        'unit': 'VSAT terminals'})
+    code, log, st = reports.once()
+    act = by(a, 'CActivity', 'cKoboSubmissionUuid', rep_a['_uuid'])
+    act = a.call('GET', f'/CActivity/{act[0]["id"]}') if act else {}
+    kingston = by(a, 'CAdminArea', 'pcode', 'JM01')[0]
+    check('W9', 'an activity report makes an Activity: its organisation, project, parish and site, by their codes',
+          act.get('responderId') == org['id'] and act.get('projectId') == projects['etc']['id']
+          and act.get('adminAreaId') == kingston['id'] and act.get('siteId') == site.get('id'),
+          {k: act.get(k) for k in ('responderId', 'projectId', 'adminAreaId', 'siteId')} or log[-300:])
+    check('W9', "in the ETC project's teams; people reached summed (82); its organisation's last report",
+          set(act.get('teamsIds') or []) == {team['Response: Test EQ 1'], etc_team} and act.get('peopleReached') == 82
+          and a.call('GET', f'/CResponder/{org["id"]}').get('lastReport') == '2026-11-06',
+          {k: act.get(k) for k in ('teamsIds', 'peopleReached')})
+    bad = submit(uids['activity-report'], {'today': '2026-11-06', 'responder': org['code'], 'project': projects['wash']['code'],
+                                           'activity_type': 'wash_hygiene_kits', 'status': 'ongoing',
+                                           'start_date': '2026-11-10', 'end_date': '2026-11-01', 'parish': 'JM02'})
+    code, log, st = reports.once()
+    check('W10', 'an activity that ends before it starts: recorded with its reason, not made',
+          f'submission {bad["_id"]}' in reports.failed() and 'ends before it starts' in reports.failed()
+          and not by(a, 'CActivity', 'cKoboSubmissionUuid', bad['_uuid']), reports.failed()[-300:])
 
     out = ROOT / 'tests' / 'results' / f'connection-{args.kobo}.json'
     out.parent.mkdir(exist_ok=True)

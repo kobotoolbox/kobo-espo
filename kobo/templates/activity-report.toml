@@ -1,0 +1,136 @@
+# Workflow E: an organisation's activity in one response (Test EQ 1), one per submission:
+# what, where (parish by P-code, and the site if it's at one), when, for how many people.
+# It goes into its project's teams (formula), its people reached are summed, and its
+# organisation's last report moves on. The form picks the organisation and the project
+# from that response's lists, by their codes (ORG-..., PRJ-...).
+
+[bridge]
+user = "kobo-activities"
+role = "Kobo activities"
+secret = "ESPO_ACTIVITIES_API_KEY"
+
+[form]
+name = "Activity report - Test EQ 1 (espo-kobo test)"
+
+[record]
+entity = "CActivity"
+panel = "Report"
+name = "{activity_type} · {start_date}"
+required = ["responder", "project", "activity_type", "start_date", "parish"]
+
+[[field]]
+kobo = "responder"
+espo = "responder"
+type = "link"
+entity = "CResponder"
+lookup = "code"
+
+[[field]]
+kobo = "project"
+espo = "project"
+type = "link"
+entity = "CProject"
+lookup = "code"
+
+[[field]]
+kobo = "parish"
+espo = "adminArea"
+type = "link"
+entity = "CAdminArea"
+lookup = "pcode"
+
+[[field]]  # optional: the site, by its site code
+kobo = "site_code"
+espo = "site"
+type = "link"
+entity = "CSite"
+lookup = "siteCode"
+
+[[field]]
+kobo = "activity_type"
+espo = "activityType"
+
+[[field]]
+kobo = "status"
+espo = "status"
+
+[[field]]
+kobo = "start_date"
+espo = "startDate"
+
+[[field]]
+kobo = "end_date"
+espo = "endDate"
+
+[[field]]
+kobo = "today"
+espo = "reportDate"
+
+[[field]]
+kobo = "girls"
+espo = "girls"
+type = "int"
+
+[[field]]
+kobo = "boys"
+espo = "boys"
+type = "int"
+
+[[field]]
+kobo = "women"
+espo = "women"
+type = "int"
+
+[[field]]
+kobo = "men"
+espo = "men"
+type = "int"
+
+[[field]]
+kobo = "elderly_women"
+espo = "elderlyWomen"
+type = "int"
+
+[[field]]
+kobo = "elderly_men"
+espo = "elderlyMen"
+type = "int"
+
+[[field]]
+kobo = "households"
+espo = "households"
+type = "int"
+
+[[field]]
+kobo = "quantity"
+espo = "quantity"
+type = "float"
+
+[[field]]
+kobo = "unit"
+espo = "unit"
+
+# The response's organisations and projects (its team), and the country's parishes
+[[list]]
+file = "responders.csv"
+entity = "CResponder"
+team = "Response: Test EQ 1"
+order_by = "acronym"
+columns = { name = "code", label = "{acronym} · {name}" }
+forms = ["Activity report - Test EQ 1 (espo-kobo test)"]
+
+[[list]]
+file = "projects.csv"
+entity = "CProject"
+team = "Response: Test EQ 1"
+where = { status = ["Planning", "Active"] }
+order_by = "name"
+columns = { name = "code", label = "name" }
+forms = ["Activity report - Test EQ 1 (espo-kobo test)"]
+
+[[list]]
+file = "areas.csv"
+entity = "CAdminArea"
+order_by = "pcode"
+columns = { name = "pcode", label = "name", level = "level", parent = "parentPcode" }
+forms = ["Activity report - Test EQ 1 (espo-kobo test)"]

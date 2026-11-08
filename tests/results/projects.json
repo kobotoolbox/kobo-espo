@@ -13,12 +13,12 @@
     "check": "a project's site: the project's teams, and its response",
     "ok": true,
     "detail": {
-      "id": "6af0539d225bcf316",
+      "id": "6af07c66b614429d8",
       "name": "PRJ VSAT hub",
       "deleted": false,
       "description": null,
-      "createdAt": "2026-11-08 10:49:01",
-      "modifiedAt": "2026-11-08 10:49:01",
+      "createdAt": "2026-11-08 13:43:02",
+      "modifiedAt": "2026-11-08 13:43:02",
       "siteCode": "PRJ-E1",
       "siteType": null,
       "status": "planned",
@@ -35,7 +35,7 @@
       "location": null,
       "standardCode": null,
       "registeredAt": null,
-      "streamUpdatedAt": "2026-11-08 10:49:01",
+      "streamUpdatedAt": "2026-11-08 13:43:02",
       "createdById": "6aec3ee286e4b3936",
       "createdByName": "Admin",
       "modifiedById": null,
@@ -50,13 +50,13 @@
         "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
         "6aec41fec6f7a5f27": "Response: Test EQ 1"
       },
-      "responseId": "6af053985d7e25363",
+      "responseId": "6af07c63f036109b2",
       "responseName": "PRJ Hurricane",
       "photosIds": [],
       "photosNames": {},
       "standardId": null,
       "standardName": null,
-      "projectId": "6af0539aaae420acb",
+      "projectId": "6af07c64efd9b70fa",
       "projectName": "PRJ Hurricane ETC",
       "isFollowed": false,
       "followersIds": [],
@@ -69,7 +69,7 @@
     "check": "a project's task: the project's teams, and its response",
     "ok": true,
     "detail": {
-      "id": "6af0539f0e59e8b10",
+      "id": "6af07c6888c7e2ec5",
       "name": "PRJ ETC task of the lead",
       "deleted": false,
       "status": "Backlog",
@@ -81,9 +81,10 @@
       "dateCompleted": null,
       "reminders": [],
       "description": null,
-      "createdAt": "2026-11-08 10:49:03",
-      "modifiedAt": "2026-11-08 10:49:03",
-      "streamUpdatedAt": "2026-11-08 10:49:03",
+      "createdAt": "2026-11-08 13:43:04",
+      "modifiedAt": "2026-11-08 13:43:04",
+      "cCode": "TSK-3DSZ",
+      "streamUpdatedAt": "2026-11-08 13:43:04",
       "parentId": null,
       "parentType": null,
       "parentName": null,
@@ -113,9 +114,9 @@
       },
       "attachmentsIds": [],
       "attachmentsNames": {},
-      "cResponseId": "6af053985d7e25363",
+      "cResponseId": "6af07c63f036109b2",
       "cResponseName": "PRJ Hurricane",
-      "cProjectId": "6af0539aaae420acb",
+      "cProjectId": "6af07c64efd9b70fa",
       "cProjectName": "PRJ Hurricane ETC",
       "isFollowed": false,
       "followersIds": [
@@ -326,8 +327,8 @@
     "check": "a task on a site: in the site's project, response and teams",
     "ok": true,
     "detail": {
-      "cProjectId": "6af0539aaae420acb",
-      "cResponseId": "6af053985d7e25363",
+      "cProjectId": "6af07c64efd9b70fa",
+      "cResponseId": "6af07c63f036109b2",
       "teamsIds": [
         "6af050644bc5ab8e6",
         "6aec41fec6f7a5f27"
@@ -418,12 +419,12 @@
       [
         "6aec41fec6f7a5f27",
         "6af050644bc5ab8e6",
-        "6af053dc4e94f889e"
+        "6af07cadb38286157"
       ],
       [
         "6aec41fec6f7a5f27",
         "6af050644bc5ab8e6",
-        "6af053dc4e94f889e"
+        "6af07cadb38286157"
       ]
     ]
   },

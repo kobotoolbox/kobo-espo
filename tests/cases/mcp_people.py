@@ -106,9 +106,15 @@ def run(a, inst):
     check('U3', "create_project: in its own new team and the response's",
           done.get('changed') and set(a.call('GET', f'/CProject/{proj["id"]}')['teamsIds']) == {pteam.get('id'), team['id']},
           done)
+    check('U3', "the cluster asked for by its label is stored as its code",
+          a.call('GET', f'/CProject/{proj["id"]}').get('cluster') == 'etc')
+    by_code = tools.create_project(inst, a.call('GET', f'/CResponse/{resp["id"]}')['code'], 'WASH', cluster='wash')
+    check('U3', "the response named by its short code (first call only)",
+          by_code.get('would_create', {}).get('response') == RESPONSE, by_code)
     listed = next((r for r in tools.list_projects(inst)['responses'] if r['response'] == RESPONSE), {})
-    check('U3', 'list_projects: the response with its project', [p['project'] for p in listed.get('projects', [])] == [name],
-          listed)
+    check('U3', 'list_projects: the response with its project, and their codes',
+          [p['project'] for p in listed.get('projects', [])] == [name] and listed.get('code', '').startswith('RSP-')
+          and listed['projects'][0]['code'].startswith('PRJ-'), listed)
 
     # --- U4: a person -----------------------------------------------------------------------
     team_name = f'Cluster: {name}'

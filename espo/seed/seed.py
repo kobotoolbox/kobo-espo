@@ -3,7 +3,7 @@
 Set up this EspoCRM for the plan's workflows (A: request intake, B: response tasking,
 C: sites and lists). Idempotent: run it again after changing anything here.
 
-    python3 -I espo/seed/seed.py [--url https://espo-test.kobolabs.dev] [--users]
+    python3 -I espo/seed/seed.py [--url https://staging.respond.kobolabs.dev] [--users]
 
 Makes, with the admin API only (no files on the server):
   - entities: Response (CResponse), Cluster project (CProject), Site (CSite), Standard
@@ -39,6 +39,26 @@ TEAMS = ['Internal Kobo', 'Project: Consortium A', 'Project: Consortium B',
          'Response: Test EQ 1', 'Response: Test EQ 2', 'Roster and volunteers', 'Grants review',
          'Cluster: Test EQ 1 ETC', 'Cluster: Test EQ 1 WASH']
 
+# The IASC clusters, as Kobo choice names (no spaces) with their labels: a project's cluster,
+# and the clusters a responding organisation works in
+CLUSTERS = {'cccm': 'CCCM', 'early_recovery': 'Early Recovery', 'education': 'Education',
+            'etc': 'Emergency Telecommunications', 'food_security': 'Food Security', 'health': 'Health',
+            'logistics': 'Logistics', 'nutrition': 'Nutrition', 'protection': 'Protection', 'shelter': 'Shelter',
+            'wash': 'WASH', 'other': 'Other'}
+# Workflow E (plans/workflow-e-5w-plan.md): what an organisation reports doing. A draft,
+# to be agreed with real clusters' 5W templates (the plan's phase 0)
+ACTIVITY_TYPES = {
+    'etc_connectivity': 'ETC: internet connectivity for responders', 'etc_radio': 'ETC: radio network',
+    'etc_charging': 'ETC: charging station', 'etc_helpdesk': 'ETC: user support / help desk',
+    'wash_water_trucking': 'WASH: water trucking', 'wash_water_point': 'WASH: water point repair or installation',
+    'wash_hygiene_kits': 'WASH: hygiene kits', 'wash_latrines': 'WASH: latrines',
+    'shelter_kits': 'Shelter: emergency shelter kits', 'shelter_tarpaulins': 'Shelter: tarpaulins',
+    'shelter_repair': 'Shelter: repair support', 'health_mobile_clinic': 'Health: mobile clinic',
+    'health_consultations': 'Health: consultations', 'food_distribution': 'Food: food distribution',
+    'food_cash': 'Food: cash for food', 'log_storage': 'Logistics: storage', 'log_transport': 'Logistics: transport',
+    'protection_pss': 'Protection: psychosocial support', 'cccm_site_management': 'CCCM: site management',
+    'other': 'Other'}
+
 ENTITIES = {
     'Response': {'labelPlural': 'Responses', 'iconClass': 'fas fa-house-damage', 'fields': {
         'status': {'type': 'enum', 'options': ['Planning', 'Active', 'Closed'], 'default': 'Planning',
@@ -53,9 +73,7 @@ ENTITIES = {
     # Melissa): in its own team and its response's, so the cluster's people see its sites and
     # tasks, and the response's coordinators see every project's
     'Project': {'label': 'Cluster project', 'labelPlural': 'Cluster projects', 'iconClass': 'fas fa-layer-group', 'fields': {
-        'cluster': {'type': 'enum', 'options': ['', 'CCCM', 'Early Recovery', 'Education', 'Emergency Telecommunications',
-                                                'Food Security', 'Health', 'Logistics', 'Nutrition', 'Protection',
-                                                'Shelter', 'WASH', 'Other']},
+        'cluster': {'type': 'enum', 'options': [''] + list(CLUSTERS), 'translatedOptions': CLUSTERS},
         'status': {'type': 'enum', 'options': ['Planning', 'Active', 'Closed'], 'default': 'Planning',
                    'style': {'Active': 'success', 'Closed': 'info'}},
         'startDate': {'type': 'date', 'label': 'Start date'},
@@ -79,6 +97,51 @@ ENTITIES = {
         'equipment': {'type': 'text'},
         'lastVisit': {'type': 'date', 'label': 'Last visit'},
         'photos': {'type': 'attachmentMultiple'},  # from the registration form (kobo-espo-bridge media)
+    }},
+    # Workflow E: an organisation registered as responding in a response, in the teams of the
+    # response and of its projects in the clusters they work in (formula)
+    'Responder': {'label': 'Responding organisation', 'labelPlural': 'Responding organisations',
+                  'iconClass': 'fas fa-hands-helping', 'fields': {
+        'acronym': {'type': 'varchar', 'maxLength': 30},
+        'orgType': {'type': 'enum', 'label': 'Type', 'options': ['', 'un', 'ingo', 'nngo', 'rcrc', 'government', 'private', 'other'],
+                    'translatedOptions': {'un': 'UN agency', 'ingo': 'International NGO', 'nngo': 'National NGO',
+                                          'rcrc': 'Red Cross / Red Crescent', 'government': 'Government',
+                                          'private': 'Private sector', 'other': 'Other'}},
+        'clusters': {'type': 'multiEnum', 'options': list(CLUSTERS), 'translatedOptions': CLUSTERS},
+        'status': {'type': 'enum', 'options': ['registered', 'active', 'inactive'], 'default': 'registered',
+                   'translatedOptions': {'registered': 'Registered', 'active': 'Reporting', 'inactive': 'Inactive'},
+                   'style': {'active': 'success', 'inactive': 'info'}},
+        'focalPoint': {'type': 'varchar', 'label': 'Focal point'},
+        'focalPointPhone': {'type': 'varchar', 'label': 'Focal point phone', 'maxLength': 40},
+        'registrationKey': {'type': 'varchar', 'label': 'Registration key',
+                            'tooltipText': 'Response and acronym: registering again updates the same record'},
+        'lastReport': {'type': 'date', 'label': 'Last report'},
+    }},
+    # Workflow E: one thing an organisation did, where, when, for how many people
+    'Activity': {'label': 'Activity', 'labelPlural': 'Activities', 'iconClass': 'fas fa-clipboard-check', 'fields': {
+        'activityType': {'type': 'enum', 'label': 'Activity', 'options': [''] + list(ACTIVITY_TYPES),
+                         'translatedOptions': ACTIVITY_TYPES},
+        'status': {'type': 'enum', 'options': ['planned', 'ongoing', 'completed'], 'default': 'ongoing',
+                   'translatedOptions': {'planned': 'Planned', 'ongoing': 'Ongoing', 'completed': 'Completed'},
+                   'style': {'completed': 'success'}},
+        'startDate': {'type': 'date', 'label': 'Start date'},
+        'endDate': {'type': 'date', 'label': 'End date'},
+        'reportDate': {'type': 'date', 'label': 'Reported on'},
+        'girls': {'type': 'int', 'min': 0}, 'boys': {'type': 'int', 'min': 0},
+        'women': {'type': 'int', 'min': 0}, 'men': {'type': 'int', 'min': 0},
+        'elderlyWomen': {'type': 'int', 'label': 'Women 60+', 'min': 0},
+        'elderlyMen': {'type': 'int', 'label': 'Men 60+', 'min': 0},
+        'peopleReached': {'type': 'int', 'label': 'People reached', 'tooltipText': 'The sum of the six groups (formula)'},
+        'households': {'type': 'int', 'min': 0},
+        'quantity': {'type': 'float', 'tooltipText': 'How many of the unit, e.g. 500 (hygiene kits)'},
+        'unit': {'type': 'varchar', 'maxLength': 60},
+    }},
+    # Workflow E: the country's administrative areas (COD-AB P-codes), read by everyone
+    'AdminArea': {'label': 'Admin area', 'labelPlural': 'Admin areas', 'iconClass': 'fas fa-map', 'stream': False, 'fields': {
+        'pcode': {'type': 'varchar', 'label': 'P-code', 'required': True, 'maxLength': 30},
+        'level': {'type': 'enum', 'options': ['admin1', 'admin2', 'admin3'], 'default': 'admin1'},
+        'parentPcode': {'type': 'varchar', 'label': 'Parent P-code', 'maxLength': 30},
+        'country': {'type': 'varchar', 'label': 'Country (ISO3)', 'maxLength': 3},
     }},
     'Standard': {'labelPlural': 'Standards', 'iconClass': 'fas fa-book', 'fields': {
         'code': {'type': 'varchar', 'required': True},
@@ -191,6 +254,19 @@ ENTITIES = {
         'ddSummary': {'type': 'text', 'label': 'Due diligence summary'},
     }},
 }
+# Short codes (espo/formula/_code.formula), as Ponto's: what people say and Kobo lists use as
+# choice names (a list's name = "code", a template's link lookup = "code"). Sites have their
+# site code, standards their code, admin areas their P-code, cases EspoCRM's number
+CODES = {'CResponse': 'RSP', 'CProject': 'PRJ', 'CResponder': 'ORG', 'CActivity': 'ACT', 'Task': 'TSK',
+         'CApplication': 'APP'}
+CODE_FIELD = {'type': 'varchar', 'label': 'Code', 'maxLength': 12, 'readOnly': True,
+              'tooltipText': 'Given by EspoCRM, e.g. PRJ-7K3Q: to name this record, and in Kobo lists'}
+
+
+def code_field(entity):
+    return 'code' if entity.startswith('C') and entity not in ('Case', 'Contact') else 'cCode'
+
+
 # The entities agents work on: their API Before Save Script starts with _agent-guard.formula
 AGENT_GUARDED = ['CApplication', 'CSite', 'Task']
 # (entity, link, foreign entity, foreign link, type). The link on Task, EspoCRM's own
@@ -202,6 +278,14 @@ LINKS = [('CResponse', 'tasks', 'Task', 'response', 'oneToMany'),
          ('CProject', 'sites', 'CSite', 'project', 'oneToMany'),
          ('CProject', 'tasks', 'Task', 'project', 'oneToMany'),  # Task.cProject
          ('CProject', 'lead', 'User', 'leadOfProjects', 'manyToOne'),
+         ('CResponse', 'responders', 'CResponder', 'response', 'oneToMany'),
+         ('CResponder', 'account', 'Account', 'responderProfiles', 'manyToOne'),
+         ('CResponder', 'contact', 'Contact', 'responderProfiles', 'manyToOne'),  # the focal point
+         ('CResponder', 'activities', 'CActivity', 'responder', 'oneToMany'),
+         ('CProject', 'activities', 'CActivity', 'project', 'oneToMany'),
+         ('CResponse', 'activities', 'CActivity', 'response', 'oneToMany'),
+         ('CSite', 'activities', 'CActivity', 'site', 'oneToMany'),
+         ('CAdminArea', 'activities', 'CActivity', 'adminArea', 'oneToMany'),
          ('CResponse', 'lead', 'User', 'leadOfResponses', 'manyToOne'),
          ('CAgent', 'routes', 'CAgentRoute', 'agent', 'oneToMany'),
          ('CAgent', 'user', 'User', 'agentProfiles', 'manyToOne'),  # its API user (agents/sync.py)
@@ -241,8 +325,10 @@ ROLES = {
     # Kobo staff: everything of their teams, no delete
     'Internal Staff': {
         'data': {e: access('yes', TEAM, TEAM) for e in
-                 ('Case', 'Task', 'CResponse', 'CProject', 'CSite', 'Contact', 'Account', 'CApplication')}
-        | {'CStandard': access('yes', ALL, ALL), 'Team': {'read': ALL}, 'User': {'read': TEAM}},
+                 ('Case', 'Task', 'CResponse', 'CProject', 'CSite', 'Contact', 'Account', 'CApplication',
+                  'CResponder', 'CActivity')}
+        | {'CStandard': access('yes', ALL, ALL), 'CAdminArea': access('yes', ALL, ALL),
+           'Team': {'read': ALL}, 'User': {'read': TEAM}},
         'assignmentPermission': TEAM, 'userPermission': TEAM, 'mentionPermission': TEAM,
         'exportPermission': 'no', 'massUpdatePermission': 'yes',
     },
@@ -281,7 +367,9 @@ ROLES = {
     'Cluster Lead': {
         'data': {'CProject': access('no', TEAM, TEAM), 'CSite': access('yes', TEAM, TEAM),
                  'Task': access('yes', TEAM, TEAM), 'CResponse': access('no', TEAM, NO),
-                 'CStandard': access('no', ALL, NO), 'Team': {'read': TEAM}, 'User': {'read': TEAM}},
+                 'CResponder': access('no', TEAM, TEAM), 'CActivity': access('yes', TEAM, TEAM),
+                 'CStandard': access('no', ALL, NO), 'CAdminArea': access('no', ALL, NO),
+                 'Team': {'read': TEAM}, 'User': {'read': TEAM}},
         'assignmentPermission': TEAM, 'userPermission': TEAM, 'mentionPermission': TEAM,
         'exportPermission': 'no', 'massUpdatePermission': 'no',
     },
@@ -289,7 +377,9 @@ ROLES = {
     'Cluster Partner': {
         'data': {'CProject': access('no', TEAM, NO), 'CSite': access('yes', TEAM, TEAM),
                  'Task': access('yes', TEAM, OWN, TEAM), 'CResponse': access('no', TEAM, NO),
-                 'CStandard': access('no', ALL, NO), 'Team': {'read': TEAM}, 'User': {'read': TEAM}},
+                 'CResponder': access('no', TEAM, NO), 'CActivity': access('yes', TEAM, OWN, TEAM),
+                 'CStandard': access('no', ALL, NO), 'CAdminArea': access('no', ALL, NO),
+                 'Team': {'read': TEAM}, 'User': {'read': TEAM}},
         'assignmentPermission': TEAM, 'userPermission': TEAM, 'mentionPermission': TEAM,
         'exportPermission': 'no', 'massUpdatePermission': 'no',
     },
@@ -297,7 +387,9 @@ ROLES = {
     'Cluster Viewer': {
         'data': {'CProject': access('no', TEAM, NO), 'CSite': access('no', TEAM, NO),
                  'Task': access('no', TEAM, NO), 'CResponse': access('no', TEAM, NO),
-                 'CStandard': access('no', ALL, NO), 'Team': {'read': TEAM}, 'User': {'read': TEAM}},
+                 'CResponder': access('no', TEAM, NO), 'CActivity': access('no', TEAM, NO),
+                 'CStandard': access('no', ALL, NO), 'CAdminArea': access('no', ALL, NO),
+                 'Team': {'read': TEAM}, 'User': {'read': TEAM}},
         'assignmentPermission': NO, 'userPermission': TEAM, 'mentionPermission': TEAM,
         'exportPermission': 'no', 'massUpdatePermission': 'no',
     },
@@ -405,6 +497,11 @@ def ensure_formulas(espo):
         entity, kind = path.stem.split('.')
         by_entity.setdefault(entity, {})[kind] = path.read_text()
     guard = (ROOT / 'espo' / 'formula' / '_agent-guard.formula').read_text()
+    code = (ROOT / 'espo' / 'formula' / '_code.formula').read_text()
+    for entity, prefix in CODES.items():
+        scripts = by_entity.setdefault(entity, {})
+        snippet = code.replace('FIELD', code_field(entity)).replace('PREFIX', prefix).replace('ENTITY', entity)
+        scripts['beforeSaveCustomScript'] = snippet + '\n' + scripts.get('beforeSaveCustomScript', '')
     for entity in AGENT_GUARDED:
         g = guard
         if 'stage' not in metadata(espo, f'entityDefs.{entity}.fields'):
@@ -442,23 +539,36 @@ def ensure_layout_fields(espo, entity, names, panel='Details'):
 def ensure_layouts(espo):
     ensure_layout_fields(espo, 'CResponse', ['status', 'emergencyType', 'country', 'lead', 'startDate', 'endDate'])
     ensure_layout_fields(espo, 'CProject', ['cluster', 'status', 'response', 'lead', 'startDate', 'endDate'])
+    ensure_layout_fields(espo, 'CResponder', ['response', 'account', 'acronym', 'orgType', 'clusters', 'status',
+                                              'focalPoint', 'contact', 'focalPointPhone', 'lastReport', 'registrationKey'])
+    ensure_layout_fields(espo, 'CActivity', ['responder', 'project', 'response', 'activityType', 'status', 'adminArea',
+                                             'site', 'startDate', 'endDate', 'reportDate', 'quantity', 'unit'])
+    ensure_layout_fields(espo, 'CActivity', ['girls', 'boys', 'women', 'men', 'elderlyWomen', 'elderlyMen',
+                                             'peopleReached', 'households'])
+    ensure_layout_fields(espo, 'CAdminArea', ['pcode', 'level', 'parentPcode', 'country'])
     ensure_layout_fields(espo, 'CSite', ['siteCode', 'siteType', 'status', 'region', 'response', 'project', 'standard', 'installedAt',
                                          'lastVisit', 'latitude', 'longitude', 'equipment', 'photos'])
     ensure_layout_fields(espo, 'CStandard', ['code', 'category', 'source', 'requirement'])
     ensure_layout_fields(espo, 'Task', ['cResponse', 'cProject'])  # EspoCRM's own entity: c-prefixed
     ensure_layout_fields(espo, 'Contact', ['cProfileType', 'cAvailability'])
     ensure_layout_fields(espo, 'Case', ['cSource'])
-    for entity, cols in {'CResponse': ['name', 'status', 'emergencyType', 'country', 'lead', 'teams'],
-                         'CProject': ['name', 'cluster', 'status', 'response', 'lead', 'teams'],
+    for entity, cols in {'CResponse': ['name', 'code', 'status', 'emergencyType', 'country', 'lead', 'teams'],
+                         'CProject': ['name', 'code', 'cluster', 'status', 'response', 'lead', 'teams'],
+                         'CResponder': ['name', 'code', 'acronym', 'orgType', 'clusters', 'status', 'lastReport', 'response'],
+                         'CActivity': ['name', 'code', 'responder', 'project', 'activityType', 'adminArea', 'status',
+                                       'peopleReached', 'startDate'],
+                         'CAdminArea': ['name', 'pcode', 'level', 'parentPcode', 'country'],
                          'CSite': ['name', 'siteCode', 'siteType', 'status', 'region', 'project', 'lastVisit'],
                          'CStandard': ['name', 'code', 'category', 'source']}.items():
         espo.call('PUT', f'/{entity}/layout/list',
                   body=[{'name': n, **({'link': True} if n == 'name' else {})} for n in cols])
     # A response's page: its projects, tasks and sites below it; a project's, its sites and
     # tasks; a site's, its tasks
-    espo.call('PUT', '/CResponse/layout/relationships', body=[{'name': 'projects'}, {'name': 'tasks'}, {'name': 'sites'}])
-    espo.call('PUT', '/CProject/layout/relationships', body=[{'name': 'sites'}, {'name': 'tasks'}])
-    espo.call('PUT', '/CSite/layout/relationships', body=[{'name': 'tasks'}])
+    espo.call('PUT', '/CResponse/layout/relationships', body=[{'name': 'projects'}, {'name': 'responders'},
+                                                               {'name': 'tasks'}, {'name': 'sites'}])
+    espo.call('PUT', '/CProject/layout/relationships', body=[{'name': 'sites'}, {'name': 'activities'}, {'name': 'tasks'}])
+    espo.call('PUT', '/CSite/layout/relationships', body=[{'name': 'tasks'}, {'name': 'activities'}])
+    espo.call('PUT', '/CResponder/layout/relationships', body=[{'name': 'activities'}])
     kanban = [{'name': 'name', 'link': True}, {'name': 'cProject'}, {'name': 'cResponse'}, {'name': 'assignedUser'},
               {'name': 'dateEnd'}]
     espo.call('PUT', '/Task/layout/kanban', body=kanban)
@@ -477,7 +587,7 @@ def ensure_layouts(espo):
     for entity, cols in {'CAgent': ['name', 'mode', 'entity', 'trigger', 'model', 'version', 'activeSince'],
                          'CAgentRoute': ['name', 'agent', 'order', 'ruleWhen', 'moveToStage', 'createTask'],
                          'CAgentRun': ['createdAt', 'agent', 'recordName', 'status', 'route', 'routeBy', 'cost'],
-                         'CApplication': ['name', 'account', 'country', 'stage', 'ddSanctions', 'ddRisk', 'assignedUser']
+                         'CApplication': ['name', 'code', 'account', 'country', 'stage', 'ddSanctions', 'ddRisk', 'assignedUser']
                          }.items():
         espo.call('PUT', f'/{entity}/layout/list',
                   body=[{'name': n, **({'link': True} if n in ('name', 'createdAt') else {})} for n in cols])
@@ -494,6 +604,29 @@ def ensure_layouts(espo):
     espo.call('PUT', '/CApplication/layout/kanban',
               body=[{'name': 'name', 'link': True}, {'name': 'account'}, {'name': 'ddRisk'}, {'name': 'assignedUser'}])
     print('layouts: agents, applications (board)')
+    for entity in CODES:
+        ensure_layout_fields(espo, entity, [code_field(entity)])
+
+
+def backfill_codes(espo):
+    """Records made before they had codes: saved once, so the formula gives them one (the
+    field is read-only: the API can't set it)."""
+    for entity in CODES:
+        field, done = code_field(entity), set()
+        while True:
+            rows = espo.call('GET', f'/{entity}', {'maxSize': 100, 'select': 'id,name',
+                                                   'where[0][type]': 'isNull', 'where[0][attribute]': field})['list']
+            rows = [r for r in rows if r['id'] not in done]
+            if not rows:
+                break
+            for r in rows:
+                espo.call('PUT', f'/{entity}/{r["id"]}', body={'name': r['name']})
+                done.add(r['id'])
+            print(f'codes: {entity} {len(rows)}')
+        left = espo.call('GET', f'/{entity}', {'maxSize': 1, 'select': 'id', 'where[0][type]': 'isNull',
+                                               'where[0][attribute]': field})['total']
+        if left:
+            print(f'codes: {entity}: {left} record(s) still without a code')
 
 
 def ensure_agents(espo, teams):
@@ -538,7 +671,8 @@ def main():
                                                     | {'Case', 'Task', 'CResponse', 'CProject', 'CSite', 'CApplication'}),
         # In global search, so the isolation tests (T8) search them too
         'globalSearchEntityList': sorted(set(settings.get('globalSearchEntityList') or [])
-                                         | {'Case', 'Contact', 'Account', 'Task', 'CResponse', 'CProject', 'CSite', 'CStandard', 'CApplication'}),
+                                         | {'Case', 'Contact', 'Account', 'Task', 'CResponse', 'CProject', 'CSite', 'CStandard',
+                                            'CApplication', 'CResponder', 'CActivity'}),
         'applicationName': 'Kobo requests and responses (test)'})
     print('settings: assignment notifications for Case, Task, Response, Project, Site, Application; global search')
 
@@ -546,13 +680,29 @@ def main():
     for entity, fields in FIELDS.items():
         for name, spec in fields.items():
             ensure_field(espo, entity, name, spec)
+    for entity in CODES:
+        ensure_field(espo, entity, 'code', CODE_FIELD)
+        filters = metadata(espo, f'entityDefs.{entity}.collection').get('textFilterFields') or ['name']
+        if code_field(entity) not in filters:  # found by its code in the list's search box
+            espo.call('POST', '/EntityManager/action/updateEntity',
+                      body={'name': entity, 'textFilterFields': filters + [code_field(entity)]})
     ensure_task_board(espo)
     ensure_formulas(espo)
     ensure_layouts(espo)
+    backfill_codes(espo)
 
     # Reference data: standards (no team: everyone with read access sees them)
     for std in json.loads((ROOT / 'espo' / 'seed' / 'data' / 'standards.json').read_text()):
         ensure(espo, 'CStandard', 'code', std['code'], std, update=True)
+    # Admin areas (no team), one file per country: espo/seed/data/admin-areas-<iso3>.json
+    for path in sorted((ROOT / 'espo' / 'seed' / 'data').glob('admin-areas-*.json')):
+        for area in json.loads(path.read_text()):
+            ensure(espo, 'CAdminArea', 'pcode', area['pcode'], area, update=True)
+    # Projects made before clusters were codes (the label as the value): their code
+    by_label = {v: k for k, v in CLUSTERS.items()}
+    for row in espo.call('GET', '/CProject', {'maxSize': 200, 'select': 'cluster'})['list']:
+        if row.get('cluster') in by_label:
+            espo.call('PUT', f'/CProject/{row["id"]}', body={'cluster': by_label[row['cluster']]})
 
     teams = {name: ensure(espo, 'Team', 'name', name, {'name': name})['id'] for name in TEAMS}
     roles = {}

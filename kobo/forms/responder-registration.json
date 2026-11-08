@@ -1,0 +1,164 @@
+{
+ "settings": {
+  "form_title": "Responding organisation registration (espo-kobo test)",
+  "form_id": "responder_registration",
+  "version": "1"
+ },
+ "survey": [
+  {
+   "type": "end",
+   "name": "end"
+  },
+  {
+   "type": "select_one_from_file responses.csv",
+   "name": "response",
+   "label": "Which response are you responding to?",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "org_name",
+   "label": "Organisation name",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "org_acronym",
+   "label": "Acronym",
+   "required": "true",
+   "constraint": "regex(., '^[A-Z0-9&-]{2,15}$')",
+   "constraint_message": "Capitals and digits, e.g. RCJ"
+  },
+  {
+   "type": "select_one org_type",
+   "name": "org_type",
+   "label": "Type of organisation",
+   "required": "true"
+  },
+  {
+   "type": "select_multiple cluster",
+   "name": "clusters",
+   "label": "Which clusters do you work in?",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "focal_name",
+   "label": "Focal point: name",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "focal_email",
+   "label": "Focal point: email",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "focal_phone",
+   "label": "Focal point: phone"
+  },
+  {
+   "type": "calculate",
+   "name": "registration_key",
+   "calculation": "concat(${response}, '/', ${org_acronym})"
+  }
+ ],
+ "choices": [
+  {
+   "list_name": "org_type",
+   "name": "un",
+   "label": "UN agency"
+  },
+  {
+   "list_name": "org_type",
+   "name": "ingo",
+   "label": "International NGO"
+  },
+  {
+   "list_name": "org_type",
+   "name": "nngo",
+   "label": "National NGO"
+  },
+  {
+   "list_name": "org_type",
+   "name": "rcrc",
+   "label": "Red Cross / Red Crescent"
+  },
+  {
+   "list_name": "org_type",
+   "name": "government",
+   "label": "Government"
+  },
+  {
+   "list_name": "org_type",
+   "name": "private",
+   "label": "Private sector"
+  },
+  {
+   "list_name": "org_type",
+   "name": "other",
+   "label": "Other"
+  },
+  {
+   "list_name": "cluster",
+   "name": "cccm",
+   "label": "CCCM"
+  },
+  {
+   "list_name": "cluster",
+   "name": "early_recovery",
+   "label": "Early Recovery"
+  },
+  {
+   "list_name": "cluster",
+   "name": "education",
+   "label": "Education"
+  },
+  {
+   "list_name": "cluster",
+   "name": "etc",
+   "label": "Emergency Telecommunications"
+  },
+  {
+   "list_name": "cluster",
+   "name": "food_security",
+   "label": "Food Security"
+  },
+  {
+   "list_name": "cluster",
+   "name": "health",
+   "label": "Health"
+  },
+  {
+   "list_name": "cluster",
+   "name": "logistics",
+   "label": "Logistics"
+  },
+  {
+   "list_name": "cluster",
+   "name": "nutrition",
+   "label": "Nutrition"
+  },
+  {
+   "list_name": "cluster",
+   "name": "protection",
+   "label": "Protection"
+  },
+  {
+   "list_name": "cluster",
+   "name": "shelter",
+   "label": "Shelter"
+  },
+  {
+   "list_name": "cluster",
+   "name": "wash",
+   "label": "WASH"
+  },
+  {
+   "list_name": "cluster",
+   "name": "other",
+   "label": "Other"
+  }
+ ]
+}

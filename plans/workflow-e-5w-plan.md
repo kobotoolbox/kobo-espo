@@ -1,7 +1,43 @@
 # Workflow E: a response's 5W (who does what, where, when, for whom)
 
-Status: 2026-11-08, a plan; nothing built. It builds on cluster projects (done 2026-11-08:
-`CProject`, the cluster roles, `tests/cases/projects.py`; manual page "Cluster projects").
+Status: 2026-11-08. Phases 1–3 built (organisations, admin areas, activities, one per
+submission), with a draft of phase 0's activity types; next phases 4 (repeat groups) and 6
+(the dashboard, in kobo-dash). It builds on cluster projects (`CProject`, the cluster roles,
+`tests/cases/projects.py`; manual page "Cluster projects").
+
+Built (2026-11-08), and what changed from the design below:
+- **Organisations are `CResponder` ("Responding organisation"), not Account fields.** One
+  per organisation *and response*: an organisation in two responses registers twice, and
+  its Account (EspoCRM's own, found or made by name through `[requester]`) is shared. Its
+  focal point is a Contact. It's in the response's team and in the teams of the response's
+  projects in the clusters it works in (formula; a new project in one of its clusters adds
+  its team too). Registering again (the same response and acronym, `registrationKey`)
+  updates it. Form `kobo/forms/responder-registration.json`, template
+  `responder-registration.toml`.
+- **Clusters are codes** (`etc`, `wash`... with labels), since Kobo choice names have no
+  spaces; projects made before were migrated by the seed.
+- **Short codes** on responses, projects, organisations, activities, tasks and applications
+  (`RSP-7K3Q`, as Ponto's; `espo/formula/_code.formula`): read-only, unique, searchable,
+  and what Kobo lists use as choice names (a list's `name = "code"`, a link's
+  `lookup = "code"`), instead of EspoCRM's 17-character ids. Sites keep their site code,
+  admin areas their P-code.
+- **Admin areas**: `CAdminArea` (P-code, level, parent, country), seeded from
+  `espo/seed/data/admin-areas-<iso3>.json`; Jamaica's 14 parishes (JM01 Kingston ...
+  JM14 Saint Catherine) for the tests. Check them against the COD-AB (the humanitarian
+  geocoder's admin1 CSV, `~/Desktop/work/repos/jamaica-geocoder`) before real use; that
+  service's per-level CSVs (`name,label` by P-code) are the import for other countries.
+- **Activities** (`CActivity`): organisation, project, response, admin area, site, type
+  (a draft list, `ACTIVITY_TYPES` in the seed, prefixed by cluster), status, dates, the six
+  sex and age groups, people reached (summed by the formula), households, quantity and
+  unit. In the project's teams; named "ACRONYM · type · date"; the organisation's last
+  report moves on. Refused (API Before Save): ending before it starts, an organisation of
+  another response, or not registered for the project's cluster. Form
+  `activity-report.json`, per response like the site visit (`team = "Response: …"` lists:
+  `responders.csv`, `projects.csv`, `areas.csv`).
+- Roles: Cluster Lead edits the project's activities and organisations; Cluster Partner
+  reports and edits their own; Cluster Viewer reads; everyone reads admin areas.
+- Tests: `tests/cases/fivew.py` 33/33 (codes, teams from clusters, activities, guards,
+  who sees what, admin areas); `connection.py` W7–W10 (the two forms through the bridge).
 
 ## Goal
 

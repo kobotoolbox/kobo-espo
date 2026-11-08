@@ -1,0 +1,29 @@
+// An activity is in its project's teams, and in its project's response: the cluster's
+// people and the coordinators see it, nobody else
+if (projectId && (entity\isNew() || entity\isAttributeChanged('projectId'))) {
+    $teams = record\attribute('CProject', projectId, 'teamsIds');
+    if (array\length($teams) > 0) {
+        teamsIds = $teams;
+    }
+    responseId = record\attribute('CProject', projectId, 'responseId');
+}
+
+// People reached: the sum of the six groups
+peopleReached = ifThenElse(girls, girls, 0) + ifThenElse(boys, boys, 0) + ifThenElse(women, women, 0)
+    + ifThenElse(men, men, 0) + ifThenElse(elderlyWomen, elderlyWomen, 0) + ifThenElse(elderlyMen, elderlyMen, 0);
+
+// Named after its organisation and what it is, e.g. "RCJ · WASH: hygiene kits · 2026-11-03"
+if (entity\isNew() && responderId) {
+    $acronym = record\attribute('CResponder', responderId, 'acronym');
+    if ($acronym && !string\contains(name, $acronym)) {
+        name = string\concatenate($acronym, ' · ', name);
+    }
+}
+
+// The organisation's last report: what the "not reported" follow-up reads
+if (responderId && reportDate) {
+    $last = record\attribute('CResponder', responderId, 'lastReport');
+    if (!$last || datetime\diff(reportDate, $last, 'days') > 0) {
+        record\update('CResponder', responderId, 'lastReport', reportDate, 'status', 'active');
+    }
+}

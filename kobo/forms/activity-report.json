@@ -1,0 +1,239 @@
+{
+ "settings": {
+  "form_title": "Activity report - Test EQ 1 (espo-kobo test)",
+  "form_id": "activity_report_eq1",
+  "version": "1"
+ },
+ "survey": [
+  {
+   "type": "today",
+   "name": "today"
+  },
+  {
+   "type": "select_one_from_file responders.csv",
+   "name": "responder",
+   "label": "Your organisation",
+   "required": "true"
+  },
+  {
+   "type": "select_one_from_file projects.csv",
+   "name": "project",
+   "label": "Cluster",
+   "required": "true"
+  },
+  {
+   "type": "select_one activity_type",
+   "name": "activity_type",
+   "label": "What did you do?",
+   "required": "true"
+  },
+  {
+   "type": "select_one status",
+   "name": "status",
+   "label": "Status",
+   "required": "true"
+  },
+  {
+   "type": "date",
+   "name": "start_date",
+   "label": "Started on",
+   "required": "true"
+  },
+  {
+   "type": "date",
+   "name": "end_date",
+   "label": "Ended on (if it has)",
+   "constraint": ". >= ${start_date}",
+   "constraint_message": "On or after the start"
+  },
+  {
+   "type": "select_one_from_file areas.csv",
+   "name": "parish",
+   "label": "Parish",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "site_code",
+   "label": "Site code (if at a registered site)"
+  },
+  {
+   "type": "begin_group",
+   "name": "reached",
+   "label": "People reached"
+  },
+  {
+   "type": "integer",
+   "name": "girls",
+   "label": "Girls (under 18)",
+   "constraint": ". >= 0"
+  },
+  {
+   "type": "integer",
+   "name": "boys",
+   "label": "Boys (under 18)",
+   "constraint": ". >= 0"
+  },
+  {
+   "type": "integer",
+   "name": "women",
+   "label": "Women (18-59)",
+   "constraint": ". >= 0"
+  },
+  {
+   "type": "integer",
+   "name": "men",
+   "label": "Men (18-59)",
+   "constraint": ". >= 0"
+  },
+  {
+   "type": "integer",
+   "name": "elderly_women",
+   "label": "Women (60+)",
+   "constraint": ". >= 0"
+  },
+  {
+   "type": "integer",
+   "name": "elderly_men",
+   "label": "Men (60+)",
+   "constraint": ". >= 0"
+  },
+  {
+   "type": "integer",
+   "name": "households",
+   "label": "Households",
+   "constraint": ". >= 0"
+  },
+  {
+   "type": "end_group",
+   "name": "reached"
+  },
+  {
+   "type": "decimal",
+   "name": "quantity",
+   "label": "How many (e.g. kits, litres, sessions)?"
+  },
+  {
+   "type": "text",
+   "name": "unit",
+   "label": "Of what (the unit)?"
+  }
+ ],
+ "choices": [
+  {
+   "list_name": "activity_type",
+   "name": "etc_connectivity",
+   "label": "ETC: internet connectivity for responders"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "etc_radio",
+   "label": "ETC: radio network"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "etc_charging",
+   "label": "ETC: charging station"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "etc_helpdesk",
+   "label": "ETC: user support / help desk"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "wash_water_trucking",
+   "label": "WASH: water trucking"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "wash_water_point",
+   "label": "WASH: water point repair or installation"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "wash_hygiene_kits",
+   "label": "WASH: hygiene kits"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "wash_latrines",
+   "label": "WASH: latrines"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "shelter_kits",
+   "label": "Shelter: emergency shelter kits"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "shelter_tarpaulins",
+   "label": "Shelter: tarpaulins"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "shelter_repair",
+   "label": "Shelter: repair support"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "health_mobile_clinic",
+   "label": "Health: mobile clinic"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "health_consultations",
+   "label": "Health: consultations"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "food_distribution",
+   "label": "Food: food distribution"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "food_cash",
+   "label": "Food: cash for food"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "log_storage",
+   "label": "Logistics: storage"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "log_transport",
+   "label": "Logistics: transport"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "protection_pss",
+   "label": "Protection: psychosocial support"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "cccm_site_management",
+   "label": "CCCM: site management"
+  },
+  {
+   "list_name": "activity_type",
+   "name": "other",
+   "label": "Other"
+  },
+  {
+   "list_name": "status",
+   "name": "planned",
+   "label": "Planned"
+  },
+  {
+   "list_name": "status",
+   "name": "ongoing",
+   "label": "Ongoing"
+  },
+  {
+   "list_name": "status",
+   "name": "completed",
+   "label": "Completed"
+  }
+ ]
+}

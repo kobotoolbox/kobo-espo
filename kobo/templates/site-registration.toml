@@ -1,5 +1,5 @@
 # Workflow C: registering a site (an installation, a water point...) from Kobo. The form
-# picks the response from responses.csv and a standard from standards.csv, both kept by
+# picks the response (by its code) from responses.csv and a standard from standards.csv, both kept by
 # the bridge from EspoCRM. Registering the same site code again updates that site. The
 # site takes its response's teams (CSite formula).
 
@@ -23,6 +23,8 @@ media = "photos"  # the site photo, copied into EspoCRM
 kobo = "response"
 espo = "response"
 type = "link"
+entity = "CResponse"
+lookup = "code"
 
 [[field]]
 kobo = "site_code"
@@ -70,7 +72,7 @@ label = "Registered"
 file = "responses.csv"
 entity = "CResponse"
 where = { status = ["Planning", "Active"] }
-columns = { name = "id", label = "name" }
+columns = { name = "code", label = "name" }  # the response's short code (RSP-...)
 forms = ["Site registration (espo-kobo test)"]
 
 [[list]]

@@ -1,0 +1,19 @@
+// A short code for people and Kobo lists, as Ponto's (e.g. PRJ-7K3Q): 4 characters
+// without look-alikes (no 0/O, 1/I/L, U). Given once, when the record has none; the seed
+// puts this first in the Before Save Custom Script of each entity in CODES.
+if (!FIELD) {
+    $alphabet = '23456789ABCDEFGHJKMNPQRSTVWXYZ';
+    $tries = 0;
+    while (!FIELD && $tries < 10) {
+        $c = 'PREFIX-';
+        $k = 0;
+        while ($k < 4) {
+            $c = string\concatenate($c, string\substring($alphabet, number\randomInt(0, 29), 1));
+            $k = $k + 1;
+        }
+        if (!record\exists('ENTITY', 'FIELD', $c)) {
+            FIELD = $c;
+        }
+        $tries = $tries + 1;
+    }
+}

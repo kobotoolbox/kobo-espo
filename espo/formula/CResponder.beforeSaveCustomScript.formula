@@ -1,0 +1,24 @@
+// A responding organisation is in its response's teams and in those of the response's
+// projects in the clusters it works in: those clusters' people see it, and the coordinators
+if (responseId && (entity\isNew() || entity\isAttributeChanged('responseId') || entity\isAttributeChanged('clusters'))) {
+    $teams = record\attribute('CResponse', responseId, 'teamsIds');
+    $projects = record\findMany('CProject', 200, 'createdAt', 'asc', 'responseId=', responseId);
+    $i = 0;
+    while ($i < array\length($projects)) {
+        $p = array\at($projects, $i);
+        if (array\includes(clusters, record\attribute('CProject', $p, 'cluster'))) {
+            $add = record\attribute('CProject', $p, 'teamsIds');
+            $j = 0;
+            while ($j < array\length($add)) {
+                if (!array\includes($teams, array\at($add, $j))) {
+                    $teams = array\push($teams, array\at($add, $j));
+                }
+                $j = $j + 1;
+            }
+        }
+        $i = $i + 1;
+    }
+    if (array\length($teams) > 0) {
+        teamsIds = $teams;
+    }
+}

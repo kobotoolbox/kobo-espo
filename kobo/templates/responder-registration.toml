@@ -1,0 +1,65 @@
+# Workflow E (plans/workflow-e-5w-plan.md): an organisation registers as responding in a
+# response, for the clusters it works in. It becomes a Responding organisation (CResponder),
+# linked to its Account and its focal point's Contact, in the teams of the response and of
+# the response's projects in those clusters (formula). Registering again with the same
+# response and acronym updates it. The response is picked by its code from responses.csv.
+
+[bridge]
+user = "kobo-responders"
+role = "Kobo responders"
+secret = "ESPO_RESPONDERS_API_KEY"
+
+[form]
+name = "Responding organisation registration (espo-kobo test)"
+
+[record]
+entity = "CResponder"
+panel = "Registration"
+name = "{org_name}"
+match = { registrationKey = "registration_key" }
+required = ["response", "org_name", "org_acronym", "clusters", "focal_email"]
+
+[requester]  # the Account named by the organisation, the focal point's Contact by email
+email = "focal_email"
+name = "focal_name"
+organisation = "org_name"
+
+[[field]]  # by its code (RSP-...), as the list gives it
+kobo = "response"
+espo = "response"
+type = "link"
+entity = "CResponse"
+lookup = "code"
+
+[[field]]
+kobo = "org_acronym"
+espo = "acronym"
+
+[[field]]
+kobo = "org_type"
+espo = "orgType"
+
+[[field]]
+kobo = "clusters"
+espo = "clusters"
+type = "multiEnum"
+
+[[field]]
+kobo = "focal_name"
+espo = "focalPoint"
+
+[[field]]
+kobo = "focal_phone"
+espo = "focalPointPhone"
+
+[[field]]
+kobo = "registration_key"
+espo = "registrationKey"
+
+[[list]]
+file = "responses.csv"
+entity = "CResponse"
+where = { status = ["Planning", "Active"] }
+order_by = "name"
+columns = { name = "code", label = "name" }
+forms = ["Responding organisation registration (espo-kobo test)"]
