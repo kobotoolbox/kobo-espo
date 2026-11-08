@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cluster projects: Kobo and EspoCRM</title>
+<meta name="description" content="A response with a project for each cluster it supports (Emergency Telecommunications, WASH, Shelter...): each project's people see only its sites and tasks, the response's coordinators see every project. The cluster roles, tasks on sites and cases, and setting it all up from a conversation.">
+<link rel="icon" href="static/site/icon.png" type="image/png">
+<link rel="stylesheet" href="static/site/home.css">
+</head>
+<body>
+<header class="header">
+  <div class="wrap">
+    <a class="header__brand" href="./"><img src="static/site/logo.svg" alt="KoboToolbox"><span class="header__product">+ EspoCRM</span></a>
+    <ul class="header__nav">
+      <li><a href="./">Overview</a></li>
+      <li><a href="requests.html">Requests</a></li>
+      <li><a href="responses.html">Responses</a></li>
+      <li><a href="sites.html">Sites and lists</a></li>
+      <li><a href="projects.html" aria-current="page">Cluster projects</a></li>
+      <li><a href="connect.html">Connecting a form</a></li>
+      <li><a href="running.html">Running it</a></li>
+    </ul>
+    <a class="button button--filled button--m" href="https://espo-test.kobolabs.dev">Open the test EspoCRM</a>
+  </div>
+</header>
+
+<main>
+<section class="banner">
+  <div class="wrap">
+    <h1>Cluster projects: several teams in one response</h1>
+    <p class="banner__lead">A response such as <em>Hurricane Melissa Response</em> often supports several clusters at once. Each gets a <strong>cluster project</strong> in the response, with a team of its own. The Emergency Telecommunications team manages its sites, notes and tasks and sees only those; the WASH team sees only theirs. The response's coordinators see every project.</p>
+  </div>
+</section>
+
+<section class="steps" aria-label="Setting one up">
+  <div class="wrap">
+    <ol>
+      <li><h3>The response</h3><p>In a team for its coordinators, who see all of it.</p></li>
+      <li><h3>A project per cluster</h3><p>Each in its own team and the response's. Its sites and tasks follow it.</p></li>
+      <li><h3>Its people</h3><p>In the project's team, each with a role: lead, partner or viewer.</p></li>
+    </ol>
+  </div>
+</section>
+
+<div class="wrap docs">
+<nav class="docs__nav" aria-label="On this page">
+  <ul>
+    <li><a href="#who">Who sees what</a></li>
+    <li><a href="#roles">The cluster roles</a></li>
+    <li><a href="#tasks">Tasks on sites and cases</a></li>
+    <li><a href="#setup">Setting it up from a conversation</a></li>
+    <li><a href="#limits">Limits</a></li>
+  </ul>
+</nav>
+
+<article class="prose">
+
+<section id="who">
+<h2>Who sees what</h2>
+<p>A <strong>Cluster project</strong> belongs to a response and has a cluster, a status and a lead. Its records are in two teams:</p>
+<ul>
+  <li><strong>the project's own team</strong> (e.g. <em>Cluster: Hurricane Melissa Response · ETC</em>): its people see the project, its sites and its tasks, and nothing of the other projects;</li>
+  <li><strong>the response's team</strong>: its coordinators see every project. Put only coordinators in it.</li>
+</ul>
+<p>A site or a task in a project takes the project's teams by itself. If a team is added to the project later (a partner organisation's, say), its sites and tasks get it too. Closing a project gives its tasks back to its lead, as closing a response does.</p>
+<p>The project's people can't open the response itself, only their project. In testing (<code>tests/cases/projects.py</code>, 44 checks), each project's people saw only their own project's sites, tasks and task board, and were refused the other project's records by their links.</p>
+</section>
+
+<section id="roles">
+<h2>The cluster roles</h2>
+<table>
+  <tr><th>Role</th><th>Sites</th><th>Tasks</th><th>Assigns</th></tr>
+  <tr><td><strong>Cluster Lead</strong></td><td>registers and edits the project's</td><td>makes and edits any of the project's</td><td>within the project's team</td></tr>
+  <tr><td><strong>Cluster Partner</strong></td><td>registers and edits the project's</td><td>makes them; edits their own</td><td>within the project's team</td></tr>
+  <tr><td><strong>Cluster Viewer</strong></td><td>reads</td><td>reads</td><td>no</td></tr>
+</table>
+<p>Everyone in a project can post notes on its sites and tasks and mention its people. Nobody can delete records or export them.</p>
+<p>The response's coordinators have the staff role. They see every project's work but can only give it to people they share a team with, so a coordinator who hands out a project's tasks joins that project's team. Whoever assigns it, a task can only go to someone in its project's or response's teams: the formula on tasks refuses anyone else.</p>
+</section>
+
+<section id="tasks">
+<h2>Tasks on sites and cases</h2>
+<p>A task's <strong>Parent</strong> can be a site, or a case (as in EspoCRM itself). A site's page has a <strong>Tasks</strong> panel.</p>
+<ul>
+  <li>A task on a site goes into the site's project and response, and their teams: <em>Fix the generator</em> on the VSAT hub is seen by the ETC team and the coordinators.</li>
+  <li>A task on a case is in the case's team.</li>
+  <li>The people on it must be in those teams, as for any task.</li>
+</ul>
+</section>
+
+<section id="setup">
+<h2>Setting it up from a conversation</h2>
+<p>The bridge's EspoCRM MCP (see <a href="connect.html">Connecting a form</a>) has the tools for it, and a prompt, <strong>Set up a response</strong>, with the steps:</p>
+<ul>
+  <li><code>create_response</code>: the response and its coordinators' team;</li>
+  <li><code>create_project</code>: a project per cluster, each with a team of its own;</li>
+  <li><code>list_roles</code>, <code>invite_user</code>: a person with a role, in a project's team;</li>
+  <li><code>add_to_team</code>, <code>remove_from_team</code>: someone joins or leaves a project;</li>
+  <li><code>list_projects</code>: the responses, their projects and teams.</li>
+</ul>
+<p>Each change is shown first and made only once you agree, like the connection tools. They make regular users only, never admins, and never use the bridge's or the agents' roles.</p>
+<p><strong>Signing in.</strong> <code>invite_user</code> never takes or shows a password. EspoCRM emails the new person a link to set their own, once its outgoing email is set up (<em>not yet on the test instance</em>). Until then the account exists, and an admin sets its password in Administration, Users.</p>
+<p>Sites in a project come from Kobo as any site does: the registration connection sets the site's project, and a visit form's site list names the project's team (<code>team = "Cluster: …"</code>), so it lists that project's sites only.</p>
+</section>
+
+<section id="limits">
+<h2>Limits</h2>
+<ul>
+  <li><strong>Access is per person, not per project.</strong> In EspoCRM someone's access is the sum of their roles, in every team they're in. A person who leads one project and only views another has lead access in both. Give them the role that suits both, or two accounts.</li>
+  <li>Taking someone out of a project's team hides its records from them at once, except tasks assigned to them or shared with them, until those are given to someone else (or the project is closed).</li>
+  <li>If the response's team changes, its existing projects keep the old one until they're saved again.</li>
+</ul>
+</section>
+
+</article>
+</div>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <img src="static/site/logo-white.svg" alt="KoboToolbox">
+      <p>Kobo and EspoCRM: request intake, response tasking and sites on one EspoCRM, connected to KoboToolbox by kobo-espo-bridge. A test, with made-up data.</p>
+    </div>
+    <div>
+      <span class="footer__label">KoboToolbox</span>
+      <ul>
+        <li><a href="https://www.kobotoolbox.org">kobotoolbox.org</a></li>
+        <li><a href="https://support.kobotoolbox.org">Help Center</a></li>
+        <li><a href="https://docs.espocrm.com">EspoCRM documentation</a></li>
+      </ul>
+    </div>
+    <div>
+      <span class="footer__label">On this site</span>
+      <ul>
+      <li><a href="./">Overview</a></li>
+      <li><a href="requests.html">Requests</a></li>
+      <li><a href="responses.html">Responses</a></li>
+      <li><a href="sites.html">Sites and lists</a></li>
+      <li><a href="projects.html" aria-current="page">Cluster projects</a></li>
+      <li><a href="connect.html">Connecting a form</a></li>
+      <li><a href="running.html">Running it</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<script src="static/site/menu.js" defer></script>
+</body>
+</html>

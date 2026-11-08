@@ -1,11 +1,32 @@
-// A task is in its response's teams, so the response's members see it (and only they do).
-// A response's starter tasks are made while it's being saved (not in the database yet):
-// they keep the teams they were given, which are the response's.
-if (cResponseId && (entity\isNew() || entity\isAttributeChanged('cResponseId'))) {
-    $teams = record\attribute('CResponse', cResponseId, 'teamsIds');
-    if (array\length($teams) > 0) {
-        teamsIds = $teams;
+// A task on a site (its parent) is in the site's project and response; a project's task is
+// in its response too
+if (parentType == 'CSite' && parentId && (entity\isNew() || entity\isAttributeChanged('parentId'))) {
+    if (!cProjectId) {
+        cProjectId = record\attribute('CSite', parentId, 'projectId');
     }
+    if (!cResponseId) {
+        cResponseId = record\attribute('CSite', parentId, 'responseId');
+    }
+}
+if (cProjectId && !cResponseId) {
+    cResponseId = record\attribute('CProject', cProjectId, 'responseId');
+}
+
+// A task is in its project's teams, or its response's, or (with neither) its site's or
+// case's: their members see it, and only they do. A response's starter tasks are made while
+// it's being saved (not in the database yet): they keep the teams they were given, which
+// are the response's.
+$teams = list();
+if (cProjectId && (entity\isNew() || entity\isAttributeChanged('cProjectId'))) {
+    $teams = record\attribute('CProject', cProjectId, 'teamsIds');
+} else if (!cProjectId && cResponseId && (entity\isNew() || entity\isAttributeChanged('cResponseId'))) {
+    $teams = record\attribute('CResponse', cResponseId, 'teamsIds');
+} else if (!cProjectId && !cResponseId && parentId && (parentType == 'CSite' || parentType == 'Case')
+        && (entity\isNew() || entity\isAttributeChanged('parentId'))) {
+    $teams = record\attribute(parentType, parentId, 'teamsIds');
+}
+if (array\length($teams) > 0) {
+    teamsIds = $teams;
 }
 
 // Reassigned: the previous assignee stops being a collaborator. EspoCRM 10 makes each

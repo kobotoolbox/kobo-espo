@@ -1,0 +1,51 @@
+// A project is in its own teams and its response's: the response's coordinators see every
+// project's sites and tasks, a project's people only their project's
+// (a new record's link-multiple attributes can't be read unless the request sets them)
+if (responseId && (entity\isNew() || entity\isAttributeChanged('responseId') || entity\isAttributeChanged('teamsIds'))) {
+    $teams = list();
+    if (!entity\isNew() || entity\isAttributeChanged('teamsIds')) {
+        $teams = teamsIds;
+    }
+    $add = record\attribute('CResponse', responseId, 'teamsIds');
+    $i = 0;
+    while ($i < array\length($add)) {
+        if (!array\includes($teams, array\at($add, $i))) {
+            $teams = array\push($teams, array\at($add, $i));
+        }
+        $i = $i + 1;
+    }
+    teamsIds = $teams;
+}
+
+// Its teams changed (a partner organisation's team added, say): its sites and tasks follow
+if (!entity\isNew() && entity\isAttributeChanged('teamsIds')) {
+    $sites = record\findMany('CSite', 1000, 'createdAt', 'asc', 'projectId=', id);
+    $i = 0;
+    while ($i < array\length($sites)) {
+        record\update('CSite', array\at($sites, $i), 'teamsIds', teamsIds);
+        $i = $i + 1;
+    }
+    $tasks = record\findMany('Task', 1000, 'createdAt', 'asc', 'cProjectId=', id);
+    $i = 0;
+    while ($i < array\length($tasks)) {
+        record\update('Task', array\at($tasks, $i), 'teamsIds', teamsIds);
+        $i = $i + 1;
+    }
+}
+
+// Closed: its tasks go back to its lead (the response's, if it has none), without
+// collaborators, as when a response closes
+if (!entity\isNew() && entity\isAttributeChanged('status') && status == 'Closed') {
+    $lead = leadId;
+    if (!$lead && responseId) {
+        $lead = record\attribute('CResponse', responseId, 'leadId');
+    }
+    if ($lead) {
+        $tasks = record\findMany('Task', 1000, 'createdAt', 'asc', 'cProjectId=', id);
+        $i = 0;
+        while ($i < array\length($tasks)) {
+            record\update('Task', array\at($tasks, $i), 'assignedUserId', $lead, 'collaboratorsIds', list());
+            $i = $i + 1;
+        }
+    }
+}

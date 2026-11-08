@@ -213,7 +213,9 @@ def main():
         check('H2', 'the tools and the prompt', out['tools'] == sorted([
             'bridge_info', 'list_teams', 'list_users', 'list_entities', 'propose_connection', 'preview_template',
             'create_connection', 'update_connection', 'pause_connection', 'resume_connection', 'create_entity',
-            'grant_access', 'test_connection', 'connection_status']) and out['prompts'] == ['connect_a_form'],
+            'grant_access', 'test_connection', 'connection_status', 'list_roles', 'list_projects', 'create_response',
+            'create_project', 'invite_user', 'add_to_team', 'remove_from_team'])
+              and sorted(out['prompts']) == ['connect_a_form', 'set_up_a_response'],
               out['tools'])
         check('H2', 'each parameter described for the agent (propose_connection)',
               all(p.get('description') for p in out['schemas']['propose_connection']['properties'].values()),
@@ -250,7 +252,7 @@ def main():
         asyncio.run(oauth_session(url, 'admin', secrets()['ESPO_ADMIN_PASSWORD'], out))
         tok = out['storage'].tokens
         check('H6', 'signed in as admin (the page sends the browser back with a code), then the tools',
-              out.get('signin_status') == 303 and out.get('tools') == 14 and not out['info'].is_error
+              out.get('signin_status') == 303 and out.get('tools') == 21 and not out['info'].is_error
               and 'bridge_acct' in text(out['info']), {k: out.get(k) for k in ('signin_status', 'tools')})
         check('H6', 'the tokens are sealed: neither names the user or can be read',
               tok and 'admin' not in tok.access_token and 'admin' not in (tok.refresh_token or '')

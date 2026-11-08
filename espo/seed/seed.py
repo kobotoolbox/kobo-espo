@@ -6,14 +6,16 @@ C: sites and lists). Idempotent: run it again after changing anything here.
     python3 -I espo/seed/seed.py [--url https://espo-test.kobolabs.dev] [--users]
 
 Makes, with the admin API only (no files on the server):
-  - entities: Response (CResponse) and Site (CSite), Standard (CStandard), their fields,
-    and the links Task -> Response, Site -> Response;
+  - entities: Response (CResponse), Cluster project (CProject), Site (CSite), Standard
+    (CStandard), their fields, and the links Task -> Response and Project, Site -> Response
+    and Project, Project -> Response; a Task's parent can be a Site (or a Case);
   - Task: board columns on its status (Backlog, To do, In progress, Blocked, Done; EspoCRM's
     own Not Started/Started/Completed are relabelled, not replaced, so its "completed" logic
     keeps working), Kanban on, a Task takes its Response's teams;
   - Case: source, category; one team only (API Before Save Script refuses a second);
   - Contact: profileType, availability;
-  - teams and roles (staff, triager, partner staff, roster, volunteer), see TEAMS, ROLES;
+  - teams and roles (staff, triager, partner staff, roster, volunteer, cluster lead, partner
+    and viewer), see TEAMS, ROLES;
   - formulas: espo/formula/*.formula, one per entity and script type;
   - settings: assignment notifications for cases and tasks.
 --users makes the test users (USERS) with generated passwords, kept in
@@ -34,7 +36,8 @@ sys.path.insert(0, str(ROOT / 'tests'))
 from lib import URL, Espo, admin, pw_key, secrets as read_secrets  # noqa: E402
 
 TEAMS = ['Internal Kobo', 'Project: Consortium A', 'Project: Consortium B',
-         'Response: Test EQ 1', 'Response: Test EQ 2', 'Roster and volunteers', 'Grants review']
+         'Response: Test EQ 1', 'Response: Test EQ 2', 'Roster and volunteers', 'Grants review',
+         'Cluster: Test EQ 1 ETC', 'Cluster: Test EQ 1 WASH']
 
 ENTITIES = {
     'Response': {'labelPlural': 'Responses', 'iconClass': 'fas fa-house-damage', 'fields': {
@@ -43,6 +46,18 @@ ENTITIES = {
         'emergencyType': {'type': 'enum', 'label': 'Emergency type',
                           'options': ['', 'Earthquake', 'Flood', 'Cyclone', 'Drought', 'Conflict', 'Epidemic', 'Other']},
         'country': {'type': 'varchar'},
+        'startDate': {'type': 'date', 'label': 'Start date'},
+        'endDate': {'type': 'date', 'label': 'End date'},
+    }},
+    # A cluster's project in a response (e.g. Emergency Telecommunications in Hurricane
+    # Melissa): in its own team and its response's, so the cluster's people see its sites and
+    # tasks, and the response's coordinators see every project's
+    'Project': {'label': 'Cluster project', 'labelPlural': 'Cluster projects', 'iconClass': 'fas fa-layer-group', 'fields': {
+        'cluster': {'type': 'enum', 'options': ['', 'CCCM', 'Early Recovery', 'Education', 'Emergency Telecommunications',
+                                                'Food Security', 'Health', 'Logistics', 'Nutrition', 'Protection',
+                                                'Shelter', 'WASH', 'Other']},
+        'status': {'type': 'enum', 'options': ['Planning', 'Active', 'Closed'], 'default': 'Planning',
+                   'style': {'Active': 'success', 'Closed': 'info'}},
         'startDate': {'type': 'date', 'label': 'Start date'},
         'endDate': {'type': 'date', 'label': 'End date'},
     }},
@@ -183,6 +198,10 @@ AGENT_GUARDED = ['CApplication', 'CSite', 'Task']
 LINKS = [('CResponse', 'tasks', 'Task', 'response', 'oneToMany'),
          ('CResponse', 'sites', 'CSite', 'response', 'oneToMany'),
          ('CStandard', 'sites', 'CSite', 'standard', 'oneToMany'),  # the standard a site follows
+         ('CResponse', 'projects', 'CProject', 'response', 'oneToMany'),
+         ('CProject', 'sites', 'CSite', 'project', 'oneToMany'),
+         ('CProject', 'tasks', 'Task', 'project', 'oneToMany'),  # Task.cProject
+         ('CProject', 'lead', 'User', 'leadOfProjects', 'manyToOne'),
          ('CResponse', 'lead', 'User', 'leadOfResponses', 'manyToOne'),
          ('CAgent', 'routes', 'CAgentRoute', 'agent', 'oneToMany'),
          ('CAgent', 'user', 'User', 'agentProfiles', 'manyToOne'),  # its API user (agents/sync.py)
@@ -222,7 +241,7 @@ ROLES = {
     # Kobo staff: everything of their teams, no delete
     'Internal Staff': {
         'data': {e: access('yes', TEAM, TEAM) for e in
-                 ('Case', 'Task', 'CResponse', 'CSite', 'Contact', 'Account', 'CApplication')}
+                 ('Case', 'Task', 'CResponse', 'CProject', 'CSite', 'Contact', 'Account', 'CApplication')}
         | {'CStandard': access('yes', ALL, ALL), 'Team': {'read': ALL}, 'User': {'read': TEAM}},
         'assignmentPermission': TEAM, 'userPermission': TEAM, 'mentionPermission': TEAM,
         'exportPermission': 'no', 'massUpdatePermission': 'yes',
@@ -257,11 +276,36 @@ ROLES = {
         'assignmentPermission': NO, 'userPermission': TEAM, 'mentionPermission': TEAM,
         'exportPermission': 'no', 'massUpdatePermission': 'no',
     },
+    # A cluster project's people (in its team). Access is per person, not per project: someone
+    # in two projects has their role in both. The lead runs the project's sites and tasks
+    'Cluster Lead': {
+        'data': {'CProject': access('no', TEAM, TEAM), 'CSite': access('yes', TEAM, TEAM),
+                 'Task': access('yes', TEAM, TEAM), 'CResponse': access('no', TEAM, NO),
+                 'CStandard': access('no', ALL, NO), 'Team': {'read': TEAM}, 'User': {'read': TEAM}},
+        'assignmentPermission': TEAM, 'userPermission': TEAM, 'mentionPermission': TEAM,
+        'exportPermission': 'no', 'massUpdatePermission': 'no',
+    },
+    # Registers and updates sites, makes tasks, edits their own tasks
+    'Cluster Partner': {
+        'data': {'CProject': access('no', TEAM, NO), 'CSite': access('yes', TEAM, TEAM),
+                 'Task': access('yes', TEAM, OWN, TEAM), 'CResponse': access('no', TEAM, NO),
+                 'CStandard': access('no', ALL, NO), 'Team': {'read': TEAM}, 'User': {'read': TEAM}},
+        'assignmentPermission': TEAM, 'userPermission': TEAM, 'mentionPermission': TEAM,
+        'exportPermission': 'no', 'massUpdatePermission': 'no',
+    },
+    # Reads the project's sites and tasks, and posts notes on them
+    'Cluster Viewer': {
+        'data': {'CProject': access('no', TEAM, NO), 'CSite': access('no', TEAM, NO),
+                 'Task': access('no', TEAM, NO), 'CResponse': access('no', TEAM, NO),
+                 'CStandard': access('no', ALL, NO), 'Team': {'read': TEAM}, 'User': {'read': TEAM}},
+        'assignmentPermission': NO, 'userPermission': TEAM, 'mentionPermission': TEAM,
+        'exportPermission': 'no', 'massUpdatePermission': 'no',
+    },
 }
 
-INT, A, B, EQ1, EQ2, POOL, GRANTS = TEAMS
+INT, A, B, EQ1, EQ2, POOL, GRANTS, ETC, WASH = TEAMS
 # (username, name, role, teams). Response 1 only: roster-1, volunteer-2; Response 2 only:
-# volunteer-1; both: roster-2
+# volunteer-1; both: roster-2. Cluster projects of Response 1: ETC (lead, partner), WASH (viewer)
 USERS = [
     ('triager', 'Tess Triager', 'Support Triager', [A, B]),
     ('staff-1', 'Sam Staff', 'Internal Staff', [INT, A, EQ1, EQ2, POOL]),
@@ -272,6 +316,9 @@ USERS = [
     ('roster-2', 'Rana Roster', 'Roster Expert', [EQ1, EQ2]),
     ('volunteer-1', 'Vic Volunteer', 'Volunteer', [EQ2]),
     ('volunteer-2', 'Val Volunteer', 'Volunteer', [EQ1]),
+    ('cluster-lead', 'Cleo Lead', 'Cluster Lead', [ETC]),
+    ('cluster-partner', 'Cai Partner', 'Cluster Partner', [ETC]),
+    ('cluster-viewer', 'Vera Viewer', 'Cluster Viewer', [WASH]),
 ]
 
 
@@ -312,7 +359,7 @@ def ensure_entities(espo):
     for name, spec in ENTITIES.items():
         if f'C{name}' not in scopes:
             espo.call('POST', '/EntityManager/action/createEntity', body={
-                'name': name, 'type': 'Base', 'labelSingular': name, 'labelPlural': spec['labelPlural'],
+                'name': name, 'type': 'Base', 'labelSingular': spec.get('label', name), 'labelPlural': spec['labelPlural'],
                 'stream': spec.get('stream', True), 'iconClass': spec['iconClass']})
             print(f'entity created: C{name}')
         status = spec.get('statusField', 'status' if 'status' in spec['fields'] else None)
@@ -339,6 +386,14 @@ def ensure_task_board(espo):
         'name': 'Task', 'kanbanViewMode': True, 'statusField': 'status',
         'kanbanStatusIgnoreList': ['Canceled', 'Deferred']})
     print('Task: board columns, Kanban on')
+    # A task's parent (EspoCRM's own "Parent" field, which takes a Case already) can be a
+    # Site too; the Site gets a Tasks panel
+    parent = metadata(espo, 'entityDefs.Task.fields.parent')
+    if 'CSite' not in parent.get('entityList', []):
+        espo.call('POST', '/EntityManager/action/updateLink', body={
+            'entity': 'Task', 'link': 'parent', 'linkForeign': 'tasks',
+            'parentEntityTypeList': parent.get('entityList', []) + ['CSite'], 'foreignLinkEntityTypeList': ['CSite']})
+        print('Task: a parent can be a Site')
 
 
 def ensure_formulas(espo):
@@ -386,24 +441,30 @@ def ensure_layout_fields(espo, entity, names, panel='Details'):
 
 def ensure_layouts(espo):
     ensure_layout_fields(espo, 'CResponse', ['status', 'emergencyType', 'country', 'lead', 'startDate', 'endDate'])
-    ensure_layout_fields(espo, 'CSite', ['siteCode', 'siteType', 'status', 'region', 'response', 'standard', 'installedAt',
+    ensure_layout_fields(espo, 'CProject', ['cluster', 'status', 'response', 'lead', 'startDate', 'endDate'])
+    ensure_layout_fields(espo, 'CSite', ['siteCode', 'siteType', 'status', 'region', 'response', 'project', 'standard', 'installedAt',
                                          'lastVisit', 'latitude', 'longitude', 'equipment', 'photos'])
     ensure_layout_fields(espo, 'CStandard', ['code', 'category', 'source', 'requirement'])
-    ensure_layout_fields(espo, 'Task', ['cResponse'])  # EspoCRM's own entity: c-prefixed
+    ensure_layout_fields(espo, 'Task', ['cResponse', 'cProject'])  # EspoCRM's own entity: c-prefixed
     ensure_layout_fields(espo, 'Contact', ['cProfileType', 'cAvailability'])
     ensure_layout_fields(espo, 'Case', ['cSource'])
     for entity, cols in {'CResponse': ['name', 'status', 'emergencyType', 'country', 'lead', 'teams'],
-                         'CSite': ['name', 'siteCode', 'siteType', 'status', 'region', 'response', 'lastVisit'],
+                         'CProject': ['name', 'cluster', 'status', 'response', 'lead', 'teams'],
+                         'CSite': ['name', 'siteCode', 'siteType', 'status', 'region', 'project', 'lastVisit'],
                          'CStandard': ['name', 'code', 'category', 'source']}.items():
         espo.call('PUT', f'/{entity}/layout/list',
                   body=[{'name': n, **({'link': True} if n == 'name' else {})} for n in cols])
-    # A response's page: its tasks and sites below it
-    espo.call('PUT', '/CResponse/layout/relationships', body=[{'name': 'tasks'}, {'name': 'sites'}])
-    kanban = [{'name': 'name', 'link': True}, {'name': 'cResponse'}, {'name': 'assignedUser'}, {'name': 'dateEnd'}]
+    # A response's page: its projects, tasks and sites below it; a project's, its sites and
+    # tasks; a site's, its tasks
+    espo.call('PUT', '/CResponse/layout/relationships', body=[{'name': 'projects'}, {'name': 'tasks'}, {'name': 'sites'}])
+    espo.call('PUT', '/CProject/layout/relationships', body=[{'name': 'sites'}, {'name': 'tasks'}])
+    espo.call('PUT', '/CSite/layout/relationships', body=[{'name': 'tasks'}])
+    kanban = [{'name': 'name', 'link': True}, {'name': 'cProject'}, {'name': 'cResponse'}, {'name': 'assignedUser'},
+              {'name': 'dateEnd'}]
     espo.call('PUT', '/Task/layout/kanban', body=kanban)
     task_fields = metadata(espo, 'entityDefs.Task.fields')
     espo.call('PUT', '/Task/layout/filters',  # (without fields that don't exist, e.g. from an earlier run)
-              body=sorted(f for f in set(espo.call('GET', '/Task/layout/filters') or []) | {'cResponse', 'status', 'assignedUser'}
+              body=sorted(f for f in set(espo.call('GET', '/Task/layout/filters') or []) | {'cResponse', 'cProject', 'status', 'assignedUser'}
                           if f in task_fields))
     print('layouts: lists, task board card and filters')
 
@@ -474,12 +535,12 @@ def main():
     settings = espo.call('GET', '/Settings')
     espo.call('PUT', '/Settings', body={
         'assignmentNotificationsEntityList': sorted(set(settings.get('assignmentNotificationsEntityList') or [])
-                                                    | {'Case', 'Task', 'CResponse', 'CSite', 'CApplication'}),
+                                                    | {'Case', 'Task', 'CResponse', 'CProject', 'CSite', 'CApplication'}),
         # In global search, so the isolation tests (T8) search them too
         'globalSearchEntityList': sorted(set(settings.get('globalSearchEntityList') or [])
-                                         | {'Case', 'Contact', 'Account', 'Task', 'CResponse', 'CSite', 'CStandard', 'CApplication'}),
+                                         | {'Case', 'Contact', 'Account', 'Task', 'CResponse', 'CProject', 'CSite', 'CStandard', 'CApplication'}),
         'applicationName': 'Kobo requests and responses (test)'})
-    print('settings: assignment notifications for Case, Task, Response, Site, Application; global search')
+    print('settings: assignment notifications for Case, Task, Response, Project, Site, Application; global search')
 
     ensure_entities(espo)
     for entity, fields in FIELDS.items():

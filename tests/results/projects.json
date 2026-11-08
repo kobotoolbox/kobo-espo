@@ -1,0 +1,466 @@
+[
+  {
+    "test": "P1",
+    "check": "a project is in its own team and its response's",
+    "ok": true,
+    "detail": [
+      "6aec41fec6f7a5f27",
+      "6af050644bc5ab8e6"
+    ]
+  },
+  {
+    "test": "P1",
+    "check": "a project's site: the project's teams, and its response",
+    "ok": true,
+    "detail": {
+      "id": "6af0539d225bcf316",
+      "name": "PRJ VSAT hub",
+      "deleted": false,
+      "description": null,
+      "createdAt": "2026-11-08 10:49:01",
+      "modifiedAt": "2026-11-08 10:49:01",
+      "siteCode": "PRJ-E1",
+      "siteType": null,
+      "status": "planned",
+      "region": null,
+      "latitude": null,
+      "longitude": null,
+      "installedAt": null,
+      "equipment": null,
+      "lastVisit": null,
+      "cKoboAsset": null,
+      "cKoboSubmissionId": null,
+      "cKoboSubmissionUuid": null,
+      "cKoboLink": null,
+      "location": null,
+      "standardCode": null,
+      "registeredAt": null,
+      "streamUpdatedAt": "2026-11-08 10:49:01",
+      "createdById": "6aec3ee286e4b3936",
+      "createdByName": "Admin",
+      "modifiedById": null,
+      "modifiedByName": null,
+      "assignedUserId": null,
+      "assignedUserName": null,
+      "teamsIds": [
+        "6af050644bc5ab8e6",
+        "6aec41fec6f7a5f27"
+      ],
+      "teamsNames": {
+        "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
+        "6aec41fec6f7a5f27": "Response: Test EQ 1"
+      },
+      "responseId": "6af053985d7e25363",
+      "responseName": "PRJ Hurricane",
+      "photosIds": [],
+      "photosNames": {},
+      "standardId": null,
+      "standardName": null,
+      "projectId": "6af0539aaae420acb",
+      "projectName": "PRJ Hurricane ETC",
+      "isFollowed": false,
+      "followersIds": [],
+      "followersNames": {},
+      "photosTypes": {}
+    }
+  },
+  {
+    "test": "P1",
+    "check": "a project's task: the project's teams, and its response",
+    "ok": true,
+    "detail": {
+      "id": "6af0539f0e59e8b10",
+      "name": "PRJ ETC task of the lead",
+      "deleted": false,
+      "status": "Backlog",
+      "priority": "Normal",
+      "dateStart": null,
+      "dateEnd": null,
+      "dateStartDate": null,
+      "dateEndDate": null,
+      "dateCompleted": null,
+      "reminders": [],
+      "description": null,
+      "createdAt": "2026-11-08 10:49:03",
+      "modifiedAt": "2026-11-08 10:49:03",
+      "streamUpdatedAt": "2026-11-08 10:49:03",
+      "parentId": null,
+      "parentType": null,
+      "parentName": null,
+      "accountId": null,
+      "accountName": null,
+      "contactId": null,
+      "contactName": null,
+      "createdById": "6aec3ee286e4b3936",
+      "createdByName": "Admin",
+      "modifiedById": null,
+      "modifiedByName": null,
+      "assignedUserId": "6af05090a781a7f6e",
+      "assignedUserName": "Cleo Lead",
+      "teamsIds": [
+        "6af050644bc5ab8e6",
+        "6aec41fec6f7a5f27"
+      ],
+      "teamsNames": {
+        "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
+        "6aec41fec6f7a5f27": "Response: Test EQ 1"
+      },
+      "collaboratorsIds": [
+        "6af05090a781a7f6e"
+      ],
+      "collaboratorsNames": {
+        "6af05090a781a7f6e": "Cleo Lead"
+      },
+      "attachmentsIds": [],
+      "attachmentsNames": {},
+      "cResponseId": "6af053985d7e25363",
+      "cResponseName": "PRJ Hurricane",
+      "cProjectId": "6af0539aaae420acb",
+      "cProjectName": "PRJ Hurricane ETC",
+      "isFollowed": false,
+      "followersIds": [
+        "6af05090a781a7f6e"
+      ],
+      "followersNames": {
+        "6af05090a781a7f6e": "Cleo Lead"
+      },
+      "versionNumber": 1,
+      "emailId": null,
+      "attachmentsTypes": {}
+    }
+  },
+  {
+    "test": "P2",
+    "check": "staff-1 (response team): both projects",
+    "ok": true,
+    "detail": [
+      "PRJ Hurricane ETC",
+      "PRJ Hurricane WASH"
+    ]
+  },
+  {
+    "test": "P2",
+    "check": "staff-1: both projects' sites",
+    "ok": true,
+    "detail": [
+      "PRJ VSAT hub",
+      "PRJ Water point"
+    ]
+  },
+  {
+    "test": "P2",
+    "check": "staff-1: both projects' tasks",
+    "ok": true,
+    "detail": [
+      "PRJ ETC task of the lead",
+      "PRJ WASH task"
+    ]
+  },
+  {
+    "test": "P3",
+    "check": "cluster-lead: projects = ETC only",
+    "ok": true,
+    "detail": [
+      "PRJ Hurricane ETC"
+    ]
+  },
+  {
+    "test": "P3",
+    "check": "cluster-lead: sites = ETC only",
+    "ok": true,
+    "detail": [
+      "PRJ VSAT hub"
+    ]
+  },
+  {
+    "test": "P3",
+    "check": "cluster-lead: tasks = ETC only",
+    "ok": true,
+    "detail": [
+      "PRJ ETC task of the lead"
+    ]
+  },
+  {
+    "test": "P3",
+    "check": "cluster-lead: WASH site by id refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P3",
+    "check": "cluster-lead: WASH task by id refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P3",
+    "check": "cluster-lead: the response itself refused (only its coordinators)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P3",
+    "check": "cluster-lead: task board = ETC tasks only",
+    "ok": true,
+    "detail": [
+      "PRJ ETC task of the lead"
+    ]
+  },
+  {
+    "test": "P3",
+    "check": "cluster-partner: projects = ETC only",
+    "ok": true,
+    "detail": [
+      "PRJ Hurricane ETC"
+    ]
+  },
+  {
+    "test": "P3",
+    "check": "cluster-partner: sites = ETC only",
+    "ok": true,
+    "detail": [
+      "PRJ VSAT hub"
+    ]
+  },
+  {
+    "test": "P3",
+    "check": "cluster-partner: tasks = ETC only",
+    "ok": true,
+    "detail": [
+      "PRJ ETC task of the lead"
+    ]
+  },
+  {
+    "test": "P3",
+    "check": "cluster-partner: WASH site by id refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P3",
+    "check": "cluster-partner: WASH task by id refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P3",
+    "check": "cluster-partner: the response itself refused (only its coordinators)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P3",
+    "check": "cluster-partner: task board = ETC tasks only",
+    "ok": true,
+    "detail": [
+      "PRJ ETC task of the lead"
+    ]
+  },
+  {
+    "test": "P3",
+    "check": "cluster-viewer: projects, sites, tasks = WASH only",
+    "ok": true,
+    "detail": [
+      [
+        "PRJ Hurricane WASH"
+      ],
+      [
+        "PRJ Water point"
+      ],
+      [
+        "PRJ WASH task"
+      ]
+    ]
+  },
+  {
+    "test": "P3",
+    "check": "volunteer-1 (another response): none of this response's projects, sites or tasks",
+    "ok": true,
+    "detail": [
+      403,
+      [],
+      []
+    ]
+  },
+  {
+    "test": "P4",
+    "check": "cluster-viewer: editing a site refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P4",
+    "check": "cluster-viewer: making a task refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P4",
+    "check": "cluster-viewer: making a site refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P4",
+    "check": "cluster-viewer: a note on a WASH site",
+    "ok": true,
+    "detail": "HTTP 200"
+  },
+  {
+    "test": "P5",
+    "check": "cluster-partner: a new site in ETC takes the project's teams",
+    "ok": true,
+    "detail": [
+      "6aec41fec6f7a5f27",
+      "6af050644bc5ab8e6"
+    ]
+  },
+  {
+    "test": "P5",
+    "check": "cluster-partner: edits an ETC site",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P5",
+    "check": "a task on a site: in the site's project, response and teams",
+    "ok": true,
+    "detail": {
+      "cProjectId": "6af0539aaae420acb",
+      "cResponseId": "6af053985d7e25363",
+      "teamsIds": [
+        "6af050644bc5ab8e6",
+        "6aec41fec6f7a5f27"
+      ]
+    }
+  },
+  {
+    "test": "P5",
+    "check": "the site's Tasks panel lists it",
+    "ok": true,
+    "detail": [
+      "PRJ Fix the generator"
+    ]
+  },
+  {
+    "test": "P5",
+    "check": "cluster-partner: edits their own task, not the lead's",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P5",
+    "check": "cluster-partner: a site in the WASH project refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P5",
+    "check": "cluster-partner: a task on a WASH site refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P6",
+    "check": "cluster-lead: edits the partner's task",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P6",
+    "check": "cluster-lead: gives an ETC task to the partner",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P6",
+    "check": "staff-1 (response team only): an ETC task to the ETC lead refused until they join the project's team",
+    "ok": true,
+    "detail": "HTTP 403"
+  },
+  {
+    "test": "P6",
+    "check": "staff-1 in the ETC team: gives an ETC task to the ETC lead",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P6",
+    "check": "staff-1 in both teams: an ETC task to the WASH viewer refused (not in its teams)",
+    "ok": true,
+    "detail": "HTTP 400"
+  },
+  {
+    "test": "P6",
+    "check": "staff-1: an ETC task to roster-1 (response team) allowed: the response's people can take any project's work",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P7",
+    "check": "a task on a case: the case's team",
+    "ok": true,
+    "detail": [
+      "6aec41fb5be629a65"
+    ]
+  },
+  {
+    "test": "P7",
+    "check": "a case's task to someone outside the case's team refused",
+    "ok": true,
+    "detail": "HTTP 400"
+  },
+  {
+    "test": "P8",
+    "check": "a team added to the project: on its sites and tasks",
+    "ok": true,
+    "detail": [
+      [
+        "6aec41fec6f7a5f27",
+        "6af050644bc5ab8e6",
+        "6af053dc4e94f889e"
+      ],
+      [
+        "6aec41fec6f7a5f27",
+        "6af050644bc5ab8e6",
+        "6af053dc4e94f889e"
+      ]
+    ]
+  },
+  {
+    "test": "P8",
+    "check": "and taken off again; the response's team stays (the formula puts it back)",
+    "ok": true,
+    "detail": [
+      [
+        "6aec41fec6f7a5f27",
+        "6af050644bc5ab8e6"
+      ],
+      [
+        "6aec41fec6f7a5f27",
+        "6af050644bc5ab8e6"
+      ]
+    ]
+  },
+  {
+    "test": "P9",
+    "check": "closing the project gave its tasks to its lead, with no other collaborators",
+    "ok": true,
+    "detail": [
+      [
+        "PRJ Fix the generator",
+        "6af05090a781a7f6e",
+        [
+          "6af05090a781a7f6e"
+        ]
+      ],
+      [
+        "PRJ ETC task of the lead",
+        "6af05090a781a7f6e",
+        [
+          "6af05090a781a7f6e"
+        ]
+      ]
+    ]
+  }
+]

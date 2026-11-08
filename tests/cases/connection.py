@@ -235,8 +235,13 @@ def main():
         time.sleep(wait)
     code, log, st = intake.once()
     second = by(a, 'Case', 'cKoboSubmissionUuid', s1b['_uuid'])[0]
-    check('T5', 'escalation: the unassigned case is mentioned to staff-1 (lead for Consortium A)',
-          bool(notifications(as_user('staff-1'), second['id'])) and st['counts']['escalated'] >= 1, st['counts'])
+    # By this pass or an earlier one (after T3's minute without EspoCRM, the wait is often
+    # over before now): once, and by this connection only
+    escalations = [n for n in a.call('GET', f'/Case/{second["id"]}/stream', {'maxSize': 20})['list']
+                   if (n.get('post') or '').startswith('Still unassigned')]
+    check('T5', 'escalation: the unassigned case is mentioned to staff-1 (lead for Consortium A), once',
+          bool(notifications(as_user('staff-1'), second['id'])) and len(escalations) == 1,
+          {'escalations': len(escalations), 'this pass': st['counts']['escalated']})
     # (It may have been escalated before it was assigned, on a slow run: that's right)
     check('T5', 'escalation: no escalation of the case after it was assigned', not any(
         'unassigned' in (n.get('post') or '').lower() and n['createdAt'] > assigned_at

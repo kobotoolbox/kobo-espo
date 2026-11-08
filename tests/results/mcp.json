@@ -5,7 +5,7 @@
     "ok": true,
     "detail": {
       "espocrm": "https://espo-test.kobolabs.dev",
-      "kobo_server": "http://127.0.0.1:53076",
+      "kobo_server": "http://127.0.0.1:53231",
       "kobo_account": "bridge_acct",
       "share_forms_with": "bridge_acct",
       "connections": []
@@ -18,6 +18,7 @@
     "detail": [
       "Account",
       "CApplication",
+      "CProject",
       "CResponse",
       "CSite",
       "CStandard",
@@ -33,6 +34,9 @@
     "ok": true,
     "detail": [
       "admin",
+      "cluster-lead",
+      "cluster-partner",
+      "cluster-viewer",
       "partner-a",
       "partner-b",
       "roster-1",
@@ -48,7 +52,7 @@
     "test": "M2",
     "check": "a form not shared with the bridge: refused, saying what to share with whom",
     "ok": true,
-    "detail": "The bridge's Kobo account (bridge_acct on http://127.0.0.1:53076) can't see the form aNotSharedWithTheBridge1. With kobo-mcp, share it: share_project aNotSharedWithTheBridge1 with bridge_acct, permission \"View submissions\" (and \"Edit form\" too if the connection keeps a list on the form). Then try again."
+    "detail": "The bridge's Kobo account (bridge_acct on http://127.0.0.1:53231) can't see the form aNotSharedWithTheBridge1. With kobo-mcp, share it: share_project aNotSharedWithTheBridge1 with bridge_acct, permission \"View submissions\" (and \"Edit form\" too if the connection keeps a list on the form). Then try again."
   },
   {
     "test": "M2",
@@ -70,7 +74,7 @@
     "ok": true,
     "detail": {
       "changed": true,
-      "entity": "CMcpApp963830",
+      "entity": "CMcpApp137072",
       "next": "Propose a connection that makes it, then grant_access."
     }
   },
@@ -80,11 +84,11 @@
     "ok": true,
     "detail": {
       "form": {
-        "uid": "ae007860c27454301b88fb",
-        "name": "Grant application (mcp test 963830)"
+        "uid": "acb3da486497c4acf84e67",
+        "name": "Grant application (mcp test 137072)"
       },
-      "entity": "CMcpApp963830",
-      "template": "# Proposed by kobo-espo-bridge from the form \"Grant application (mcp test 963830)\": check it before saving.\n# Left out: thanks (a note: nothing to store)\n\n[form]\nname = \"Grant application (mcp test 963830)\"\n\n[record]\nentity = \"CMcpApp963830\"\npanel = \"From Kobo\"\nname = \"{org_name}\"\nrequired = [\"org_name\"]\n\n[[route]]\nteam = \"Grants review\"\nnotify = [\"staff-2\"]\n\n[[field]]\nkobo = \"contact_email\"\nespo = \"contactEmail\"\ntype = \"varchar\"\nlabel = \"Contact email\"\n\n[[field]]\nkobo = \"country\"\nespo = \"country\"\ntype = \"enum\"\nlabel = \"Country\"\n\n[[field]]\nkobo = \"amount\"\nespo = \"amount\"\ntype = \"float\"\nlabel = \"Amount\"\n\n[[field]]\nkobo = \"purpose\"\nespo = \"purpose\"\ntype = \"text\"\nlabel = \"Purpose\"\n",
+      "entity": "CMcpApp137072",
+      "template": "# Proposed by kobo-espo-bridge from the form \"Grant application (mcp test 137072)\": check it before saving.\n# Left out: thanks (a note: nothing to store)\n\n[form]\nname = \"Grant application (mcp test 137072)\"\n\n[record]\nentity = \"CMcpApp137072\"\npanel = \"From Kobo\"\nname = \"{org_name}\"\nrequired = [\"org_name\"]\n\n[[route]]\nteam = \"Grants review\"\nnotify = [\"staff-2\"]\n\n[[field]]\nkobo = \"contact_email\"\nespo = \"contactEmail\"\ntype = \"varchar\"\nlabel = \"Contact email\"\n\n[[field]]\nkobo = \"country\"\nespo = \"country\"\ntype = \"enum\"\nlabel = \"Country\"\n\n[[field]]\nkobo = \"amount\"\nespo = \"amount\"\ntype = \"float\"\nlabel = \"Amount\"\n\n[[field]]\nkobo = \"purpose\"\nespo = \"purpose\"\ntype = \"text\"\nlabel = \"Purpose\"\n",
       "questions": [
         {
           "question": "org_name",
@@ -140,13 +144,13 @@
       ],
       "warnings": [],
       "preview": {
-        "entity": "CMcpApp963830",
+        "entity": "CMcpApp137072",
         "record": {
-          "cKoboAsset": "ae007860c27454301b88fb",
+          "cKoboAsset": "acb3da486497c4acf84e67",
           "cKoboSubmissionId": 1,
-          "cKoboSubmissionUuid": "51d65384-95ee-471b-8434-5e1190079ab1",
-          "cKoboLink": "http://127.0.0.1:53076/#/forms/ae007860c27454301b88fb/data/table",
-          "name": "Riverbend Trust 963830",
+          "cKoboSubmissionUuid": "2f575e44-4efd-46d5-8133-b0c07da4830b",
+          "cKoboLink": "http://127.0.0.1:53231/#/forms/acb3da486497c4acf84e67/data/table",
+          "name": "Riverbend Trust 137072",
           "contactEmail": "a@example.org",
           "country": "ke",
           "amount": 2500.5,
@@ -168,13 +172,13 @@
     "check": "and a preview of the latest submission, with the team and who's told",
     "ok": true,
     "detail": {
-      "entity": "CMcpApp963830",
+      "entity": "CMcpApp137072",
       "record": {
-        "cKoboAsset": "ae007860c27454301b88fb",
+        "cKoboAsset": "acb3da486497c4acf84e67",
         "cKoboSubmissionId": 1,
-        "cKoboSubmissionUuid": "51d65384-95ee-471b-8434-5e1190079ab1",
-        "cKoboLink": "http://127.0.0.1:53076/#/forms/ae007860c27454301b88fb/data/table",
-        "name": "Riverbend Trust 963830",
+        "cKoboSubmissionUuid": "2f575e44-4efd-46d5-8133-b0c07da4830b",
+        "cKoboLink": "http://127.0.0.1:53231/#/forms/acb3da486497c4acf84e67/data/table",
+        "name": "Riverbend Trust 137072",
         "contactEmail": "a@example.org",
         "country": "ke",
         "amount": 2500.5,
@@ -197,9 +201,9 @@
     "detail": {
       "first": {
         "would_create": {
-          "name": "MCP Grants 963830",
-          "form": "Grant application (mcp test 963830)",
-          "makes": "CMcpApp963830",
+          "name": "MCP Grants 137072",
+          "form": "Grant application (mcp test 137072)",
+          "makes": "CMcpApp137072",
           "teams": [
             "Grants review"
           ],
@@ -211,7 +215,7 @@
         },
         "changed": false,
         "confirm_required": true,
-        "confirm": "eyJleHAiOiAxNzkzOTY0NDU4LCAiZiI6IHsiYWN0aW9uIjogImNyZWF0ZV9jb25uZWN0aW9uIiwgIm5hbWUiOiAiTUNQIEdyYW50cyA5NjM4MzAiLCAidGVtcGxhdGUiOiAiNGVmYmQ0NzQyMTg3NjY2ZiJ9fQ.Pe95TwoCJLtjcBUKCW00Sg5EunTR2kWtUMDTAz6qjCA",
+        "confirm": "eyJleHAiOiAxNzk0MTM3NzAwLCAiZiI6IHsiYWN0aW9uIjogImNyZWF0ZV9jb25uZWN0aW9uIiwgIm5hbWUiOiAiTUNQIEdyYW50cyAxMzcwNzIiLCAidGVtcGxhdGUiOiAiMGM5NjIwNzE1MGZiNTc5NiJ9fQ.xoBxCS9amuU5de4B1-Q-quOnAz7wZBk-d2SHWHbiOOI",
         "next": "Show the user this, and call again with `confirm` only once they have agreed."
       },
       "why": "That token was issued for something else (template differs), so nothing was changed. Call this tool again without `confirm` to get a new one, show the user exactly what it would do, and pass the token only once they have agreed."
@@ -224,8 +228,8 @@
     "detail": {
       "changed": true,
       "created": {
-        "id": "6aedb75d58c65b39b",
-        "name": "MCP Grants 963830",
+        "id": "6af05c16393482136",
+        "name": "MCP Grants 137072",
         "active": true,
         "from_file": null,
         "form": null,
@@ -239,7 +243,7 @@
         "oldestWaiting": null,
         "lastError": null,
         "lastCounts": null,
-        "link": "https://espo-test.kobolabs.dev/#CKoboConnection/view/6aedb75d58c65b39b"
+        "link": "https://espo-test.kobolabs.dev/#CKoboConnection/view/6af05c16393482136"
       },
       "next": "The bridge sets it up within a pass (about 30 s). Then make a test submission and call test_connection."
     }
@@ -249,26 +253,26 @@
     "check": "test_connection: the next pass made the record, with its link",
     "ok": true,
     "detail": {
-      "id": "6aedb75d58c65b39b",
-      "name": "MCP Grants 963830",
+      "id": "6af05c16393482136",
+      "name": "MCP Grants 137072",
       "active": true,
       "from_file": null,
-      "form": "Grant application (mcp test 963830)",
-      "makes": "CMcpApp963830",
+      "form": "Grant application (mcp test 137072)",
+      "makes": "CMcpApp137072",
       "teams": "Grants review",
       "notifies": "staff-2",
       "status": "ok",
-      "lastPass": "2026-11-06 11:17:49",
-      "lastSuccess": "2026-11-06 11:17:49",
+      "lastPass": "2026-11-08 11:25:10",
+      "lastSuccess": "2026-11-08 11:25:10",
       "waiting": 0,
       "oldestWaiting": null,
       "lastError": null,
       "lastCounts": "seen 1, created 1, notified 1",
-      "link": "https://espo-test.kobolabs.dev/#CKoboConnection/view/6aedb75d58c65b39b",
+      "link": "https://espo-test.kobolabs.dev/#CKoboConnection/view/6af05c16393482136",
       "newest_record": {
-        "name": "Riverbend Trust 963830",
-        "made": "2026-11-06 11:18:19",
-        "link": "https://espo-test.kobolabs.dev/#CMcpApp963830/view/6aedb77bf0485f829"
+        "name": "Riverbend Trust 137072",
+        "made": "2026-11-08 11:25:40",
+        "link": "https://espo-test.kobolabs.dev/#CMcpApp137072/view/6af05c347773ab917"
       }
     }
   },
@@ -283,12 +287,12 @@
     "check": "update_connection: the first call shows the diff",
     "ok": true,
     "detail": {
-      "would_change": "MCP Grants 963830",
+      "would_change": "MCP Grants 137072",
       "name": null,
       "template_diff": "--- before\n+++ after\n@@ -14,3 +14,3 @@\n team = \"Grants review\"\n-notify = [\"staff-2\"]\n+notify = [\"staff-1\", \"staff-2\"]\n ",
       "changed": false,
       "confirm_required": true,
-      "confirm": "eyJleHAiOiAxNzkzOTY0NTE0LCAiZiI6IHsiYWN0aW9uIjogInVwZGF0ZV9jb25uZWN0aW9uIiwgImJvZHkiOiAiZWIyMTUyMzQxYzgzOGUxMSIsICJpZCI6ICI2YWVkYjc1ZDU4YzY1YjM5YiIsICJ3YXMiOiAiNGVmYmQ0NzQyMTg3NjY2ZiJ9fQ.H1Z0HpGwbw_IzlqTs0Ma0tWlTPHV6WsfM60NdVKOJYc",
+      "confirm": "eyJleHAiOiAxNzk0MTM3NzQ5LCAiZiI6IHsiYWN0aW9uIjogInVwZGF0ZV9jb25uZWN0aW9uIiwgImJvZHkiOiAiMDcxMTU2NWRkN2Q5MGUyOCIsICJpZCI6ICI2YWYwNWMxNjM5MzQ4MjEzNiIsICJ3YXMiOiAiMGM5NjIwNzE1MGZiNTc5NiJ9fQ.Un0gx7sV2_56htMgNnpCzqEbeVk6RyNgdEanmhOe6Vc",
       "next": "Show the user this, and call again with `confirm` only once they have agreed."
     }
   },
@@ -321,7 +325,7 @@
     "check": "the seed, run again, keeps that access (it puts back only what it defines)",
     "ok": true,
     "detail": {
-      "seed": "tomScript, beforeSaveApiScript)\nformula: Case (beforeSaveApiScript)\nformula: Task (beforeSaveApiScript, beforeSaveCustomScript)\nlayouts: lists, task board card and filters\nlayouts: agents, applications (board)\nteams: 7, roles: Internal Staff, Support Triager, Partner Staff, Roster Expert, Volunteer\n",
+      "seed": "beforeSaveApiScript)\nformula: Task (beforeSaveApiScript, beforeSaveCustomScript)\nlayouts: lists, task board card and filters\nlayouts: agents, applications (board)\nteams: 9, roles: Internal Staff, Support Triager, Partner Staff, Roster Expert, Volunteer, Cluster Lead, Cluster Partner, Cluster Viewer\n",
       "kept": {
         "create": "no",
         "read": "team",

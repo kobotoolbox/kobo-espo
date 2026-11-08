@@ -21,17 +21,24 @@
     "check": "the tools and the prompt",
     "ok": true,
     "detail": [
+      "add_to_team",
       "bridge_info",
       "connection_status",
       "create_connection",
       "create_entity",
+      "create_project",
+      "create_response",
       "grant_access",
+      "invite_user",
       "list_entities",
+      "list_projects",
+      "list_roles",
       "list_teams",
       "list_users",
       "pause_connection",
       "preview_template",
       "propose_connection",
+      "remove_from_team",
       "resume_connection",
       "test_connection",
       "update_connection"
@@ -101,13 +108,13 @@
     "test": "H3",
     "check": "bridge_info over MCP: the Kobo account to share with",
     "ok": true,
-    "detail": "{\n  \"espocrm\": \"https://espo-test.kobolabs.dev\",\n  \"kobo_server\": \"http://127.0.0.1:55544\",\n  \"kobo_account\": \"bridge_acct\",\n  \"share_forms_with\": \"bridge_acct\",\n  \"connections\": []\n}"
+    "detail": "{\n  \"espocrm\": \"https://espo-test.kobolabs.dev\",\n  \"kobo_server\": \"http://127.0.0.1:54229\",\n  \"kobo_account\": \"bridge_acct\",\n  \"share_forms_with\": \"bridge_acct\",\n  \"connections\": []\n}"
   },
   {
     "test": "H4",
     "check": "a refusal is a tool error with its message (what to share)",
     "ok": true,
-    "detail": "Error executing tool propose_connection: The bridge's Kobo account (bridge_acct on http://127.0.0.1:55544) can't see the form aNotSharedWithTheBridge1. With kobo-mcp, share it: share_project aNotSharedWithTheBridge1 with bridge_acct, permission \"View submissions\" (and \"Edit form\" too if the connecti"
+    "detail": "Error executing tool propose_connection: The bridge's Kobo account (bridge_acct on http://127.0.0.1:54229) can't see the form aNotSharedWithTheBridge1. With kobo-mcp, share it: share_project aNotSharedWithTheBridge1 with bridge_acct, permission \"View submissions\" (and \"Edit form\" too if the connecti"
   },
   {
     "test": "H4",
@@ -123,9 +130,9 @@
     "check": "a 401 names the resource metadata; it names this server as where to sign in",
     "ok": true,
     "detail": {
-      "resource": "http://127.0.0.1:55545/mcp",
+      "resource": "http://127.0.0.1:54230/mcp",
       "authorization_servers": [
-        "http://127.0.0.1:55545"
+        "http://127.0.0.1:54230"
       ],
       "bearer_methods_supported": [
         "header"
@@ -137,10 +144,10 @@
     "check": "the authorization server: sign-in, tokens, registration, PKCE (S256)",
     "ok": true,
     "detail": {
-      "issuer": "http://127.0.0.1:55545",
-      "authorization_endpoint": "http://127.0.0.1:55545/authorize",
-      "token_endpoint": "http://127.0.0.1:55545/token",
-      "registration_endpoint": "http://127.0.0.1:55545/register",
+      "issuer": "http://127.0.0.1:54230",
+      "authorization_endpoint": "http://127.0.0.1:54230/authorize",
+      "token_endpoint": "http://127.0.0.1:54230/token",
+      "registration_endpoint": "http://127.0.0.1:54230/register",
       "response_types_supported": [
         "code"
       ],
@@ -163,7 +170,7 @@
     "ok": true,
     "detail": {
       "signin_status": 303,
-      "tools": 14
+      "tools": 21
     }
   },
   {
@@ -209,9 +216,9 @@
       "status": 303,
       "sessions": [
         {
-          "id": "6aedc3a314370a00f",
+          "id": "6af05ea7a66b15e55",
           "isActive": false,
-          "lastAccess": "2026-11-06 12:10:11"
+          "lastAccess": "2026-11-08 11:36:08"
         }
       ]
     }
@@ -243,7 +250,7 @@
     "ok": true,
     "detail": {
       "after": 401,
-      "refresh": "{\"error\":\"invalid_grant\",\"error_description\":\"mcp-oauth-966977 is no longer an active EspoCRM admin.\"}"
+      "refresh": "{\"error\":\"invalid_grant\",\"error_description\":\"mcp-oauth-137736 is no longer an active EspoCRM admin.\"}"
     }
   }
 ]

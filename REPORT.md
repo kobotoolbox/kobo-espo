@@ -369,13 +369,53 @@ gets an API user of its own (`kobo-conn-<name>`).
   Case template, so two Case connections would share its role. Still one bridge service
   per instance.
 
+## Cluster projects (2026-11-08)
+
+For a response that supports several clusters (Hurricane Melissa: ETC, WASH...), each with
+its own team managing its sites and tasks.
+
+- **A Cluster project** (`CProject`) belongs to a response and is in its own team and the
+  response's (formula). Its sites and tasks take its teams; a team added to the project
+  reaches them; closing it gives its tasks to its lead. The response's team is for its
+  coordinators: they see every project, a project's people only theirs, and not the
+  response record itself.
+- **Roles:** Cluster Lead (sites and all the project's tasks), Cluster Partner (sites,
+  tasks, their own tasks), Cluster Viewer (reads, posts notes). Internal Staff gets
+  projects too.
+- **Tasks on sites and cases:** Task's own Parent field now takes a Site
+  (`updateLink`, so a Site has a Tasks panel). A task on a site goes into its project,
+  response and teams; on a case, the case's team. The task guard now takes the team from
+  the project, response, site or case, in that order.
+- **Found:** EspoCRM lets people assign only those who share a team with them, so a
+  coordinator in the response's team sees a project's tasks but can't give them to the
+  project's people until they join its team. Kept that way, rather than widening
+  coordinators' assignment to "all" with more guards. And with "team" assignment, a record
+  sent with no team is refused (the UI always sends the default team).
+- **Access is per person:** EspoCRM adds up a person's roles across all their teams, so a
+  lead of one project who views another has lead access in both.
+- **The EspoCRM MCP** sets it up: `list_projects`, `create_response`, `create_project`,
+  `list_roles`, `invite_user`, `add_to_team`, `remove_from_team`, and a prompt, "Set up a
+  response". Regular users only, never the bridge's or agents' roles (any role an API user
+  holds), each change confirmed. `invite_user` never handles a password: EspoCRM emails a
+  set-your-password link (`sendAccessInfo`), once outgoing email is configured (not yet;
+  Resend over SMTP on port 2587 works from the droplet, where DigitalOcean blocks 465 and
+  587).
+- Tests: `tests/cases/projects.py` 44/44, `tests/cases/mcp_people.py` 24/24; isolation
+  80/80, workflow B 8/8, agents 35/35 unchanged.
+- **A bridge bug found on the way** (kobo-espo-bridge): escalation and the status sync to
+  Kobo took every Kobo record of the entity, not only the connection's own forms'. With two
+  Case connections, each escalated the other's cases (with its own routes) and pushed their
+  statuses. Seen as T5 failing: the droplet's support connection escalated the tests' cases
+  first. Both now take only the records of the connection's forms (unit test extended).
+- **Next:** Workflow E, the response's 5W (`plans/workflow-e-5w-plan.md`).
+
 ## Open questions for Josh
 
 1. **The real instance:** apply this to `espo.kobolabs.dev`, alongside its demo, or start a
    clean one? It needs the seed's instance-wide changes (entities, Task statuses, roles).
 2. **A dedicated Kobo account for the bridge** (not a person's), with the forms shared to it.
    Which server: the global one, or the EU one for EU partners?
-3. **SMTP** for email notifications: which sender?
+3. **SMTP** for email notifications and invitations: Resend (port 2587), from which domain?
 4. **Partners:** do they log in (as here, Partner Staff users), or only submit, or follow
    their own requests in EspoCRM's portal?
 5. **Escalation time** and who it goes to, per project.
