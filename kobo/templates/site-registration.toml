@@ -44,11 +44,13 @@ espo = "installedAt"
 kobo = "equipment"
 espo = "equipment"
 
-[[field]]
+[[field]]  # also as numbers in the site's latitude and longitude, for maps and dashboards
 kobo = "location"
 espo = "location"
 type = "varchar"
 label = "Location (Kobo geopoint)"
+latitude = "latitude"
+longitude = "longitude"
 
 [[field]]  # the standard's record, found by the code picked from standards.csv
 kobo = "standard"

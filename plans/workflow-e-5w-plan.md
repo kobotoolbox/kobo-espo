@@ -115,10 +115,11 @@ another" as a new submission. That works with the bridge as it is.
 
 ### 7. Outputs: a dashboard, not EspoCRM
 
-The 5W's tables and map read EspoCRM's API with a read-only API user per response (or the
-bridge writes a GeoJSON/CSV export, as it writes lists). Which dashboard is open: the
-question of kobo-dash vs risa-dashboard from 2026-11-08 isn't answered yet. EspoCRM's own
-list views, filters and the Kanban stay for follow-up, not for analysis.
+The 5W's tables and map are a kobo-dash dashboard: EspoCRM becomes a source there (an
+EspoCRM feed, polled with a read-only API user limited to a response's or project's team
+and the feed's fields), designed through kobo-mcp's dashboard tools, with the feed set up
+by the EspoCRM MCP. The plan is kobo-dash's `plans/espo-source-plan.md` (2026-11-08).
+EspoCRM's own list views, filters and the Kanban stay for follow-up, not for analysis.
 
 ## What stays out
 
@@ -138,7 +139,8 @@ list views, filters and the Kanban stay for follow-up, not for analysis.
 4. Repeat groups in kobo-espo-bridge (`[[repeat]]`, `propose`, unit tests, then a real Kobo
    run); the daily report form with a repeat.
 5. The "not reported" agent and the data checks.
-6. The dashboard (separate plan, once the dashboard is chosen).
+6. The dashboard: kobo-dash's EspoCRM source (its `plans/espo-source-plan.md`), then the 5W
+   dashboard on it.
 7. MCP: `create_project` also sets up the project's report connection from a template.
 
 ## Risks and open questions

@@ -1,9 +1,9 @@
 {
-  "when": "2026-11-08T11:49:16Z",
+  "when": "2026-11-08T13:00:08Z",
   "espo": "https://espo-test.kobolabs.dev",
   "kobo": "fake",
-  "run": "138228",
-  "passed": 73,
+  "run": "142430",
+  "passed": 74,
   "failed": 0,
   "results": [
     {
@@ -17,7 +17,7 @@
       "check": "name, category, priority, project from the answers",
       "ok": true,
       "detail": {
-        "name": "Forms and XLSForm: Form will not deploy (138228)",
+        "name": "Forms and XLSForm: Form will not deploy (142430)",
         "cCategory": "forms",
         "priority": "High",
         "cProject": "consortium_a"
@@ -42,9 +42,9 @@
       "check": "requester Contact by email, with their name",
       "ok": true,
       "detail": {
-        "emailAddress": "req-a-138228@example.org",
+        "emailAddress": "req-a-142430@example.org",
         "firstName": "Test Requester",
-        "lastName": "138228"
+        "lastName": "142430"
       }
     },
     {
@@ -64,7 +64,7 @@
       "check": "media: the attached file is copied onto the case",
       "ok": true,
       "detail": {
-        "6af060b152c1b82cc": "screenshot.png"
+        "6af071222accdd4d8": "screenshot.png"
       }
     },
     {
@@ -83,7 +83,7 @@
       "test": "T1",
       "check": "latency of one pass (submission -> case), seconds",
       "ok": true,
-      "detail": 10.0
+      "detail": 10.8
     },
     {
       "test": "T2",
@@ -151,7 +151,7 @@
           "statuses": 0,
           "merged": 0,
           "notified": 1,
-          "escalated": 0
+          "escalated": 1
         }
       }
     },
@@ -166,8 +166,8 @@
       "check": "the pass goes on (the good ones still go through)",
       "ok": true,
       "detail": {
-        "last_pass": "2026-11-08T11:46:27Z",
-        "last_success": "2026-11-08T11:46:27Z",
+        "last_pass": "2026-11-08T12:56:45Z",
+        "last_success": "2026-11-08T12:56:45Z",
         "ok": true,
         "error": null,
         "counts": {
@@ -184,11 +184,11 @@
           "statuses": 0,
           "merged": 0,
           "notified": 0,
-          "escalated": 2
+          "escalated": 1
         },
         "failed": 2,
         "failed_elsewhere": 0,
-        "oldest_failed": "2026-11-08T11:46:27Z",
+        "oldest_failed": "2026-11-08T12:56:45Z",
         "oldest_error": "required answer missing: summary"
       }
     },
@@ -196,7 +196,7 @@
       "test": "T4",
       "check": "missing answer: \"required answer missing: summary\" in the ledger",
       "ok": true,
-      "detail": "ace5faa197385419a92436  submission 4  since 2026-11-08T11:46:27Z  1 attempt(s), next 2026-11-08T11:47:27Z\n    required answer missing: summary\nace5faa197385419a92436  submission 5  since 2026-11-08T11:46:27Z  1 attempt(s), next 2026-11-08T11:47:27Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "afd812091771d4c8e87b54  submission 4  since 2026-11-08T12:56:45Z  1 attempt(s), next 2026-11-08T12:57:45Z\n    required answer missing: summary\nafd812091771d4c8e87b54  submission 5  since 2026-11-08T12:56:45Z  1 attempt(s), next 2026-11-08T12:57:45Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -208,7 +208,7 @@
       "test": "T4",
       "check": "invalid email: refused by EspoCRM, recorded with its reason",
       "ok": true,
-      "detail": "ace5faa197385419a92436  submission 4  since 2026-11-08T11:46:27Z  1 attempt(s), next 2026-11-08T11:47:27Z\n    required answer missing: summary\nace5faa197385419a92436  submission 5  since 2026-11-08T11:46:27Z  1 attempt(s), next 2026-11-08T11:47:27Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "afd812091771d4c8e87b54  submission 4  since 2026-11-08T12:56:45Z  1 attempt(s), next 2026-11-08T12:57:45Z\n    required answer missing: summary\nafd812091771d4c8e87b54  submission 5  since 2026-11-08T12:56:45Z  1 attempt(s), next 2026-11-08T12:57:45Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -569,6 +569,16 @@
     },
     {
       "test": "C2",
+      "check": "its location also as latitude and longitude (for maps)",
+      "ok": true,
+      "detail": {
+        "location": "1.23 4.56 0 5",
+        "latitude": 1.23,
+        "longitude": 4.56
+      }
+    },
+    {
+      "test": "C2",
       "check": "in its response's team (Site formula)",
       "ok": true,
       "detail": ""
@@ -578,7 +588,7 @@
       "check": "media: the site photo is on the site, with the answer's file name (Kobo stores site_photo_1.png)",
       "ok": true,
       "detail": {
-        "6af0618699ff61aa8": "site photo (1).png"
+        "6af0720b377406de4": "site photo (1).png"
       }
     },
     {
@@ -606,7 +616,7 @@
       "test": "C2",
       "check": "a standard code EspoCRM has no record for: recorded, no site made",
       "ok": true,
-      "detail": "a8a69e59b3e684e51bca67  submission 4  since 2026-11-08T11:48:38Z  1 attempt(s), next 2026-11-08T11:49:38Z\n    standard: 0 CStandard records with that code\n"
+      "detail": "a7afe4a5f51c34382a4cc6  submission 4  since 2026-11-08T12:59:08Z  1 attempt(s), next 2026-11-08T13:00:08Z\n    standard: 0 CStandard records with that code\n"
     },
     {
       "test": "C2",
@@ -712,6 +722,12 @@
         {
           "name": "EQ1-WP-138228",
           "label": "EQ1-WP-138228 \u00b7 Water point 138228",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-142430",
+          "label": "EQ1-WP-142430 \u00b7 Water point 142430",
           "status": "planned",
           "region": "North"
         },
@@ -773,7 +789,7 @@
       "check": "media: the visit's photo is on its note",
       "ok": true,
       "detail": {
-        "6af061a76640e494a": "leak.png"
+        "6af07234b23b8cfd6": "leak.png"
       }
     },
     {
@@ -884,6 +900,12 @@
           "region": "North"
         },
         {
+          "name": "EQ1-WP-142430",
+          "label": "EQ1-WP-142430 \u00b7 Water point 142430",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
           "name": "EQ1-WP-899003",
           "label": "EQ1-WP-899003 \u00b7 Water point 899003",
           "status": "needs_repair",
@@ -919,7 +941,7 @@
       "test": "C3",
       "check": "a visit to an unknown site is recorded, not guessed",
       "ok": true,
-      "detail": "a95c08cd7ffa84cabb62ba  submission 2  since 2026-11-08T11:49:11Z  1 attempt(s), next 2026-11-08T11:50:11Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
+      "detail": "a2ed668f1d04a49c58ff49  submission 2  since 2026-11-08T12:59:59Z  1 attempt(s), next 2026-11-08T13:00:59Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
     }
   ]
 }

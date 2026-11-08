@@ -338,6 +338,9 @@ def main():
     check('C2', 'linked to its standard, looked up by the code picked', wash2 and site.get('standardId') == wash2[0]['id'],
           site.get('standardId'))
     check('C2', "the form's end time, in UTC", site.get('registeredAt') == '2026-11-05 08:51:06', site.get('registeredAt'))
+    check('C2', 'its location also as latitude and longitude (for maps)',
+          (site.get('location'), site.get('latitude'), site.get('longitude')) == ('1.23 4.56 0 5', 1.23, 4.56),
+          {k: site.get(k) for k in ('location', 'latitude', 'longitude')})
     check('C2', "in its response's team (Site formula)", site.get('teamsIds') == [team['Response: Test EQ 1']])
     check('C2', "media: the site photo is on the site, with the answer's file name (Kobo stores site_photo_1.png)",
           list((site.get('photosNames') or {}).values()) == ['site photo (1).png'], site.get('photosNames'))
