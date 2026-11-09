@@ -44,3 +44,43 @@ if (activityId) {
     record\update('CActivity', activityId, 'communities', $n, 'peopleReached', $reached,
         'peopleTargeted', $targeted, 'quantity', $quantity, 'budget', $budget);
 }
+
+// Data checks: what looks wrong, as flags for the IM team (seed.LOCATION_CHECKS). Never a
+// refusal: a report from the field is kept, then fixed or explained
+$checks = list();
+if (populationReached && populationTargeted && populationReached > populationTargeted) {
+    $checks = array\push($checks, 'reached_over_targeted');
+}
+$groups = ifThenElse(idpPeopleReached, idpPeopleReached, 0) + ifThenElse(hostingPeopleReached, hostingPeopleReached, 0) + ifThenElse(ndpPeopleReached, ndpPeopleReached, 0) + ifThenElse(otherPeopleReached, otherPeopleReached, 0);
+if (populationReached && $groups > populationReached) {
+    $checks = array\push($checks, 'groups_over_total');
+}
+$parts = false;
+if (idpPeopleTargeted && (idpWomenTargeted || idpMenTargeted || idpChildrenTargeted) && idpPeopleTargeted != ifThenElse(idpWomenTargeted, idpWomenTargeted, 0) + ifThenElse(idpMenTargeted, idpMenTargeted, 0) + ifThenElse(idpChildrenTargeted, idpChildrenTargeted, 0)) {
+    $parts = true;
+}
+if (idpPeopleReached && (idpWomenReached || idpMenReached || idpChildrenReached) && idpPeopleReached != ifThenElse(idpWomenReached, idpWomenReached, 0) + ifThenElse(idpMenReached, idpMenReached, 0) + ifThenElse(idpChildrenReached, idpChildrenReached, 0)) {
+    $parts = true;
+}
+if (hostingPeopleTargeted && (hostingWomenTargeted || hostingMenTargeted || hostingChildrenTargeted) && hostingPeopleTargeted != ifThenElse(hostingWomenTargeted, hostingWomenTargeted, 0) + ifThenElse(hostingMenTargeted, hostingMenTargeted, 0) + ifThenElse(hostingChildrenTargeted, hostingChildrenTargeted, 0)) {
+    $parts = true;
+}
+if (hostingPeopleReached && (hostingWomenReached || hostingMenReached || hostingChildrenReached) && hostingPeopleReached != ifThenElse(hostingWomenReached, hostingWomenReached, 0) + ifThenElse(hostingMenReached, hostingMenReached, 0) + ifThenElse(hostingChildrenReached, hostingChildrenReached, 0)) {
+    $parts = true;
+}
+if (ndpPeopleTargeted && (ndpWomenTargeted || ndpMenTargeted || ndpChildrenTargeted) && ndpPeopleTargeted != ifThenElse(ndpWomenTargeted, ndpWomenTargeted, 0) + ifThenElse(ndpMenTargeted, ndpMenTargeted, 0) + ifThenElse(ndpChildrenTargeted, ndpChildrenTargeted, 0)) {
+    $parts = true;
+}
+if (ndpPeopleReached && (ndpWomenReached || ndpMenReached || ndpChildrenReached) && ndpPeopleReached != ifThenElse(ndpWomenReached, ndpWomenReached, 0) + ifThenElse(ndpMenReached, ndpMenReached, 0) + ifThenElse(ndpChildrenReached, ndpChildrenReached, 0)) {
+    $parts = true;
+}
+if (otherPeopleTargeted && (otherWomenTargeted || otherMenTargeted || otherChildrenTargeted) && otherPeopleTargeted != ifThenElse(otherWomenTargeted, otherWomenTargeted, 0) + ifThenElse(otherMenTargeted, otherMenTargeted, 0) + ifThenElse(otherChildrenTargeted, otherChildrenTargeted, 0)) {
+    $parts = true;
+}
+if (otherPeopleReached && (otherWomenReached || otherMenReached || otherChildrenReached) && otherPeopleReached != ifThenElse(otherWomenReached, otherWomenReached, 0) + ifThenElse(otherMenReached, otherMenReached, 0) + ifThenElse(otherChildrenReached, otherChildrenReached, 0)) {
+    $parts = true;
+}
+if ($parts) {
+    $checks = array\push($checks, 'group_parts_dont_add_up');
+}
+dataChecks = $checks;

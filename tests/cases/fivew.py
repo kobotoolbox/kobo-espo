@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-W1-W8: Workflow E, a response's 5W (plans/workflow-e-5w-plan.md) on the Hurricane Melissa
+W1-W9: Workflow E, a response's 5W (plans/workflow-e-5w-plan.md) on the Hurricane Melissa
 5W form's model, and the short codes.
 
     python3 -I tests/cases/fivew.py
@@ -219,6 +219,24 @@ def run(a, team, user):
     check('W7', "cluster-partner: edits their own activity, not one they didn't make",
           status(lambda: p.call('PUT', f'/CActivity/{mine["id"]}', body={'comments': 'x'})) == 200
           and status(lambda: p.call('PUT', f'/CActivity/{act_etc["id"]}', body={'comments': 'x'})) == 403)
+
+    # --- W9: data checks: flags on what looks wrong, never a refusal ------------------------------
+    chk = lambda e, r: set(a.call('GET', f'/{e}/{r["id"]}').get('dataChecks') or [])  # noqa: E731
+    check('W9', 'a sound location: no flags', chk('CActivityLocation', loc1) == set(), chk('CActivityLocation', loc1))
+    odd = location(act, community[0], populationTargeted=10, populationReached=50, populationGroups=['idp', 'hosting'],
+                   idpPeopleReached=40, idpWomenReached=10, idpMenReached=10, idpChildrenReached=10, hostingPeopleReached=30)
+    check('W9', 'more reached than targeted, groups over the total, a group whose parts don\'t add up: all three flagged, kept',
+          chk('CActivityLocation', odd) == {'reached_over_targeted', 'groups_over_total', 'group_parts_dont_add_up'},
+          chk('CActivityLocation', odd))
+    a.call('PUT', f'/CActivityLocation/{odd["id"]}', body={'populationTargeted': 80, 'populationReached': 70,
+                                                          'idpPeopleReached': 30, 'hostingPeopleReached': 30})
+    check('W9', 'fixed: the flags go', chk('CActivityLocation', odd) == set(), chk('CActivityLocation', odd))
+    empty = activity(name='Not yet anywhere', status='COMPLETED', startDate='2026-11-01', endDate='2099-01-01')
+    check('W9', 'an activity with no community, completed but ending in the future: flagged',
+          chk('CActivity', empty) == {'no_communities', 'completed_ends_later'}, chk('CActivity', empty))
+    location(empty, community[1], populationTargeted=10)
+    check('W9', 'a community with nobody reached: completed, nobody reached (and still ends later)',
+          chk('CActivity', empty) == {'completed_nobody_reached', 'completed_ends_later'}, chk('CActivity', empty))
 
     # --- W8: reference lists: areas and organisations --------------------------------------------
     areas = a.call('GET', '/CAdminArea', {'maxSize': 1, **where('country', 'JAM')})['total']

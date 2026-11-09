@@ -29,7 +29,7 @@ from runner import Runner, key_name, where  # noqa: E402
 SECRETS = ROOT / 'secrets' / 'agents.secrets'
 TEST_SITE = 'https://agents.test.invalid'  # marks the test's accounts
 # Not the example agents' teams (Response: Test EQ 1, Grants review); staff-1 leads, staff-2 reviews
-TEST_TEAMS = {'CSite': 'Response: Test EQ 2', 'CApplication': 'Internal Kobo'}
+TEST_TEAMS = {'CSite': 'Response: Test EQ 2', 'CApplication': 'Internal Kobo', 'CResponder': 'Response: Test EQ 2'}
 results = []
 
 
@@ -62,7 +62,7 @@ def clean(a):
         for t in a.call('GET', '/Task', {**where(('equals', 'cResponseId', resp['id'])), 'maxSize': 200,
                                          'select': 'id'})['list']:
             a.call('DELETE', f'/Task/{t["id"]}')
-    for entity in ('CSite', 'CResponse', 'CApplication'):
+    for entity in ('CSite', 'CResponder', 'CResponse', 'CApplication'):
         for row in named(a, entity, 'AGT '):
             a.call('DELETE', f'/{entity}/{row["id"]}')
     for row in a.call('GET', '/Account', {**where(('equals', 'website', TEST_SITE)), 'maxSize': 200, 'select': 'id'})['list']:
@@ -234,6 +234,57 @@ def main():
     check('W4', 'a week later: again for the stale site, and now for the other one too (its visit is 14 days old)',
           follow_ups() == [f'Follow up repair: AGT Site fresh (last visit {today})']
           + [f'Follow up repair: AGT Site stale (last visit {ago})'] * 2, follow_ups())
+    runner.clock = time.time
+
+    # --- On a schedule: organisations that haven't reported (Workflow E) -------------------
+    nr = agents['5W: no report']
+    resp3 = a.call('POST', '/CResponse', body={'name': f'AGT Response 5W {time.strftime("%H%M%S")}', 'status': 'Active',
+                                               'teamsIds': [teams[TEST_TEAMS['CResponder']]], 'leadId': users['staff-1']})
+    for t in tasks(a, resp3['id']):
+        a.call('DELETE', f'/Task/{t["id"]}')
+    later = time.strftime('%Y-%m-%d', time.gmtime(time.time() + 5 * day))  # recent, by the clock moved 8 days on
+    orgs = {}
+    for name, status, last in [('never', 'registered', None), ('stale', 'active', ago), ('fresh', 'active', later),
+                               ('gone', 'inactive', ago)]:
+        orgs[name] = a.call('POST', '/CResponder', body={'name': f'AGT Org {name}', 'status': status, 'lastReport': last,
+                                                         'responseId': resp3['id'], 'clusters': ['WASH']})
+
+    def chases():
+        return sorted((t['name'], t['status']) for t in tasks(a, resp3['id']) if t['name'].startswith('No 5W report'))
+
+    runner.clock = lambda: now + 8 * day
+    runner.once()
+    made = [t for t in tasks(a, resp3['id']) if t['name'].startswith('No 5W report')]
+    check('N1', "a task for each organisation silent for a week: one that reported 10 days ago, and one that never "
+          "did (registered over a week ago); not the one that reported recently, nor an inactive one",
+          chases() == [('No 5W report from AGT Org never', 'Not Started'), ('No 5W report from AGT Org stale', 'Not Started')],
+          chases())
+    full = [a.call('GET', f'/Task/{t["id"]}') for t in made]
+    check('N1', "for the response's lead, about the organisation (its Tasks panel)",
+          all(t['assignedUserId'] == users['staff-1'] and t.get('parentType') == 'CResponder' for t in full)
+          and {t['parentId'] for t in full} == {orgs['never']['id'], orgs['stale']['id']}, full)
+    check('N2', 'the same morning again: nothing new', (runner.once(), len(chases()))[1] == 2, chases())
+    runner.clock = lambda: now + 9 * day  # the next morning
+    runner.once()
+    stale_runs = runs(a, nr['id'], orgs['stale']['id'])
+    check('N3', 'the next morning, their tasks still open: no second task, and the run done (not failed)',
+          len(chases()) == 2 and [r['status'] for r in stale_runs] == ['done', 'done'],
+          {'tasks': chases(), 'runs': [(r['status'], r.get('error')) for r in stale_runs]})
+    said = notes(a, 'CResponder', orgs['stale']['id'], nr['userId'])
+    check('N3', 'and its note says why, with a link to the open task',
+          any('still open' in (n.get('post') or '') and '#Task/view/' in (n.get('post') or '') for n in said),
+          [n.get('post') for n in said])
+    stale_task = next(t for t in full if t['parentId'] == orgs['stale']['id'])
+    a.call('PUT', f'/Task/{stale_task["id"]}', body={'status': 'Completed'})
+    runner.clock = lambda: now + 10 * day
+    runner.once()
+    check('N4', 'its task done but still no report: a new one', chases().count(('No 5W report from AGT Org stale', 'Not Started')) == 1
+          and len(chases()) == 3, chases())
+    a.call('PUT', f'/CResponder/{orgs["never"]["id"]}', body={'lastReport': time.strftime('%Y-%m-%d', time.gmtime(now + 10 * day))})
+    runner.clock = lambda: now + 11 * day
+    runner.once()
+    runs_never = runs(a, nr['id'], orgs['never']['id'])
+    check('N5', 'it reports: no more runs for it', len(runs_never) == 3, [r['triggerKey'] for r in runs_never])
     runner.clock = time.time
 
     # --- Due diligence (Workflow D) --------------------------------------------------------

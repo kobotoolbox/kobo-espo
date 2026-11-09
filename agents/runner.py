@@ -73,12 +73,23 @@ def key_name(username):
 
 
 def where(*conds):
-    """EspoCRM list params from (type, attribute, value) triples."""
+    """EspoCRM list params from (type, attribute, value) triples. A list value is several
+    (for in); an "or" or "and" has a list of triples as its value."""
     p = {}
+
+    def put(prefix, t, a, v):
+        p[f'{prefix}[type]'] = t
+        if a:
+            p[f'{prefix}[attribute]'] = a
+        if t in ('or', 'and'):
+            for j, (tt, aa, vv) in enumerate(v):
+                put(f'{prefix}[value][{j}]', tt, aa, vv)
+        elif isinstance(v, list):
+            p.update({f'{prefix}[value][{j}]': x for j, x in enumerate(v)})
+        elif v is not None:
+            p[f'{prefix}[value]'] = v
     for i, (t, a, v) in enumerate(conds):
-        p[f'where[{i}][type]'], p[f'where[{i}][attribute]'] = t, a
-        if v is not None:
-            p[f'where[{i}][value]'] = v
+        put(f'where[{i}]', t, a, v)
     return p
 
 
@@ -154,8 +165,10 @@ class Runner:
         if files:
             fields += [files + 'Ids', files + 'Names', files + 'Types']
         conds = []
-        if agent.get('filterField'):
-            conds.append(('equals', agent['filterField'], agent.get('filterValue')))
+        if agent.get('filterField'):  # one value, or several: "registered, active"
+            values = [v.strip() for v in str(agent.get('filterValue') or '').split(',') if v.strip()]
+            conds.append(('in', agent['filterField'], values) if len(values) > 1
+                         else ('equals', agent['filterField'], agent.get('filterValue')))
         since = agent.get('activeSince') or ''
         if agent['trigger'] == 'schedule':
             slot = schedule_slot(agent, self.clock())
@@ -164,7 +177,12 @@ class Runner:
             idle, days = agent.get('idleField'), agent.get('idleDays')
             if idle and days:
                 fmt = '%Y-%m-%d' if (defs.get(idle) or {}).get('type') == 'date' else '%Y-%m-%d %H:%M:%S'
-                conds.append(('before', idle, utc(self.clock() - days * 86400).strftime(fmt)))
+                cutoff = utc(self.clock() - days * 86400)
+                # Older than that, or never set on a record that's been there that long (an
+                # organisation that registered and never reported)
+                conds.append(('or', None, [('before', idle, cutoff.strftime(fmt)),
+                                           ('and', None, [('isNull', idle, None),
+                                                          ('before', 'createdAt', cutoff.strftime('%Y-%m-%d %H:%M:%S'))])]))
                 fields.append(idle)
             params = {'orderBy': 'createdAt', 'order': 'asc', 'maxSize': 200}  # every record, once per slot
         elif agent['trigger'] == 'stage':
@@ -326,7 +344,7 @@ class Runner:
             update['assignedUserId'] = assignee
         elif route.get('clearAssignee'):
             update['assignedUserId'] = None
-        task = None
+        task, open_note = None, ''
         if route.get('createTask'):
             task = {'name': fill(route.get('taskName') or '{name}', rec)[:150], 'status': route.get('taskStatus') or 'Backlog',
                     'priority': route.get('taskPriority') or 'Normal',
@@ -339,13 +357,23 @@ class Runner:
                 task['cResponseId'] = rec['responseId']
             elif entity == 'CResponse':
                 task['cResponseId'] = rec['id']
+            if entity in self.task_parents(espo):  # the task is about this record (its Tasks panel)
+                task['parentType'], task['parentId'] = entity, rec['id']
+                if route.get('onlyOneOpen'):
+                    still = espo.call('GET', '/Task', {**where(('equals', 'parentType', entity), ('equals', 'parentId', rec['id']),
+                                                              ('notIn', 'status', ['Completed', 'Canceled', 'Deferred'])),
+                                                       'maxSize': 1, 'select': 'id,name'})['list']
+                    if still:
+                        task = None
+                        open_note = (f'\n\nA task about it is still open, so no new one: '
+                                     f'[{still[0]["name"]}]({self.site}/#Task/view/{still[0]["id"]})')
         if update:
             actions.append({'update': update})
         if task:
             actions.append({'createTask': task})
         mention = self.mention(route, assignee or (task or {}).get('assignedUserId'))
         head = f'**{agent["name"]}** → {route["name"]}'
-        body = route.get('fixedNote') or reason
+        body = (route.get('fixedNote') or reason) + open_note
         summary = '\n\n'.join(f'{k}: {v}' for k, v in output.items() if isinstance(v, str) and len(v) > 40)
         if agent['mode'] == 'dry_run':
             note = (f'{head} (dry run: nothing was changed)\n\n{body}\n\nWould do: '
@@ -361,6 +389,16 @@ class Runner:
             note += f'\n\n{summary}'
         espo.call('POST', '/Note', body={'type': 'Post', 'parentType': entity, 'parentId': rec['id'], 'post': note})
         return actions
+
+    def task_parents(self, espo):
+        """The entities a Task's parent can be (Case, CSite, CResponder...), as this agent's
+        user sees them: EspoCRM lists only those it may read, so it's asked per agent."""
+        cache = self.__dict__.setdefault('_task_parents', {})
+        key = espo.headers.get('X-Api-Key', '')
+        if key not in cache:
+            parent = espo.call('GET', '/Metadata', {'key': 'entityDefs.Task.fields.parent'}) or {}
+            cache[key] = set(parent.get('entityList') or [])
+        return cache[key]
 
     def assign_from(self, path, rec, espo):
         """A user from the record: "lead" (a user link on it) or "response.lead" (on a linked record)."""

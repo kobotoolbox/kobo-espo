@@ -430,6 +430,9 @@ with its codes; our form is made from it (`kobo/forms/melissa.py`).
   JM01 Clarendon (and there are no JM03, JM05, JM06). The first draft had them wrong; the
   seed now takes the 14 parishes and 775 communities from the Melissa form and removes the
   rest. EspoCRM's API pages at 200 records at most.
+- **Follow-up (2026-11-09):** the agent "5W: no report" makes one task per silent
+  organisation (a week without a report, or never), and data checks flag figures that
+  don't add up, without refusing the report. On real Kobo the 5W forms passed 86/86.
 - The 5W dashboard is kobo-dash's, with EspoCRM as a source (kobo-dash
   `plans/espo-source-plan.md`); its step 1 (map-point and multi-choice table columns) is
   done there (branch `espo-source`, 845 tests).

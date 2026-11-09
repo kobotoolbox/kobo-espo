@@ -62,6 +62,15 @@ GROUPS = {'idp': ('idp', 'idp_household'), 'hosting': ('hosting', 'people_hostin
           'ndp': ('ndp', 'non_displaced_household'), 'other': ('other', 'other_population_household')}
 
 
+# Data checks (formulas): flags on what looks wrong in a report, for the IM team to follow
+# up. Flags, not refusals: a report from the field is kept, and fixed or explained
+ACTIVITY_CHECKS = {'completed_nobody_reached': 'Completed, nobody reached', 'no_communities': 'No community given',
+                   'completed_ends_later': 'Completed, but ends in the future'}
+LOCATION_CHECKS = {'reached_over_targeted': 'More reached than targeted',
+                   'groups_over_total': "The groups add up to more than the total reached",
+                   'group_parts_dont_add_up': "A group's women, men and children don't add up to its people"}
+
+
 def enum(name, label=None, blank=True, **kw):
     opts = choices(name)
     return {'type': 'enum', 'options': ([''] if blank else []) + list(opts), 'translatedOptions': opts,
@@ -166,6 +175,8 @@ ENTITIES = {
         'budget': {'type': 'float', 'label': 'Budget (all communities)'},
         'peopleTargeted': {'type': 'int', 'label': 'People targeted'},
         'peopleReached': {'type': 'int', 'label': 'People reached'},
+        'dataChecks': {'type': 'multiEnum', 'label': 'Data checks', 'options': list(ACTIVITY_CHECKS),
+                       'translatedOptions': ACTIVITY_CHECKS, 'tooltipText': 'What looks wrong (formula); fix it or explain in a note'},
     }},
     # Workflow E: where an activity happened and for how many: a row of the form's
     # FIGURES_COMMUNITY repeat (the bridge's [[repeat]])
@@ -181,6 +192,8 @@ ENTITIES = {
         'populationGroups': {'type': 'multiEnum', 'label': 'Groups of people', 'options': list(choices('population_groups')),
                              'translatedOptions': choices('population_groups')},
         'populationGroupsOther': {'type': 'varchar', 'label': 'Groups (other)'},
+        'dataChecks': {'type': 'multiEnum', 'label': 'Data checks', 'options': list(LOCATION_CHECKS),
+                       'translatedOptions': LOCATION_CHECKS, 'tooltipText': 'What looks wrong (formula); fix it or explain in a note'},
         **group_fields(),
     }},
     # Workflow E: an activity's focal points (the form's FOCAL_POINTS repeat)
@@ -210,8 +223,9 @@ ENTITIES = {
                  'style': {'active': 'success', 'dry_run': 'warning'}, 'audited': True},
         'runner': {'type': 'enum', 'options': ['droplet', 'tests'], 'default': 'droplet',
                    'tooltipText': 'Which runner runs it: the one on the server, or the tests.'},
-        'entity': {'type': 'enum', 'label': 'Works on', 'options': ['CApplication', 'CSite', 'Case', 'Task'],
-                   'translatedOptions': {'CApplication': 'Application', 'CSite': 'Site', 'Case': 'Case', 'Task': 'Task'}},
+        'entity': {'type': 'enum', 'label': 'Works on', 'options': ['CApplication', 'CSite', 'Case', 'Task', 'CResponder', 'CActivity'],
+                   'translatedOptions': {'CApplication': 'Application', 'CSite': 'Site', 'Case': 'Case', 'Task': 'Task',
+                                         'CResponder': 'Responding organisation', 'CActivity': 'Activity'}},
         'trigger': {'type': 'enum', 'options': ['stage', 'change', 'schedule'],
                     'translatedOptions': {'stage': 'Records in a stage', 'change': 'When a field changes',
                                           'schedule': 'On a schedule'}},
@@ -260,6 +274,8 @@ ENTITIES = {
         'setFields': {'type': 'text', 'label': 'Set fields (JSON)'},
         'fixedNote': {'type': 'text', 'label': 'Fixed note', 'tooltipText': 'Posted instead of the model\'s words'},
         'notify': {'type': 'bool', 'label': 'Mention the assignee'},
+        'onlyOneOpen': {'type': 'bool', 'label': 'Not while one is open',
+                        'tooltipText': "No new task while the record's last one from here is still open"},
     }},
     'AgentRun': {'labelPlural': 'Agent runs', 'iconClass': 'fas fa-history', 'stream': False, 'fields': {
         'status': {'type': 'enum', 'options': ['running', 'done', 'dry_run', 'failed'], 'default': 'running',
@@ -327,7 +343,7 @@ OBSOLETE_FIELDS = {'CActivity': ['girls', 'boys', 'women', 'men', 'elderlyWomen'
 OBSOLETE_LINKS = [('CActivity', 'adminArea'), ('CActivity', 'site')]
 
 # The entities agents work on: their API Before Save Script starts with _agent-guard.formula
-AGENT_GUARDED = ['CApplication', 'CSite', 'Task']
+AGENT_GUARDED = ['CApplication', 'CSite', 'Task', 'CResponder']
 # (entity, link, foreign entity, foreign link, type). The link on Task, EspoCRM's own
 # entity, gets a "c": Task.cResponse (cResponseId); on Site, a custom one, it's Site.response
 LINKS = [('CResponse', 'tasks', 'Task', 'response', 'oneToMany'),
@@ -564,13 +580,14 @@ def ensure_task_board(espo):
         'kanbanStatusIgnoreList': ['Canceled', 'Deferred']})
     print('Task: board columns, Kanban on')
     # A task's parent (EspoCRM's own "Parent" field, which takes a Case already) can be a
-    # Site too; the Site gets a Tasks panel
+    # Site or a responding organisation too; they get a Tasks panel
     parent = metadata(espo, 'entityDefs.Task.fields.parent')
-    if 'CSite' not in parent.get('entityList', []):
+    ours = ['CSite', 'CResponder']
+    if not set(ours) <= set(parent.get('entityList', [])):
         espo.call('POST', '/EntityManager/action/updateLink', body={
             'entity': 'Task', 'link': 'parent', 'linkForeign': 'tasks',
-            'parentEntityTypeList': parent.get('entityList', []) + ['CSite'], 'foreignLinkEntityTypeList': ['CSite']})
-        print('Task: a parent can be a Site')
+            'parentEntityTypeList': sorted(set(parent.get('entityList', [])) | set(ours)), 'foreignLinkEntityTypeList': ours})
+        print('Task: a parent can be a Site or a responding organisation')
 
 
 def ensure_formulas(espo):
@@ -632,11 +649,11 @@ def ensure_layouts(espo):
                                              'sector', 'sectorOther', 'activityType', 'activityTypeOther', 'title', 'status',
                                              'startDate', 'endDate', 'reportDate', 'resourceType', 'resourceTypeOther',
                                              'resourceUnit', 'resourceUnitOther', 'comments', 'resourceUrl'])
-    ensure_layout_fields(espo, 'CActivity', ['communities', 'quantity', 'budget', 'peopleTargeted', 'peopleReached'])
+    ensure_layout_fields(espo, 'CActivity', ['communities', 'quantity', 'budget', 'peopleTargeted', 'peopleReached', 'dataChecks'])
     ensure_layout_fields(espo, 'CActivityLocation', ['activity', 'project', 'response', 'parish', 'community', 'site',
                                                      'locationType', 'locationTypeOther', 'locationComments', 'quantity',
                                                      'budget', 'populationTargeted', 'populationReached',
-                                                     'populationGroups', 'populationGroupsOther'])
+                                                     'populationGroups', 'populationGroupsOther', 'dataChecks'])
     ensure_layout_fields(espo, 'CActivityLocation', list(group_fields()))
     ensure_layout_fields(espo, 'CFocalPoint', ['activity', 'emailAddress', 'phone', 'jobTitle'])
     ensure_layout_fields(espo, 'COrganisation', ['code', 'orgType'])
@@ -651,7 +668,7 @@ def ensure_layouts(espo):
                          'CProject': ['name', 'code', 'cluster', 'status', 'response', 'lead', 'teams'],
                          'CResponder': ['name', 'code', 'organisation', 'clusters', 'status', 'lastReport', 'response'],
                          'CActivity': ['name', 'code', 'leadOrganisation', 'sector', 'activityType', 'status',
-                                       'communities', 'peopleReached', 'startDate'],
+                                       'communities', 'peopleReached', 'startDate', 'dataChecks'],
                          'CActivityLocation': ['name', 'activity', 'parish', 'community', 'locationType',
                                                'populationTargeted', 'populationReached'],
                          'CFocalPoint': ['name', 'activity', 'emailAddress', 'phone', 'jobTitle'],
@@ -667,7 +684,7 @@ def ensure_layouts(espo):
                                                                {'name': 'tasks'}, {'name': 'sites'}])
     espo.call('PUT', '/CProject/layout/relationships', body=[{'name': 'sites'}, {'name': 'activities'}, {'name': 'tasks'}])
     espo.call('PUT', '/CSite/layout/relationships', body=[{'name': 'tasks'}, {'name': 'activityLocations'}])
-    espo.call('PUT', '/CResponder/layout/relationships', body=[{'name': 'activities'}])
+    espo.call('PUT', '/CResponder/layout/relationships', body=[{'name': 'activities'}, {'name': 'tasks'}])
     espo.call('PUT', '/CActivity/layout/relationships', body=[{'name': 'locations'}, {'name': 'focalPoints'}])
     espo.call('PUT', '/COrganisation/layout/relationships', body=[{'name': 'activitiesLed'}, {'name': 'registrations'}])
     kanban = [{'name': 'name', 'link': True}, {'name': 'cProject'}, {'name': 'cResponse'}, {'name': 'assignedUser'},

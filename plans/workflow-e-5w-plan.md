@@ -1,9 +1,25 @@
 # Workflow E: a response's 5W (who does what, where, when, for whom)
 
-Status: 2026-11-08. Phases 0–4 built on the **Hurricane Melissa 5W form** (v1.9, 5 Dec
+Status: 2026-11-09. Phases 0–5 built on the **Hurricane Melissa 5W form** (v1.9, 5 Dec
 2025, `ref/`): organisations, admin areas, activities with their communities and focal
-points (repeat groups in the bridge). Next: phase 5 (the "not reported" follow-up) and 6
-(the dashboard, kobo-dash's `plans/espo-source-plan.md`, step 1 done).
+points (repeat groups in the bridge), tested on real Kobo (86/86), and the follow-up.
+Next: phase 6, the dashboard (kobo-dash's EspoCRM source is built: its
+`plans/espo-source-plan.md`); the manual has "The 5W" and "Dashboards" pages.
+
+Phase 5, built 2026-11-09, and what changed from the design below:
+- **"5W: no report"** (agents/setup/examples.json): a scheduled agent, rules only, every
+  morning at 06:00 UTC, on registered or reporting organisations (the filter now takes
+  several values) silent for 7 days, or never reported 7 days after registering (the idle
+  check now counts a never-set date on a record older than the window). A task for the
+  response's lead, about the organisation (Tasks can point to a CResponder now), and with
+  the route's new **"Not while one is open"**, no second task while it's open: the next
+  mornings only note that it still is. In dry run on the droplet, as every example.
+- **Data checks are flags, not guards** (`dataChecks`, formulas): a report from the
+  field is kept, then fixed or explained. On a location: more reached than targeted, the
+  groups over the total, a group's women, men and children not adding up to its people.
+  On an activity: no community, completed with nobody reached, completed but ending later.
+  The "sudden jump" check needs a model: left for later.
+- Tests: agents.py N1–N5 (42/42), fivew.py W9 (38/38).
 
 Built, and what the Melissa form changed in the design below (Josh, 2026-11-08: our form
 modelled on it, organisations as a list plus registration):

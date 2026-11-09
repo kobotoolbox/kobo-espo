@@ -4,11 +4,11 @@
     "check": "every new record has its short code (RSP-, PRJ-, REG-, ACT-, TSK-)",
     "ok": true,
     "detail": {
-      "CResponse": "RSP-XKZ4",
-      "CProject": "PRJ-YBAP",
-      "CResponder": "REG-GKSH",
-      "CActivity": "ACT-DHCT",
-      "Task": "TSK-2DHR"
+      "CResponse": "RSP-223T",
+      "CProject": "PRJ-VMDA",
+      "CResponder": "REG-HJJ8",
+      "CActivity": "ACT-JDRM",
+      "Task": "TSK-A5SN"
     }
   },
   {
@@ -23,9 +23,9 @@
     "ok": true,
     "detail": [
       {
-        "id": "6af0950632e8d6b1c",
+        "id": "6af19373b8b3ca540",
         "name": "FIVEW ETC",
-        "createdAt": "2026-11-08 15:28:06",
+        "createdAt": "2026-11-09 09:33:39",
         "createdById": "6aec3ee286e4b3936",
         "assignedUserId": null
       }
@@ -67,7 +67,7 @@
     "check": "its sector's project (WASH), and that project's teams",
     "ok": true,
     "detail": {
-      "projectId": "6af09507422ea041a",
+      "projectId": "6af193749768686f6",
       "teamsIds": [
         "6af050661f10ba21a",
         "6aec41fec6f7a5f27"
@@ -112,8 +112,8 @@
         "6af050661f10ba21a",
         "6aec41fec6f7a5f27"
       ],
-      "projectId": "6af09507422ea041a",
-      "responseId": "6af0950527c67a151"
+      "projectId": "6af193749768686f6",
+      "responseId": "6af19372a83c678f5"
     }
   },
   {
@@ -241,7 +241,7 @@
         "6af050644bc5ab8e6",
         "6aec41fec6f7a5f27"
       ],
-      "responseId": "6af0950527c67a151"
+      "responseId": "6af19372a83c678f5"
     }
   },
   {
@@ -249,6 +249,46 @@
     "check": "cluster-partner: edits their own activity, not one they didn't make",
     "ok": true,
     "detail": ""
+  },
+  {
+    "test": "W9",
+    "check": "a sound location: no flags",
+    "ok": true,
+    "detail": []
+  },
+  {
+    "test": "W9",
+    "check": "more reached than targeted, groups over the total, a group whose parts don't add up: all three flagged, kept",
+    "ok": true,
+    "detail": [
+      "group_parts_dont_add_up",
+      "groups_over_total",
+      "reached_over_targeted"
+    ]
+  },
+  {
+    "test": "W9",
+    "check": "fixed: the flags go",
+    "ok": true,
+    "detail": []
+  },
+  {
+    "test": "W9",
+    "check": "an activity with no community, completed but ending in the future: flagged",
+    "ok": true,
+    "detail": [
+      "completed_ends_later",
+      "no_communities"
+    ]
+  },
+  {
+    "test": "W9",
+    "check": "a community with nobody reached: completed, nobody reached (and still ends later)",
+    "ok": true,
+    "detail": [
+      "completed_ends_later",
+      "completed_nobody_reached"
+    ]
   },
   {
     "test": "W8",
