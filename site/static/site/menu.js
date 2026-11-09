@@ -54,7 +54,6 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !panel.hidden) { toggle(false); button.focus(); }
   });
-  matchMedia('(width > 1120px)').addEventListener('change', function (m) { if (m.matches) toggle(false); });
 
   header.appendChild(button);
   document.querySelector('.header').appendChild(panel);

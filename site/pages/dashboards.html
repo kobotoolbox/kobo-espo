@@ -1,0 +1,83 @@
+<!-- title: Dashboards -->
+<!-- description: Live dashboards of EspoCRM's records (sites, the 5W's activities and communities) on kobo-dash: a feed user made by the EspoCRM MCP, its key pasted into kobo-dash's admin page, feeds that follow EspoCRM, and what a dashboard's viewers can see. -->
+<section class="banner">
+  <div class="wrap">
+    <h1>Dashboards of EspoCRM's records</h1>
+    <p class="banner__lead">EspoCRM is for following up; charts and maps are <strong>kobo-dash</strong>'s. A dashboard reads a project's sites, or a response's 5W, through a <strong>feed</strong>: EspoCRM's records kept as a table that follows EspoCRM, read by an API user that can see only what the dashboard needs.</p>
+  </div>
+</section>
+
+<section class="steps" aria-label="Setting one up">
+  <div class="wrap">
+    <ol>
+      <li><h3>A feed user</h3><p>In EspoCRM: one team's records of one kind, only the fields needed, read only.</p></li>
+      <li><h3>Its key</h3><p>Copied from EspoCRM into kobo-dash's admin page, never into a chat.</p></li>
+      <li><h3>Feeds and a dashboard</h3><p>Made with kobo-mcp; the dashboard updates as EspoCRM changes.</p></li>
+    </ol>
+  </div>
+</section>
+
+<div class="wrap docs">
+<nav class="docs__nav" aria-label="On this page">
+  <ul>
+    <li><a href="#user">The feed user</a></li>
+    <li><a href="#key">Its key, in kobo-dash</a></li>
+    <li><a href="#feeds">Feeds</a></li>
+    <li><a href="#conversation">From a conversation</a></li>
+    <li><a href="#viewers">What viewers see</a></li>
+    <li><a href="#limits">Limits</a></li>
+  </ul>
+</nav>
+
+<article class="prose">
+
+<section id="user">
+<h2>The feed user</h2>
+<p>The EspoCRM MCP's <code>create_dashboard_feed</code> makes an API user for one dashboard feed:</p>
+<ul>
+  <li>it reads <strong>one kind of record</strong> (sites, activities, activity locations, organisations);</li>
+  <li>of <strong>one team</strong>: a cluster project's own (that project only), or a response's (all its projects);</li>
+  <li><strong>only the fields chosen</strong>: EspoCRM's field-level access hides the rest;</li>
+  <li>and it <strong>writes nothing</strong>.</li>
+</ul>
+<p>Records about people (contacts, users, focal points) and files are refused. <code>list_dashboard_feeds</code> lists these users; <code>remove_dashboard_feed</code> removes one, and its key stops working at once. In testing, each user's own key read only its team's records and fields, and was refused everything else.</p>
+</section>
+
+<section id="key">
+<h2>Its key, in kobo-dash</h2>
+<p>An admin opens the user's page in EspoCRM (the MCP gives the link), copies its <strong>API key</strong>, and pastes it into kobo-dash's admin page, in the <strong>EspoCRM</strong> card, with EspoCRM's address and a name. kobo-dash checks it, refuses an administrator's or a person's key, and stores it encrypted. The key is never in a chat: neither MCP asks for it or shows it.</p>
+</section>
+
+<section id="feeds">
+<h2>Feeds</h2>
+<p>A feed keeps one kind of record, some of its fields and a filter, as a table in the dashboard owner's kobo-dash library. Its columns come from EspoCRM: choices with EspoCRM's labels (the 5W's sectors, statuses, location types), several choices, numbers, dates, a linked record by its name, and latitude and longitude as a map point.</p>
+<p>Every five minutes kobo-dash asks EspoCRM whether anything changed; when it did, the feed reads the records again and open dashboards update by themselves. Edits, new records and deletions all show. A feed's table is the feed's only: an upload can't replace it.</p>
+</section>
+
+<section id="conversation">
+<h2>From a conversation</h2>
+<p>With both servers connected (kobo-mcp, and the EspoCRM MCP: see <a href="connect.html">Connecting a form</a>), ask for what the dashboard should show, e.g. <em>“A dashboard of the ETC project's activity locations on a map, people reached by parish”</em>. kobo-mcp's prompt <strong>A dashboard of EspoCRM records</strong> has the steps:</p>
+<ol>
+  <li><code>create_dashboard_feed</code> (EspoCRM MCP): shows what the user would read, then makes it;</li>
+  <li>you paste its key into kobo-dash's admin page;</li>
+  <li><code>create_espo_feed</code> (kobo-mcp) for each kind of record, then <code>create_dashboard</code>, <code>add_dashboard_table</code> and the layout.</li>
+</ol>
+</section>
+
+<section id="viewers">
+<h2>What viewers see</h2>
+<p>A dashboard's viewers are whoever its link or password reaches: <strong>EspoCRM's teams don't apply there</strong>. What it can show is decided in EspoCRM, by the feed user's team and fields. Keep personal data out of feeds; counts, statuses and places are what dashboards are for.</p>
+</section>
+
+<section id="limits">
+<h2>Limits</h2>
+<ul>
+  <li>A dashboard starts from a Kobo project its owner owns or manages, then adds feeds: a dashboard of EspoCRM records alone isn't possible yet.</li>
+  <li>The owner needs a Kobo account.</li>
+  <li>kobo-dash runs on staging (<code>staging.dash.kobolabs.dev</code>) for now.</li>
+  <li>A feed holds at most 50,000 records: filter a bigger one.</li>
+</ul>
+</section>
+
+</article>
+</div>

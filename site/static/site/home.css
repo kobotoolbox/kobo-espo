@@ -210,9 +210,10 @@ pre {
 
 .header__nav a:hover::after { transform: scaleY(1); }
 
-/* The menu on narrow screens (static/site/menu.js), in place of the header links and sidebar */
+/* The menu (static/site/menu.js): every page, the sidebar's sections and EspoCRM's link. On
+   wide screens beside the header's six main links, on narrow ones in their place */
 .header__menu {
-  display: none;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 5px;
@@ -525,9 +526,11 @@ details[open] summary::after { content: "−"; }
 details > div { padding: 0 0 1rem; }
 details > div > :last-child { margin-bottom: 0; }
 
-/* The menu button in place of the header's links: this site's six links and its button need
-   1120px (kobo-in-a-box switches at 834px) */
-@media (width <= 1120px) {
+.header__nav .header__more { display: none; }
+
+/* The menu button in place of the header's links: this site's six links, its button and the
+   menu button need 1140px (kobo-in-a-box switches at 834px) */
+@media (width <= 1160px) {
   .header__nav { display: none; }
   .header .button { margin-left: auto; }
   .header__menu { display: flex; }

@@ -15,8 +15,11 @@ from pathlib import Path
 
 SITE = Path(__file__).resolve().parent
 NAV = [('index', 'Overview'), ('requests', 'Requests'), ('responses', 'Responses'),
-       ('sites', 'Sites and lists'), ('projects', 'Cluster projects'),
+       ('sites', 'Sites and lists'), ('projects', 'Cluster projects'), ('fivew', 'The 5W'),
+       ('dashboards', 'Dashboards'),
        ('connect', 'Connecting a form'), ('running', 'Running it')]
+# The header has room for six; the others are in the menu (and the footer) on wide screens
+MORE = {'sites', 'projects', 'running'}
 
 HEAD = """<!doctype html>
 <html lang="en">
@@ -92,7 +95,8 @@ def main():
         title = re.search(r'<!-- title: (.*?) -->', src).group(1)
         description = re.search(r'<!-- description: (.*?) -->', src, re.S).group(1).strip()
         body = re.sub(r'<!-- (title|description): .*? -->\n?', '', src, flags=re.S)
-        nav = '\n'.join(f'      <li><a href="{n if n != "index" else "./"}{".html" if n != "index" else ""}"'
+        nav = '\n'.join(f'      <li{" class=\"header__more\"" if n in MORE else ""}>'
+                        f'<a href="{n if n != "index" else "./"}{".html" if n != "index" else ""}"'
                         f'{" aria-current=\"page\"" if n == name else ""}>{lab}</a></li>' for n, lab in NAV)
         html = HEAD.format(title=title, description=description, nav=nav) + sizes(body) + FOOT.format(nav=nav)
         (SITE / f'{name}.html').write_text(html)

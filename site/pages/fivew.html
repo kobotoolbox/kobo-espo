@@ -1,0 +1,114 @@
+<!-- title: The 5W -->
+<!-- description: A response's 5W (who does what, where, when, for whom) in EspoCRM, on the Hurricane Melissa 5W form: organisations from a list, an activity per report, a record per community with the people reached by group, the follow-up of organisations that haven't reported, and flags on what looks wrong. -->
+<section class="banner">
+  <div class="wrap">
+    <h1>The 5W: who does what, where, when, for whom</h1>
+    <p class="banner__lead">Organisations report their activities through a Kobo form modelled on the <strong>Hurricane Melissa 5W form</strong>, with its codes. Each report becomes an activity in EspoCRM, in the sector's cluster project, with a record for each community it reached. The information management team follows up there: organisations that haven't reported, and figures that look wrong.</p>
+  </div>
+</section>
+
+<section class="steps" aria-label="The loop">
+  <div class="wrap">
+    <ol>
+      <li><h3>Register</h3><p>An organisation, from the list, signs up for the response and the sectors it works in.</p></li>
+      <li><h3>Report</h3><p>Each activity: who leads and implements it, what, when, and for each community the people reached.</p></li>
+      <li><h3>Follow up</h3><p>A task when an organisation is silent for a week; flags on figures that don't add up.</p></li>
+    </ol>
+  </div>
+</section>
+
+<div class="wrap docs">
+<nav class="docs__nav" aria-label="On this page">
+  <ul>
+    <li><a href="#form">The form, and its codes</a></li>
+    <li><a href="#organisations">Organisations</a></li>
+    <li><a href="#activities">Activities and communities</a></li>
+    <li><a href="#who">Who sees what</a></li>
+    <li><a href="#followup">Follow-up</a></li>
+    <li><a href="#checks">Data checks</a></li>
+    <li><a href="#codes">Short codes</a></li>
+    <li><a href="#limits">Limits</a></li>
+  </ul>
+</nav>
+
+<article class="prose">
+
+<section id="form">
+<h2>The form, and its codes</h2>
+<p>The activity report is made from the Hurricane Melissa 5W form (version 1.9) by <code>kobo/forms/melissa.py</code>: the same questions, notes, checks and codes, so its submissions fit EspoCRM as the Melissa form's do. Three things change:</p>
+<ul>
+  <li>the response is picked from EspoCRM's list;</li>
+  <li>the organisations, and the parishes and communities, are EspoCRM's lists on the form (<code>organisations.csv</code>, <code>areas.csv</code>), filtered as the Melissa form filters them: organisations by type, communities by parish;</li>
+  <li>a community can name a registered site, by its site code.</li>
+</ul>
+<p>EspoCRM uses the form's own codes: its 13 sectors (<code>EMERGENCY_TELECOMS</code>, <code>WASH</code>, <code>SHELTER</code>…), 84 activity types, statuses, resource types and units, location types and groups of people. A cluster project's sector is one of them.</p>
+</section>
+
+<section id="organisations">
+<h2>Organisations</h2>
+<p>The <strong>Organisations</strong> list is the Melissa form's 137, each with its <code>ORG_</code> code and type. Everyone can read it; the IM team keeps it.</p>
+<ul>
+  <li>An organisation not in the list picks <em>Other</em> and types its name. Its report is kept, and the response's lead gets a task: <em>Add to the organisations list: …</em></li>
+  <li>An organisation can also <strong>register</strong> for a response with the registration form: the organisation (from the list), the sectors it works in, its focal point. Registering again updates the same record. A registration is in the teams of the response's projects in those sectors, so each cluster sees the organisations working in it.</li>
+</ul>
+</section>
+
+<section id="activities">
+<h2>Activities and communities</h2>
+<p>A report is an <strong>Activity</strong>: its lead and implementing organisation (the lead, unless another is named), sector, activity type and title, status, resource type and unit, dates. It goes into the response's project for its sector.</p>
+<p>The form's <em>Figures by community</em> section is repeated, once for each community. Each one is an <strong>Activity location</strong>: the parish and community (by P-code), the site if it's a registered one, the location type, quantity and budget, people targeted and reached, and by group (displaced, hosting, non-displaced, other) the people, women, men, children and households, targeted and reached. The activity keeps the totals of its locations: communities, people, quantity, budget.</p>
+<p>The form's focal points are <strong>Focal points</strong> on the activity. A report from the field becomes these records within a minute; one with a community EspoCRM doesn't know is kept with the communities it does, and the bridge records which row it couldn't place.</p>
+</section>
+
+<section id="who">
+<h2>Who sees what</h2>
+<ul>
+  <li>An activity, its locations and focal points are in its <strong>sector's project</strong>'s team, and the response's: the cluster's people see their sector's 5W, the coordinators see all of it.</li>
+  <li>An activity in a sector the response has no project for is in the response's team only.</li>
+  <li><strong>Cluster Viewers</strong> read activities and locations but not focal points, which are people's contact details.</li>
+  <li>A <strong>Cluster Partner</strong> can report an activity in their project, and edit their own.</li>
+</ul>
+</section>
+
+<section id="followup">
+<h2>Follow-up: organisations that haven't reported</h2>
+<p>The agent <strong>5W: no report</strong> runs every morning at 06:00 (UTC), without a model. For each registered organisation that hasn't reported an activity for a week, or never has a week after registering, it makes a task for the response's lead: <em>No 5W report from …</em>, about that organisation (on its Tasks panel), with a note on its page.</p>
+<ul>
+  <li>One task at a time: while it's open, the next mornings only note that it still is.</li>
+  <li>Once the task is done, a further week of silence makes a new one.</li>
+  <li>An organisation marked <em>Inactive</em> isn't followed up.</li>
+</ul>
+<p>Like every agent, it starts in dry run: switch it to Active on its page (Agents).</p>
+</section>
+
+<section id="checks">
+<h2>Data checks</h2>
+<p>Activities and their locations carry <strong>Data checks</strong>: flags on what looks wrong, set as the figures arrive and gone when they're fixed. A report is never refused for them: it's kept, then fixed or explained in a note.</p>
+<table>
+  <tr><th>On</th><th>Flag</th></tr>
+  <tr><td>a location</td><td>More reached than targeted</td></tr>
+  <tr><td>a location</td><td>The groups add up to more than the total reached</td></tr>
+  <tr><td>a location</td><td>A group's women, men and children don't add up to its people</td></tr>
+  <tr><td>an activity</td><td>No community given</td></tr>
+  <tr><td>an activity</td><td>Completed, nobody reached</td></tr>
+  <tr><td>an activity</td><td>Completed, but ends in the future</td></tr>
+</table>
+<p>Filter the Activities or Activity locations list by <em>Data checks</em> to see what needs a look.</p>
+</section>
+
+<section id="codes">
+<h2>Short codes</h2>
+<p>Responses, projects, registrations, activities, tasks and applications have a short code (<code>RSP-7K3Q</code>, <code>PRJ-…</code>, <code>REG-…</code>, <code>ACT-…</code>): easy to say on a call, found by the list's search box, and the names Kobo lists use for their choices. EspoCRM gives them; they can't be changed. Sites keep their site code, areas their P-code.</p>
+</section>
+
+<section id="limits">
+<h2>Limits</h2>
+<ul>
+  <li>The areas list (789 parishes and communities) goes to every phone with the form.</li>
+  <li>An organisation's report isn't checked against its registration: the list is what it picks from, registration is optional.</li>
+  <li>Charts, maps and the 5W's tables are dashboards: see <a href="dashboards.html">Dashboards</a>.</li>
+</ul>
+</section>
+
+</article>
+</div>
