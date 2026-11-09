@@ -66,7 +66,14 @@ def main(only):
             'where[0][type]': 'equals', 'where[0][attribute]': 'name', 'where[0][value]': 'site-registration',
             'where[1][type]': 'equals', 'where[1][attribute]': 'runBy', 'where[1][value]': 'main',
             'select': 'id', 'maxSize': 1})['list'][0]['id'],
+        'melissa': find(a, 'CResponse', 'name', 'Hurricane Melissa response, Jamaica'),
+        'trucking': find(a, 'CActivity', 'title', 'Water trucking to Black River and Santa Cruz'),
+        'jrc': find(a, 'CResponder', 'organisationId', find(a, 'COrganisation', 'code', 'ORG_JRC')),
     }
+    for key, activity in (('trucking_place', 'trucking'),):  # its first community
+        ids[key] = a.call('GET', '/CActivityLocation', {
+            'where[0][type]': 'equals', 'where[0][attribute]': 'activityId', 'where[0][value]': ids[activity],
+            'orderBy': 'cKoboRow', 'order': 'asc', 'select': 'id', 'maxSize': 1})['list'][0]['id']
     shots = {
         'cases-triager': ('triager', 'Case', None),
         'case-from-kobo': ('triager', f'Case/view/{ids["case_export"]}', None),
@@ -84,6 +91,12 @@ def main(only):
         'standards': ('staff-1', 'CStandard', None),
         'role-volunteer': ('admin', f'Role/view/{ids["role_volunteer"]}', None),
         'connection': ('admin', f'CKoboConnection/view/{ids["connection"]}', None),
+        'fivew-response': ('staff-1', f'CResponse/view/{ids["melissa"]}', None),
+        'fivew-organisations': ('staff-1', 'COrganisation', None),
+        'fivew-registration': ('staff-1', f'CResponder/view/{ids["jrc"]}', None),
+        'fivew-activities': ('staff-1', 'CActivity', None),
+        'fivew-activity': ('staff-1', f'CActivity/view/{ids["trucking"]}', None),
+        'fivew-location': ('staff-1', f'CActivityLocation/view/{ids["trucking_place"]}', None),
     }
     with sync_playwright() as p:
         browser = p.chromium.launch()

@@ -5,10 +5,12 @@ the Kobo test account's forms, picked up by the running bridges (deploy/bridges.
 triaged and worked in EspoCRM by the seed users.
 
     python3 -I site/demo-data.py
+    python3 -I site/demo-data.py 5w     only add the 5W (Workflow E), removing nothing
 
-First removes every case, contact, account, task, response and site in EspoCRM (the test
-droplet's are all test output), and their notes and notifications; keeps users, roles,
-teams and the seeded standards. Kobo projects are left as they are.
+First removes every case, contact, account, task, response, project, site, registration
+and 5W activity in EspoCRM (the test droplet's are all test output), and their notes and
+notifications; keeps users, roles, teams, the seeded standards, organisations and areas.
+Kobo projects are left as they are.
 """
 import json
 import sys
@@ -70,6 +72,42 @@ SITES = [  # (response, code, name, type, region, installed, equipment, standard
 VISITS = [('EQ1-WP-001', '2026-11-04', 'needs_repair', 'Pump handle loose, seal leaking; spare seal needed.', 'Rui Roster'),
           ('EQ1-SO-001', '2026-11-04', 'operational', 'All panels clean, battery at 96 %.', 'Rana Roster')]
 
+# Workflow E: the Hurricane Melissa 5W, with the Melissa form's own codes and Jamaica's P-codes
+MELISSA = 'Hurricane Melissa response, Jamaica'
+MELISSA_PROJECTS = [('WASH', 'WASH'), ('SHELTER', 'Shelter'), ('EMERGENCY_TELECOMS', 'Emergency Telecommunications')]
+REGISTRATIONS = [  # (organisation, its type, sectors, focal point, email)
+    ('ORG_JRC', 'RED_CROSS_MOVEMENT', 'WASH SHELTER', 'Andrea Campbell', 'andrea.campbell@jrc.example.org'),
+    ('ORG_UNICEF', 'UN_AGENCY', 'WASH', 'Marcus Reid', 'marcus.reid@unicef.example.org'),
+    ('ORG_ADRA', 'INTERNATIONAL_NGO', 'SHELTER', 'Hannah Clarke', 'hannah.clarke@adra.example.org'),
+    ('ORG_WFP', 'UN_AGENCY', 'EMERGENCY_TELECOMS', 'Daniel Okoro', 'daniel.okoro@wfp.example.org'),
+    ('ORG_MERCYCORPS', 'INTERNATIONAL_NGO', 'WASH', 'Lucia Ferreira', 'lucia.ferreira@mercycorps.example.org'),
+]
+# (lead, its type, implementing (None: the lead), sector, activity type, title, status, resource type, unit,
+#  start, end, communities: (parish, community, location type, quantity, targeted, reached))
+REPORTS = [
+    ('ORG_JRC', 'RED_CROSS_MOVEMENT', None, 'WASH', 'distribution_of_hygiene_kits', 'Hygiene kits for displaced families',
+     'COMPLETED', 'wash', 'hygiene', '2026-10-31', '2026-11-05',
+     [('JM16', 'JM16062', 'shelter', 420, 1600, 1520), ('JM16', 'JM16051', 'general_community', 180, 700, 690)]),
+    ('ORG_UNICEF', 'UN_AGENCY', 'ORG_JRC', 'WASH', 'water_trucking', 'Water trucking to Black River and Santa Cruz',
+     'IN_PROGRESS', 'wash', 'water', '2026-11-01', None,
+     [('JM11', 'JM11008', 'general_community', 60000, 9000, 5200), ('JM11', 'JM11051', 'general_community', 35000, 6000, 2100)]),
+    ('ORG_ADRA', 'INTERNATIONAL_NGO', None, 'SHELTER', 'emergency', 'Emergency shelter kits, Hanover',
+     'IN_PROGRESS', 'non_food', 'shelter_kit', '2026-11-02', None,
+     [('JM02', 'JM02001', 'general_community', 250, 1200, 650), ('JM02', 'JM02011', 'general_community', 150, 800, 300)]),
+    ('ORG_JRC', 'RED_CROSS_MOVEMENT', None, 'SHELTER', 'nfi', 'Tarpaulins and mattresses, Westmoreland',
+     'COMPLETED', 'non_food', 'tarpaulin', '2026-10-30', '2026-11-03',
+     [('JM16', 'JM16013', 'general_community', 120, 400, 460)]),  # more reached than targeted: a data check
+    ('ORG_WFP', 'UN_AGENCY', None, 'EMERGENCY_TELECOMS', 'other', 'Connectivity for collective centres',
+     'IN_PROGRESS', 'it', 'communication', '2026-11-01', None,
+     [('JM16', 'JM16074', 'shelter', 3, 900, 900), ('JM11', 'JM11058', 'school', 2, 500, 350)]),
+    ('ORG_UNICEF', 'UN_AGENCY', None, 'WASH', 'hygiene_promotion_awareness_campaigns', 'Hygiene promotion in schools',
+     'PLANNED', 'wash', 'hygiene', '2026-11-12', None,
+     [('JM12', 'JM12042', 'school', 0, 3000, 0)]),
+    ('ORG_IFRC', 'RED_CROSS_MOVEMENT', None, 'HEALTH', 'health_facility_rehabilitation_or_support',
+     'Generators for health centres', 'COMPLETED', 'non_food', 'generator', '2026-11-03', '2026-11-20',  # ends after
+     [('JM16', 'JM16002', 'health_facility', 2, 3000, 3000)]),  # today, yet completed: a data check
+]
+
 
 def picture(title, subtitle, colour):
     """A labelled stand-in for a photo (made up, and says so), as JPEG bytes."""
@@ -91,7 +129,8 @@ def picture(title, subtitle, colour):
 
 
 def clean(a):
-    for entity in ('Task', 'CSite', 'CResponse', 'Case', 'Contact', 'Account'):
+    for entity in ('Task', 'CFocalPoint', 'CActivityLocation', 'CActivity', 'CResponder', 'CSite', 'CProject',
+                   'CResponse', 'Case', 'Contact', 'Account'):
         while True:
             rows = a.call('GET', f'/{entity}', {'maxSize': 200, 'select': 'id'})['list']
             if not rows:
@@ -103,10 +142,13 @@ def clean(a):
             a.call('DELETE', f'/CStandard/{s["id"]}')
     subprocess.run([str(ROOT / 'tests' / 'db.sh'),
                     "delete from notification; delete from note where parent_type in "
-                    "('Case','Contact','Account','Task','CResponse','CSite'); "
+                    "('Case','Contact','Account','Task','CResponse','CSite','CProject','CResponder','CActivity'); "
                     "delete from `case` where deleted=1; delete from contact where deleted=1; "
                     "delete from account where deleted=1; delete from task where deleted=1; "
-                    "delete from c_response where deleted=1; delete from c_site where deleted=1;"],
+                    "delete from c_response where deleted=1; delete from c_site where deleted=1; "
+                    "delete from c_project where deleted=1; delete from c_responder where deleted=1; "
+                    "delete from c_activity where deleted=1; delete from c_activity_location where deleted=1; "
+                    "delete from c_focal_point where deleted=1;"],
                    check=True, capture_output=True)
     print('cleaned EspoCRM')
 
@@ -122,15 +164,81 @@ def wait_for(a, entity, attr, value, timeout=120):
     raise SystemExit(f'{entity} with {attr}={value} not made by the bridge within {timeout}s (deploy/bridges.sh?)')
 
 
-def main():
+def fivew(a, kobo, uids, team, user):
+    """Workflow E: the Hurricane Melissa 5W: its cluster projects, organisations registering, their reports."""
+    def team_of(name):
+        if name not in team:
+            team[name] = a.call('POST', '/Team', body={'name': name})['id']
+        return team[name]
+    if a.call('GET', '/CResponse', {'where[0][type]': 'equals', 'where[0][attribute]': 'name', 'where[0][value]': MELISSA,
+                                    'select': 'id'})['list']:
+        raise SystemExit(f'"{MELISSA}" is there already: run site/demo-data.py without 5w to start again')
+    melissa = a.call('POST', '/CResponse', body={
+        'name': MELISSA, 'status': 'Active', 'emergencyType': 'Cyclone', 'country': 'Jamaica', 'startDate': '2026-10-28',
+        'teamsIds': [team_of('Response: Hurricane Melissa')], 'leadId': user['staff-1'], 'assignedUserId': user['staff-1'],
+        'description': 'Category 5 hurricane, landfall on 28 October in the south-west. The 5W of the WASH, '
+                       'shelter and telecommunications clusters.'})
+    a.call('POST', f'/Team/{team["Response: Hurricane Melissa"]}/users', body={'id': user['staff-1']})
+    for cluster, label in MELISSA_PROJECTS:
+        a.call('POST', '/CProject', body={'name': f'{MELISSA} · {label}', 'responseId': melissa['id'], 'status': 'Active',
+                                          'cluster': cluster, 'teamsIds': [team_of(f'Cluster: Hurricane Melissa {label}')]})
+    code = a.call('GET', f'/CResponse/{melissa["id"]}')['code']
+    for org, kind, sectors, focal, email in REGISTRATIONS:
+        kobo.submit(uids['responder-registration'], {
+            'response': code, 'org_type': kind, 'organisation': org, 'sectors': sectors, 'focal_name': focal,
+            'focal_email': email, 'focal_phone': '+1 876 555 0' + str(100 + len(focal)), 'registration_key': f'{code}/{org}'})
+    for org, *_ in REGISTRATIONS:
+        wait_for(a, 'CResponder', 'registrationKey', f'{code}/{org}')
+    print(f'{len(REGISTRATIONS)} organisations registered from Kobo')
+    L, R = 'org_details', 'RESPONSES/FIGURES_COMMUNITY'
+    focal = {org: (name, email) for org, _, _, name, email in REGISTRATIONS}
+    focal['ORG_IFRC'] = ('Sofia Brown', 'sofia.brown@ifrc.example.org')  # reports without registering
+    kinds = {org: kind for org, kind, *_ in REGISTRATIONS}
+    reports = []
+    for lead, kind, impl, sector, act, title, status, res, unit, start, end, places in REPORTS:
+        rows = []
+        for parish, community, where, qty, targeted, reached in places:
+            women, children = reached * 52 // 100, reached * 30 // 100
+            rows.append({f'{R}/parish': parish, f'{R}/community': community, f'{R}/location_type': where,
+                         f'{R}/quantities/quantity_resource': str(qty), f'{R}/total_pop/total_population_targeted': str(targeted),
+                         f'{R}/total_pop/total_population_reached': str(reached), f'{R}/people/category_of_people': 'idp',
+                         f'{R}/people/idp/idp_people_targeted': str(targeted), f'{R}/people/idp/idp_people_reached': str(reached),
+                         f'{R}/people/idp/idp_women_reached': str(women - children // 2),
+                         f'{R}/people/idp/idp_men_reached': str(reached - women - children + children // 2),
+                         f'{R}/people/idp/idp_children_reached': str(children),
+                         f'{R}/people/idp/shelter_household_idp/idp_household_reached': str(reached // 4)})
+        reports.append(kobo.submit(uids['activity-report'], {
+            'today': start, 'response': code,
+            f'{L}/ORAGANIZATION_LEAD/LeadOrganization_type': kind, f'{L}/ORAGANIZATION_LEAD/LeadOrganization_name': lead,
+            f'{L}/ORAGANIZATION_LEAD/same_as_lead': 'no' if impl else 'yes',
+            **({f'{L}/ORAGANIZATION_IMPLEMENTING/ImplementingOrganization_type': kinds[impl],
+                f'{L}/ORAGANIZATION_IMPLEMENTING/ImplementingOrganization_name': impl} if impl else {}),
+            f'{L}/FOCAL_POINTS': [{f'{L}/FOCAL_POINTS/name': focal[lead][0], f'{L}/FOCAL_POINTS/email': focal[lead][1],
+                                   f'{L}/FOCAL_POINTS/job_title': 'Field coordinator'}],
+            'RESPONSES/sector': sector, 'RESPONSES/activity_type': act,
+            **({'RESPONSES/activity_type_other': 'VSAT connectivity'} if act == 'other' else {}),
+            'RESPONSES/activity_title': title, 'RESPONSES/activity_Status': status, 'RESPONSES/resource_type': res,
+            'RESPONSES/resource_unit_type': unit, 'RESPONSES/start_date': start,
+            **({'RESPONSES/end_date': end} if end else {}), R: rows}))
+    for rep in reports:
+        wait_for(a, 'CActivity', 'cKoboSubmissionUuid', rep['_uuid'])
+    print(f'{len(reports)} 5W activities from Kobo')
+
+
+def main(only_5w=False):
     a = admin()
-    clean(a)
+    if not only_5w:
+        clean(a)
     kobo = RealKobo(env('KOBO_URL'), env('KOBO_TOKEN'), env('KOBO_TEST_ACCOUNT_ON_PRODUCTION') == 'yes')
     forms = {k: json.loads((ROOT / 'kobo' / 'forms' / f'{k}.json').read_text())
-             for k in ('support-request', 'volunteer-availability', 'site-registration', 'site-visit')}
+             for k in ('support-request', 'volunteer-availability', 'site-registration', 'site-visit',
+                       'responder-registration', 'activity-report')}
     uids = {k: kobo.deploy(f) for k, f in forms.items()}
-    team = {t['name']: t['id'] for t in a.call('GET', '/Team', {'maxSize': 50})['list']}
+    team = {t['name']: t['id'] for t in a.call('GET', '/Team', {'maxSize': 200})['list']}
     user = {u['userName']: u['id'] for u in a.call('GET', '/User', {'maxSize': 200, 'select': 'userName'})['list']}
+    if only_5w:
+        fivew(a, kobo, uids, team, user)
+        return
 
     # Workflow A: requests from Kobo, triaged
     subs = []
@@ -207,11 +315,13 @@ def main():
                                                          (160, 110, 30) if cond == 'needs_repair' else (50, 120, 70)),
                                                  'image/jpeg')})
     time.sleep(45)
-    print('done: requests, volunteers, two responses with tasks, sites and visits')
+
+    fivew(a, kobo, uids, team, user)
+    print('done: requests, volunteers, three responses with tasks, sites and visits, the Melissa 5W')
 
 
 if __name__ == '__main__':
     try:
-        main()
+        main(only_5w=sys.argv[1:] == ['5w'])
     except BridgeError as e:
         sys.exit(f'demo data failed: {e}')
