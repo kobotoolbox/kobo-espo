@@ -450,6 +450,10 @@ mention emails are on, so the bridge's notes that mention people go by email too
 - **Test addresses** are Resend's test inbox, `delivered+<username>@resend.dev` (the
   seed's users and `mcp_people.py`'s invited partner): nothing bounces off `example.org`.
   Contacts and focal points keep `example.org`: EspoCRM never emails them.
+- **Test runs:** `tests/run_all.sh` turns assignment and mention emails off after its seed
+  and puts them back when it ends (`tests/email_notifications.py`; `SEED_EMAIL_NOTIFICATIONS=off`
+  keeps `mcp.py`'s seed rerun from turning them on), so a run doesn't use up Resend's daily
+  quota. `invite_user`'s access email still goes out (one per run).
 - `espo/seed/seed.py` sets it all up when `secrets/resend.key` (the key) is there; the
   steps by hand, for a real instance: `docs/manual-steps.md`, "Outgoing email".
 

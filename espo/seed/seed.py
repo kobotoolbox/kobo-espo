@@ -29,6 +29,7 @@ template (kobo/templates/*.toml), each with only what its template needs.
 """
 import argparse
 import json
+import os
 import re
 import secrets
 import sys
@@ -778,13 +779,15 @@ def ensure_email(espo):
         print(f'email: no {EMAIL_KEY.relative_to(ROOT)}, no outgoing email')
         return
     key = EMAIL_KEY.read_text().strip()
+    # tests/run_all.sh turns the notification emails off for its run, the seed reruns included
+    notify = os.environ.get('SEED_EMAIL_NOTIFICATIONS') != 'off'
     espo.call('PUT', '/Settings', body={
         'outboundEmailFromAddress': EMAIL['address'], 'outboundEmailFromName': EMAIL['name'],
         'outboundEmailIsShared': False, 'smtpServer': EMAIL['host'], 'smtpPort': EMAIL['port'],
         'smtpSecurity': EMAIL['security'], 'smtpAuth': True, 'smtpUsername': EMAIL['username'], 'smtpPassword': key,
-        'assignmentEmailNotifications': True,
+        'assignmentEmailNotifications': notify,
         'assignmentEmailNotificationsEntityList': ['Case', 'Task', 'CResponse', 'CProject', 'CSite', 'CApplication'],
-        'mentionEmailNotifications': True})
+        'mentionEmailNotifications': notify})
     # EspoCRM sends its own emails (access info, notifications) through the group email
     # account whose address is the from address, not with the settings' SMTP
     account = {'name': f'{EMAIL["name"]} (system)', 'emailAddress': EMAIL['address'], 'fromName': EMAIL['name'],
@@ -796,7 +799,8 @@ def ensure_email(espo):
         espo.call('PUT', f'/InboundEmail/{have["id"]}', body=account)
     else:
         espo.call('POST', '/InboundEmail', body=account)
-    print(f'email: from {EMAIL["address"]} by {EMAIL["host"]}:{EMAIL["port"]}; assignment and mention emails')
+    print(f'email: from {EMAIL["address"]} by {EMAIL["host"]}:{EMAIL["port"]}; assignment and mention emails'
+          + ('' if notify else ' off (SEED_EMAIL_NOTIFICATIONS=off)'))
 
 
 def ensure_agents(espo, teams):
