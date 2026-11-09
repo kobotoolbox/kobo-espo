@@ -28,7 +28,7 @@
     "check": "the page loads the stylesheet after EspoCRM's",
     "ok": true,
     "detail": [
-      "<link rel=\"stylesheet\" href=\"client/css/espo/espo.css?r=1794147168\" id='main-stylesheet'>",
+      "<link rel=\"stylesheet\" href=\"client/css/espo/espo.css?r=1794220537\" id='main-stylesheet'>",
       "<link rel=\"stylesheet\" href=\"client/custom/kobo-look/kobo.css?r=1793867488\">"
     ]
   },
