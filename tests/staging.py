@@ -17,6 +17,39 @@ from xml.sax.saxutils import escape
 PRODUCTION = ('kf.kobotoolbox.org', 'eu.kobotoolbox.org', 'kobo.humanitarianresponse.info')
 
 
+def xml_fields(answers):
+    """The answers as an instance's elements. Keys are Kobo's paths ('RESPONSES/sector',
+    as its JSON names them), nested as groups; a list is a repeat group, a row per element,
+    each row's keys the full paths of its questions."""
+    tree = {}
+
+    def put(node, parts, value):
+        for part in parts[:-1]:
+            node = node.setdefault(part, {})
+        node[parts[-1]] = value
+
+    for key, value in answers.items():
+        parts = key.split('/')
+        if isinstance(value, list):
+            rows = []
+            for row in value:
+                sub = {}
+                for rk, rv in row.items():
+                    put(sub, rk.split('/')[len(parts):], rv)
+                rows.append(sub)
+            value = rows
+        put(tree, parts, value)
+
+    def render(node):
+        out = []
+        for name, value in node.items():
+            for item in (value if isinstance(value, list) else [value]):
+                inner = render(item) if isinstance(item, dict) else escape(str(item))
+                out.append(f'<{name}>{inner}</{name}>')
+        return ''.join(out)
+    return render(tree)
+
+
 class RealKobo:
     def __init__(self, url, token, production_ok=False):
         host = urllib.parse.urlsplit(url).hostname or ''
@@ -70,8 +103,9 @@ class RealKobo:
         for row in content['survey']:
             if row['type'].startswith('select_one_from_file '):
                 filename = row['type'].split(' ', 1)[1]
-                if filename not in have:
+                if filename not in have:  # (once: two questions may share a list)
                     self.upload(uid, filename, b'name,label\nplaceholder,Waiting for EspoCRM\n')
+                    have.add(filename)
         asset = self.call('GET', f'/api/v2/assets/{uid}/')
         if asset.get('has_deployment'):
             self.call('PATCH', f'/api/v2/assets/{uid}/deployment/', {'active': True, 'version_id': asset['version_id']})
@@ -91,8 +125,8 @@ class RealKobo:
         `attachments` (the fake Kobo's ready-made list) is ignored."""
         form_id, version, asset = self.ids[uid]
         instance = str(uuid.uuid4())
-        names = {r['name']: r for r in asset['content']['survey'] if r.get('name')}
-        fields = ''.join(f'<{q}>{escape(str(v))}</{q}>' for q, v in answers.items() if q in names)
+        names = {r['name'] for r in asset['content']['survey'] if r.get('name')}
+        fields = xml_fields({q: v for q, v in answers.items() if q.split('/')[0] in names})
         xml = (f'<?xml version="1.0"?><{form_id} id="{form_id}" version="{version}">'
                f'<formhub><uuid>{asset.get("deployment__uuid", "")}</uuid></formhub>{fields}'
                f'<__version__>{version}</__version__>'

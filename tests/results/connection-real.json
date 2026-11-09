@@ -1,9 +1,9 @@
 {
-  "when": "2026-11-06T10:38:10Z",
-  "espo": "https://espo-test.kobolabs.dev",
+  "when": "2026-11-09T09:02:07Z",
+  "espo": "https://staging.respond.kobolabs.dev",
   "kobo": "real",
-  "run": "960118",
-  "passed": 72,
+  "run": "213599",
+  "passed": 86,
   "failed": 0,
   "results": [
     {
@@ -17,7 +17,7 @@
       "check": "name, category, priority, project from the answers",
       "ok": true,
       "detail": {
-        "name": "Forms and XLSForm: Form will not deploy (960118)",
+        "name": "Forms and XLSForm: Form will not deploy (213599)",
         "cCategory": "forms",
         "priority": "High",
         "cProject": "consortium_a"
@@ -42,9 +42,9 @@
       "check": "requester Contact by email, with their name",
       "ok": true,
       "detail": {
-        "emailAddress": "req-a-960118@example.org",
+        "emailAddress": "req-a-213599@example.org",
         "firstName": "Test Requester",
-        "lastName": "960118"
+        "lastName": "213599"
       }
     },
     {
@@ -64,7 +64,7 @@
       "check": "media: the attached file is copied onto the case",
       "ok": true,
       "detail": {
-        "6aeda9ebdb90f206a": "screenshot.png"
+        "6af187ba6bfb08bc7": "screenshot.png"
       }
     },
     {
@@ -83,18 +83,18 @@
       "test": "T1",
       "check": "latency of one pass (submission -> case), seconds",
       "ok": true,
-      "detail": 238.1
+      "detail": 114.7
     },
     {
       "test": "T2",
       "check": "a lost ledger rescans everything: no second case",
       "ok": true,
       "detail": {
-        "seen": 90,
+        "seen": 97,
         "created": 0,
         "skipped": 0,
-        "existing": 76,
-        "failed": 14,
+        "existing": 81,
+        "failed": 16,
         "retried": 0,
         "updated": 0,
         "closed_note": 0,
@@ -103,7 +103,8 @@
         "statuses": 0,
         "merged": 0,
         "notified": 0,
-        "escalated": 68
+        "escalated": 76,
+        "rows": 0
       }
     },
     {
@@ -145,7 +146,8 @@
           "statuses": 0,
           "merged": 0,
           "notified": 1,
-          "escalated": 0
+          "escalated": 0,
+          "rows": 0
         }
       }
     },
@@ -160,8 +162,8 @@
       "check": "the pass goes on (the good ones still go through)",
       "ok": true,
       "detail": {
-        "last_pass": "2026-11-06T10:24:01Z",
-        "last_success": "2026-11-06T10:24:01Z",
+        "last_pass": "2026-11-09T08:47:57Z",
+        "last_success": "2026-11-09T08:47:57Z",
         "ok": true,
         "error": null,
         "counts": {
@@ -178,11 +180,12 @@
           "statuses": 0,
           "merged": 0,
           "notified": 0,
-          "escalated": 0
+          "escalated": 0,
+          "rows": 0
         },
-        "failed": 16,
+        "failed": 18,
         "failed_elsewhere": 0,
-        "oldest_failed": "2026-11-06T10:20:45Z",
+        "oldest_failed": "2026-11-09T08:44:26Z",
         "oldest_error": "required answer missing: summary"
       }
     },
@@ -190,7 +193,7 @@
       "test": "T4",
       "check": "missing answer: \"required answer missing: summary\" in the ledger",
       "ok": true,
-      "detail": "aEou6CT7stpATUyL3jCcVU  submission 908617769  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908617782  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908625545  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908625562  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908633812  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908633823  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908676914  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908676939  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908724182  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908724191  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908744500  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908744520  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908908967  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908908978  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 909352965  since 2026-11-06T10:24:01Z  1 attempt(s), next 2026-11-06T10:25:01Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 909352977  since 2026-11-06T10:24:01Z  1 attempt(s), next 2026-11-06T10:25:01Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "aEou6CT7stpATUyL3jCcVU  submission 908617769  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908617782  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908625545  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908625562  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908633812  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908633823  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908676914  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908676939  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908724182  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908724191  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908744500  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908744520  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908908967  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908908978  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 909352965  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 909352977  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 910794043  since 2026-11-09T08:47:57Z  1 attempt(s), next 2026-11-09T08:48:57Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 910794064  since 2026-11-09T08:47:57Z  1 attempt(s), next 2026-11-09T08:48:57Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -202,7 +205,7 @@
       "test": "T4",
       "check": "invalid email: refused by EspoCRM, recorded with its reason",
       "ok": true,
-      "detail": "aEou6CT7stpATUyL3jCcVU  submission 908617769  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908617782  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908625545  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908625562  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908633812  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908633823  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908676914  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908676939  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908724182  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908724191  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908744500  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908744520  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908908967  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908908978  since 2026-11-06T10:20:45Z  2 attempt(s), next 2026-11-06T10:32:31Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 909352965  since 2026-11-06T10:24:01Z  1 attempt(s), next 2026-11-06T10:25:01Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 909352977  since 2026-11-06T10:24:01Z  1 attempt(s), next 2026-11-06T10:25:01Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "aEou6CT7stpATUyL3jCcVU  submission 908617769  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908617782  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908625545  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908625562  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908633812  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908633823  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908676914  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908676939  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908724182  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908724191  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908744500  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908744520  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 908908967  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 908908978  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 909352965  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 909352977  since 2026-11-09T08:44:26Z  2 attempt(s), next 2026-11-09T08:56:28Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\naEou6CT7stpATUyL3jCcVU  submission 910794043  since 2026-11-09T08:47:57Z  1 attempt(s), next 2026-11-09T08:48:57Z\n    required answer missing: summary\naEou6CT7stpATUyL3jCcVU  submission 910794064  since 2026-11-09T08:47:57Z  1 attempt(s), next 2026-11-09T08:48:57Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -265,23 +268,11 @@
     },
     {
       "test": "T5",
-      "check": "escalation: the unassigned case is mentioned to staff-1 (lead for Consortium A)",
+      "check": "escalation: the unassigned case is mentioned to staff-1 (lead for Consortium A), once",
       "ok": true,
       "detail": {
-        "seen": 0,
-        "created": 0,
-        "skipped": 0,
-        "existing": 0,
-        "failed": 0,
-        "retried": 0,
-        "updated": 0,
-        "closed_note": 0,
-        "lists": 0,
-        "edited": 0,
-        "statuses": 0,
-        "merged": 0,
-        "notified": 0,
-        "escalated": 1
+        "escalations": 1,
+        "this pass": 1
       }
     },
     {
@@ -363,7 +354,8 @@
         "statuses": 0,
         "merged": 1,
         "notified": 0,
-        "escalated": 0
+        "escalated": 0,
+        "rows": 0
       }
     },
     {
@@ -516,19 +508,19 @@
     },
     {
       "test": "C1",
-      "check": "responses.csv on the registration form: the active responses, id and name only",
+      "check": "responses.csv on the registration form: the active responses, code and name only",
       "ok": true,
       "detail": [
         {
-          "name": "6aed995653217dbaf",
-          "label": "AGT Response 100941"
+          "name": "RSP-V4TP",
+          "label": "AGT Response 165953"
         },
         {
-          "name": "6aed99e640cbec2d6",
-          "label": "AGT Response follow-up 101205"
+          "name": "RSP-DJVV",
+          "label": "AGT Response follow-up 170218"
         },
         {
-          "name": "6aed86ae113111258",
+          "name": "RSP-5DRS",
           "label": "BDR Response 085005"
         }
       ]
@@ -575,6 +567,16 @@
     },
     {
       "test": "C2",
+      "check": "its location also as latitude and longitude (for maps)",
+      "ok": true,
+      "detail": {
+        "location": "1.23 4.56 0 5",
+        "latitude": 1.23,
+        "longitude": 4.56
+      }
+    },
+    {
+      "test": "C2",
       "check": "in its response's team (Site formula)",
       "ok": true,
       "detail": ""
@@ -584,7 +586,7 @@
       "check": "media: the site photo is on the site, with the answer's file name (Kobo stores site_photo_1.png)",
       "ok": true,
       "detail": {
-        "6aedad0d9ef9eaf18": "site photo (1).png"
+        "6af18a6f01a8e6f3b": "site photo (1).png"
       }
     },
     {
@@ -605,14 +607,15 @@
         "statuses": 0,
         "merged": 1,
         "notified": 0,
-        "escalated": 0
+        "escalated": 0,
+        "rows": 0
       }
     },
     {
       "test": "C2",
       "check": "a standard code EspoCRM has no record for: recorded, no site made",
       "ok": true,
-      "detail": "aX2dekHhizaGrX8c2LwGza  submission 908620231  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908620244  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908620478  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908627898  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908627918  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908628347  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908636438  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908636457  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908636695  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908651107  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafede0192ac97: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908651143  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafee508a87325: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908651160  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafef092326925: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908651176  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafef8504a6883: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908651191  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafefe92f759c4: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908651211  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecaff0803da2df1: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908651225  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecaff0ef0ba7337: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908657433  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafede0192ac97: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908657450  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafee508a87325: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908657473  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafef092326925: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908657494  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafef8504a6883: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908657511  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafefe92f759c4: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908657528  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecaff0803da2df1: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908657543  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecaff0ef0ba7337: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908663800  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafede0192ac97: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908663817  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafee508a87325: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908663828  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafef092326925: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908663844  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafef8504a6883: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908663860  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafefe92f759c4: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908663879  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecaff0803da2df1: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908663900  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecaff0ef0ba7337: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908680840  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908680863  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908681892  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908689665  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafede0192ac97: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908689691  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafee508a87325: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908689717  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafef092326925: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908689737  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafef8504a6883: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908689758  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafefe92f759c4: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908689782  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecaff0803da2df1: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908689805  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecaff0ef0ba7337: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908727072  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908727086  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908728466  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908747785  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908747805  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908748917  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908749120  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    standard: 0 CStandard records with that code\naX2dekHhizaGrX8c2LwGza  submission 908755453  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafede0192ac97: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908755481  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafee508a87325: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908755506  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafef092326925: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908755529  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafef8504a6883: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908755562  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecafefe92f759c4: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908755584  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecaff0803da2df1: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908755609  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    PUT /CSite/6aecaff0ef0ba7337: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908912627  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908912637  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908914243  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    POST /CSite: HTTP 403 Can't relate with non-existing record. entity type: CSite, link: response.\naX2dekHhizaGrX8c2LwGza  submission 908914422  since 2026-11-06T10:28:37Z  2 attempt(s), next 2026-11-06T10:40:58Z\n    standard: 0 CStandard records with that code\naX2dekHhizaGrX8c2LwGza  submission 909360745  since 2026-11-06T10:34:33Z  1 attempt(s), next 2026-11-06T10:35:33Z\n    standard: 0 CStandard records with that code\n"
+      "detail": "aX2dekHhizaGrX8c2LwGza  submission 908620231  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908620244  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908620478  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908627898  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908627918  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908628347  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908636438  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908636457  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908636695  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908651107  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908651143  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908651160  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908651176  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908651191  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908651211  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908651225  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908657433  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908657450  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908657473  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908657494  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908657511  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908657528  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908657543  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908663800  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908663817  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908663828  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908663844  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908663860  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908663879  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908663900  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908680840  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908680863  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908681892  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908689665  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908689691  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908689717  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908689737  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908689758  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908689782  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908689805  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908727072  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908727086  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908728466  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908747785  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908747805  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908748917  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908749120  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908755453  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908755481  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908755506  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908755529  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908755562  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908755584  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908755609  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908912627  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908912637  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908914243  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 908914422  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 909358006  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 909360745  since 2026-11-09T08:51:54Z  2 attempt(s), next 2026-11-09T09:03:23Z\n    response: 0 CResponse records with that code\naX2dekHhizaGrX8c2LwGza  submission 910799353  since 2026-11-09T08:55:49Z  1 attempt(s), next 2026-11-09T08:56:49Z\n    standard: 0 CStandard records with that code\n"
     },
     {
       "test": "C2",
@@ -698,6 +701,60 @@
           "region": "River valley"
         },
         {
+          "name": "EQ1-WP-135046",
+          "label": "EQ1-WP-135046 \u00b7 Water point 135046",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-136407",
+          "label": "EQ1-WP-136407 \u00b7 Water point 136407",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-137856",
+          "label": "EQ1-WP-137856 \u00b7 Water point 137856",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-138228",
+          "label": "EQ1-WP-138228 \u00b7 Water point 138228",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-142430",
+          "label": "EQ1-WP-142430 \u00b7 Water point 142430",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-146026",
+          "label": "EQ1-WP-146026 \u00b7 Water point 146026",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-151799",
+          "label": "EQ1-WP-151799 \u00b7 Water point 151799",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-152861",
+          "label": "EQ1-WP-152861 \u00b7 Water point 152861",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-213599",
+          "label": "EQ1-WP-213599 \u00b7 Water point 213599",
+          "status": "planned",
+          "region": "North"
+        },
+        {
           "name": "EQ1-WP-899003",
           "label": "EQ1-WP-899003 \u00b7 Water point 899003",
           "status": "needs_repair",
@@ -718,7 +775,7 @@
         {
           "name": "EQ1-WP-960118",
           "label": "EQ1-WP-960118 \u00b7 Water point 960118",
-          "status": "planned",
+          "status": "needs_repair",
           "region": "North"
         },
         {
@@ -755,7 +812,7 @@
       "check": "media: the visit's photo is on its note",
       "ok": true,
       "detail": {
-        "6aedada170a6b7945": "leak.png"
+        "6af18ae0dde125d2c": "leak.png"
       }
     },
     {
@@ -842,6 +899,60 @@
           "region": "River valley"
         },
         {
+          "name": "EQ1-WP-135046",
+          "label": "EQ1-WP-135046 \u00b7 Water point 135046",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-136407",
+          "label": "EQ1-WP-136407 \u00b7 Water point 136407",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-137856",
+          "label": "EQ1-WP-137856 \u00b7 Water point 137856",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-138228",
+          "label": "EQ1-WP-138228 \u00b7 Water point 138228",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-142430",
+          "label": "EQ1-WP-142430 \u00b7 Water point 142430",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-146026",
+          "label": "EQ1-WP-146026 \u00b7 Water point 146026",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-151799",
+          "label": "EQ1-WP-151799 \u00b7 Water point 151799",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-152861",
+          "label": "EQ1-WP-152861 \u00b7 Water point 152861",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-213599",
+          "label": "EQ1-WP-213599 \u00b7 Water point 213599",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
           "name": "EQ1-WP-899003",
           "label": "EQ1-WP-899003 \u00b7 Water point 899003",
           "status": "needs_repair",
@@ -877,7 +988,175 @@
       "test": "C3",
       "check": "a visit to an unknown site is recorded, not guessed",
       "ok": true,
-      "detail": "aFDZDN7rbkVxLySRfhdk9Q  submission 908620902  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode EQ1-WP-873694\naFDZDN7rbkVxLySRfhdk9Q  submission 908621723  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908628895  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode EQ1-WP-874127\naFDZDN7rbkVxLySRfhdk9Q  submission 908629693  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908637215  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode EQ1-WP-874609\naFDZDN7rbkVxLySRfhdk9Q  submission 908637906  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908682849  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode EQ1-WP-877497\naFDZDN7rbkVxLySRfhdk9Q  submission 908683701  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908729263  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode EQ1-WP-880744\naFDZDN7rbkVxLySRfhdk9Q  submission 908730025  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908749804  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode EQ1-WP-882299\naFDZDN7rbkVxLySRfhdk9Q  submission 908750603  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908915359  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode EQ1-WP-894887\naFDZDN7rbkVxLySRfhdk9Q  submission 908916149  since 2026-11-06T10:36:28Z  2 attempt(s), next 2026-11-06T10:47:42Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 909362874  since 2026-11-06T10:37:42Z  1 attempt(s), next 2026-11-06T10:38:42Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
+      "detail": "aFDZDN7rbkVxLySRfhdk9Q  submission 908620902  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode EQ1-WP-873694\naFDZDN7rbkVxLySRfhdk9Q  submission 908621723  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908628895  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode EQ1-WP-874127\naFDZDN7rbkVxLySRfhdk9Q  submission 908629693  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908637215  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode EQ1-WP-874609\naFDZDN7rbkVxLySRfhdk9Q  submission 908637906  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908682849  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode EQ1-WP-877497\naFDZDN7rbkVxLySRfhdk9Q  submission 908683701  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908729263  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode EQ1-WP-880744\naFDZDN7rbkVxLySRfhdk9Q  submission 908730025  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908749804  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode EQ1-WP-882299\naFDZDN7rbkVxLySRfhdk9Q  submission 908750603  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 908915359  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode EQ1-WP-894887\naFDZDN7rbkVxLySRfhdk9Q  submission 908916149  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 909362874  since 2026-11-09T08:57:16Z  1 attempt(s), next 2026-11-09T08:58:16Z\n    0 CSite records with siteCode NO-SUCH-SITE\naFDZDN7rbkVxLySRfhdk9Q  submission 910801255  since 2026-11-09T08:58:11Z  1 attempt(s), next 2026-11-09T08:59:11Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
+    },
+    {
+      "test": "W7",
+      "check": "a registration makes a Responding organisation, named as typed (not in the list), with its code",
+      "ok": true,
+      "detail": {
+        "responseId": "6aecbae41f723e9db",
+        "name": "Telecom Partners 213599",
+        "organisationName": "Other",
+        "clusters": [
+          "EMERGENCY_TELECOMS"
+        ],
+        "code": "REG-4N7B"
+      }
+    },
+    {
+      "test": "W7",
+      "check": "its focal point's Contact",
+      "ok": true,
+      "detail": "6af18b49534eff8fd"
+    },
+    {
+      "test": "W7",
+      "check": "in the response's team and the ETC project's (its sector), not WASH's",
+      "ok": true,
+      "detail": {
+        "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
+        "6aec41fec6f7a5f27": "Response: Test EQ 1"
+      }
+    },
+    {
+      "test": "W7",
+      "check": "registering again (now with WASH): the same record, updated, in both projects' teams",
+      "ok": true,
+      "detail": [
+        "6af18b49d0d671bb5"
+      ]
+    },
+    {
+      "test": "W8",
+      "check": "organisations.csv: the 5W form's 137 organisations by ORG_ code, with their type (the form filters on it)",
+      "ok": true,
+      "detail": [
+        {
+          "name": "ORG_ACTS_OF_MERCY",
+          "label": "Acts of Mercy",
+          "org_type": "INTERNATIONAL_NGO"
+        },
+        {
+          "name": "ORG_ADRA",
+          "label": "ADRA - Adventist Development and Relief Agency",
+          "org_type": "INTERNATIONAL_NGO"
+        }
+      ]
+    },
+    {
+      "test": "W8",
+      "check": "areas.csv: Jamaica's parishes and communities by P-code, each community with its parish",
+      "ok": true,
+      "detail": [
+        {
+          "name": "JM01",
+          "label": "CLARENDON",
+          "level": "admin1",
+          "parent": "JM"
+        },
+        {
+          "name": "JM01001",
+          "label": "Ritchies",
+          "level": "admin2",
+          "parent": "JM01"
+        }
+      ]
+    },
+    {
+      "test": "W8",
+      "check": "responses.csv: by code",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "test": "W9",
+      "check": "a report makes an Activity: its response, lead and implementing organisation (by ORG_ code), its sector's project and teams",
+      "ok": true,
+      "detail": {
+        "responseId": "6aecbae41f723e9db",
+        "leadOrganisationId": "6af093d350ba30c49",
+        "projectId": "6af080bc7d2b1103c",
+        "teamsIds": [
+          "6af050644bc5ab8e6",
+          "6aec41fec6f7a5f27"
+        ]
+      }
+    },
+    {
+      "test": "W9",
+      "check": "one Activity location per community row: the community and parish by P-code, the site by its code",
+      "ok": true,
+      "detail": [
+        {
+          "cKoboRow": 1,
+          "communityId": "6af08d79e656e8169",
+          "parishId": "6af08d61e414c2498",
+          "siteId": "6af18a6f7df12d4d9",
+          "locationType": "shelter"
+        },
+        {
+          "cKoboRow": 2,
+          "communityId": "6af08d8a1bdb67b2f",
+          "parishId": "6af076ec0dc72d1c6",
+          "siteId": null,
+          "locationType": "shelter"
+        }
+      ]
+    },
+    {
+      "test": "W9",
+      "check": "the figures by group, and the activity's totals (2 communities, 200 reached, 300 targeted, 5 units)",
+      "ok": true,
+      "detail": [
+        2,
+        200,
+        300,
+        5
+      ]
+    },
+    {
+      "test": "W9",
+      "check": "its focal point, in its teams",
+      "ok": true,
+      "detail": [
+        {
+          "id": "6af18bc9cf8f7b738",
+          "name": "Ama Focal",
+          "deleted": false,
+          "description": null,
+          "createdAt": "2026-11-09 09:00:57",
+          "modifiedAt": "2026-11-09 09:00:57",
+          "emailAddress": "ama-213599@example.org",
+          "phone": "+1 876 555 0101",
+          "jobTitle": "Coordinator",
+          "cKoboAsset": "an3jbyAKcM4nAQSoyawu2C",
+          "cKoboSubmissionId": 910802872,
+          "cKoboSubmissionUuid": "04c89a1f-0795-46f8-8246-e11884df7dc2",
+          "cKoboLink": "https://kf.kobotoolbox.org/#/forms/an3jbyAKcM4nAQSoyawu2C/data/table",
+          "cKoboRow": 1,
+          "createdById": "6af07e3ad7b5a8dca",
+          "createdByName": "kobo-activities",
+          "modifiedById": null,
+          "modifiedByName": null,
+          "assignedUserId": null,
+          "assignedUserName": null,
+          "activityId": "6af18bc46840fdb37",
+          "activityName": "AMERICARES \u00b7 Other"
+        }
+      ]
+    },
+    {
+      "test": "W10",
+      "check": "a report that ends before it starts: recorded with its reason, not made",
+      "ok": true,
+      "detail": "an3jbyAKcM4nAQSoyawu2C  submission 910803336  since 2026-11-09T09:01:28Z  1 attempt(s), next 2026-11-09T09:02:28Z\n    POST /CActivity: HTTP 400 The activity ends before it starts.\nan3jbyAKcM4nAQSoyawu2C  submission 910803348  since 2026-11-09T09:01:28Z  1 attempt(s), next 2026-11-09T09:02:28Z\n    FIGURES_COMMUNITY row 2: community: 0 CAdminArea records with that pcode\n"
+    },
+    {
+      "test": "W10",
+      "check": "a community P-code EspoCRM doesn't have: recorded with its row, the good row kept, retried later",
+      "ok": true,
+      "detail": "an3jbyAKcM4nAQSoyawu2C  submission 910803336  since 2026-11-09T09:01:28Z  1 attempt(s), next 2026-11-09T09:02:28Z\n    POST /CActivity: HTTP 400 The activity ends before it starts.\nan3jbyAKcM4nAQSoyawu2C  submission 910803348  since 2026-11-09T09:01:28Z  1 attempt(s), next 2026-11-09T09:02:28Z\n    FIGURES_COMMUNITY row 2: community: 0 CAdminArea records with that pcode\n"
     }
   ]
 }
