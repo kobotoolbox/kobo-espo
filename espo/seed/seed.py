@@ -560,13 +560,30 @@ def ensure_entities(espo):
             espo.call('POST', '/EntityManager/action/updateEntity', body={'name': f'C{name}', 'statusField': status})
         for field, fspec in spec['fields'].items():
             ensure_field(espo, f'C{name}', field, fspec)
+    i18n = None
     for entity, link, foreign, link_foreign, kind in LINKS:
         if link not in metadata(espo, f'entityDefs.{entity}.links'):
             espo.call('POST', '/EntityManager/action/createLink', body={
                 'entity': entity, 'link': link, 'linkForeign': link_foreign, 'entityForeign': foreign,
-                'linkType': kind, 'label': link[0].upper() + link[1:], 'labelForeign': link_foreign[0].upper()
-                + link_foreign[1:], 'relationName': None})
+                'linkType': kind, 'label': link_label(link), 'labelForeign': link_label(link_foreign),
+                'relationName': None})
             print(f'link created: {entity}.{link} -> {foreign}.{link_foreign}')
+            continue
+        i18n = i18n or espo.call('GET', '/I18n')
+        # On EspoCRM's own entities a custom link's name gets a "c" (Task.cResponse)
+        on_foreign = link_foreign if foreign[0] == 'C' and foreign[1].isupper() else 'c' + link_foreign[0].upper() + link_foreign[1:]
+        if any(((i18n.get(e) or {}).get('links') or {}).get(name) != link_label(label_of)
+               for e, name, label_of in ((entity, link, link), (foreign, on_foreign, link_foreign))):  # made before
+            espo.call('POST', '/EntityManager/action/updateLink', body={  # labels were split into words
+                'entity': entity, 'link': link, 'entityForeign': foreign, 'linkForeign': on_foreign,
+                'label': link_label(link), 'labelForeign': link_label(link_foreign)})
+            print(f'link labels: {entity}.{link} "{link_label(link)}", {foreign}.{link_foreign} "{link_label(link_foreign)}"')
+
+
+def link_label(link):
+    """leadOrganisation -> "Lead organisation", as the fields' labels are."""
+    words = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', link).split(' ')
+    return ' '.join([words[0].capitalize()] + [w.lower() for w in words[1:]])
 
 
 def ensure_task_board(espo):
