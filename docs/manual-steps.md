@@ -21,7 +21,7 @@ the roster is deployed:
 
 1. Administration → Users → Create: user name, their email, **Role** Volunteer (or Roster
    Expert), **Teams** the response's team only. Password: let EspoCRM email them a link
-   (needs SMTP) or set one and send it separately.
+   ("Send access info"; needs outgoing email, below) or set one and send it separately.
 2. Assign them tasks on the response's board.
 
 When they leave: remove them from the team, and reassign their open tasks (a user taken
@@ -41,9 +41,22 @@ A new response's site visit form needs its own `[[list]]` entry (its team) and
 
 ## Once, for a real instance
 
-- **SMTP** (Administration → Outbound Emails) if notifications should also go by email;
-  then Administration → Notifications → "Email notifications upon assignment" and
-  "...mentions in posts". Not set up on the test droplet (in-app notifications only).
+- **Outgoing email** (the test droplet uses Resend; DigitalOcean blocks ports 465 and 587).
+  `espo/seed/seed.py` does steps 2-4 when `secrets/resend.key` is there; by hand:
+  1. In Resend, verify the sending domain (its DKIM, SPF and MX records in DNS) and make
+     an API key with sending access only.
+  2. Administration → Outbound Emails: from address (e.g. `noreply@respond.kobolabs.dev`),
+     from name ("Kobo Respond"), SMTP `smtp.resend.com`, port 2587, TLS, username
+     `resend`, password the API key.
+  3. Administration → Group Email Accounts → Create, with the **same address**: status
+     Active, IMAP off, SMTP on with the same server, port, TLS, username and key. This
+     EspoCRM sends its own emails (access info, notifications) through the group account
+     whose address is the from address; the Outbound Emails page's SMTP alone sends only
+     its "Send Test Email". Leave "Shared" off, so nobody sends as `noreply`.
+  4. Administration → Notifications: "Email notifications upon assignment" (entities
+     Task, Case, CApplication, CProject, CResponse, CSite) and "...mentions in posts".
+  Test users' addresses are Resend's test inbox (`delivered+<username>@resend.dev`): it
+  accepts everything and never bounces, which would hurt the domain's standing.
 - **Admin password**: the one `deploy/up.sh` generated is in
   `/root/kobo-espo.secrets` on the droplet. Change it, and turn on 2FA for admins
   (Administration → Authentication).

@@ -163,7 +163,7 @@ Per test (expected → actual):
 | Unassigned for N hours → notify the lead | The bridge's `[escalation]` | T5 |
 | New response → starter tasks | CResponse Before Save Custom Script (`record\create`) | T14 |
 | Task assignment notifications | EspoCRM's own (Task added to the list) | T5, T14 |
-| Email as well as in-app | EspoCRM's mention and assignment emails, once SMTP is set up | not tested (no SMTP) |
+| Email as well as in-app | EspoCRM's mention and assignment emails, through Resend | by hand (2026-11-09): an assignment email; `mcp_people.py` U4 the access info |
 
 ## Not done
 
@@ -172,8 +172,7 @@ Per test (expected → actual):
   Kobo login. The lists were checked on the forms through the API.
 - kobo-in-a-box's own end-to-end tests (60 checks on its rig) against the generalised
   kobo-espo-bridge, before the box switches.
-- Email notifications (no SMTP on the droplet); EspoCRM's portal for partners following
-  their own requests.
+- EspoCRM's portal for partners following their own requests.
 
 ## Candidates from kobo2logie for the bridge
 
@@ -397,9 +396,8 @@ its own team managing its sites and tasks.
   `list_roles`, `invite_user`, `add_to_team`, `remove_from_team`, and a prompt, "Set up a
   response". Regular users only, never the bridge's or agents' roles (any role an API user
   holds), each change confirmed. `invite_user` never handles a password: EspoCRM emails a
-  set-your-password link (`sendAccessInfo`), once outgoing email is configured (not yet;
-  Resend over SMTP on port 2587 works from the droplet, where DigitalOcean blocks 465 and
-  587).
+  set-your-password link (`sendAccessInfo`) when outgoing email is configured (it is
+  since 2026-11-09: see "Email" below).
 - Tests: `tests/cases/projects.py` 44/44, `tests/cases/mcp_people.py` 24/24; isolation
   80/80, workflow B 8/8, agents 35/35 unchanged.
 - **A bridge bug found on the way** (kobo-espo-bridge): escalation and the status sync to
@@ -437,13 +435,32 @@ with its codes; our form is made from it (`kobo/forms/melissa.py`).
   `plans/espo-source-plan.md`); its step 1 (map-point and multi-choice table columns) is
   done there (branch `espo-source`, 845 tests).
 
+## Email (2026-11-09)
+
+The droplet's EspoCRM sends with Resend: `noreply@respond.kobolabs.dev`, "Kobo Respond",
+SMTP `smtp.resend.com` port 2587 with TLS (DigitalOcean blocks 465 and 587), a send-only
+API key. Assignment emails (tasks, cases, applications, projects, responses, sites) and
+mention emails are on, so the bridge's notes that mention people go by email too.
+
+- **Found:** this EspoCRM doesn't send its own emails with the SMTP settings of
+  Administration → Outbound Emails. Access info and notifications go through the group
+  email account whose address is the from address (active, SMTP on); without one, "No
+  system SMTP settings" in the log while the page's "Send Test Email" works. The MCP's
+  `invite_user` now checks for that account (`email_ready`), not the settings.
+- **Test addresses** are Resend's test inbox, `delivered+<username>@resend.dev` (the
+  seed's users and `mcp_people.py`'s invited partner): nothing bounces off `example.org`.
+  Contacts and focal points keep `example.org`: EspoCRM never emails them.
+- `espo/seed/seed.py` sets it all up when `secrets/resend.key` (the key) is there; the
+  steps by hand, for a real instance: `docs/manual-steps.md`, "Outgoing email".
+
 ## Open questions for Josh
 
 1. **The real instance:** apply this to `espo.kobolabs.dev`, alongside its demo, or start a
    clean one? It needs the seed's instance-wide changes (entities, Task statuses, roles).
 2. **A dedicated Kobo account for the bridge** (not a person's), with the forms shared to it.
    Which server: the global one, or the EU one for EU partners?
-3. **SMTP** for email notifications and invitations: Resend (port 2587), from which domain?
+3. ~~**SMTP** for email notifications and invitations.~~ Done 2026-11-09 on the droplet:
+   Resend, `noreply@respond.kobolabs.dev` (see "Email").
 4. **Partners:** do they log in (as here, Partner Staff users), or only submit, or follow
    their own requests in EspoCRM's portal?
 5. **Escalation time** and who it goes to, per project.

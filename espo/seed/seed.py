@@ -17,7 +17,10 @@ Makes, with the admin API only (no files on the server):
   - teams and roles (staff, triager, partner staff, roster, volunteer, cluster lead, partner
     and viewer), see TEAMS, ROLES;
   - formulas: espo/formula/*.formula, one per entity and script type;
-  - settings: assignment notifications for cases and tasks.
+  - settings: assignment notifications for cases and tasks;
+  - outgoing email with Resend, when secrets/resend.key is there (a send-only API key):
+    the from address, SMTP, the system's group email account, assignment and mention
+    emails (see EMAIL).
 --users makes the test users (USERS) with generated passwords, kept in
 secrets/seed.secrets (gitignored).
 
@@ -764,6 +767,38 @@ def backfill_codes(espo):
             print(f'codes: {entity}: {left} record(s) still without a code')
 
 
+# Resend's SMTP; DigitalOcean blocks ports 465 and 587
+EMAIL = {'address': 'noreply@respond.kobolabs.dev', 'name': 'Kobo Respond',
+         'host': 'smtp.resend.com', 'port': 2587, 'security': 'TLS', 'username': 'resend'}
+EMAIL_KEY = ROOT / 'secrets' / 'resend.key'
+
+
+def ensure_email(espo):
+    if not EMAIL_KEY.exists():
+        print(f'email: no {EMAIL_KEY.relative_to(ROOT)}, no outgoing email')
+        return
+    key = EMAIL_KEY.read_text().strip()
+    espo.call('PUT', '/Settings', body={
+        'outboundEmailFromAddress': EMAIL['address'], 'outboundEmailFromName': EMAIL['name'],
+        'outboundEmailIsShared': False, 'smtpServer': EMAIL['host'], 'smtpPort': EMAIL['port'],
+        'smtpSecurity': EMAIL['security'], 'smtpAuth': True, 'smtpUsername': EMAIL['username'], 'smtpPassword': key,
+        'assignmentEmailNotifications': True,
+        'assignmentEmailNotificationsEntityList': ['Case', 'Task', 'CResponse', 'CProject', 'CSite', 'CApplication'],
+        'mentionEmailNotifications': True})
+    # EspoCRM sends its own emails (access info, notifications) through the group email
+    # account whose address is the from address, not with the settings' SMTP
+    account = {'name': f'{EMAIL["name"]} (system)', 'emailAddress': EMAIL['address'], 'fromName': EMAIL['name'],
+               'status': 'Active', 'useImap': False, 'useSmtp': True, 'smtpIsShared': False,
+               'smtpHost': EMAIL['host'], 'smtpPort': EMAIL['port'], 'smtpSecurity': EMAIL['security'],
+               'smtpAuth': True, 'smtpAuthMechanism': 'login', 'smtpUsername': EMAIL['username'], 'smtpPassword': key}
+    have = find(espo, 'InboundEmail', 'emailAddress', EMAIL['address'])
+    if have:
+        espo.call('PUT', f'/InboundEmail/{have["id"]}', body=account)
+    else:
+        espo.call('POST', '/InboundEmail', body=account)
+    print(f'email: from {EMAIL["address"]} by {EMAIL["host"]}:{EMAIL["port"]}; assignment and mention emails')
+
+
 def ensure_agents(espo, teams):
     """The example agents (agents/setup/*.json), made if missing, in their mode there
     (dry run or off): what someone changed on an agent since isn't overwritten."""
@@ -810,6 +845,7 @@ def main():
                                             'CApplication', 'CResponder', 'CActivity', 'COrganisation'}),
         'applicationName': 'Kobo requests and responses (test)'})
     print('settings: assignment notifications for Case, Task, Response, Project, Site, Application; global search')
+    ensure_email(espo)
 
     ensure_entities(espo)
     for entity, link in OBSOLETE_LINKS:
@@ -912,7 +948,7 @@ def main():
             password = have.get(key) or secrets.token_urlsafe(14)
             body = {'userName': username, 'firstName': first, 'lastName': last, 'type': 'regular',
                     'isActive': True, 'rolesIds': [roles[role]], 'teamsIds': [teams[t] for t in team_names],
-                    'defaultTeamId': teams[team_names[0]], 'emailAddress': f'{username}@example.org'}
+                    'defaultTeamId': teams[team_names[0]], 'emailAddress': f'delivered+{username}@resend.dev'}
             user = find(espo, 'User', 'userName', username)
             if user is None:
                 espo.call('POST', '/User', body={**body, 'password': password})

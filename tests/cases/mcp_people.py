@@ -118,27 +118,34 @@ def run(a, inst):
 
     # --- U4: a person -----------------------------------------------------------------------
     team_name = f'Cluster: {name}'
-    args = dict(username=USER, first_name='Amina', last_name='Test', email=f'{USER}@example.org', role='Cluster Partner',
+    # Resend's test inbox: accepts everything, never bounces (the droplet sends with Resend)
+    email = f'delivered+{USER}@resend.dev'
+    # EspoCRM emails through the active group account with SMTP whose address is the system's
+    sender = a.call('GET', '/Settings').get('outboundEmailFromAddress')
+    emailing = any(r.get('emailAddress') == sender and r.get('status') == 'Active' and r.get('useSmtp')
+                   for r in a.call('GET', '/InboundEmail', {'select': 'emailAddress,status,useSmtp'})['list'])
+    args = dict(username=USER, first_name='Amina', last_name='Test', email=email, role='Cluster Partner',
                 teams=[team_name])
     check('U4', 'invite_user: a bad username refused', refused(lambda: tools.invite_user(inst, **{**args, 'username': 'Amina K'})))
     check('U4', "invite_user: an agent's role refused", refused(lambda: tools.invite_user(inst, **{**args, 'role': 'Agent runner'})))
     check('U4', 'invite_user: an unknown team refused', refused(lambda: tools.invite_user(inst, **{**args, 'teams': ['Nope']})))
     check('U4', 'invite_user: an existing username refused', refused(lambda: tools.invite_user(inst, **{**args, 'username': 'staff-1'})))
     first = tools.invite_user(inst, **args)
-    check('U4', "first call: says whether EspoCRM will email them (it can't: no outgoing email here)",
-          first.get('confirm_required') and 'isn\'t set up' in first.get('email', ''), first)
+    check('U4', 'first call: says whether EspoCRM will email them (as its outgoing email is set up or not)',
+          first.get('confirm_required') and (f'emails {email}' if emailing else "isn't set up") in first.get('email', ''),
+          first)
     done = tools.invite_user(inst, **args, confirm=first['confirm'])
     u = (by(a, 'User', 'userName', USER) or [{}])[0]
     got = a.call('GET', f'/User/{u["id"]}') if u else {}
-    check('U4', 'the person: regular, active, the role, the team (and default team), not emailed',
+    check('U4', f'the person: regular, active, the role, the team (and default team), {"" if emailing else "not "}emailed',
           done.get('changed') and got.get('type') == 'regular' and got.get('isActive')
           and list((got.get('rolesNames') or {}).values()) == ['Cluster Partner'] and got.get('teamsIds') == [pteam['id']]
-          and got.get('defaultTeamId') == pteam['id'] and done.get('emailed') is False, {**done, 'user': got.get('teamsIds')})
+          and got.get('defaultTeamId') == pteam['id'] and done.get('emailed') is emailing, {**done, 'user': got.get('teamsIds')})
     keys = lambda d: {k.lower() for k in d} | {x for v in d.values() if isinstance(v, dict) for x in keys(v)}  # noqa: E731
     check('U4', 'no password field in either answer', not any('password' in k for k in keys(first) | keys(done)),
           keys(first) | keys(done))
 
-    # --- U5: what they see (a password set by hand here, as an admin would until email works)
+    # --- U5: what they see (a password set by hand here: the emailed link isn't followed)
     password = random.token_urlsafe(14)
     a.call('PUT', f'/User/{u["id"]}', body={'password': password})
     site = a.call('POST', '/CSite', body={'name': f'MCPP {RUN} site', 'siteCode': f'MCPP-{RUN}', 'projectId': proj['id']})

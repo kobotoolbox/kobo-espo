@@ -36,6 +36,7 @@ cp .env.example .env        # ESPO_HOST, ESPO_SSH; KOBO_URL, KOBO_TOKEN of a thr
 git clone <kobo-espo-bridge> ../kobo-espo-bridge
 deploy/up.sh                # needs a host with Docker and ESPO_HOST's DNS pointing at it
 tests/fetch-secrets.sh
+                            # outgoing email: a Resend send-only API key in secrets/resend.key
 python3 -I espo/seed/seed.py --users
 deploy/bridges.sh
 deploy/agents.sh            # ANTHROPIC_API_KEY in .env for agents with a model (or Bedrock, below)
