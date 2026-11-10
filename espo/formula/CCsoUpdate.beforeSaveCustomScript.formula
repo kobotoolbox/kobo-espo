@@ -1,0 +1,113 @@
+// Workflow F: a CSO's operational update (one submission of the update form). Its own
+// when it came with the CSO's key (the link in the CSO's email): otherwise it's kept,
+// flagged, and not counted until a coordinator confirms it. The key is never kept
+if (entity\isNew() && csoId) {
+    keyCheck = ifThenElse(!keyGiven, 'missing',
+        ifThenElse(keyGiven == record\attribute('CCso', csoId, 'updateKey'), 'ok', 'wrong'));
+}
+keyGiven = null;
+
+// Where: as a CSO's place (CPresence's formula), from the area or a P-coded pin
+// (the deepest level EspoCRM has: a country's areas may be loaded to fewer levels than the
+// geocoder knows)
+if (!adminAreaId && pcodeStatus == 'done') {
+    if (pcode3) {
+        adminAreaId = record\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', pcode3);
+    }
+    if (!adminAreaId && pcode2) {
+        adminAreaId = record\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', pcode2);
+    }
+    if (!adminAreaId && pcode1) {
+        adminAreaId = record\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', pcode1);
+    }
+}
+if (adminAreaId && (entity\isNew() || entity\isAttributeChanged('adminAreaId'))) {
+    $a = adminAreaId;
+    $n = 0;
+    while ($a && $n < 5) {
+        $level = record\attribute('CAdminArea', $a, 'level');
+        if ($level == 'admin1') {
+            pcode1 = record\attribute('CAdminArea', $a, 'pcode');
+        } else if ($level == 'admin2') {
+            pcode2 = record\attribute('CAdminArea', $a, 'pcode');
+        } else if ($level == 'admin3') {
+            pcode3 = record\attribute('CAdminArea', $a, 'pcode');
+        }
+        $parent = record\attribute('CAdminArea', $a, 'parentPcode');
+        $a = ifThenElse($level != 'admin0' && $parent, record\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', $parent), null);
+        $n = $n + 1;
+    }
+    country = record\attribute('CAdminArea', adminAreaId, 'country');
+    if (pcodeStatus != 'done') {
+        pcodeStatus = 'given';
+    }
+}
+if (!adminAreaId && latitude != null && !pcodeStatus) {
+    pcodeStatus = 'pending';
+}
+
+// Its CSO's teams, and what the feeds read of the CSO; named after the CSO and the place
+if (csoId && (entity\isNew() || entity\isAttributeChanged('csoId'))) {
+    teamsIds = record\attribute('CCso', csoId, 'teamsIds');
+    csoType = record\attribute('CCso', csoId, 'csoType');
+    listed = record\attribute('CCso', csoId, 'listed');
+}
+if (entity\isNew() || entity\isAttributeChanged('adminAreaId') || entity\isAttributeChanged('csoId')) {
+    name = string\concatenate(ifThenElse(csoId, record\attribute('CCso', csoId, 'name'), 'CSO'), ': ',
+        ifThenElse(adminAreaId, record\attribute('CAdminArea', adminAreaId, 'name'), ifThenElse(locality, locality, 'place to be P-coded')));
+}
+
+// The latest counted update of a CSO in a place is the one that counts: a newer one marks
+// the others superseded, whatever their roles (an update lists every role it has there now)
+$counted = keyCheck == 'ok' || keyCheck == 'confirmed';
+if (csoId && adminAreaId && $counted
+        && (entity\isNew() || entity\isAttributeChanged('adminAreaId') || entity\isAttributeChanged('keyCheck'))) {
+    superseded = false;
+    $others = record\findMany('CCsoUpdate', 500, 'createdAt', 'asc', 'csoId=', csoId, 'adminAreaId=', adminAreaId);
+    $i = 0;
+    while ($i < array\length($others)) {
+        $o = array\at($others, $i);
+        $oc = record\attribute('CCsoUpdate', $o, 'keyCheck');
+        if ($o != id && ($oc == 'ok' || $oc == 'confirmed')) {
+            if (entity\isNew() || datetime\diff(createdAt, record\attribute('CCsoUpdate', $o, 'createdAt'), 'seconds') > 0) {
+                if (!record\attribute('CCsoUpdate', $o, 'superseded')) {
+                    record\update('CCsoUpdate', $o, 'superseded', true, 'current', false);
+                }
+            } else {
+                superseded = true;
+            }
+        }
+        $i = $i + 1;
+    }
+}
+current = $counted && !superseded;
+
+// Data checks (flags, for the country's coordinators)
+$checks = list();
+if (keyCheck == 'missing') {
+    $checks = array\push($checks, 'key_missing');
+}
+if (keyCheck == 'wrong') {
+    $checks = array\push($checks, 'key_wrong');
+}
+if (pcodeStatus == 'outside') {
+    $checks = array\push($checks, 'outside');
+}
+if (csoId && pcode1 && !record\findOne('CPresence', 'createdAt', 'asc', 'csoId=', csoId, 'current=', true, 'pcode1=', pcode1)) {
+    $checks = array\push($checks, 'not_in_presence');
+}
+if (csoId && roles) {
+    $profile = record\attribute('CCso', csoId, 'roles');
+    $i = 0;
+    $missing = false;
+    while ($i < array\length(roles)) {
+        if (array\at(roles, $i) != 'other' && !array\includes($profile, array\at(roles, $i))) {
+            $missing = true;
+        }
+        $i = $i + 1;
+    }
+    if ($missing) {
+        $checks = array\push($checks, 'role_not_in_profile');
+    }
+}
+dataChecks = $checks;

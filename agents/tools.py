@@ -6,6 +6,8 @@ A tool takes the record's read fields and returns field values for the agent's o
 
     sanctions   the organisation and its leaders against the sanctions lists
     registry    the organisation in a registry (not built yet: "not checked")
+    geocode     a pin's P-codes (a CSO's place or update, Workflow F), from the Humanitarian
+                Geocoder's /reverse_geocode (GEOCODER_URL, its API token GEOCODER_TOKEN)
 
 The lists are JSON files, [{"name", "aliases": [...], "list", "ref"}], from
 AGENTS_SANCTIONS_LISTS (comma-separated paths; default the fixture). The fixture holds
@@ -16,6 +18,8 @@ import json
 import os
 import re
 import unicodedata
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -80,7 +84,52 @@ def registry(data):
     return {'ddRegistry': 'not_checked'}, 'Registry: not checked (no registry source yet).'
 
 
-TOOLS = {'sanctions': sanctions, 'registry': registry}
+GEOCODER = os.environ.get('GEOCODER_URL', 'https://geocoder.kobolabs.dev')
+_iso2 = {}
+
+
+def geocoder_token():
+    """GEOCODER_TOKEN from the environment, or from the runner's secrets file."""
+    if os.environ.get('GEOCODER_TOKEN'):
+        return os.environ['GEOCODER_TOKEN']
+    path = Path(os.environ.get('AGENTS_SECRETS', HERE.parent / 'secrets' / 'agents.secrets'))
+    lines = path.read_text().splitlines() if path.exists() else []
+    return next((v for k, _, v in (ln.partition('=') for ln in lines) if k.strip() == 'GEOCODER_TOKEN'), None)
+
+
+def geocoder(path, body=None):
+    token = geocoder_token()
+    req = urllib.request.Request(GEOCODER + path, method='POST' if body else 'GET',
+                                 data=json.dumps(body).encode() if body else None,
+                                 headers={'Accept': 'application/json', 'Content-Type': 'application/json',
+                                          **({'Authorization': f'Token {token.strip()}'} if token else {})})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.loads(r.read())
+
+
+def geocode(data):
+    """The P-codes of each level at the record's pin (latitude, longitude), in its country
+    (ISO3; the geocoder takes ISO2). Outside the boundaries: pcodeStatus 'outside'. The
+    geocoder down: no values, so the record stays pending for the next run."""
+    lat, lon, country = data.get('latitude'), data.get('longitude'), data.get('country')
+    if lat is None or lon is None:
+        return {}, 'Geocode: no pin.'
+    try:
+        if not _iso2:
+            _iso2.update({c['iso3']: c['code'] for c in geocoder('/countries')})
+        found = geocoder('/reverse_geocode', {'latitude': lat, 'longitude': lon,
+                                              **({'country': _iso2[country]} if country in _iso2 else {})})
+    except (urllib.error.URLError, OSError, ValueError, KeyError) as e:
+        return {}, f'Geocode: the geocoder failed ({getattr(e, "code", type(e).__name__)}); tried again next run.'
+    if not found.get('success'):
+        return {'pcodeStatus': 'outside'}, f'Geocode: {lat}, {lon} is outside the known boundaries' + (
+            f' of {country}.' if country else '.')
+    values = {f'pcode{n}': found.get(f'adm{n}_pcode') for n in (1, 2, 3) if found.get(f'adm{n}_pcode')}
+    names = ', '.join(found[f'adm{n}_name'] for n in (3, 2, 1) if found.get(f'adm{n}_name'))
+    return {**values, 'pcodeStatus': 'done'}, f'Geocode: {names} ({", ".join(values.values())}).'
+
+
+TOOLS = {'sanctions': sanctions, 'registry': registry, 'geocode': geocode}
 SERVER_TOOLS = {'web_search', 'web_fetch'}
 
 

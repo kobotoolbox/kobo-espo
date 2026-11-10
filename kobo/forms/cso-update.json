@@ -1,0 +1,1383 @@
+{
+ "settings": {
+  "form_title": "CSO update (espo-kobo test)",
+  "form_id": "cso_update",
+  "version": "1",
+  "style": "pages"
+ },
+ "survey": [
+  {
+   "type": "start",
+   "name": "start"
+  },
+  {
+   "type": "end",
+   "name": "end"
+  },
+  {
+   "type": "hidden",
+   "name": "cso"
+  },
+  {
+   "type": "hidden",
+   "name": "key"
+  },
+  {
+   "type": "note",
+   "name": "intro",
+   "label": "A short update on what your organization is doing in one place. Send one per place."
+  },
+  {
+   "type": "text",
+   "name": "cso_typed",
+   "label": "Your organization's CSO code",
+   "required": "true",
+   "relevant": "${cso} = ''",
+   "hint": "CSO- and 4 characters, in the email you got after sending your profile.",
+   "constraint": "regex(., '^CSO-[2-9A-HJKMNP-TV-Z]{4}$')",
+   "constraint_message": "A code like CSO-7K3Q."
+  },
+  {
+   "type": "calculate",
+   "name": "cso_code",
+   "calculation": "if(${cso} != '', ${cso}, ${cso_typed})"
+  },
+  {
+   "type": "begin_group",
+   "name": "place",
+   "label": "Where is this activity being implemented?"
+  },
+  {
+   "type": "select_one countries",
+   "name": "country",
+   "label": "Country",
+   "required": "true",
+   "appearance": "minimal autocomplete"
+  },
+  {
+   "type": "geopoint",
+   "name": "location",
+   "label": "Drop a pin in the place",
+   "required": "true",
+   "hint": "Anywhere in the district or area: it is matched to the admin area it falls in."
+  },
+  {
+   "type": "text",
+   "name": "locality",
+   "label": "Locality (village, town or neighbourhood)"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "select_multiple roles",
+   "name": "roles",
+   "label": "What activity or service are you currently providing in this location?",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "roles_other",
+   "label": "Please specify",
+   "required": "true",
+   "relevant": "selected(${roles}, 'other')"
+  },
+  {
+   "type": "select_one update_status",
+   "name": "status",
+   "label": "What is the current status?",
+   "required": "true"
+  },
+  {
+   "type": "select_multiple populations",
+   "name": "populations",
+   "label": "Which population groups are being reached?",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "populations_other",
+   "label": "Please specify",
+   "required": "true",
+   "relevant": "selected(${populations}, 'other')"
+  },
+  {
+   "type": "text",
+   "name": "facility",
+   "label": "Facility being reached, if any (its name)"
+  },
+  {
+   "type": "select_multiple exchange",
+   "name": "needs",
+   "label": "What is the principal operational gap or collaboration need in this location?",
+   "constraint": "count-selected(.) <= 3",
+   "constraint_message": "Choose at most 3.",
+   "hint": "Choose up to 3."
+  },
+  {
+   "type": "text",
+   "name": "needs_other",
+   "label": "Please specify",
+   "required": "true",
+   "relevant": "selected(${needs}, 'other')"
+  },
+  {
+   "type": "text",
+   "name": "needs_note",
+   "label": "A short explanation of the need",
+   "relevant": "count-selected(${needs}) > 0"
+  }
+ ],
+ "choices": [
+  {
+   "list_name": "countries",
+   "name": "AFG",
+   "label": "Afghanistan"
+  },
+  {
+   "list_name": "countries",
+   "name": "ALB",
+   "label": "Albania"
+  },
+  {
+   "list_name": "countries",
+   "name": "DZA",
+   "label": "Algeria"
+  },
+  {
+   "list_name": "countries",
+   "name": "AND",
+   "label": "Andorra"
+  },
+  {
+   "list_name": "countries",
+   "name": "AGO",
+   "label": "Angola"
+  },
+  {
+   "list_name": "countries",
+   "name": "ATG",
+   "label": "Antigua and Barbuda"
+  },
+  {
+   "list_name": "countries",
+   "name": "ARG",
+   "label": "Argentina"
+  },
+  {
+   "list_name": "countries",
+   "name": "ARM",
+   "label": "Armenia"
+  },
+  {
+   "list_name": "countries",
+   "name": "AUS",
+   "label": "Australia"
+  },
+  {
+   "list_name": "countries",
+   "name": "AUT",
+   "label": "Austria"
+  },
+  {
+   "list_name": "countries",
+   "name": "AZE",
+   "label": "Azerbaijan"
+  },
+  {
+   "list_name": "countries",
+   "name": "BHS",
+   "label": "Bahamas"
+  },
+  {
+   "list_name": "countries",
+   "name": "BHR",
+   "label": "Bahrain"
+  },
+  {
+   "list_name": "countries",
+   "name": "BGD",
+   "label": "Bangladesh"
+  },
+  {
+   "list_name": "countries",
+   "name": "BRB",
+   "label": "Barbados"
+  },
+  {
+   "list_name": "countries",
+   "name": "BLR",
+   "label": "Belarus"
+  },
+  {
+   "list_name": "countries",
+   "name": "BEL",
+   "label": "Belgium"
+  },
+  {
+   "list_name": "countries",
+   "name": "BLZ",
+   "label": "Belize"
+  },
+  {
+   "list_name": "countries",
+   "name": "BEN",
+   "label": "Benin"
+  },
+  {
+   "list_name": "countries",
+   "name": "BTN",
+   "label": "Bhutan"
+  },
+  {
+   "list_name": "countries",
+   "name": "BOL",
+   "label": "Bolivia (Plurinational State of)"
+  },
+  {
+   "list_name": "countries",
+   "name": "BIH",
+   "label": "Bosnia and Herzegovina"
+  },
+  {
+   "list_name": "countries",
+   "name": "BWA",
+   "label": "Botswana"
+  },
+  {
+   "list_name": "countries",
+   "name": "BRA",
+   "label": "Brazil"
+  },
+  {
+   "list_name": "countries",
+   "name": "BRN",
+   "label": "Brunei Darussalam"
+  },
+  {
+   "list_name": "countries",
+   "name": "BGR",
+   "label": "Bulgaria"
+  },
+  {
+   "list_name": "countries",
+   "name": "BFA",
+   "label": "Burkina Faso"
+  },
+  {
+   "list_name": "countries",
+   "name": "BDI",
+   "label": "Burundi"
+  },
+  {
+   "list_name": "countries",
+   "name": "CPV",
+   "label": "Cabo Verde"
+  },
+  {
+   "list_name": "countries",
+   "name": "KHM",
+   "label": "Cambodia"
+  },
+  {
+   "list_name": "countries",
+   "name": "CMR",
+   "label": "Cameroon"
+  },
+  {
+   "list_name": "countries",
+   "name": "CAN",
+   "label": "Canada"
+  },
+  {
+   "list_name": "countries",
+   "name": "CAF",
+   "label": "Central African Republic"
+  },
+  {
+   "list_name": "countries",
+   "name": "TCD",
+   "label": "Chad"
+  },
+  {
+   "list_name": "countries",
+   "name": "CHL",
+   "label": "Chile"
+  },
+  {
+   "list_name": "countries",
+   "name": "CHN",
+   "label": "China"
+  },
+  {
+   "list_name": "countries",
+   "name": "COL",
+   "label": "Colombia"
+  },
+  {
+   "list_name": "countries",
+   "name": "COM",
+   "label": "Comoros"
+  },
+  {
+   "list_name": "countries",
+   "name": "COG",
+   "label": "Congo"
+  },
+  {
+   "list_name": "countries",
+   "name": "COK",
+   "label": "Cook Islands"
+  },
+  {
+   "list_name": "countries",
+   "name": "CRI",
+   "label": "Costa Rica"
+  },
+  {
+   "list_name": "countries",
+   "name": "CIV",
+   "label": "Côte d'Ivoire"
+  },
+  {
+   "list_name": "countries",
+   "name": "HRV",
+   "label": "Croatia"
+  },
+  {
+   "list_name": "countries",
+   "name": "CUB",
+   "label": "Cuba"
+  },
+  {
+   "list_name": "countries",
+   "name": "CYP",
+   "label": "Cyprus"
+  },
+  {
+   "list_name": "countries",
+   "name": "CZE",
+   "label": "Czechia"
+  },
+  {
+   "list_name": "countries",
+   "name": "PRK",
+   "label": "Democratic People's Republic of Korea"
+  },
+  {
+   "list_name": "countries",
+   "name": "COD",
+   "label": "Democratic Republic of the Congo"
+  },
+  {
+   "list_name": "countries",
+   "name": "DNK",
+   "label": "Denmark"
+  },
+  {
+   "list_name": "countries",
+   "name": "DJI",
+   "label": "Djibouti"
+  },
+  {
+   "list_name": "countries",
+   "name": "DMA",
+   "label": "Dominica"
+  },
+  {
+   "list_name": "countries",
+   "name": "DOM",
+   "label": "Dominican Republic"
+  },
+  {
+   "list_name": "countries",
+   "name": "ECU",
+   "label": "Ecuador"
+  },
+  {
+   "list_name": "countries",
+   "name": "EGY",
+   "label": "Egypt"
+  },
+  {
+   "list_name": "countries",
+   "name": "SLV",
+   "label": "El Salvador"
+  },
+  {
+   "list_name": "countries",
+   "name": "GNQ",
+   "label": "Equatorial Guinea"
+  },
+  {
+   "list_name": "countries",
+   "name": "ERI",
+   "label": "Eritrea"
+  },
+  {
+   "list_name": "countries",
+   "name": "EST",
+   "label": "Estonia"
+  },
+  {
+   "list_name": "countries",
+   "name": "SWZ",
+   "label": "Eswatini"
+  },
+  {
+   "list_name": "countries",
+   "name": "ETH",
+   "label": "Ethiopia"
+  },
+  {
+   "list_name": "countries",
+   "name": "FJI",
+   "label": "Fiji"
+  },
+  {
+   "list_name": "countries",
+   "name": "FIN",
+   "label": "Finland"
+  },
+  {
+   "list_name": "countries",
+   "name": "FRA",
+   "label": "France"
+  },
+  {
+   "list_name": "countries",
+   "name": "GAB",
+   "label": "Gabon"
+  },
+  {
+   "list_name": "countries",
+   "name": "GMB",
+   "label": "Gambia"
+  },
+  {
+   "list_name": "countries",
+   "name": "GEO",
+   "label": "Georgia"
+  },
+  {
+   "list_name": "countries",
+   "name": "DEU",
+   "label": "Germany"
+  },
+  {
+   "list_name": "countries",
+   "name": "GHA",
+   "label": "Ghana"
+  },
+  {
+   "list_name": "countries",
+   "name": "GRC",
+   "label": "Greece"
+  },
+  {
+   "list_name": "countries",
+   "name": "GRD",
+   "label": "Grenada"
+  },
+  {
+   "list_name": "countries",
+   "name": "GTM",
+   "label": "Guatemala"
+  },
+  {
+   "list_name": "countries",
+   "name": "GIN",
+   "label": "Guinea"
+  },
+  {
+   "list_name": "countries",
+   "name": "GNB",
+   "label": "Guinea-Bissau"
+  },
+  {
+   "list_name": "countries",
+   "name": "GUY",
+   "label": "Guyana"
+  },
+  {
+   "list_name": "countries",
+   "name": "HTI",
+   "label": "Haiti"
+  },
+  {
+   "list_name": "countries",
+   "name": "HND",
+   "label": "Honduras"
+  },
+  {
+   "list_name": "countries",
+   "name": "HUN",
+   "label": "Hungary"
+  },
+  {
+   "list_name": "countries",
+   "name": "ISL",
+   "label": "Iceland"
+  },
+  {
+   "list_name": "countries",
+   "name": "IND",
+   "label": "India"
+  },
+  {
+   "list_name": "countries",
+   "name": "IDN",
+   "label": "Indonesia"
+  },
+  {
+   "list_name": "countries",
+   "name": "IRN",
+   "label": "Iran (Islamic Republic of)"
+  },
+  {
+   "list_name": "countries",
+   "name": "IRQ",
+   "label": "Iraq"
+  },
+  {
+   "list_name": "countries",
+   "name": "IRL",
+   "label": "Ireland"
+  },
+  {
+   "list_name": "countries",
+   "name": "ISR",
+   "label": "Israel"
+  },
+  {
+   "list_name": "countries",
+   "name": "ITA",
+   "label": "Italy"
+  },
+  {
+   "list_name": "countries",
+   "name": "JAM",
+   "label": "Jamaica"
+  },
+  {
+   "list_name": "countries",
+   "name": "JPN",
+   "label": "Japan"
+  },
+  {
+   "list_name": "countries",
+   "name": "JOR",
+   "label": "Jordan"
+  },
+  {
+   "list_name": "countries",
+   "name": "KAZ",
+   "label": "Kazakhstan"
+  },
+  {
+   "list_name": "countries",
+   "name": "KEN",
+   "label": "Kenya"
+  },
+  {
+   "list_name": "countries",
+   "name": "KIR",
+   "label": "Kiribati"
+  },
+  {
+   "list_name": "countries",
+   "name": "KWT",
+   "label": "Kuwait"
+  },
+  {
+   "list_name": "countries",
+   "name": "KGZ",
+   "label": "Kyrgyzstan"
+  },
+  {
+   "list_name": "countries",
+   "name": "LAO",
+   "label": "Lao People's Democratic Republic"
+  },
+  {
+   "list_name": "countries",
+   "name": "LVA",
+   "label": "Latvia"
+  },
+  {
+   "list_name": "countries",
+   "name": "LBN",
+   "label": "Lebanon"
+  },
+  {
+   "list_name": "countries",
+   "name": "LSO",
+   "label": "Lesotho"
+  },
+  {
+   "list_name": "countries",
+   "name": "LBR",
+   "label": "Liberia"
+  },
+  {
+   "list_name": "countries",
+   "name": "LBY",
+   "label": "Libya"
+  },
+  {
+   "list_name": "countries",
+   "name": "LIE",
+   "label": "Liechtenstein"
+  },
+  {
+   "list_name": "countries",
+   "name": "LTU",
+   "label": "Lithuania"
+  },
+  {
+   "list_name": "countries",
+   "name": "LUX",
+   "label": "Luxembourg"
+  },
+  {
+   "list_name": "countries",
+   "name": "MDG",
+   "label": "Madagascar"
+  },
+  {
+   "list_name": "countries",
+   "name": "MWI",
+   "label": "Malawi"
+  },
+  {
+   "list_name": "countries",
+   "name": "MYS",
+   "label": "Malaysia"
+  },
+  {
+   "list_name": "countries",
+   "name": "MDV",
+   "label": "Maldives"
+  },
+  {
+   "list_name": "countries",
+   "name": "MLI",
+   "label": "Mali"
+  },
+  {
+   "list_name": "countries",
+   "name": "MLT",
+   "label": "Malta"
+  },
+  {
+   "list_name": "countries",
+   "name": "MHL",
+   "label": "Marshall Islands"
+  },
+  {
+   "list_name": "countries",
+   "name": "MRT",
+   "label": "Mauritania"
+  },
+  {
+   "list_name": "countries",
+   "name": "MUS",
+   "label": "Mauritius"
+  },
+  {
+   "list_name": "countries",
+   "name": "MEX",
+   "label": "Mexico"
+  },
+  {
+   "list_name": "countries",
+   "name": "FSM",
+   "label": "Micronesia (Federated States of)"
+  },
+  {
+   "list_name": "countries",
+   "name": "MCO",
+   "label": "Monaco"
+  },
+  {
+   "list_name": "countries",
+   "name": "MNG",
+   "label": "Mongolia"
+  },
+  {
+   "list_name": "countries",
+   "name": "MNE",
+   "label": "Montenegro"
+  },
+  {
+   "list_name": "countries",
+   "name": "MAR",
+   "label": "Morocco"
+  },
+  {
+   "list_name": "countries",
+   "name": "MOZ",
+   "label": "Mozambique"
+  },
+  {
+   "list_name": "countries",
+   "name": "MMR",
+   "label": "Myanmar"
+  },
+  {
+   "list_name": "countries",
+   "name": "NAM",
+   "label": "Namibia"
+  },
+  {
+   "list_name": "countries",
+   "name": "NRU",
+   "label": "Nauru"
+  },
+  {
+   "list_name": "countries",
+   "name": "NPL",
+   "label": "Nepal"
+  },
+  {
+   "list_name": "countries",
+   "name": "NLD",
+   "label": "Netherlands (Kingdom of the)"
+  },
+  {
+   "list_name": "countries",
+   "name": "NZL",
+   "label": "New Zealand"
+  },
+  {
+   "list_name": "countries",
+   "name": "NIC",
+   "label": "Nicaragua"
+  },
+  {
+   "list_name": "countries",
+   "name": "NER",
+   "label": "Niger"
+  },
+  {
+   "list_name": "countries",
+   "name": "NGA",
+   "label": "Nigeria"
+  },
+  {
+   "list_name": "countries",
+   "name": "NIU",
+   "label": "Niue"
+  },
+  {
+   "list_name": "countries",
+   "name": "MKD",
+   "label": "North Macedonia"
+  },
+  {
+   "list_name": "countries",
+   "name": "NOR",
+   "label": "Norway"
+  },
+  {
+   "list_name": "countries",
+   "name": "OMN",
+   "label": "Oman"
+  },
+  {
+   "list_name": "countries",
+   "name": "PAK",
+   "label": "Pakistan"
+  },
+  {
+   "list_name": "countries",
+   "name": "PLW",
+   "label": "Palau"
+  },
+  {
+   "list_name": "countries",
+   "name": "PSE",
+   "label": "Palestine"
+  },
+  {
+   "list_name": "countries",
+   "name": "PAN",
+   "label": "Panama"
+  },
+  {
+   "list_name": "countries",
+   "name": "PNG",
+   "label": "Papua New Guinea"
+  },
+  {
+   "list_name": "countries",
+   "name": "PRY",
+   "label": "Paraguay"
+  },
+  {
+   "list_name": "countries",
+   "name": "PER",
+   "label": "Peru"
+  },
+  {
+   "list_name": "countries",
+   "name": "PHL",
+   "label": "Philippines"
+  },
+  {
+   "list_name": "countries",
+   "name": "POL",
+   "label": "Poland"
+  },
+  {
+   "list_name": "countries",
+   "name": "PRT",
+   "label": "Portugal"
+  },
+  {
+   "list_name": "countries",
+   "name": "QAT",
+   "label": "Qatar"
+  },
+  {
+   "list_name": "countries",
+   "name": "KOR",
+   "label": "Republic of Korea"
+  },
+  {
+   "list_name": "countries",
+   "name": "MDA",
+   "label": "Republic of Moldova"
+  },
+  {
+   "list_name": "countries",
+   "name": "ROU",
+   "label": "Romania"
+  },
+  {
+   "list_name": "countries",
+   "name": "RUS",
+   "label": "Russian Federation"
+  },
+  {
+   "list_name": "countries",
+   "name": "RWA",
+   "label": "Rwanda"
+  },
+  {
+   "list_name": "countries",
+   "name": "KNA",
+   "label": "Saint Kitts and Nevis"
+  },
+  {
+   "list_name": "countries",
+   "name": "LCA",
+   "label": "Saint Lucia"
+  },
+  {
+   "list_name": "countries",
+   "name": "VCT",
+   "label": "Saint Vincent and the Grenadines"
+  },
+  {
+   "list_name": "countries",
+   "name": "WSM",
+   "label": "Samoa"
+  },
+  {
+   "list_name": "countries",
+   "name": "SMR",
+   "label": "San Marino"
+  },
+  {
+   "list_name": "countries",
+   "name": "STP",
+   "label": "Sao Tome and Principe"
+  },
+  {
+   "list_name": "countries",
+   "name": "SAU",
+   "label": "Saudi Arabia"
+  },
+  {
+   "list_name": "countries",
+   "name": "SEN",
+   "label": "Senegal"
+  },
+  {
+   "list_name": "countries",
+   "name": "SRB",
+   "label": "Serbia"
+  },
+  {
+   "list_name": "countries",
+   "name": "SYC",
+   "label": "Seychelles"
+  },
+  {
+   "list_name": "countries",
+   "name": "SLE",
+   "label": "Sierra Leone"
+  },
+  {
+   "list_name": "countries",
+   "name": "SGP",
+   "label": "Singapore"
+  },
+  {
+   "list_name": "countries",
+   "name": "SVK",
+   "label": "Slovakia"
+  },
+  {
+   "list_name": "countries",
+   "name": "SVN",
+   "label": "Slovenia"
+  },
+  {
+   "list_name": "countries",
+   "name": "SLB",
+   "label": "Solomon Islands"
+  },
+  {
+   "list_name": "countries",
+   "name": "SOM",
+   "label": "Somalia"
+  },
+  {
+   "list_name": "countries",
+   "name": "ZAF",
+   "label": "South Africa"
+  },
+  {
+   "list_name": "countries",
+   "name": "SSD",
+   "label": "South Sudan"
+  },
+  {
+   "list_name": "countries",
+   "name": "ESP",
+   "label": "Spain"
+  },
+  {
+   "list_name": "countries",
+   "name": "LKA",
+   "label": "Sri Lanka"
+  },
+  {
+   "list_name": "countries",
+   "name": "SDN",
+   "label": "Sudan"
+  },
+  {
+   "list_name": "countries",
+   "name": "SUR",
+   "label": "Suriname"
+  },
+  {
+   "list_name": "countries",
+   "name": "SWE",
+   "label": "Sweden"
+  },
+  {
+   "list_name": "countries",
+   "name": "CHE",
+   "label": "Switzerland"
+  },
+  {
+   "list_name": "countries",
+   "name": "SYR",
+   "label": "Syrian Arab Republic"
+  },
+  {
+   "list_name": "countries",
+   "name": "TJK",
+   "label": "Tajikistan"
+  },
+  {
+   "list_name": "countries",
+   "name": "THA",
+   "label": "Thailand"
+  },
+  {
+   "list_name": "countries",
+   "name": "TLS",
+   "label": "Timor-Leste"
+  },
+  {
+   "list_name": "countries",
+   "name": "TGO",
+   "label": "Togo"
+  },
+  {
+   "list_name": "countries",
+   "name": "TON",
+   "label": "Tonga"
+  },
+  {
+   "list_name": "countries",
+   "name": "TTO",
+   "label": "Trinidad and Tobago"
+  },
+  {
+   "list_name": "countries",
+   "name": "TUN",
+   "label": "Tunisia"
+  },
+  {
+   "list_name": "countries",
+   "name": "TUR",
+   "label": "Türkiye"
+  },
+  {
+   "list_name": "countries",
+   "name": "TKM",
+   "label": "Turkmenistan"
+  },
+  {
+   "list_name": "countries",
+   "name": "TUV",
+   "label": "Tuvalu"
+  },
+  {
+   "list_name": "countries",
+   "name": "UGA",
+   "label": "Uganda"
+  },
+  {
+   "list_name": "countries",
+   "name": "UKR",
+   "label": "Ukraine"
+  },
+  {
+   "list_name": "countries",
+   "name": "ARE",
+   "label": "United Arab Emirates"
+  },
+  {
+   "list_name": "countries",
+   "name": "GBR",
+   "label": "United Kingdom of Great Britain and Northern Ireland"
+  },
+  {
+   "list_name": "countries",
+   "name": "TZA",
+   "label": "United Republic of Tanzania"
+  },
+  {
+   "list_name": "countries",
+   "name": "USA",
+   "label": "United States of America"
+  },
+  {
+   "list_name": "countries",
+   "name": "URY",
+   "label": "Uruguay"
+  },
+  {
+   "list_name": "countries",
+   "name": "UZB",
+   "label": "Uzbekistan"
+  },
+  {
+   "list_name": "countries",
+   "name": "VUT",
+   "label": "Vanuatu"
+  },
+  {
+   "list_name": "countries",
+   "name": "VEN",
+   "label": "Venezuela (Bolivarian Republic of)"
+  },
+  {
+   "list_name": "countries",
+   "name": "VNM",
+   "label": "Viet Nam"
+  },
+  {
+   "list_name": "countries",
+   "name": "YEM",
+   "label": "Yemen"
+  },
+  {
+   "list_name": "countries",
+   "name": "ZMB",
+   "label": "Zambia"
+  },
+  {
+   "list_name": "countries",
+   "name": "ZWE",
+   "label": "Zimbabwe"
+  },
+  {
+   "list_name": "roles",
+   "name": "community_engagement",
+   "label": "Community engagement, dialogue and trust-building"
+  },
+  {
+   "list_name": "roles",
+   "name": "risk_communication",
+   "label": "Risk communication, health literacy and misinformation/rumour management"
+  },
+  {
+   "list_name": "roles",
+   "name": "community_feedback",
+   "label": "Community listening, feedback and accountability to affected people"
+  },
+  {
+   "list_name": "roles",
+   "name": "community_surveillance",
+   "label": "Community-based surveillance, alerts and early warning"
+  },
+  {
+   "list_name": "roles",
+   "name": "community_health",
+   "label": "Community health services, first aid, referral or patient navigation"
+  },
+  {
+   "list_name": "roles",
+   "name": "wash",
+   "label": "WASH and environmental health"
+  },
+  {
+   "list_name": "roles",
+   "name": "vaccination",
+   "label": "Vaccination and other medical-countermeasure delivery or uptake"
+  },
+  {
+   "list_name": "roles",
+   "name": "outbreak_support",
+   "label": "Support to outbreak investigation, contact tracing or targeted response"
+  },
+  {
+   "list_name": "roles",
+   "name": "protection",
+   "label": "Protection, safeguarding, inclusion and prevention of sexual exploitation and abuse"
+  },
+  {
+   "list_name": "roles",
+   "name": "mhpss",
+   "label": "Mental health and psychosocial support"
+  },
+  {
+   "list_name": "roles",
+   "name": "livelihoods",
+   "label": "Support to livelihoods, food security, education or social protection"
+  },
+  {
+   "list_name": "roles",
+   "name": "workforce",
+   "label": "Community workforce or volunteer mobilization"
+  },
+  {
+   "list_name": "roles",
+   "name": "training",
+   "label": "Training and capacity strengthening"
+  },
+  {
+   "list_name": "roles",
+   "name": "data_research",
+   "label": "Data collection, research, monitoring or evidence generation"
+  },
+  {
+   "list_name": "roles",
+   "name": "advocacy",
+   "label": "Advocacy, policy influence and representation of community voices"
+  },
+  {
+   "list_name": "roles",
+   "name": "coordination",
+   "label": "Coordination, partnership-building or convening"
+  },
+  {
+   "list_name": "roles",
+   "name": "logistics",
+   "label": "Logistics, transport, supplies or infrastructure"
+  },
+  {
+   "list_name": "roles",
+   "name": "resource_mobilization",
+   "label": "Resource mobilization or small-grant support"
+  },
+  {
+   "list_name": "roles",
+   "name": "other",
+   "label": "Other"
+  },
+  {
+   "list_name": "update_status",
+   "name": "planned",
+   "label": "Planned"
+  },
+  {
+   "list_name": "update_status",
+   "name": "ready",
+   "label": "Ready to activate"
+  },
+  {
+   "list_name": "update_status",
+   "name": "active",
+   "label": "Active"
+  },
+  {
+   "list_name": "update_status",
+   "name": "suspended",
+   "label": "Temporarily suspended"
+  },
+  {
+   "list_name": "update_status",
+   "name": "completed",
+   "label": "Completed"
+  },
+  {
+   "list_name": "populations",
+   "name": "women_girls",
+   "label": "Women and girls"
+  },
+  {
+   "list_name": "populations",
+   "name": "children",
+   "label": "Children and adolescents"
+  },
+  {
+   "list_name": "populations",
+   "name": "older",
+   "label": "Older people"
+  },
+  {
+   "list_name": "populations",
+   "name": "disabilities",
+   "label": "Persons with disabilities"
+  },
+  {
+   "list_name": "populations",
+   "name": "displaced",
+   "label": "Refugees, migrants, returnees or internally displaced persons"
+  },
+  {
+   "list_name": "populations",
+   "name": "minorities",
+   "label": "Ethnic, linguistic or religious minorities"
+  },
+  {
+   "list_name": "populations",
+   "name": "indigenous",
+   "label": "Indigenous communities"
+  },
+  {
+   "list_name": "populations",
+   "name": "informal_settlements",
+   "label": "People living in informal settlements"
+  },
+  {
+   "list_name": "populations",
+   "name": "rural_remote",
+   "label": "Rural, remote or nomadic communities"
+  },
+  {
+   "list_name": "populations",
+   "name": "poverty",
+   "label": "People living in poverty"
+  },
+  {
+   "list_name": "populations",
+   "name": "patients",
+   "label": "Patients, survivors and caregivers"
+  },
+  {
+   "list_name": "populations",
+   "name": "health_workers",
+   "label": "Health workers, community health workers and volunteers"
+  },
+  {
+   "list_name": "populations",
+   "name": "disease_affected",
+   "label": "People affected by particular diseases or health conditions"
+  },
+  {
+   "list_name": "populations",
+   "name": "other",
+   "label": "Other"
+  },
+  {
+   "list_name": "exchange",
+   "name": "community_access",
+   "label": "Community access and mobilization"
+  },
+  {
+   "list_name": "exchange",
+   "name": "technical",
+   "label": "Specialist technical expertise"
+  },
+  {
+   "list_name": "exchange",
+   "name": "local_knowledge",
+   "label": "Local knowledge or language capacity"
+  },
+  {
+   "list_name": "exchange",
+   "name": "training",
+   "label": "Training or mentoring"
+  },
+  {
+   "list_name": "exchange",
+   "name": "data",
+   "label": "Data, research or community insights"
+  },
+  {
+   "list_name": "exchange",
+   "name": "staff",
+   "label": "Staff or volunteers"
+  },
+  {
+   "list_name": "exchange",
+   "name": "supplies",
+   "label": "Supplies or equipment"
+  },
+  {
+   "list_name": "exchange",
+   "name": "logistics",
+   "label": "Logistics or transport"
+  },
+  {
+   "list_name": "exchange",
+   "name": "referral",
+   "label": "Referral partnerships"
+  },
+  {
+   "list_name": "exchange",
+   "name": "communications",
+   "label": "Communications channels"
+  },
+  {
+   "list_name": "exchange",
+   "name": "advocacy",
+   "label": "Advocacy or government engagement"
+  },
+  {
+   "list_name": "exchange",
+   "name": "convening",
+   "label": "Coordination or convening"
+  },
+  {
+   "list_name": "exchange",
+   "name": "funding",
+   "label": "Funding or grant partnership"
+  },
+  {
+   "list_name": "exchange",
+   "name": "proposals",
+   "label": "Proposal development"
+  },
+  {
+   "list_name": "exchange",
+   "name": "mel",
+   "label": "Monitoring and evaluation"
+  },
+  {
+   "list_name": "exchange",
+   "name": "other",
+   "label": "Other"
+  }
+ ]
+}

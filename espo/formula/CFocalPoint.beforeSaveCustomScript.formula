@@ -5,3 +5,28 @@ if (activityId && (entity\isNew() || entity\isAttributeChanged('activityId'))) {
         teamsIds = $teams;
     }
 }
+
+// Workflow F: or its CSO's (a row of the profile's FOCAL_POINTS repeat): in its teams, and
+// in the CSO's shared contacts when the CSO said yes to sharing them
+if (csoId && (entity\isNew() || entity\isAttributeChanged('csoId'))) {
+    teamsIds = record\attribute('CCso', csoId, 'teamsIds');
+}
+if (csoId && current && record\attribute('CCso', csoId, 'sharing') == 'yes'
+        && (entity\isNew() || entity\isAttributeChanged('name') || entity\isAttributeChanged('jobTitle')
+            || entity\isAttributeChanged('emailAddress') || entity\isAttributeChanged('phone'))) {
+    $text = string\concatenate(name, ifThenElse(jobTitle, string\concatenate(' (', jobTitle, ')'), ''),
+        ifThenElse(emailAddress, string\concatenate(', ', emailAddress), ''), ifThenElse(phone, string\concatenate(', ', phone), ''));
+    $fps = record\findMany('CFocalPoint', 50, 'createdAt', 'asc', 'csoId=', csoId, 'current=', true);
+    $i = 0;
+    while ($i < array\length($fps)) {
+        $f = array\at($fps, $i);
+        if ($f != id) {
+            $text = string\concatenate($text, '\n', record\attribute('CFocalPoint', $f, 'name'),
+                ifThenElse(record\attribute('CFocalPoint', $f, 'jobTitle'), string\concatenate(' (', record\attribute('CFocalPoint', $f, 'jobTitle'), ')'), ''),
+                ifThenElse(record\attribute('CFocalPoint', $f, 'emailAddress'), string\concatenate(', ', record\attribute('CFocalPoint', $f, 'emailAddress')), ''),
+                ifThenElse(record\attribute('CFocalPoint', $f, 'phone'), string\concatenate(', ', record\attribute('CFocalPoint', $f, 'phone')), ''));
+        }
+        $i = $i + 1;
+    }
+    record\update('CCso', csoId, 'sharedContact', $text);
+}

@@ -1,0 +1,413 @@
+[
+  {
+    "test": "C1",
+    "check": "a profile makes one CSO, with its CSO- code and a 16-character key, the key given not kept",
+    "ok": true,
+    "detail": {
+      "code": "CSO-58VR",
+      "keyGiven": null,
+      "count": null
+    }
+  },
+  {
+    "test": "C1",
+    "check": "its answers: name, type, registered in Kenya, lists as codes, profile date today",
+    "ok": true,
+    "detail": {
+      "name": "CSOT 303614 Amani",
+      "csoType": "national_ngo",
+      "countryRegistered": "KEN",
+      "roles": [
+        "risk_communication",
+        "wash"
+      ],
+      "offers": [
+        "training",
+        "logistics"
+      ],
+      "lastProfile": "2026-11-10"
+    }
+  },
+  {
+    "test": "C1",
+    "check": "in CSO: Kenya only (its country), listed",
+    "ok": true,
+    "detail": {
+      "teamsNames": {
+        "6af2e5e8eed95f6f3": "CSO: Kenya"
+      },
+      "listed": true,
+      "countries": [
+        "KEN"
+      ]
+    }
+  },
+  {
+    "test": "C1",
+    "check": "two places, each linked to its admin area (the deepest P-code given)",
+    "ok": true,
+    "detail": [
+      "Kamukunji",
+      "Mombasa"
+    ]
+  },
+  {
+    "test": "C1",
+    "check": "a place has its P-codes up its parents, its country, its name, and is current",
+    "ok": true,
+    "detail": {
+      "pcode1": "KE047",
+      "pcode2": "KE047288",
+      "country": "KEN",
+      "name": "Kamukunji, Nairobi",
+      "current": true,
+      "pcodeStatus": "given"
+    }
+  },
+  {
+    "test": "C1",
+    "check": "a place has the CSO's teams and what the feeds read of it (name, type, settings, roles, listed)",
+    "ok": true,
+    "detail": {
+      "teamsNames": {
+        "6af2e5e8eed95f6f3": "CSO: Kenya"
+      },
+      "csoName": "CSOT 303614 Amani",
+      "csoType": "national_ngo",
+      "settings": [
+        "informal_settlements",
+        "rural"
+      ],
+      "listed": true
+    }
+  },
+  {
+    "test": "C1",
+    "check": "two focal points, current, in its team, position as job title",
+    "ok": true,
+    "detail": [
+      [
+        "Baraka Second",
+        {
+          "6af2e5e8eed95f6f3": "CSO: Kenya"
+        }
+      ],
+      [
+        "Amina Focal",
+        {
+          "6af2e5e8eed95f6f3": "CSO: Kenya"
+        }
+      ]
+    ]
+  },
+  {
+    "test": "C1",
+    "check": "it said yes to sharing: both focal points in its shared contact",
+    "ok": true,
+    "detail": "Baraka Second (Director), baraka-303614@example.org, +254 712 000000\nAmina Focal (Coordinator), amina-303614@example.org, +254 712 000000"
+  },
+  {
+    "test": "C2",
+    "check": "profile only: still listed, no shared contact",
+    "ok": true,
+    "detail": {
+      "listed": true,
+      "sharedContact": null
+    }
+  },
+  {
+    "test": "C2",
+    "check": "no: not listed, and its places say so (what the feeds filter on)",
+    "ok": true,
+    "detail": [
+      false,
+      false
+    ]
+  },
+  {
+    "test": "C2",
+    "check": "yes again: listed, its contacts shared again",
+    "ok": true,
+    "detail": {
+      "listed": true,
+      "sharedContact": "Amina Focal (Coordinator), amina-303614@example.org, +254 712 000000\nBaraka Second (Director), baraka-303614@example.org, +254 712 000000"
+    }
+  },
+  {
+    "test": "C2",
+    "check": "its key can't be set through the API (read-only)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "C3",
+    "check": "sent again with its code and key: the same CSO, updated",
+    "ok": true,
+    "detail": [
+      1,
+      [
+        "risk_communication",
+        "mhpss"
+      ]
+    ]
+  },
+  {
+    "test": "C3",
+    "check": "its places now the new submission's: the old ones no longer current",
+    "ok": true,
+    "detail": [
+      [
+        "Starehe, Nairobi",
+        true
+      ],
+      [
+        "Mombasa",
+        false
+      ],
+      [
+        "Kamukunji, Nairobi",
+        false
+      ]
+    ]
+  },
+  {
+    "test": "C3",
+    "check": "the new place has the new roles (copied when made)",
+    "ok": true,
+    "detail": [
+      "risk_communication",
+      "mhpss"
+    ]
+  },
+  {
+    "test": "C3",
+    "check": "an old place got the CSO's new roles too (the CSO's formula keeps its places' copies)",
+    "ok": true,
+    "detail": [
+      "risk_communication",
+      "mhpss"
+    ]
+  },
+  {
+    "test": "C3",
+    "check": "its focal point now the new one only, and its shared contact",
+    "ok": true,
+    "detail": [
+      [
+        "Chege New"
+      ],
+      "Chege New (Officer), chege-303614@example.org, +254 712 000000"
+    ]
+  },
+  {
+    "test": "C3",
+    "check": "sent with the code but no key: refused, recorded with its reason, the CSO unchanged",
+    "ok": true,
+    "detail": "aa0dadda8dec9413abfe0e  submission 3  since 2026-11-10T09:43:34Z  1 attempt(s), next 2026-11-10T09:44:34Z\n    PUT /CCso/6af2e6f986dc06a74: HTTP 400 This profile came without its CSO's key: send it again from the link in the CSO's email.\n"
+  },
+  {
+    "test": "C4",
+    "check": "a Ugandan CSO (the generic form): in CSO: Uganda",
+    "ok": true,
+    "detail": {
+      "6af2e5eae87d6de6b": "CSO: Uganda"
+    }
+  },
+  {
+    "test": "C4",
+    "check": "a Kenyan CSO also working in Uganda: in both countries' teams",
+    "ok": true,
+    "detail": {
+      "teamsNames": {
+        "6af2e5e8eed95f6f3": "CSO: Kenya",
+        "6af2e5eae87d6de6b": "CSO: Uganda"
+      },
+      "countries": [
+        "UGA",
+        "KEN"
+      ]
+    }
+  },
+  {
+    "test": "C4",
+    "check": "a CSO in a country with no team: CSO: Unassigned",
+    "ok": true,
+    "detail": {
+      "6af2e5ec6d72390b8": "CSO: Unassigned"
+    }
+  },
+  {
+    "test": "C4",
+    "check": "the generic form's pin: latitude and longitude, P-coding pending, no area yet",
+    "ok": true,
+    "detail": {
+      "latitude": 0.3476,
+      "longitude": 32.5825,
+      "pcodeStatus": "pending",
+      "adminAreaId": null,
+      "country": "UGA"
+    }
+  },
+  {
+    "test": "C5",
+    "check": "the geocoder finds the pin's areas (Kampala), deeper than EspoCRM has (admin3)",
+    "ok": true,
+    "detail": "Geocode: KCCA, Kampala, Central (UG1, UG1008, UG100801)."
+  },
+  {
+    "test": "C5",
+    "check": "P-coded: linked to the deepest area EspoCRM has (the district), named after it",
+    "ok": true,
+    "detail": {
+      "adminAreaName": "Kampala",
+      "pcodeStatus": "done",
+      "name": "Kampala, Central"
+    }
+  },
+  {
+    "test": "C5",
+    "check": "a pin where the geocoder has no boundaries (Paris): outside",
+    "ok": true,
+    "detail": "Geocode: 48.85, 2.35 is outside the known boundaries of FRA."
+  },
+  {
+    "test": "C6",
+    "check": "cso-kenya: Kenya's CSOs (Amani, Pamoja), not Uganda's or the unassigned",
+    "ok": true,
+    "detail": [
+      "CSOT 303614 Amani",
+      "CSOT 303614 Pamoja"
+    ]
+  },
+  {
+    "test": "C6",
+    "check": "cso-uganda: Uganda's (Mto, Pamoja), not Kenya's",
+    "ok": true,
+    "detail": [
+      "CSOT 303614 Mto",
+      "CSOT 303614 Pamoja"
+    ]
+  },
+  {
+    "test": "C6",
+    "check": "cso-kenya: reads a Kenyan CSO's focal points; cso-uganda doesn't",
+    "ok": true,
+    "detail": [
+      "Amina Focal",
+      "Baraka Second",
+      "Chege New"
+    ]
+  },
+  {
+    "test": "C6",
+    "check": "cso-uganda: opening a Kenyan CSO refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "C6",
+    "check": "a 5W cluster viewer: no CSOs at all",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "C7",
+    "check": "an update with the CSO's code and key: its CSO, key ok, counted, in its team, the key not kept",
+    "ok": true,
+    "detail": {
+      "csoName": "CSOT 303614 Amani",
+      "keyCheck": "ok",
+      "current": true,
+      "teamsNames": {
+        "6af2e5e8eed95f6f3": "CSO: Kenya"
+      },
+      "keyGiven": null,
+      "count": null
+    }
+  },
+  {
+    "test": "C7",
+    "check": "its place: area, P-codes, status, and no data checks (a place and roles in the profile)",
+    "ok": true,
+    "detail": {
+      "pcode1": "KE047",
+      "pcode2": "KE047289",
+      "status": "active",
+      "dataChecks": []
+    }
+  },
+  {
+    "test": "C7",
+    "check": "a newer update in the same place: it counts, the older is superseded",
+    "ok": true,
+    "detail": [
+      true,
+      true,
+      false
+    ]
+  },
+  {
+    "test": "C7",
+    "check": "without the key: kept, flagged, not counted; with a wrong one too; neither supersedes",
+    "ok": true,
+    "detail": {
+      "nokey": "missing",
+      "wrong": "wrong",
+      "second": true
+    }
+  },
+  {
+    "test": "C7",
+    "check": "cso-kenya confirms the one without a key: it counts, and supersedes the older",
+    "ok": true,
+    "detail": [
+      true,
+      true
+    ]
+  },
+  {
+    "test": "C7",
+    "check": "a county not in the CSO's places, a role not in its profile: flagged",
+    "ok": true,
+    "detail": [
+      "not_in_presence",
+      "role_not_in_profile"
+    ]
+  },
+  {
+    "test": "C8",
+    "check": "a pin to P-code, counted, in CSO: Uganda",
+    "ok": true,
+    "detail": {
+      "pcodeStatus": "pending",
+      "current": true,
+      "teamsNames": {
+        "6af2e5eae87d6de6b": "CSO: Uganda"
+      },
+      "latitude": 0.35,
+      "count": null
+    }
+  },
+  {
+    "test": "C8",
+    "check": "P-coded: its area, and named after the CSO and the place",
+    "ok": true,
+    "detail": {
+      "adminAreaName": "Buikwe",
+      "name": "CSOT 303614 Mto: Buikwe"
+    }
+  },
+  {
+    "test": "C9",
+    "check": "areas.csv on the Kenya forms: Kenya's country, 47 counties and 290 sub-counties, nothing else",
+    "ok": true,
+    "detail": [
+      338,
+      [
+        "admin0",
+        "admin1",
+        "admin2"
+      ]
+    ]
+  }
+]

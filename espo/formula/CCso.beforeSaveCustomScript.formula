@@ -1,0 +1,115 @@
+// Workflow F (plans/cso-mapping-plan.md): a CSO's profile. Its key, for the links it is
+// emailed (the profile's and the update form's): given once, 16 characters. The key a
+// submission came with is checked (API script, updates) and never kept
+if (!updateKey) {
+    $alphabet = '23456789ABCDEFGHJKMNPQRSTVWXYZabcdefghjkmnpqrstvwxyz';
+    $c = '';
+    $k = 0;
+    while ($k < 16) {
+        $c = string\concatenate($c, string\substring($alphabet, number\randomInt(0, 51), 1));
+        $k = $k + 1;
+    }
+    updateKey = $c;
+}
+keyGiven = null;
+
+// Sent again (a new submission): the profile's date is today, and the places and focal
+// points of the submission before are no longer current (the new one's rows follow).
+// Its countries start again from where it's registered and the others it named
+$resent = entity\isNew() || entity\isAttributeChanged('cKoboSubmissionUuid');
+if ($resent) {
+    lastProfile = datetime\today();
+    if (!entity\isNew()) {
+        $rows = record\findMany('CPresence', 500, 'createdAt', 'asc', 'csoId=', id, 'current=', true);
+        $i = 0;
+        while ($i < array\length($rows)) {
+            if (record\attribute('CPresence', array\at($rows, $i), 'cKoboSubmissionUuid') != cKoboSubmissionUuid) {
+                record\update('CPresence', array\at($rows, $i), 'current', false);
+            }
+            $i = $i + 1;
+        }
+        $rows = record\findMany('CFocalPoint', 50, 'createdAt', 'asc', 'csoId=', id, 'current=', true);
+        $i = 0;
+        while ($i < array\length($rows)) {
+            if (record\attribute('CFocalPoint', array\at($rows, $i), 'cKoboSubmissionUuid') != cKoboSubmissionUuid) {
+                record\update('CFocalPoint', array\at($rows, $i), 'current', false);
+            }
+            $i = $i + 1;
+        }
+    }
+    $countries = ifThenElse(otherCountries, otherCountries, list());
+    if (countryRegistered && !array\includes($countries, countryRegistered)) {
+        $countries = array\push($countries, countryRegistered);
+    }
+    countries = $countries;
+}
+
+// Who else sees it: listed in the directory and the matching unless it said no, and its
+// focal points' contacts there only if it said yes (its focal points' formula keeps them)
+listed = sharing == 'yes' || sharing == 'profile_only';
+if ($resent) {
+    sharedContact = null;
+} else if (entity\isAttributeChanged('sharing')) {
+    $text = '';
+    if (sharing == 'yes') {
+        $fps = record\findMany('CFocalPoint', 50, 'createdAt', 'asc', 'csoId=', id, 'current=', true);
+        $i = 0;
+        while ($i < array\length($fps)) {
+            $f = array\at($fps, $i);
+            $text = string\concatenate($text, ifThenElse($text, '\n', ''), record\attribute('CFocalPoint', $f, 'name'),
+                ifThenElse(record\attribute('CFocalPoint', $f, 'jobTitle'), string\concatenate(' (', record\attribute('CFocalPoint', $f, 'jobTitle'), ')'), ''),
+                ifThenElse(record\attribute('CFocalPoint', $f, 'emailAddress'), string\concatenate(', ', record\attribute('CFocalPoint', $f, 'emailAddress')), ''),
+                ifThenElse(record\attribute('CFocalPoint', $f, 'phone'), string\concatenate(', ', record\attribute('CFocalPoint', $f, 'phone')), ''));
+            $i = $i + 1;
+        }
+    }
+    sharedContact = ifThenElse($text, $text, null);
+}
+
+// Its teams: each of its countries' ("CSO: " and the country's admin0 name, e.g. CSO:
+// Kenya), or CSO: Unassigned when none of them has a team. Its places, focal points and
+// updates follow, with what the dashboard's feeds read of it
+if (entity\isNew() || entity\isAttributeChanged('countries')) {
+    $teams = list();
+    $i = 0;
+    while ($i < array\length(countries)) {
+        $a0 = record\findOne('CAdminArea', 'createdAt', 'asc', 'country=', array\at(countries, $i), 'level=', 'admin0');
+        if ($a0) {
+            $t = record\findOne('Team', 'createdAt', 'asc', 'name=', string\concatenate('CSO: ', record\attribute('CAdminArea', $a0, 'name')));
+            if ($t && !array\includes($teams, $t)) {
+                $teams = array\push($teams, $t);
+            }
+        }
+        $i = $i + 1;
+    }
+    if (array\length($teams) == 0) {
+        $t = record\findOne('Team', 'createdAt', 'asc', 'name=', 'CSO: Unassigned');
+        if ($t) {
+            $teams = list($t);
+        }
+    }
+    teamsIds = $teams;
+}
+if (!entity\isNew() && (entity\isAttributeChanged('teamsIds') || entity\isAttributeChanged('name') || entity\isAttributeChanged('csoType')
+        || entity\isAttributeChanged('settings') || entity\isAttributeChanged('populations') || entity\isAttributeChanged('roles')
+        || entity\isAttributeChanged('listed'))) {
+    $rows = record\findMany('CPresence', 500, 'createdAt', 'asc', 'csoId=', id);
+    $i = 0;
+    while ($i < array\length($rows)) {
+        record\update('CPresence', array\at($rows, $i), 'teamsIds', teamsIds, 'csoType', csoType,
+            'settings', settings, 'populations', populations, 'roles', roles, 'listed', listed);
+        $i = $i + 1;
+    }
+    $rows = record\findMany('CCsoUpdate', 1000, 'createdAt', 'asc', 'csoId=', id);
+    $i = 0;
+    while ($i < array\length($rows)) {
+        record\update('CCsoUpdate', array\at($rows, $i), 'teamsIds', teamsIds, 'csoType', csoType, 'listed', listed);
+        $i = $i + 1;
+    }
+    $rows = record\findMany('CFocalPoint', 50, 'createdAt', 'asc', 'csoId=', id);
+    $i = 0;
+    while ($i < array\length($rows)) {
+        record\update('CFocalPoint', array\at($rows, $i), 'teamsIds', teamsIds);
+        $i = $i + 1;
+    }
+}

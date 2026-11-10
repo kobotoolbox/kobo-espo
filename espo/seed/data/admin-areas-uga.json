@@ -1,0 +1,982 @@
+[
+ {
+  "name": "Uganda",
+  "pcode": "UG",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "UGA"
+ },
+ {
+  "name": "Central",
+  "pcode": "UG1",
+  "level": "admin1",
+  "parentPcode": "UG",
+  "country": "UGA"
+ },
+ {
+  "name": "Eastern",
+  "pcode": "UG2",
+  "level": "admin1",
+  "parentPcode": "UG",
+  "country": "UGA"
+ },
+ {
+  "name": "Northern",
+  "pcode": "UG3",
+  "level": "admin1",
+  "parentPcode": "UG",
+  "country": "UGA"
+ },
+ {
+  "name": "Western",
+  "pcode": "UG4",
+  "level": "admin1",
+  "parentPcode": "UG",
+  "country": "UGA"
+ },
+ {
+  "name": "Buikwe",
+  "pcode": "UG1001",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Bukomansimbi",
+  "pcode": "UG1002",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Butambala",
+  "pcode": "UG1003",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Buvuma",
+  "pcode": "UG1004",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Gomba",
+  "pcode": "UG1005",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Kalangala",
+  "pcode": "UG1006",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Kalungu",
+  "pcode": "UG1007",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Kampala",
+  "pcode": "UG1008",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Kassanda",
+  "pcode": "UG1009",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Kayunga",
+  "pcode": "UG1010",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Kiboga",
+  "pcode": "UG1011",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Kyankwanzi",
+  "pcode": "UG1012",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Kyotera",
+  "pcode": "UG1013",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Luwero",
+  "pcode": "UG1014",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Lwengo",
+  "pcode": "UG1015",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Lyantonde",
+  "pcode": "UG1016",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Masaka",
+  "pcode": "UG1017",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Mityana",
+  "pcode": "UG1018",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Mpigi",
+  "pcode": "UG1019",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Mubende",
+  "pcode": "UG1020",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Mukono",
+  "pcode": "UG1021",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Nakaseke",
+  "pcode": "UG1022",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Nakasongola",
+  "pcode": "UG1023",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Rakai",
+  "pcode": "UG1024",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Ssembabule",
+  "pcode": "UG1025",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Wakiso",
+  "pcode": "UG1026",
+  "level": "admin2",
+  "parentPcode": "UG1",
+  "country": "UGA"
+ },
+ {
+  "name": "Amuria",
+  "pcode": "UG2027",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Budaka",
+  "pcode": "UG2028",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Bududa",
+  "pcode": "UG2029",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Bugiri",
+  "pcode": "UG2030",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Bugweri",
+  "pcode": "UG2031",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Bukedea",
+  "pcode": "UG2032",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Bukwo",
+  "pcode": "UG2033",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Bulambuli",
+  "pcode": "UG2034",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Busia",
+  "pcode": "UG2035",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Butaleja",
+  "pcode": "UG2036",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Butebo",
+  "pcode": "UG2037",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Buyende",
+  "pcode": "UG2038",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Iganga",
+  "pcode": "UG2039",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Jinja",
+  "pcode": "UG2040",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Kaberamaido",
+  "pcode": "UG2041",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Kalaki",
+  "pcode": "UG2042",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Kaliro",
+  "pcode": "UG2043",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Kamuli",
+  "pcode": "UG2044",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Kapchorwa",
+  "pcode": "UG2045",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Kapelebyong",
+  "pcode": "UG2046",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Katakwi",
+  "pcode": "UG2047",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Kibuku",
+  "pcode": "UG2048",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Kumi",
+  "pcode": "UG2049",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Kween",
+  "pcode": "UG2050",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Luuka",
+  "pcode": "UG2051",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Manafwa",
+  "pcode": "UG2052",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Mayuge",
+  "pcode": "UG2053",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Mbale",
+  "pcode": "UG2054",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Namayingo",
+  "pcode": "UG2055",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Namisindwa",
+  "pcode": "UG2056",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Namutumba",
+  "pcode": "UG2057",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Ngora",
+  "pcode": "UG2058",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Pallisa",
+  "pcode": "UG2059",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Serere",
+  "pcode": "UG2060",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Sironko",
+  "pcode": "UG2061",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Soroti",
+  "pcode": "UG2062",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Tororo",
+  "pcode": "UG2063",
+  "level": "admin2",
+  "parentPcode": "UG2",
+  "country": "UGA"
+ },
+ {
+  "name": "Abim",
+  "pcode": "UG3064",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Adjumani",
+  "pcode": "UG3065",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Agago",
+  "pcode": "UG3066",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Alebtong",
+  "pcode": "UG3067",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Amolatar",
+  "pcode": "UG3068",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Amudat",
+  "pcode": "UG3069",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Amuru",
+  "pcode": "UG3070",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Apac",
+  "pcode": "UG3071",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Arua",
+  "pcode": "UG3072",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Dokolo",
+  "pcode": "UG3073",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Gulu",
+  "pcode": "UG3074",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Kaabong",
+  "pcode": "UG3075",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Karenga",
+  "pcode": "UG3076",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Kitgum",
+  "pcode": "UG3077",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Koboko",
+  "pcode": "UG3078",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Kole",
+  "pcode": "UG3079",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Kotido",
+  "pcode": "UG3080",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Kwania",
+  "pcode": "UG3081",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Lamwo",
+  "pcode": "UG3082",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Lira",
+  "pcode": "UG3083",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Madi Okollo",
+  "pcode": "UG3084",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Maracha",
+  "pcode": "UG3085",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Moroto",
+  "pcode": "UG3086",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Moyo",
+  "pcode": "UG3087",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Nabilatuk",
+  "pcode": "UG3088",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Nakapiripirit",
+  "pcode": "UG3089",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Napak",
+  "pcode": "UG3090",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Nebbi",
+  "pcode": "UG3091",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Nwoya",
+  "pcode": "UG3092",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Obongi",
+  "pcode": "UG3093",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Omoro",
+  "pcode": "UG3094",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Otuke",
+  "pcode": "UG3095",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Oyam",
+  "pcode": "UG3096",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Pader",
+  "pcode": "UG3097",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Pakwach",
+  "pcode": "UG3098",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Yumbe",
+  "pcode": "UG3099",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Zombo",
+  "pcode": "UG3100",
+  "level": "admin2",
+  "parentPcode": "UG3",
+  "country": "UGA"
+ },
+ {
+  "name": "Buhweju",
+  "pcode": "UG4101",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Buliisa",
+  "pcode": "UG4102",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Bundibugyo",
+  "pcode": "UG4103",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Bunyangabu",
+  "pcode": "UG4104",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Bushenyi",
+  "pcode": "UG4105",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Hoima",
+  "pcode": "UG4106",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Ibanda",
+  "pcode": "UG4107",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Isingiro",
+  "pcode": "UG4108",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kabale",
+  "pcode": "UG4109",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kabarole",
+  "pcode": "UG4110",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kagadi",
+  "pcode": "UG4111",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kakumiro",
+  "pcode": "UG4112",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kamwenge",
+  "pcode": "UG4113",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kanungu",
+  "pcode": "UG4114",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kasese",
+  "pcode": "UG4115",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kazo",
+  "pcode": "UG4116",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kibaale",
+  "pcode": "UG4117",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kikuube",
+  "pcode": "UG4118",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kiruhura",
+  "pcode": "UG4119",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kiryandongo",
+  "pcode": "UG4120",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kisoro",
+  "pcode": "UG4121",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kitagwenda",
+  "pcode": "UG4122",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kyegegwa",
+  "pcode": "UG4123",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Kyenjojo",
+  "pcode": "UG4124",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Masindi",
+  "pcode": "UG4125",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Mbarara",
+  "pcode": "UG4126",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Mitooma",
+  "pcode": "UG4127",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Ntoroko",
+  "pcode": "UG4128",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Ntungamo",
+  "pcode": "UG4129",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Rubanda",
+  "pcode": "UG4130",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Rubirizi",
+  "pcode": "UG4131",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Rukiga",
+  "pcode": "UG4132",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Rukungiri",
+  "pcode": "UG4133",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Rwampara",
+  "pcode": "UG4134",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ },
+ {
+  "name": "Sheema",
+  "pcode": "UG4135",
+  "level": "admin2",
+  "parentPcode": "UG4",
+  "country": "UGA"
+ }
+]

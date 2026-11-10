@@ -1,4 +1,4 @@
-"""Offline tests for the agents' code: sanctions matching, rules, schedules, checking model output.
+"""Offline tests for the agents' code: sanctions matching, geocoding, rules, schedules, checking model output.
 
     python3 -I agents/test_units.py
 """
@@ -32,6 +32,44 @@ class Sanctions(unittest.TestCase):
 
     def test_unrelated_is_clear(self):
         self.assertEqual(self.level(accountName='Clear Water Partners', leadership='Jane Example\nAmina Diallo'), 'clear')
+
+
+class Geocode(unittest.TestCase):
+    """The geocode tool against a stand-in for the geocoder's API (its responses' shape)."""
+
+    def setUp(self):
+        self.calls, self.real = [], tools.geocoder
+        tools._iso2.clear()
+
+        def fake(path, body=None):
+            self.calls.append((path, body))
+            if path == '/countries':
+                return [{'code': 'KE', 'iso3': 'KEN'}, {'code': 'UG', 'iso3': 'UGA'}]
+            if self.down:
+                raise tools.urllib.error.URLError('down')
+            if body['latitude'] > 40:
+                return {'success': False, 'error': 'Point outside known boundaries'}
+            return {'success': True, 'adm0_pcode': 'KE', 'adm1_pcode': 'KE047', 'adm1_name': 'Nairobi',
+                    'adm2_pcode': 'KE047288', 'adm2_name': 'Kamukunji'}
+        self.down = False
+        tools.geocoder = fake
+
+    def tearDown(self):
+        tools.geocoder = self.real
+
+    def test_pcodes_of_each_level(self):
+        values, line = tools.geocode({'latitude': -1.28, 'longitude': 36.84, 'country': 'KEN'})
+        self.assertEqual(values, {'pcode1': 'KE047', 'pcode2': 'KE047288', 'pcodeStatus': 'done'})
+        self.assertEqual(self.calls[-1][1]['country'], 'KE')  # ISO3 to the geocoder's ISO2
+        self.assertIn('Kamukunji, Nairobi', line)
+
+    def test_outside(self):
+        self.assertEqual(tools.geocode({'latitude': 48.8, 'longitude': 2.3, 'country': 'KEN'})[0], {'pcodeStatus': 'outside'})
+
+    def test_down_or_no_pin_writes_nothing(self):
+        self.down = True
+        self.assertEqual(tools.geocode({'latitude': -1.28, 'longitude': 36.84, 'country': 'KEN'})[0], {})
+        self.assertEqual(tools.geocode({'country': 'KEN'})[0], {})
 
 
 class Rules(unittest.TestCase):

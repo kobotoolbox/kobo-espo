@@ -29,7 +29,8 @@ from runner import Runner, key_name, where  # noqa: E402
 SECRETS = ROOT / 'secrets' / 'agents.secrets'
 TEST_SITE = 'https://agents.test.invalid'  # marks the test's accounts
 # Not the example agents' teams (Response: Test EQ 1, Grants review); staff-1 leads, staff-2 reviews
-TEST_TEAMS = {'CSite': 'Response: Test EQ 2', 'CApplication': 'Internal Kobo', 'CResponder': 'Response: Test EQ 2'}
+TEST_TEAMS = {'CSite': 'Response: Test EQ 2', 'CApplication': 'Internal Kobo', 'CResponder': 'Response: Test EQ 2',
+              'CPresence': 'Internal Kobo', 'CCsoUpdate': 'Internal Kobo'}  # (the CSO examples work in the CSO teams)
 results = []
 
 

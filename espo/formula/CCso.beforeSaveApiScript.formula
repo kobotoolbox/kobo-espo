@@ -1,0 +1,5 @@
+// Workflow F: a profile sent again comes with its CSO's key (the link in its email), so a
+// code alone doesn't change a CSO. Its own screens (no new submission) are not checked
+if (!entity\isNew() && entity\isAttributeChanged('cKoboSubmissionUuid') && keyGiven != updateKey) {
+    recordService\throwBadRequest('This profile came without its CSO\'s key: send it again from the link in the CSO\'s email.');
+}

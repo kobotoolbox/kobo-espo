@@ -1,0 +1,60 @@
+// Workflow F: a place where a CSO works (a row of its profile's PRESENCE repeat).
+// From a pin: the area of the deepest P-code the P-coding step found
+// (the deepest level EspoCRM has: a country's areas may be loaded to fewer levels than the
+// geocoder knows)
+if (!adminAreaId && pcodeStatus == 'done') {
+    if (pcode3) {
+        adminAreaId = record\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', pcode3);
+    }
+    if (!adminAreaId && pcode2) {
+        adminAreaId = record\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', pcode2);
+    }
+    if (!adminAreaId && pcode1) {
+        adminAreaId = record\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', pcode1);
+    }
+}
+// The area's P-codes up its parents (for the feeds and the matching), its country, and
+// the place's name ("Kamukunji, Nairobi")
+if (adminAreaId && (entity\isNew() || entity\isAttributeChanged('adminAreaId'))) {
+    $a = adminAreaId;
+    $n = 0;
+    while ($a && $n < 5) {
+        $level = record\attribute('CAdminArea', $a, 'level');
+        if ($level == 'admin1') {
+            pcode1 = record\attribute('CAdminArea', $a, 'pcode');
+        } else if ($level == 'admin2') {
+            pcode2 = record\attribute('CAdminArea', $a, 'pcode');
+        } else if ($level == 'admin3') {
+            pcode3 = record\attribute('CAdminArea', $a, 'pcode');
+        }
+        $parent = record\attribute('CAdminArea', $a, 'parentPcode');
+        $a = ifThenElse($level != 'admin0' && $parent, record\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', $parent), null);
+        $n = $n + 1;
+    }
+    country = record\attribute('CAdminArea', adminAreaId, 'country');
+    $up = record\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', record\attribute('CAdminArea', adminAreaId, 'parentPcode'));
+    name = string\concatenate(record\attribute('CAdminArea', adminAreaId, 'name'),
+        ifThenElse($up && record\attribute('CAdminArea', $up, 'level') != 'admin0', string\concatenate(', ', record\attribute('CAdminArea', $up, 'name')), ''));
+    if (pcodeStatus != 'done') {
+        pcodeStatus = 'given';
+    }
+}
+// A pin not P-coded yet: the P-coding step's work
+if (!adminAreaId && latitude != null && !pcodeStatus) {
+    pcodeStatus = 'pending';
+}
+
+// Its CSO's: the CSO's countries take this one's (and so its team), and the row has its
+// teams and what the feeds read of it (a feed reads one entity)
+if (csoId && (entity\isNew() || entity\isAttributeChanged('csoId') || entity\isAttributeChanged('country'))) {
+    $countries = record\attribute('CCso', csoId, 'countries');
+    if (country && current && !array\includes($countries, country)) {
+        record\update('CCso', csoId, 'countries', array\push($countries, country));
+    }
+    teamsIds = record\attribute('CCso', csoId, 'teamsIds');
+    csoType = record\attribute('CCso', csoId, 'csoType');
+    settings = record\attribute('CCso', csoId, 'settings');
+    populations = record\attribute('CCso', csoId, 'populations');
+    roles = record\attribute('CCso', csoId, 'roles');
+    listed = record\attribute('CCso', csoId, 'listed');
+}

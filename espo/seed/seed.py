@@ -39,9 +39,15 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tests'))
 from lib import URL, Espo, admin, pw_key, secrets as read_secrets  # noqa: E402
 
+sys.path.insert(0, str(ROOT / 'agents'))
+import tools as agent_tools  # noqa: E402  (the code tools an agent may use: its Tools field's options)
+
 TEAMS = ['Internal Kobo', 'Project: Consortium A', 'Project: Consortium B',
          'Response: Test EQ 1', 'Response: Test EQ 2', 'Roster and volunteers', 'Grants review',
-         'Cluster: Test EQ 1 ETC', 'Cluster: Test EQ 1 WASH']
+         'Cluster: Test EQ 1 ETC', 'Cluster: Test EQ 1 WASH',
+         # Workflow F: a country's CSO coordinators ("CSO: " and the country's admin0 name, as
+         # the CSO formula finds them), and the CSOs in no country with a team
+         'CSO: Kenya', 'CSO: Uganda', 'CSO: Unassigned']
 
 # Workflow E (plans/workflow-e-5w-plan.md): the Hurricane Melissa 5W form's lists, with its
 # own codes (ref/, extracted to espo/seed/data/fivew-melissa.json), so its submissions and
@@ -73,6 +79,46 @@ ACTIVITY_CHECKS = {'completed_nobody_reached': 'Completed, nobody reached', 'no_
 LOCATION_CHECKS = {'reached_over_targeted': 'More reached than targeted',
                    'groups_over_total': "The groups add up to more than the total reached",
                    'group_parts_dont_add_up': "A group's women, men and children don't add up to its people"}
+
+
+# Workflow F (plans/cso-mapping-plan.md): the CSO mapping's lists, with codes, as its forms
+# have them (kobo/forms/cso.py reads the same file)
+CSO_LISTS = json.loads((ROOT / 'espo' / 'seed' / 'data' / 'cso-lists.json').read_text())
+UPDATE_CHECKS = {'key_missing': 'No key: check it is the CSO\'s', 'key_wrong': "Wrong key: not the CSO's link",
+                 'outside': 'The pin is outside the country', 'not_in_presence': "Not in the CSO's places",
+                 'role_not_in_profile': "A role not in the CSO's profile"}
+
+
+def cso_options(name):
+    v = CSO_LISTS[name]
+    return {c['code']: c['label'] for c in (v['choices'] if isinstance(v, dict) else v)}
+
+
+def cso_enum(name, label=None, many=False, **kw):
+    opts = cso_options(name)
+    return {'type': 'multiEnum' if many else 'enum', 'options': ([] if many else ['']) + list(opts),
+            'translatedOptions': opts, **({'label': label} if label else {}), **kw}
+
+
+def cso_place_fields():
+    """Where a CSO's place or update is: its area and P-codes, or a pin to P-code."""
+    return {
+        'country': cso_enum('countries', 'Country'),
+        'pcode1': {'type': 'varchar', 'label': 'P-code (admin1)', 'maxLength': 30},
+        'pcode2': {'type': 'varchar', 'label': 'P-code (admin2)', 'maxLength': 30},
+        'pcode3': {'type': 'varchar', 'label': 'P-code (admin3)', 'maxLength': 30},
+        'latitude': {'type': 'float', 'label': 'Latitude'},
+        'longitude': {'type': 'float', 'label': 'Longitude'},
+        'pcodeStatus': {'type': 'enum', 'label': 'P-coding', 'options': ['', 'given', 'pending', 'done', 'outside'],
+                        'translatedOptions': {'': '', 'given': 'Area given', 'pending': 'Pin, to P-code',
+                                              'done': 'P-coded from the pin', 'outside': 'Pin outside the boundaries'},
+                        'style': {'outside': 'danger', 'pending': 'warning'}},
+        # What the dashboard's feeds read of the CSO (a feed reads one entity): its formula's.
+        # Its name is the link's own (csoName)
+        'csoType': cso_enum('cso_types', 'CSO type', readOnly=True),
+        'listed': {'type': 'bool', 'label': 'Listed', 'readOnly': True,
+                   'tooltipText': 'In the directory and the matching (the CSO did not say no to sharing)'},
+    }
 
 
 def enum(name, label=None, blank=True, **kw):
@@ -206,13 +252,101 @@ ENTITIES = {
         'emailAddress': {'type': 'varchar', 'label': 'Email', 'maxLength': 150},
         'phone': {'type': 'varchar', 'maxLength': 40},
         'jobTitle': {'type': 'varchar', 'label': 'Job title'},
+        # Workflow F: a CSO's focal point is current until the CSO sends its profile again
+        'current': {'type': 'bool', 'label': 'Current', 'default': True},
     }},
     # Workflow E: the country's administrative areas (COD-AB P-codes), read by everyone
     'AdminArea': {'label': 'Admin area', 'labelPlural': 'Admin areas', 'iconClass': 'fas fa-map', 'stream': False, 'fields': {
         'pcode': {'type': 'varchar', 'label': 'P-code', 'required': True, 'maxLength': 30},
-        'level': {'type': 'enum', 'options': ['admin1', 'admin2', 'admin3'], 'default': 'admin1'},
+        'level': {'type': 'enum', 'options': ['admin0', 'admin1', 'admin2', 'admin3', 'admin4'], 'default': 'admin1'},
         'parentPcode': {'type': 'varchar', 'label': 'Parent P-code', 'maxLength': 30},
         'country': {'type': 'varchar', 'label': 'Country (ISO3)', 'maxLength': 3},
+    }},
+    # Workflow F: a civil society organisation's profile (the CSO profile form). Its own
+    # entity, not COrganisation (which everyone reads): a CSO that said no to sharing is
+    # seen by its countries' coordinators only (teams by country, formula)
+    'Cso': {'label': 'CSO', 'labelPlural': 'CSOs', 'iconClass': 'fas fa-people-carry', 'fields': {
+        'acronym': {'type': 'varchar', 'maxLength': 40},
+        'csoType': cso_enum('cso_types', 'Type'),
+        'csoTypeOther': {'type': 'varchar', 'label': 'Type (other)'},
+        'identities': cso_enum('identities', 'Also describes it', many=True),
+        'countryRegistered': cso_enum('countries', 'Registered in'),
+        'otherCountries': cso_enum('countries', 'Other countries', many=True),
+        'countries': cso_enum('countries', 'Countries', many=True, readOnly=True,
+                              tooltipText="Where it's registered, its places' countries and the others it named (formula): its teams"),
+        'levels': cso_enum('levels', 'Levels', many=True),
+        'sharing': cso_enum('sharing', 'Sharing', tooltipText='May its profile and contacts be shared with other CSOs and partners?'),
+        'settings': cso_enum('settings', 'Settings it reaches', many=True),
+        'settingsOther': {'type': 'varchar', 'label': 'Settings (other)'},
+        'populations': cso_enum('populations', 'Populations', many=True),
+        'populationsOther': {'type': 'varchar', 'label': 'Populations (other)'},
+        'stages': cso_enum('stages', 'Stages', many=True),
+        'roles': cso_enum('roles', 'Roles', many=True),
+        'rolesOther': {'type': 'varchar', 'label': 'Roles (other)'},
+        'rolesCholera': cso_enum('roles_cholera', 'Roles (cholera)', many=True),
+        'rolesCholeraOther': {'type': 'varchar', 'label': 'Roles, cholera (other)'},
+        'hazards': cso_enum('hazards', 'Hazards', many=True),
+        'hazardsOther': {'type': 'varchar', 'label': 'Hazards (other)'},
+        'rolesWithSupport': cso_enum('roles', 'Roles with support', many=True),
+        'rolesWithSupportOther': {'type': 'varchar', 'label': 'Roles with support (other)'},
+        'rolesWithSupportCholera': cso_enum('roles_cholera', 'Roles with support (cholera)', many=True),
+        'mechanisms': cso_enum('mechanisms', 'Coordination mechanisms', many=True),
+        'mechanismsOther': {'type': 'varchar', 'label': 'Mechanisms (other)'},
+        'offers': cso_enum('exchange', 'Offers', many=True),
+        'offersOther': {'type': 'varchar', 'label': 'Offers (other)'},
+        'seeks': cso_enum('exchange', 'Seeks', many=True),
+        'seeksOther': {'type': 'varchar', 'label': 'Seeks (other)'},
+        'connectVia': cso_enum('connect_via', 'Connect via', many=True),
+        'connectViaOther': {'type': 'varchar', 'label': 'Connect via (other)'},
+        'listed': {'type': 'bool', 'label': 'Listed', 'readOnly': True,
+                   'tooltipText': 'In the directory and the matching: it did not say no to sharing (formula)'},
+        'sharedContact': {'type': 'text', 'label': 'Shared contact', 'readOnly': True,
+                          'tooltipText': "Its focal points' contacts, only if it said yes to sharing them (formula): what the directory shows"},
+        'lastProfile': {'type': 'date', 'label': 'Profile sent', 'readOnly': True},
+        'updateKey': {'type': 'varchar', 'label': 'Key', 'maxLength': 16, 'readOnly': True,
+                      'tooltipText': "In the links it is emailed: a submission without it doesn't change this CSO or count as its update"},
+        'keyGiven': {'type': 'varchar', 'label': 'Key given', 'maxLength': 40,
+                     'tooltipText': 'The key a submission came with: checked, never kept'},
+        'verified': {'type': 'bool', 'label': 'Verified by WHO'},
+    }},
+    # Workflow F: a place where a CSO works (a row of the profile's PRESENCE repeat)
+    'Presence': {'label': 'CSO place', 'labelPlural': 'CSO places', 'iconClass': 'fas fa-map-marker-alt',
+                 'stream': False, 'fields': {
+        **cso_place_fields(),
+        'current': {'type': 'bool', 'label': 'Current', 'default': True,
+                    'tooltipText': "From the CSO's latest profile (formula)"},
+        'settings': cso_enum('settings', 'Settings it reaches', many=True, readOnly=True),
+        'populations': cso_enum('populations', 'Populations', many=True, readOnly=True),
+        'roles': cso_enum('roles', 'Roles', many=True, readOnly=True),
+    }},
+    # Workflow F: what a CSO is doing in one place now (the CSO update form)
+    'CsoUpdate': {'label': 'CSO update', 'labelPlural': 'CSO updates', 'iconClass': 'fas fa-bullhorn', 'fields': {
+        **cso_place_fields(),
+        'locality': {'type': 'varchar', 'label': 'Locality'},
+        'roles': cso_enum('roles', 'Roles', many=True),
+        'rolesOther': {'type': 'varchar', 'label': 'Roles (other)'},
+        'rolesCholera': cso_enum('roles_cholera', 'Roles (cholera)', many=True),
+        'rolesCholeraOther': {'type': 'varchar', 'label': 'Roles, cholera (other)'},
+        'status': cso_enum('update_status', 'Status', style={'active': 'success', 'ready': 'primary', 'suspended': 'warning'}),
+        'populations': cso_enum('populations', 'Populations', many=True),
+        'populationsOther': {'type': 'varchar', 'label': 'Populations (other)'},
+        'facility': {'type': 'varchar', 'label': 'Facility'},
+        'needs': cso_enum('exchange', 'Needs', many=True),
+        'needsOther': {'type': 'varchar', 'label': 'Needs (other)'},
+        'needsNote': {'type': 'text', 'label': 'About the need'},
+        'keyGiven': {'type': 'varchar', 'label': 'Key given', 'maxLength': 40,
+                     'tooltipText': 'The key the submission came with: checked, never kept'},
+        'keyCheck': {'type': 'enum', 'label': 'Key', 'options': ['', 'ok', 'missing', 'wrong', 'confirmed'],
+                     'translatedOptions': {'': '', 'ok': "The CSO's", 'missing': 'No key', 'wrong': 'Wrong key',
+                                           'confirmed': 'Confirmed by a coordinator'},
+                     'style': {'wrong': 'danger', 'missing': 'warning'},
+                     'tooltipText': 'Set "Confirmed" once you know the update is the CSO\'s: it then counts'},
+        'superseded': {'type': 'bool', 'label': 'Superseded', 'readOnly': True,
+                       'tooltipText': 'A newer update of the CSO in this place counts instead (formula)'},
+        'current': {'type': 'bool', 'label': 'Counts', 'readOnly': True,
+                    'tooltipText': "The CSO's (its key, or confirmed) and not superseded: what the maps read"},
+        'dataChecks': {'type': 'multiEnum', 'label': 'Data checks', 'options': list(UPDATE_CHECKS),
+                       'translatedOptions': UPDATE_CHECKS, 'tooltipText': 'What looks wrong (formula); fix it or explain in a note'},
     }},
     'Standard': {'labelPlural': 'Standards', 'iconClass': 'fas fa-book', 'fields': {
         'code': {'type': 'varchar', 'required': True},
@@ -227,9 +361,11 @@ ENTITIES = {
                  'style': {'active': 'success', 'dry_run': 'warning'}, 'audited': True},
         'runner': {'type': 'enum', 'options': ['droplet', 'tests'], 'default': 'droplet',
                    'tooltipText': 'Which runner runs it: the one on the server, or the tests.'},
-        'entity': {'type': 'enum', 'label': 'Works on', 'options': ['CApplication', 'CSite', 'Case', 'Task', 'CResponder', 'CActivity'],
+        'entity': {'type': 'enum', 'label': 'Works on', 'options': ['CApplication', 'CSite', 'Case', 'Task', 'CResponder', 'CActivity',
+                                                                     'CCso', 'CPresence', 'CCsoUpdate'],
                    'translatedOptions': {'CApplication': 'Application', 'CSite': 'Site', 'Case': 'Case', 'Task': 'Task',
-                                         'CResponder': 'Responding organisation', 'CActivity': 'Activity'}},
+                                         'CResponder': 'Responding organisation', 'CActivity': 'Activity',
+                                         'CCso': 'CSO', 'CPresence': 'CSO place', 'CCsoUpdate': 'CSO update'}},
         'trigger': {'type': 'enum', 'options': ['stage', 'change', 'schedule'],
                     'translatedOptions': {'stage': 'Records in a stage', 'change': 'When a field changes',
                                           'schedule': 'On a schedule'}},
@@ -249,7 +385,7 @@ ENTITIES = {
         'readFields': {'type': 'array', 'label': 'Reads', 'audited': True},
         'readNotes': {'type': 'bool', 'label': 'Reads the latest note'},
         'readAttachments': {'type': 'varchar', 'label': 'Reads the files in field'},
-        'tools': {'type': 'multiEnum', 'options': ['sanctions', 'registry', 'web_search', 'web_fetch'], 'audited': True},
+        'tools': {'type': 'multiEnum', 'options': [*agent_tools.TOOLS, *sorted(agent_tools.SERVER_TOOLS)], 'audited': True},
         'instructions': {'type': 'text', 'audited': True},
         'outputFields': {'type': 'array', 'label': 'Fills in', 'audited': True},
         'model': {'type': 'enum', 'options': ['', 'claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-5-5'],
@@ -332,7 +468,7 @@ ENTITIES = {
 # choice names (a list's name = "code", a template's link lookup = "code"). Sites have their
 # site code, standards their code, admin areas their P-code, cases EspoCRM's number
 CODES = {'CResponse': 'RSP', 'CProject': 'PRJ', 'CResponder': 'REG', 'CActivity': 'ACT', 'Task': 'TSK',
-         'CApplication': 'APP'}
+         'CApplication': 'APP', 'CCso': 'CSO'}
 CODE_FIELD = {'type': 'varchar', 'label': 'Code', 'maxLength': 12, 'readOnly': True,
               'tooltipText': 'Given by EspoCRM, e.g. PRJ-7K3Q: to name this record, and in Kobo lists'}
 
@@ -380,7 +516,15 @@ LINKS = [('CResponse', 'tasks', 'Task', 'response', 'oneToMany'),
          ('CAgentRoute', 'assignAgent', 'CAgent', 'routedHere', 'manyToOne'),  # hand over to another agent
          ('CAgent', 'runs', 'CAgentRun', 'agent', 'oneToMany'),
          ('CApplication', 'account', 'Account', 'applications', 'manyToOne'),
-         ('CApplication', 'contact', 'Contact', 'applications', 'manyToOne')]
+         ('CApplication', 'contact', 'Contact', 'applications', 'manyToOne'),
+         # Workflow F
+         ('CCso', 'presence', 'CPresence', 'cso', 'oneToMany'),
+         ('CCso', 'updates', 'CCsoUpdate', 'cso', 'oneToMany'),
+         ('CCso', 'focalPoints', 'CFocalPoint', 'cso', 'oneToMany'),
+         ('CCso', 'organisation', 'COrganisation', 'csoProfiles', 'manyToOne'),  # when it's in the 5W's list too
+         ('CPresence', 'adminArea', 'CAdminArea', 'csoPlaces', 'manyToOne'),
+         ('CCsoUpdate', 'adminArea', 'CAdminArea', 'csoUpdates', 'manyToOne'),
+         ('CCsoUpdate', 'response', 'CResponse', 'csoUpdates', 'manyToOne')]
 
 FIELDS = {
     'Case': {
@@ -487,9 +631,20 @@ ROLES = {
         'assignmentPermission': NO, 'userPermission': TEAM, 'mentionPermission': TEAM,
         'exportPermission': 'no', 'massUpdatePermission': 'no',
     },
+    # Workflow F: a country's CSO coordinators (WHO's country office): its CSOs, their places,
+    # focal points and updates, all of them whatever their sharing; tasks in the team
+    'CSO Coordinator': {
+        'data': {'CCso': access('yes', TEAM, TEAM), 'CPresence': access('yes', TEAM, TEAM),
+                 'CCsoUpdate': access('yes', TEAM, TEAM), 'CFocalPoint': access('yes', TEAM, TEAM),
+                 'Task': access('yes', TEAM, TEAM), 'CAdminArea': access('no', ALL, NO),
+                 'COrganisation': access('no', ALL, NO), 'CResponse': access('no', TEAM, NO),
+                 'Team': {'read': TEAM}, 'User': {'read': TEAM}},
+        'assignmentPermission': TEAM, 'userPermission': TEAM, 'mentionPermission': TEAM,
+        'exportPermission': 'no', 'massUpdatePermission': 'no',
+    },
 }
 
-INT, A, B, EQ1, EQ2, POOL, GRANTS, ETC, WASH = TEAMS
+INT, A, B, EQ1, EQ2, POOL, GRANTS, ETC, WASH, CSO_KEN, CSO_UGA, CSO_NONE = TEAMS
 # (username, name, role, teams). Response 1 only: roster-1, volunteer-2; Response 2 only:
 # volunteer-1; both: roster-2. Cluster projects of Response 1: ETC (lead, partner), WASH (viewer)
 USERS = [
@@ -505,6 +660,8 @@ USERS = [
     ('cluster-lead', 'Cleo Lead', 'Cluster Lead', [ETC]),
     ('cluster-partner', 'Cai Partner', 'Cluster Partner', [ETC]),
     ('cluster-viewer', 'Vera Viewer', 'Cluster Viewer', [WASH]),
+    ('cso-kenya', 'Kendi Coordinator', 'CSO Coordinator', [CSO_KEN]),
+    ('cso-uganda', 'Ugo Coordinator', 'CSO Coordinator', [CSO_UGA]),
 ]
 
 
@@ -679,6 +836,22 @@ def ensure_layouts(espo):
     ensure_layout_fields(espo, 'CFocalPoint', ['activity', 'emailAddress', 'phone', 'jobTitle'])
     ensure_layout_fields(espo, 'COrganisation', ['code', 'orgType'])
     ensure_layout_fields(espo, 'CAdminArea', ['pcode', 'level', 'parentPcode', 'country'])
+    ensure_layout_fields(espo, 'CCso', ['acronym', 'csoType', 'csoTypeOther', 'identities', 'countryRegistered', 'otherCountries',
+                                        'countries', 'levels', 'sharing', 'listed', 'sharedContact', 'lastProfile', 'verified',
+                                        'organisation'])
+    ensure_layout_fields(espo, 'CCso', ['settings', 'settingsOther', 'populations', 'populationsOther', 'stages', 'roles',
+                                        'rolesOther', 'rolesCholera', 'rolesCholeraOther', 'hazards', 'hazardsOther',
+                                        'rolesWithSupport', 'rolesWithSupportOther', 'rolesWithSupportCholera', 'mechanisms',
+                                        'mechanismsOther', 'offers', 'offersOther', 'seeks', 'seeksOther', 'connectVia',
+                                        'connectViaOther', 'updateKey'])
+    ensure_layout_fields(espo, 'CPresence', ['cso', 'adminArea', 'country', 'pcode1', 'pcode2', 'pcode3', 'latitude', 'longitude',
+                                             'pcodeStatus', 'current', 'csoType', 'listed'])
+    ensure_layout_fields(espo, 'CCsoUpdate', ['cso', 'status', 'adminArea', 'locality', 'country', 'pcode1', 'pcode2', 'pcode3',
+                                              'latitude', 'longitude', 'pcodeStatus', 'roles', 'rolesOther', 'rolesCholera',
+                                              'rolesCholeraOther', 'populations', 'populationsOther', 'facility', 'needs',
+                                              'needsOther', 'needsNote', 'response', 'keyCheck', 'superseded', 'current',
+                                              'dataChecks'])
+    ensure_layout_fields(espo, 'CFocalPoint', ['cso', 'current'])
     ensure_layout_fields(espo, 'CSite', ['siteCode', 'siteType', 'status', 'region', 'response', 'project', 'standard', 'installedAt',
                                          'lastVisit', 'latitude', 'longitude', 'equipment', 'photos'])
     ensure_layout_fields(espo, 'CStandard', ['code', 'category', 'source', 'requirement'])
@@ -696,7 +869,11 @@ def ensure_layouts(espo):
                          'COrganisation': ['name', 'code', 'orgType'],
                          'CAdminArea': ['name', 'pcode', 'level', 'parentPcode', 'country'],
                          'CSite': ['name', 'siteCode', 'siteType', 'status', 'region', 'project', 'lastVisit'],
-                         'CStandard': ['name', 'code', 'category', 'source']}.items():
+                         'CStandard': ['name', 'code', 'category', 'source'],
+                         'CCso': ['name', 'code', 'csoType', 'countries', 'sharing', 'lastProfile', 'teams'],
+                         'CPresence': ['name', 'cso', 'adminArea', 'country', 'pcodeStatus', 'current'],
+                         'CCsoUpdate': ['name', 'cso', 'status', 'adminArea', 'roles', 'needs', 'current', 'dataChecks', 'createdAt'],
+                         }.items():
         espo.call('PUT', f'/{entity}/layout/list',
                   body=[{'name': n, **({'link': True} if n == 'name' else {})} for n in cols])
     # A response's page: its projects, tasks and sites below it; a project's, its sites and
@@ -708,6 +885,7 @@ def ensure_layouts(espo):
     espo.call('PUT', '/CResponder/layout/relationships', body=[{'name': 'activities'}, {'name': 'tasks'}])
     espo.call('PUT', '/CActivity/layout/relationships', body=[{'name': 'locations'}, {'name': 'focalPoints'}])
     espo.call('PUT', '/COrganisation/layout/relationships', body=[{'name': 'activitiesLed'}, {'name': 'registrations'}])
+    espo.call('PUT', '/CCso/layout/relationships', body=[{'name': 'presence'}, {'name': 'updates'}, {'name': 'focalPoints'}])
     kanban = [{'name': 'name', 'link': True}, {'name': 'cProject'}, {'name': 'cResponse'}, {'name': 'assignedUser'},
               {'name': 'dateEnd'}]
     espo.call('PUT', '/Task/layout/kanban', body=kanban)
@@ -832,6 +1010,31 @@ def make_agent(espo, spec, teams):
     return agent
 
 
+def ensure_users(espo, teams, roles):
+    """The test users (USERS), their passwords in secrets/seed.secrets (kept across runs)."""
+    path = ROOT / 'secrets' / 'seed.secrets'
+    have = read_secrets('seed')
+    out = dict(have)
+    for username, full, role, team_names in USERS:
+        first, last = full.split(' ', 1)
+        key = pw_key(username)
+        password = have.get(key) or secrets.token_urlsafe(14)
+        body = {'userName': username, 'firstName': first, 'lastName': last, 'type': 'regular',
+                'isActive': True, 'rolesIds': [roles[role]], 'teamsIds': [teams[t] for t in team_names],
+                'defaultTeamId': teams[team_names[0]], 'emailAddress': f'delivered+{username}@resend.dev'}
+        user = find(espo, 'User', 'userName', username)
+        if user is None:
+            espo.call('POST', '/User', body={**body, 'password': password})
+            print(f'user created: {username} ({role}; {", ".join(team_names)})')
+        else:  # teams and roles as defined here; the password too if it was lost
+            espo.call('PUT', f'/User/{user["id"]}', body={**body, **({} if key in have else {'password': password})})
+        out[key] = password
+    path.parent.mkdir(mode=0o700, exist_ok=True)
+    path.write_text(''.join(f'{k}={v}\n' for k, v in out.items()))
+    path.chmod(0o600)
+    print(f'users: {len(USERS)}, passwords in {path.relative_to(ROOT)}')
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--url', default=URL)
@@ -846,7 +1049,7 @@ def main():
         # In global search, so the isolation tests (T8) search them too
         'globalSearchEntityList': sorted(set(settings.get('globalSearchEntityList') or [])
                                          | {'Case', 'Contact', 'Account', 'Task', 'CResponse', 'CProject', 'CSite', 'CStandard',
-                                            'CApplication', 'CResponder', 'CActivity', 'COrganisation'}),
+                                            'CApplication', 'CResponder', 'CActivity', 'COrganisation', 'CCso'}),
         'applicationName': 'Kobo requests and responses (test)'})
     print('settings: assignment notifications for Case, Task, Response, Project, Site, Application; global search')
     ensure_email(espo)
@@ -943,28 +1146,7 @@ def main():
     ensure_agents(espo, teams)
 
     if args.users:
-        path = ROOT / 'secrets' / 'seed.secrets'
-        have = read_secrets('seed')
-        out = dict(have)
-        for username, full, role, team_names in USERS:
-            first, last = full.split(' ', 1)
-            key = pw_key(username)
-            password = have.get(key) or secrets.token_urlsafe(14)
-            body = {'userName': username, 'firstName': first, 'lastName': last, 'type': 'regular',
-                    'isActive': True, 'rolesIds': [roles[role]], 'teamsIds': [teams[t] for t in team_names],
-                    'defaultTeamId': teams[team_names[0]], 'emailAddress': f'delivered+{username}@resend.dev'}
-            user = find(espo, 'User', 'userName', username)
-            if user is None:
-                espo.call('POST', '/User', body={**body, 'password': password})
-                print(f'user created: {username} ({role}; {", ".join(team_names)})')
-            else:  # teams and roles as defined here; the password too if it was lost
-                espo.call('PUT', f'/User/{user["id"]}', body={**body, **({} if key in have else {'password': password})})
-            out[key] = password
-        path.parent.mkdir(mode=0o700, exist_ok=True)
-        path.write_text(''.join(f'{k}={v}\n' for k, v in out.items()))
-        path.chmod(0o600)
-        print(f'users: {len(USERS)}, passwords in {path.relative_to(ROOT)}')
-
+        ensure_users(espo, teams, roles)
 
 if __name__ == '__main__':
     main()

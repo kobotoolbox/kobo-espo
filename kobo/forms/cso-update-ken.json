@@ -1,0 +1,420 @@
+{
+ "settings": {
+  "form_title": "CSO update: Kenya (espo-kobo test)",
+  "form_id": "cso_update_ken",
+  "version": "1",
+  "style": "pages"
+ },
+ "survey": [
+  {
+   "type": "start",
+   "name": "start"
+  },
+  {
+   "type": "end",
+   "name": "end"
+  },
+  {
+   "type": "hidden",
+   "name": "cso"
+  },
+  {
+   "type": "hidden",
+   "name": "key"
+  },
+  {
+   "type": "note",
+   "name": "intro",
+   "label": "A short update on what your organization is doing in one place. Send one per place."
+  },
+  {
+   "type": "text",
+   "name": "cso_typed",
+   "label": "Your organization's CSO code",
+   "required": "true",
+   "relevant": "${cso} = ''",
+   "hint": "CSO- and 4 characters, in the email you got after sending your profile.",
+   "constraint": "regex(., '^CSO-[2-9A-HJKMNP-TV-Z]{4}$')",
+   "constraint_message": "A code like CSO-7K3Q."
+  },
+  {
+   "type": "calculate",
+   "name": "cso_code",
+   "calculation": "if(${cso} != '', ${cso}, ${cso_typed})"
+  },
+  {
+   "type": "begin_group",
+   "name": "place",
+   "label": "Where is this activity being implemented?"
+  },
+  {
+   "type": "select_one_from_file areas.csv",
+   "name": "admin1",
+   "label": "County",
+   "required": "true",
+   "choice_filter": "level='admin1'",
+   "appearance": "minimal"
+  },
+  {
+   "type": "select_one_from_file areas.csv",
+   "name": "admin2",
+   "label": "Sub-county",
+   "required": "true",
+   "choice_filter": "parent=${admin1}",
+   "appearance": "minimal"
+  },
+  {
+   "type": "calculate",
+   "name": "area",
+   "calculation": "if(${admin2} != '', ${admin2}, ${admin1})"
+  },
+  {
+   "type": "hidden",
+   "name": "country",
+   "default": "KEN"
+  },
+  {
+   "type": "text",
+   "name": "locality",
+   "label": "Locality (village, town or neighbourhood)"
+  },
+  {
+   "type": "geopoint",
+   "name": "location",
+   "label": "Location (optional)"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "select_multiple roles",
+   "name": "roles",
+   "label": "What activity or service are you currently providing in this location?",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "roles_other",
+   "label": "Please specify",
+   "required": "true",
+   "relevant": "selected(${roles}, 'other')"
+  },
+  {
+   "type": "select_one update_status",
+   "name": "status",
+   "label": "What is the current status?",
+   "required": "true"
+  },
+  {
+   "type": "select_multiple populations",
+   "name": "populations",
+   "label": "Which population groups are being reached?",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "populations_other",
+   "label": "Please specify",
+   "required": "true",
+   "relevant": "selected(${populations}, 'other')"
+  },
+  {
+   "type": "text",
+   "name": "facility",
+   "label": "Facility being reached, if any (its name)"
+  },
+  {
+   "type": "select_multiple exchange",
+   "name": "needs",
+   "label": "What is the principal operational gap or collaboration need in this location?",
+   "constraint": "count-selected(.) <= 3",
+   "constraint_message": "Choose at most 3.",
+   "hint": "Choose up to 3."
+  },
+  {
+   "type": "text",
+   "name": "needs_other",
+   "label": "Please specify",
+   "required": "true",
+   "relevant": "selected(${needs}, 'other')"
+  },
+  {
+   "type": "text",
+   "name": "needs_note",
+   "label": "A short explanation of the need",
+   "relevant": "count-selected(${needs}) > 0"
+  }
+ ],
+ "choices": [
+  {
+   "list_name": "roles",
+   "name": "community_engagement",
+   "label": "Community engagement, dialogue and trust-building"
+  },
+  {
+   "list_name": "roles",
+   "name": "risk_communication",
+   "label": "Risk communication, health literacy and misinformation/rumour management"
+  },
+  {
+   "list_name": "roles",
+   "name": "community_feedback",
+   "label": "Community listening, feedback and accountability to affected people"
+  },
+  {
+   "list_name": "roles",
+   "name": "community_surveillance",
+   "label": "Community-based surveillance, alerts and early warning"
+  },
+  {
+   "list_name": "roles",
+   "name": "community_health",
+   "label": "Community health services, first aid, referral or patient navigation"
+  },
+  {
+   "list_name": "roles",
+   "name": "wash",
+   "label": "WASH and environmental health"
+  },
+  {
+   "list_name": "roles",
+   "name": "vaccination",
+   "label": "Vaccination and other medical-countermeasure delivery or uptake"
+  },
+  {
+   "list_name": "roles",
+   "name": "outbreak_support",
+   "label": "Support to outbreak investigation, contact tracing or targeted response"
+  },
+  {
+   "list_name": "roles",
+   "name": "protection",
+   "label": "Protection, safeguarding, inclusion and prevention of sexual exploitation and abuse"
+  },
+  {
+   "list_name": "roles",
+   "name": "mhpss",
+   "label": "Mental health and psychosocial support"
+  },
+  {
+   "list_name": "roles",
+   "name": "livelihoods",
+   "label": "Support to livelihoods, food security, education or social protection"
+  },
+  {
+   "list_name": "roles",
+   "name": "workforce",
+   "label": "Community workforce or volunteer mobilization"
+  },
+  {
+   "list_name": "roles",
+   "name": "training",
+   "label": "Training and capacity strengthening"
+  },
+  {
+   "list_name": "roles",
+   "name": "data_research",
+   "label": "Data collection, research, monitoring or evidence generation"
+  },
+  {
+   "list_name": "roles",
+   "name": "advocacy",
+   "label": "Advocacy, policy influence and representation of community voices"
+  },
+  {
+   "list_name": "roles",
+   "name": "coordination",
+   "label": "Coordination, partnership-building or convening"
+  },
+  {
+   "list_name": "roles",
+   "name": "logistics",
+   "label": "Logistics, transport, supplies or infrastructure"
+  },
+  {
+   "list_name": "roles",
+   "name": "resource_mobilization",
+   "label": "Resource mobilization or small-grant support"
+  },
+  {
+   "list_name": "roles",
+   "name": "other",
+   "label": "Other"
+  },
+  {
+   "list_name": "update_status",
+   "name": "planned",
+   "label": "Planned"
+  },
+  {
+   "list_name": "update_status",
+   "name": "ready",
+   "label": "Ready to activate"
+  },
+  {
+   "list_name": "update_status",
+   "name": "active",
+   "label": "Active"
+  },
+  {
+   "list_name": "update_status",
+   "name": "suspended",
+   "label": "Temporarily suspended"
+  },
+  {
+   "list_name": "update_status",
+   "name": "completed",
+   "label": "Completed"
+  },
+  {
+   "list_name": "populations",
+   "name": "women_girls",
+   "label": "Women and girls"
+  },
+  {
+   "list_name": "populations",
+   "name": "children",
+   "label": "Children and adolescents"
+  },
+  {
+   "list_name": "populations",
+   "name": "older",
+   "label": "Older people"
+  },
+  {
+   "list_name": "populations",
+   "name": "disabilities",
+   "label": "Persons with disabilities"
+  },
+  {
+   "list_name": "populations",
+   "name": "displaced",
+   "label": "Refugees, migrants, returnees or internally displaced persons"
+  },
+  {
+   "list_name": "populations",
+   "name": "minorities",
+   "label": "Ethnic, linguistic or religious minorities"
+  },
+  {
+   "list_name": "populations",
+   "name": "indigenous",
+   "label": "Indigenous communities"
+  },
+  {
+   "list_name": "populations",
+   "name": "informal_settlements",
+   "label": "People living in informal settlements"
+  },
+  {
+   "list_name": "populations",
+   "name": "rural_remote",
+   "label": "Rural, remote or nomadic communities"
+  },
+  {
+   "list_name": "populations",
+   "name": "poverty",
+   "label": "People living in poverty"
+  },
+  {
+   "list_name": "populations",
+   "name": "patients",
+   "label": "Patients, survivors and caregivers"
+  },
+  {
+   "list_name": "populations",
+   "name": "health_workers",
+   "label": "Health workers, community health workers and volunteers"
+  },
+  {
+   "list_name": "populations",
+   "name": "disease_affected",
+   "label": "People affected by particular diseases or health conditions"
+  },
+  {
+   "list_name": "populations",
+   "name": "other",
+   "label": "Other"
+  },
+  {
+   "list_name": "exchange",
+   "name": "community_access",
+   "label": "Community access and mobilization"
+  },
+  {
+   "list_name": "exchange",
+   "name": "technical",
+   "label": "Specialist technical expertise"
+  },
+  {
+   "list_name": "exchange",
+   "name": "local_knowledge",
+   "label": "Local knowledge or language capacity"
+  },
+  {
+   "list_name": "exchange",
+   "name": "training",
+   "label": "Training or mentoring"
+  },
+  {
+   "list_name": "exchange",
+   "name": "data",
+   "label": "Data, research or community insights"
+  },
+  {
+   "list_name": "exchange",
+   "name": "staff",
+   "label": "Staff or volunteers"
+  },
+  {
+   "list_name": "exchange",
+   "name": "supplies",
+   "label": "Supplies or equipment"
+  },
+  {
+   "list_name": "exchange",
+   "name": "logistics",
+   "label": "Logistics or transport"
+  },
+  {
+   "list_name": "exchange",
+   "name": "referral",
+   "label": "Referral partnerships"
+  },
+  {
+   "list_name": "exchange",
+   "name": "communications",
+   "label": "Communications channels"
+  },
+  {
+   "list_name": "exchange",
+   "name": "advocacy",
+   "label": "Advocacy or government engagement"
+  },
+  {
+   "list_name": "exchange",
+   "name": "convening",
+   "label": "Coordination or convening"
+  },
+  {
+   "list_name": "exchange",
+   "name": "funding",
+   "label": "Funding or grant partnership"
+  },
+  {
+   "list_name": "exchange",
+   "name": "proposals",
+   "label": "Proposal development"
+  },
+  {
+   "list_name": "exchange",
+   "name": "mel",
+   "label": "Monitoring and evaluation"
+  },
+  {
+   "list_name": "exchange",
+   "name": "other",
+   "label": "Other"
+  }
+ ]
+}

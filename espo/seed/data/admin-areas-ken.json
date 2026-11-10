@@ -1,0 +1,2368 @@
+[
+ {
+  "name": "Kenya",
+  "pcode": "KE",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "KEN"
+ },
+ {
+  "name": "Mombasa",
+  "pcode": "KE001",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Kwale",
+  "pcode": "KE002",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Kilifi",
+  "pcode": "KE003",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Tana River",
+  "pcode": "KE004",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Lamu",
+  "pcode": "KE005",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Taita Taveta",
+  "pcode": "KE006",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Garissa",
+  "pcode": "KE007",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Wajir",
+  "pcode": "KE008",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Mandera",
+  "pcode": "KE009",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Marsabit",
+  "pcode": "KE010",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Isiolo",
+  "pcode": "KE011",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Meru",
+  "pcode": "KE012",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Tharaka-Nithi",
+  "pcode": "KE013",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Embu",
+  "pcode": "KE014",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Kitui",
+  "pcode": "KE015",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Machakos",
+  "pcode": "KE016",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Makueni",
+  "pcode": "KE017",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Nyandarua",
+  "pcode": "KE018",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Nyeri",
+  "pcode": "KE019",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Kirinyaga",
+  "pcode": "KE020",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Murang'a",
+  "pcode": "KE021",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Kiambu",
+  "pcode": "KE022",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Turkana",
+  "pcode": "KE023",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "West Pokot",
+  "pcode": "KE024",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Samburu",
+  "pcode": "KE025",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Trans Nzoia",
+  "pcode": "KE026",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Uasin Gishu",
+  "pcode": "KE027",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Elgeyo-Marakwet",
+  "pcode": "KE028",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Nandi",
+  "pcode": "KE029",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Baringo",
+  "pcode": "KE030",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Laikipia",
+  "pcode": "KE031",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Nakuru",
+  "pcode": "KE032",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Narok",
+  "pcode": "KE033",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Kajiado",
+  "pcode": "KE034",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Kericho",
+  "pcode": "KE035",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Bomet",
+  "pcode": "KE036",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Kakamega",
+  "pcode": "KE037",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Vihiga",
+  "pcode": "KE038",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Bungoma",
+  "pcode": "KE039",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Busia",
+  "pcode": "KE040",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Siaya",
+  "pcode": "KE041",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Kisumu",
+  "pcode": "KE042",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Homa Bay",
+  "pcode": "KE043",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Migori",
+  "pcode": "KE044",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Kisii",
+  "pcode": "KE045",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Nyamira",
+  "pcode": "KE046",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Nairobi",
+  "pcode": "KE047",
+  "level": "admin1",
+  "parentPcode": "KE",
+  "country": "KEN"
+ },
+ {
+  "name": "Changamwe",
+  "pcode": "KE001001",
+  "level": "admin2",
+  "parentPcode": "KE001",
+  "country": "KEN"
+ },
+ {
+  "name": "Jomvu",
+  "pcode": "KE001002",
+  "level": "admin2",
+  "parentPcode": "KE001",
+  "country": "KEN"
+ },
+ {
+  "name": "Kisauni",
+  "pcode": "KE001003",
+  "level": "admin2",
+  "parentPcode": "KE001",
+  "country": "KEN"
+ },
+ {
+  "name": "Nyali",
+  "pcode": "KE001004",
+  "level": "admin2",
+  "parentPcode": "KE001",
+  "country": "KEN"
+ },
+ {
+  "name": "Likoni",
+  "pcode": "KE001005",
+  "level": "admin2",
+  "parentPcode": "KE001",
+  "country": "KEN"
+ },
+ {
+  "name": "Mvita",
+  "pcode": "KE001006",
+  "level": "admin2",
+  "parentPcode": "KE001",
+  "country": "KEN"
+ },
+ {
+  "name": "Msambweni",
+  "pcode": "KE002007",
+  "level": "admin2",
+  "parentPcode": "KE002",
+  "country": "KEN"
+ },
+ {
+  "name": "Lunga Lunga",
+  "pcode": "KE002008",
+  "level": "admin2",
+  "parentPcode": "KE002",
+  "country": "KEN"
+ },
+ {
+  "name": "Matuga",
+  "pcode": "KE002009",
+  "level": "admin2",
+  "parentPcode": "KE002",
+  "country": "KEN"
+ },
+ {
+  "name": "Kinango",
+  "pcode": "KE002010",
+  "level": "admin2",
+  "parentPcode": "KE002",
+  "country": "KEN"
+ },
+ {
+  "name": "Kilifi North",
+  "pcode": "KE003011",
+  "level": "admin2",
+  "parentPcode": "KE003",
+  "country": "KEN"
+ },
+ {
+  "name": "Kilifi South",
+  "pcode": "KE003012",
+  "level": "admin2",
+  "parentPcode": "KE003",
+  "country": "KEN"
+ },
+ {
+  "name": "Kaloleni",
+  "pcode": "KE003013",
+  "level": "admin2",
+  "parentPcode": "KE003",
+  "country": "KEN"
+ },
+ {
+  "name": "Rabai",
+  "pcode": "KE003014",
+  "level": "admin2",
+  "parentPcode": "KE003",
+  "country": "KEN"
+ },
+ {
+  "name": "Ganze",
+  "pcode": "KE003015",
+  "level": "admin2",
+  "parentPcode": "KE003",
+  "country": "KEN"
+ },
+ {
+  "name": "Malindi",
+  "pcode": "KE003016",
+  "level": "admin2",
+  "parentPcode": "KE003",
+  "country": "KEN"
+ },
+ {
+  "name": "Magarini",
+  "pcode": "KE003017",
+  "level": "admin2",
+  "parentPcode": "KE003",
+  "country": "KEN"
+ },
+ {
+  "name": "Garsen",
+  "pcode": "KE004018",
+  "level": "admin2",
+  "parentPcode": "KE004",
+  "country": "KEN"
+ },
+ {
+  "name": "Galole",
+  "pcode": "KE004019",
+  "level": "admin2",
+  "parentPcode": "KE004",
+  "country": "KEN"
+ },
+ {
+  "name": "Bura",
+  "pcode": "KE004020",
+  "level": "admin2",
+  "parentPcode": "KE004",
+  "country": "KEN"
+ },
+ {
+  "name": "Lamu East",
+  "pcode": "KE005021",
+  "level": "admin2",
+  "parentPcode": "KE005",
+  "country": "KEN"
+ },
+ {
+  "name": "Lamu West",
+  "pcode": "KE005022",
+  "level": "admin2",
+  "parentPcode": "KE005",
+  "country": "KEN"
+ },
+ {
+  "name": "Taveta",
+  "pcode": "KE006023",
+  "level": "admin2",
+  "parentPcode": "KE006",
+  "country": "KEN"
+ },
+ {
+  "name": "Wundanyi",
+  "pcode": "KE006024",
+  "level": "admin2",
+  "parentPcode": "KE006",
+  "country": "KEN"
+ },
+ {
+  "name": "Mwatate",
+  "pcode": "KE006025",
+  "level": "admin2",
+  "parentPcode": "KE006",
+  "country": "KEN"
+ },
+ {
+  "name": "Voi",
+  "pcode": "KE006026",
+  "level": "admin2",
+  "parentPcode": "KE006",
+  "country": "KEN"
+ },
+ {
+  "name": "Dujis",
+  "pcode": "KE007027",
+  "level": "admin2",
+  "parentPcode": "KE007",
+  "country": "KEN"
+ },
+ {
+  "name": "Balambala",
+  "pcode": "KE007028",
+  "level": "admin2",
+  "parentPcode": "KE007",
+  "country": "KEN"
+ },
+ {
+  "name": "Lagdera",
+  "pcode": "KE007029",
+  "level": "admin2",
+  "parentPcode": "KE007",
+  "country": "KEN"
+ },
+ {
+  "name": "Dadaab",
+  "pcode": "KE007030",
+  "level": "admin2",
+  "parentPcode": "KE007",
+  "country": "KEN"
+ },
+ {
+  "name": "Fafi",
+  "pcode": "KE007031",
+  "level": "admin2",
+  "parentPcode": "KE007",
+  "country": "KEN"
+ },
+ {
+  "name": "Ijara",
+  "pcode": "KE007032",
+  "level": "admin2",
+  "parentPcode": "KE007",
+  "country": "KEN"
+ },
+ {
+  "name": "Wajir North",
+  "pcode": "KE008033",
+  "level": "admin2",
+  "parentPcode": "KE008",
+  "country": "KEN"
+ },
+ {
+  "name": "Wajir East",
+  "pcode": "KE008034",
+  "level": "admin2",
+  "parentPcode": "KE008",
+  "country": "KEN"
+ },
+ {
+  "name": "Tarbaj",
+  "pcode": "KE008035",
+  "level": "admin2",
+  "parentPcode": "KE008",
+  "country": "KEN"
+ },
+ {
+  "name": "Wajir West",
+  "pcode": "KE008036",
+  "level": "admin2",
+  "parentPcode": "KE008",
+  "country": "KEN"
+ },
+ {
+  "name": "Eldas",
+  "pcode": "KE008037",
+  "level": "admin2",
+  "parentPcode": "KE008",
+  "country": "KEN"
+ },
+ {
+  "name": "Wajir South",
+  "pcode": "KE008038",
+  "level": "admin2",
+  "parentPcode": "KE008",
+  "country": "KEN"
+ },
+ {
+  "name": "Mandera West",
+  "pcode": "KE009039",
+  "level": "admin2",
+  "parentPcode": "KE009",
+  "country": "KEN"
+ },
+ {
+  "name": "Banissa",
+  "pcode": "KE009040",
+  "level": "admin2",
+  "parentPcode": "KE009",
+  "country": "KEN"
+ },
+ {
+  "name": "Mandera North",
+  "pcode": "KE009041",
+  "level": "admin2",
+  "parentPcode": "KE009",
+  "country": "KEN"
+ },
+ {
+  "name": "Mandera South",
+  "pcode": "KE009042",
+  "level": "admin2",
+  "parentPcode": "KE009",
+  "country": "KEN"
+ },
+ {
+  "name": "Mandera East",
+  "pcode": "KE009043",
+  "level": "admin2",
+  "parentPcode": "KE009",
+  "country": "KEN"
+ },
+ {
+  "name": "Lafey",
+  "pcode": "KE009044",
+  "level": "admin2",
+  "parentPcode": "KE009",
+  "country": "KEN"
+ },
+ {
+  "name": "Moyale",
+  "pcode": "KE010045",
+  "level": "admin2",
+  "parentPcode": "KE010",
+  "country": "KEN"
+ },
+ {
+  "name": "North Horr",
+  "pcode": "KE010046",
+  "level": "admin2",
+  "parentPcode": "KE010",
+  "country": "KEN"
+ },
+ {
+  "name": "Saku",
+  "pcode": "KE010047",
+  "level": "admin2",
+  "parentPcode": "KE010",
+  "country": "KEN"
+ },
+ {
+  "name": "Laisamis",
+  "pcode": "KE010048",
+  "level": "admin2",
+  "parentPcode": "KE010",
+  "country": "KEN"
+ },
+ {
+  "name": "Isiolo North",
+  "pcode": "KE011049",
+  "level": "admin2",
+  "parentPcode": "KE011",
+  "country": "KEN"
+ },
+ {
+  "name": "Isiolo South",
+  "pcode": "KE011050",
+  "level": "admin2",
+  "parentPcode": "KE011",
+  "country": "KEN"
+ },
+ {
+  "name": "Igembe South",
+  "pcode": "KE012051",
+  "level": "admin2",
+  "parentPcode": "KE012",
+  "country": "KEN"
+ },
+ {
+  "name": "Igembe Central",
+  "pcode": "KE012052",
+  "level": "admin2",
+  "parentPcode": "KE012",
+  "country": "KEN"
+ },
+ {
+  "name": "Igembe North",
+  "pcode": "KE012053",
+  "level": "admin2",
+  "parentPcode": "KE012",
+  "country": "KEN"
+ },
+ {
+  "name": "Tigania West",
+  "pcode": "KE012054",
+  "level": "admin2",
+  "parentPcode": "KE012",
+  "country": "KEN"
+ },
+ {
+  "name": "Tigania East",
+  "pcode": "KE012055",
+  "level": "admin2",
+  "parentPcode": "KE012",
+  "country": "KEN"
+ },
+ {
+  "name": "North Imenti",
+  "pcode": "KE012056",
+  "level": "admin2",
+  "parentPcode": "KE012",
+  "country": "KEN"
+ },
+ {
+  "name": "Buuri",
+  "pcode": "KE012057",
+  "level": "admin2",
+  "parentPcode": "KE012",
+  "country": "KEN"
+ },
+ {
+  "name": "Cental Imenti",
+  "pcode": "KE012058",
+  "level": "admin2",
+  "parentPcode": "KE012",
+  "country": "KEN"
+ },
+ {
+  "name": "South Imenti",
+  "pcode": "KE012059",
+  "level": "admin2",
+  "parentPcode": "KE012",
+  "country": "KEN"
+ },
+ {
+  "name": "Nithi",
+  "pcode": "KE013060",
+  "level": "admin2",
+  "parentPcode": "KE013",
+  "country": "KEN"
+ },
+ {
+  "name": "Maara",
+  "pcode": "KE013061",
+  "level": "admin2",
+  "parentPcode": "KE013",
+  "country": "KEN"
+ },
+ {
+  "name": "Tharaka",
+  "pcode": "KE013062",
+  "level": "admin2",
+  "parentPcode": "KE013",
+  "country": "KEN"
+ },
+ {
+  "name": "Manyatta",
+  "pcode": "KE014063",
+  "level": "admin2",
+  "parentPcode": "KE014",
+  "country": "KEN"
+ },
+ {
+  "name": "Runyenjes",
+  "pcode": "KE014064",
+  "level": "admin2",
+  "parentPcode": "KE014",
+  "country": "KEN"
+ },
+ {
+  "name": "Gachoka",
+  "pcode": "KE014065",
+  "level": "admin2",
+  "parentPcode": "KE014",
+  "country": "KEN"
+ },
+ {
+  "name": "Siakago",
+  "pcode": "KE014066",
+  "level": "admin2",
+  "parentPcode": "KE014",
+  "country": "KEN"
+ },
+ {
+  "name": "Mwingi North",
+  "pcode": "KE015067",
+  "level": "admin2",
+  "parentPcode": "KE015",
+  "country": "KEN"
+ },
+ {
+  "name": "Mwingi West",
+  "pcode": "KE015068",
+  "level": "admin2",
+  "parentPcode": "KE015",
+  "country": "KEN"
+ },
+ {
+  "name": "Mwingi East",
+  "pcode": "KE015069",
+  "level": "admin2",
+  "parentPcode": "KE015",
+  "country": "KEN"
+ },
+ {
+  "name": "Kitui West",
+  "pcode": "KE015070",
+  "level": "admin2",
+  "parentPcode": "KE015",
+  "country": "KEN"
+ },
+ {
+  "name": "Kitui Rural",
+  "pcode": "KE015071",
+  "level": "admin2",
+  "parentPcode": "KE015",
+  "country": "KEN"
+ },
+ {
+  "name": "Kitui Central",
+  "pcode": "KE015072",
+  "level": "admin2",
+  "parentPcode": "KE015",
+  "country": "KEN"
+ },
+ {
+  "name": "Kitui East",
+  "pcode": "KE015073",
+  "level": "admin2",
+  "parentPcode": "KE015",
+  "country": "KEN"
+ },
+ {
+  "name": "Kitui South",
+  "pcode": "KE015074",
+  "level": "admin2",
+  "parentPcode": "KE015",
+  "country": "KEN"
+ },
+ {
+  "name": "Masinga",
+  "pcode": "KE016075",
+  "level": "admin2",
+  "parentPcode": "KE016",
+  "country": "KEN"
+ },
+ {
+  "name": "Yatta",
+  "pcode": "KE016076",
+  "level": "admin2",
+  "parentPcode": "KE016",
+  "country": "KEN"
+ },
+ {
+  "name": "Kangundo",
+  "pcode": "KE016077",
+  "level": "admin2",
+  "parentPcode": "KE016",
+  "country": "KEN"
+ },
+ {
+  "name": "Matungulu",
+  "pcode": "KE016078",
+  "level": "admin2",
+  "parentPcode": "KE016",
+  "country": "KEN"
+ },
+ {
+  "name": "Kathiani",
+  "pcode": "KE016079",
+  "level": "admin2",
+  "parentPcode": "KE016",
+  "country": "KEN"
+ },
+ {
+  "name": "Mavoko",
+  "pcode": "KE016080",
+  "level": "admin2",
+  "parentPcode": "KE016",
+  "country": "KEN"
+ },
+ {
+  "name": "Machakos Town",
+  "pcode": "KE016081",
+  "level": "admin2",
+  "parentPcode": "KE016",
+  "country": "KEN"
+ },
+ {
+  "name": "Mwala",
+  "pcode": "KE016082",
+  "level": "admin2",
+  "parentPcode": "KE016",
+  "country": "KEN"
+ },
+ {
+  "name": "Mbooni",
+  "pcode": "KE017083",
+  "level": "admin2",
+  "parentPcode": "KE017",
+  "country": "KEN"
+ },
+ {
+  "name": "Kilome",
+  "pcode": "KE017084",
+  "level": "admin2",
+  "parentPcode": "KE017",
+  "country": "KEN"
+ },
+ {
+  "name": "Kaiti",
+  "pcode": "KE017085",
+  "level": "admin2",
+  "parentPcode": "KE017",
+  "country": "KEN"
+ },
+ {
+  "name": "Makueni",
+  "pcode": "KE017086",
+  "level": "admin2",
+  "parentPcode": "KE017",
+  "country": "KEN"
+ },
+ {
+  "name": "Kibwezi West",
+  "pcode": "KE017087",
+  "level": "admin2",
+  "parentPcode": "KE017",
+  "country": "KEN"
+ },
+ {
+  "name": "Kibwezi East",
+  "pcode": "KE017088",
+  "level": "admin2",
+  "parentPcode": "KE017",
+  "country": "KEN"
+ },
+ {
+  "name": "Kinangop",
+  "pcode": "KE018089",
+  "level": "admin2",
+  "parentPcode": "KE018",
+  "country": "KEN"
+ },
+ {
+  "name": "Kipipiri",
+  "pcode": "KE018090",
+  "level": "admin2",
+  "parentPcode": "KE018",
+  "country": "KEN"
+ },
+ {
+  "name": "Ol Kalou",
+  "pcode": "KE018091",
+  "level": "admin2",
+  "parentPcode": "KE018",
+  "country": "KEN"
+ },
+ {
+  "name": "Ol Jorok",
+  "pcode": "KE018092",
+  "level": "admin2",
+  "parentPcode": "KE018",
+  "country": "KEN"
+ },
+ {
+  "name": "Ndaragwa",
+  "pcode": "KE018093",
+  "level": "admin2",
+  "parentPcode": "KE018",
+  "country": "KEN"
+ },
+ {
+  "name": "Tetu",
+  "pcode": "KE019094",
+  "level": "admin2",
+  "parentPcode": "KE019",
+  "country": "KEN"
+ },
+ {
+  "name": "Kieni",
+  "pcode": "KE019095",
+  "level": "admin2",
+  "parentPcode": "KE019",
+  "country": "KEN"
+ },
+ {
+  "name": "Mathira",
+  "pcode": "KE019096",
+  "level": "admin2",
+  "parentPcode": "KE019",
+  "country": "KEN"
+ },
+ {
+  "name": "Othaya",
+  "pcode": "KE019097",
+  "level": "admin2",
+  "parentPcode": "KE019",
+  "country": "KEN"
+ },
+ {
+  "name": "Mukurweni",
+  "pcode": "KE019098",
+  "level": "admin2",
+  "parentPcode": "KE019",
+  "country": "KEN"
+ },
+ {
+  "name": "Nyeri Town",
+  "pcode": "KE019099",
+  "level": "admin2",
+  "parentPcode": "KE019",
+  "country": "KEN"
+ },
+ {
+  "name": "Mwea",
+  "pcode": "KE020100",
+  "level": "admin2",
+  "parentPcode": "KE020",
+  "country": "KEN"
+ },
+ {
+  "name": "Gichugu",
+  "pcode": "KE020101",
+  "level": "admin2",
+  "parentPcode": "KE020",
+  "country": "KEN"
+ },
+ {
+  "name": "Ndia",
+  "pcode": "KE020102",
+  "level": "admin2",
+  "parentPcode": "KE020",
+  "country": "KEN"
+ },
+ {
+  "name": "Kirinyaga Central",
+  "pcode": "KE020103",
+  "level": "admin2",
+  "parentPcode": "KE020",
+  "country": "KEN"
+ },
+ {
+  "name": "Kangema",
+  "pcode": "KE021104",
+  "level": "admin2",
+  "parentPcode": "KE021",
+  "country": "KEN"
+ },
+ {
+  "name": "Mathioya",
+  "pcode": "KE021105",
+  "level": "admin2",
+  "parentPcode": "KE021",
+  "country": "KEN"
+ },
+ {
+  "name": "Kiharu",
+  "pcode": "KE021106",
+  "level": "admin2",
+  "parentPcode": "KE021",
+  "country": "KEN"
+ },
+ {
+  "name": "Kigumo",
+  "pcode": "KE021107",
+  "level": "admin2",
+  "parentPcode": "KE021",
+  "country": "KEN"
+ },
+ {
+  "name": "Maragwa",
+  "pcode": "KE021108",
+  "level": "admin2",
+  "parentPcode": "KE021",
+  "country": "KEN"
+ },
+ {
+  "name": "Kandara",
+  "pcode": "KE021109",
+  "level": "admin2",
+  "parentPcode": "KE021",
+  "country": "KEN"
+ },
+ {
+  "name": "Gatanga",
+  "pcode": "KE021110",
+  "level": "admin2",
+  "parentPcode": "KE021",
+  "country": "KEN"
+ },
+ {
+  "name": "Gatundu South",
+  "pcode": "KE022111",
+  "level": "admin2",
+  "parentPcode": "KE022",
+  "country": "KEN"
+ },
+ {
+  "name": "Gatundu North",
+  "pcode": "KE022112",
+  "level": "admin2",
+  "parentPcode": "KE022",
+  "country": "KEN"
+ },
+ {
+  "name": "Juja",
+  "pcode": "KE022113",
+  "level": "admin2",
+  "parentPcode": "KE022",
+  "country": "KEN"
+ },
+ {
+  "name": "Thika Town",
+  "pcode": "KE022114",
+  "level": "admin2",
+  "parentPcode": "KE022",
+  "country": "KEN"
+ },
+ {
+  "name": "Ruiru",
+  "pcode": "KE022115",
+  "level": "admin2",
+  "parentPcode": "KE022",
+  "country": "KEN"
+ },
+ {
+  "name": "Githunguri",
+  "pcode": "KE022116",
+  "level": "admin2",
+  "parentPcode": "KE022",
+  "country": "KEN"
+ },
+ {
+  "name": "Kiambu",
+  "pcode": "KE022117",
+  "level": "admin2",
+  "parentPcode": "KE022",
+  "country": "KEN"
+ },
+ {
+  "name": "Kiambaa",
+  "pcode": "KE022118",
+  "level": "admin2",
+  "parentPcode": "KE022",
+  "country": "KEN"
+ },
+ {
+  "name": "Kabete",
+  "pcode": "KE022119",
+  "level": "admin2",
+  "parentPcode": "KE022",
+  "country": "KEN"
+ },
+ {
+  "name": "Kikuyu",
+  "pcode": "KE022120",
+  "level": "admin2",
+  "parentPcode": "KE022",
+  "country": "KEN"
+ },
+ {
+  "name": "Limuru",
+  "pcode": "KE022121",
+  "level": "admin2",
+  "parentPcode": "KE022",
+  "country": "KEN"
+ },
+ {
+  "name": "Lari",
+  "pcode": "KE022122",
+  "level": "admin2",
+  "parentPcode": "KE022",
+  "country": "KEN"
+ },
+ {
+  "name": "Turkana North",
+  "pcode": "KE023123",
+  "level": "admin2",
+  "parentPcode": "KE023",
+  "country": "KEN"
+ },
+ {
+  "name": "Turkana West",
+  "pcode": "KE023124",
+  "level": "admin2",
+  "parentPcode": "KE023",
+  "country": "KEN"
+ },
+ {
+  "name": "Turkana Central",
+  "pcode": "KE023125",
+  "level": "admin2",
+  "parentPcode": "KE023",
+  "country": "KEN"
+ },
+ {
+  "name": "Loima",
+  "pcode": "KE023126",
+  "level": "admin2",
+  "parentPcode": "KE023",
+  "country": "KEN"
+ },
+ {
+  "name": "Turkana South",
+  "pcode": "KE023127",
+  "level": "admin2",
+  "parentPcode": "KE023",
+  "country": "KEN"
+ },
+ {
+  "name": "Turkana East",
+  "pcode": "KE023128",
+  "level": "admin2",
+  "parentPcode": "KE023",
+  "country": "KEN"
+ },
+ {
+  "name": "Kapenguria",
+  "pcode": "KE024129",
+  "level": "admin2",
+  "parentPcode": "KE024",
+  "country": "KEN"
+ },
+ {
+  "name": "Sigor",
+  "pcode": "KE024130",
+  "level": "admin2",
+  "parentPcode": "KE024",
+  "country": "KEN"
+ },
+ {
+  "name": "Kacheliba",
+  "pcode": "KE024131",
+  "level": "admin2",
+  "parentPcode": "KE024",
+  "country": "KEN"
+ },
+ {
+  "name": "Pokot South",
+  "pcode": "KE024132",
+  "level": "admin2",
+  "parentPcode": "KE024",
+  "country": "KEN"
+ },
+ {
+  "name": "Samburu West",
+  "pcode": "KE025133",
+  "level": "admin2",
+  "parentPcode": "KE025",
+  "country": "KEN"
+ },
+ {
+  "name": "Samburu North",
+  "pcode": "KE025134",
+  "level": "admin2",
+  "parentPcode": "KE025",
+  "country": "KEN"
+ },
+ {
+  "name": "Samburu East",
+  "pcode": "KE025135",
+  "level": "admin2",
+  "parentPcode": "KE025",
+  "country": "KEN"
+ },
+ {
+  "name": "Kwanza",
+  "pcode": "KE026136",
+  "level": "admin2",
+  "parentPcode": "KE026",
+  "country": "KEN"
+ },
+ {
+  "name": "Endebess",
+  "pcode": "KE026137",
+  "level": "admin2",
+  "parentPcode": "KE026",
+  "country": "KEN"
+ },
+ {
+  "name": "Saboti",
+  "pcode": "KE026138",
+  "level": "admin2",
+  "parentPcode": "KE026",
+  "country": "KEN"
+ },
+ {
+  "name": "Kiminini",
+  "pcode": "KE026139",
+  "level": "admin2",
+  "parentPcode": "KE026",
+  "country": "KEN"
+ },
+ {
+  "name": "Cherangany",
+  "pcode": "KE026140",
+  "level": "admin2",
+  "parentPcode": "KE026",
+  "country": "KEN"
+ },
+ {
+  "name": "Soy",
+  "pcode": "KE027141",
+  "level": "admin2",
+  "parentPcode": "KE027",
+  "country": "KEN"
+ },
+ {
+  "name": "Turbo",
+  "pcode": "KE027142",
+  "level": "admin2",
+  "parentPcode": "KE027",
+  "country": "KEN"
+ },
+ {
+  "name": "Moiben",
+  "pcode": "KE027143",
+  "level": "admin2",
+  "parentPcode": "KE027",
+  "country": "KEN"
+ },
+ {
+  "name": "Ainabkoi",
+  "pcode": "KE027144",
+  "level": "admin2",
+  "parentPcode": "KE027",
+  "country": "KEN"
+ },
+ {
+  "name": "Kapseret",
+  "pcode": "KE027145",
+  "level": "admin2",
+  "parentPcode": "KE027",
+  "country": "KEN"
+ },
+ {
+  "name": "Kesses",
+  "pcode": "KE027146",
+  "level": "admin2",
+  "parentPcode": "KE027",
+  "country": "KEN"
+ },
+ {
+  "name": "Marakwet East",
+  "pcode": "KE028147",
+  "level": "admin2",
+  "parentPcode": "KE028",
+  "country": "KEN"
+ },
+ {
+  "name": "Marakwet West",
+  "pcode": "KE028148",
+  "level": "admin2",
+  "parentPcode": "KE028",
+  "country": "KEN"
+ },
+ {
+  "name": "Keiyo North",
+  "pcode": "KE028149",
+  "level": "admin2",
+  "parentPcode": "KE028",
+  "country": "KEN"
+ },
+ {
+  "name": "Keiyo South",
+  "pcode": "KE028150",
+  "level": "admin2",
+  "parentPcode": "KE028",
+  "country": "KEN"
+ },
+ {
+  "name": "Tinderet",
+  "pcode": "KE029151",
+  "level": "admin2",
+  "parentPcode": "KE029",
+  "country": "KEN"
+ },
+ {
+  "name": "Aldai",
+  "pcode": "KE029152",
+  "level": "admin2",
+  "parentPcode": "KE029",
+  "country": "KEN"
+ },
+ {
+  "name": "Nandi Hills",
+  "pcode": "KE029153",
+  "level": "admin2",
+  "parentPcode": "KE029",
+  "country": "KEN"
+ },
+ {
+  "name": "Chesumei",
+  "pcode": "KE029154",
+  "level": "admin2",
+  "parentPcode": "KE029",
+  "country": "KEN"
+ },
+ {
+  "name": "Emgwen",
+  "pcode": "KE029155",
+  "level": "admin2",
+  "parentPcode": "KE029",
+  "country": "KEN"
+ },
+ {
+  "name": "Mosop",
+  "pcode": "KE029156",
+  "level": "admin2",
+  "parentPcode": "KE029",
+  "country": "KEN"
+ },
+ {
+  "name": "Tiaty",
+  "pcode": "KE030157",
+  "level": "admin2",
+  "parentPcode": "KE030",
+  "country": "KEN"
+ },
+ {
+  "name": "Baringo North",
+  "pcode": "KE030158",
+  "level": "admin2",
+  "parentPcode": "KE030",
+  "country": "KEN"
+ },
+ {
+  "name": "Baringo Central",
+  "pcode": "KE030159",
+  "level": "admin2",
+  "parentPcode": "KE030",
+  "country": "KEN"
+ },
+ {
+  "name": "Baringo South",
+  "pcode": "KE030160",
+  "level": "admin2",
+  "parentPcode": "KE030",
+  "country": "KEN"
+ },
+ {
+  "name": "Mogotio",
+  "pcode": "KE030161",
+  "level": "admin2",
+  "parentPcode": "KE030",
+  "country": "KEN"
+ },
+ {
+  "name": "Eldama Ravine",
+  "pcode": "KE030162",
+  "level": "admin2",
+  "parentPcode": "KE030",
+  "country": "KEN"
+ },
+ {
+  "name": "Laikipia West",
+  "pcode": "KE031163",
+  "level": "admin2",
+  "parentPcode": "KE031",
+  "country": "KEN"
+ },
+ {
+  "name": "Laikipia East",
+  "pcode": "KE031164",
+  "level": "admin2",
+  "parentPcode": "KE031",
+  "country": "KEN"
+ },
+ {
+  "name": "Laikipia North",
+  "pcode": "KE031165",
+  "level": "admin2",
+  "parentPcode": "KE031",
+  "country": "KEN"
+ },
+ {
+  "name": "Molo",
+  "pcode": "KE032166",
+  "level": "admin2",
+  "parentPcode": "KE032",
+  "country": "KEN"
+ },
+ {
+  "name": "Njoro",
+  "pcode": "KE032167",
+  "level": "admin2",
+  "parentPcode": "KE032",
+  "country": "KEN"
+ },
+ {
+  "name": "Naivasha",
+  "pcode": "KE032168",
+  "level": "admin2",
+  "parentPcode": "KE032",
+  "country": "KEN"
+ },
+ {
+  "name": "Gilgil",
+  "pcode": "KE032169",
+  "level": "admin2",
+  "parentPcode": "KE032",
+  "country": "KEN"
+ },
+ {
+  "name": "Kuresoi South",
+  "pcode": "KE032170",
+  "level": "admin2",
+  "parentPcode": "KE032",
+  "country": "KEN"
+ },
+ {
+  "name": "Kuresoi North",
+  "pcode": "KE032171",
+  "level": "admin2",
+  "parentPcode": "KE032",
+  "country": "KEN"
+ },
+ {
+  "name": "Subukia",
+  "pcode": "KE032172",
+  "level": "admin2",
+  "parentPcode": "KE032",
+  "country": "KEN"
+ },
+ {
+  "name": "Rongai",
+  "pcode": "KE032173",
+  "level": "admin2",
+  "parentPcode": "KE032",
+  "country": "KEN"
+ },
+ {
+  "name": "Bahati",
+  "pcode": "KE032174",
+  "level": "admin2",
+  "parentPcode": "KE032",
+  "country": "KEN"
+ },
+ {
+  "name": "Nakuru Town West",
+  "pcode": "KE032175",
+  "level": "admin2",
+  "parentPcode": "KE032",
+  "country": "KEN"
+ },
+ {
+  "name": "Nakuru Town East",
+  "pcode": "KE032176",
+  "level": "admin2",
+  "parentPcode": "KE032",
+  "country": "KEN"
+ },
+ {
+  "name": "Kilgoris",
+  "pcode": "KE033177",
+  "level": "admin2",
+  "parentPcode": "KE033",
+  "country": "KEN"
+ },
+ {
+  "name": "Emurua Dikirr",
+  "pcode": "KE033178",
+  "level": "admin2",
+  "parentPcode": "KE033",
+  "country": "KEN"
+ },
+ {
+  "name": "Narok North",
+  "pcode": "KE033179",
+  "level": "admin2",
+  "parentPcode": "KE033",
+  "country": "KEN"
+ },
+ {
+  "name": "Narok East",
+  "pcode": "KE033180",
+  "level": "admin2",
+  "parentPcode": "KE033",
+  "country": "KEN"
+ },
+ {
+  "name": "Narok South",
+  "pcode": "KE033181",
+  "level": "admin2",
+  "parentPcode": "KE033",
+  "country": "KEN"
+ },
+ {
+  "name": "Narok West",
+  "pcode": "KE033182",
+  "level": "admin2",
+  "parentPcode": "KE033",
+  "country": "KEN"
+ },
+ {
+  "name": "Kajiado North",
+  "pcode": "KE034183",
+  "level": "admin2",
+  "parentPcode": "KE034",
+  "country": "KEN"
+ },
+ {
+  "name": "Kajiado Central",
+  "pcode": "KE034184",
+  "level": "admin2",
+  "parentPcode": "KE034",
+  "country": "KEN"
+ },
+ {
+  "name": "Kajiado West",
+  "pcode": "KE034185",
+  "level": "admin2",
+  "parentPcode": "KE034",
+  "country": "KEN"
+ },
+ {
+  "name": "Kajiado East",
+  "pcode": "KE034186",
+  "level": "admin2",
+  "parentPcode": "KE034",
+  "country": "KEN"
+ },
+ {
+  "name": "Kajiado South",
+  "pcode": "KE034187",
+  "level": "admin2",
+  "parentPcode": "KE034",
+  "country": "KEN"
+ },
+ {
+  "name": "Kipkelion East",
+  "pcode": "KE035188",
+  "level": "admin2",
+  "parentPcode": "KE035",
+  "country": "KEN"
+ },
+ {
+  "name": "Kipkelion West",
+  "pcode": "KE035189",
+  "level": "admin2",
+  "parentPcode": "KE035",
+  "country": "KEN"
+ },
+ {
+  "name": "Ainamoi",
+  "pcode": "KE035190",
+  "level": "admin2",
+  "parentPcode": "KE035",
+  "country": "KEN"
+ },
+ {
+  "name": "Buret",
+  "pcode": "KE035191",
+  "level": "admin2",
+  "parentPcode": "KE035",
+  "country": "KEN"
+ },
+ {
+  "name": "Belgut",
+  "pcode": "KE035192",
+  "level": "admin2",
+  "parentPcode": "KE035",
+  "country": "KEN"
+ },
+ {
+  "name": "Sigowet/Soin",
+  "pcode": "KE035193",
+  "level": "admin2",
+  "parentPcode": "KE035",
+  "country": "KEN"
+ },
+ {
+  "name": "Sotik",
+  "pcode": "KE036194",
+  "level": "admin2",
+  "parentPcode": "KE036",
+  "country": "KEN"
+ },
+ {
+  "name": "Chepalungu",
+  "pcode": "KE036195",
+  "level": "admin2",
+  "parentPcode": "KE036",
+  "country": "KEN"
+ },
+ {
+  "name": "Bomet East",
+  "pcode": "KE036196",
+  "level": "admin2",
+  "parentPcode": "KE036",
+  "country": "KEN"
+ },
+ {
+  "name": "Bomet Central",
+  "pcode": "KE036197",
+  "level": "admin2",
+  "parentPcode": "KE036",
+  "country": "KEN"
+ },
+ {
+  "name": "Konoin",
+  "pcode": "KE036198",
+  "level": "admin2",
+  "parentPcode": "KE036",
+  "country": "KEN"
+ },
+ {
+  "name": "Lugari",
+  "pcode": "KE037199",
+  "level": "admin2",
+  "parentPcode": "KE037",
+  "country": "KEN"
+ },
+ {
+  "name": "Likuyani",
+  "pcode": "KE037200",
+  "level": "admin2",
+  "parentPcode": "KE037",
+  "country": "KEN"
+ },
+ {
+  "name": "Malava",
+  "pcode": "KE037201",
+  "level": "admin2",
+  "parentPcode": "KE037",
+  "country": "KEN"
+ },
+ {
+  "name": "Lurambi",
+  "pcode": "KE037202",
+  "level": "admin2",
+  "parentPcode": "KE037",
+  "country": "KEN"
+ },
+ {
+  "name": "Navakholo",
+  "pcode": "KE037203",
+  "level": "admin2",
+  "parentPcode": "KE037",
+  "country": "KEN"
+ },
+ {
+  "name": "Mumias West",
+  "pcode": "KE037204",
+  "level": "admin2",
+  "parentPcode": "KE037",
+  "country": "KEN"
+ },
+ {
+  "name": "Mumias East",
+  "pcode": "KE037205",
+  "level": "admin2",
+  "parentPcode": "KE037",
+  "country": "KEN"
+ },
+ {
+  "name": "Matungu",
+  "pcode": "KE037206",
+  "level": "admin2",
+  "parentPcode": "KE037",
+  "country": "KEN"
+ },
+ {
+  "name": "Butere",
+  "pcode": "KE037207",
+  "level": "admin2",
+  "parentPcode": "KE037",
+  "country": "KEN"
+ },
+ {
+  "name": "Khwisero",
+  "pcode": "KE037208",
+  "level": "admin2",
+  "parentPcode": "KE037",
+  "country": "KEN"
+ },
+ {
+  "name": "Shinyalu",
+  "pcode": "KE037209",
+  "level": "admin2",
+  "parentPcode": "KE037",
+  "country": "KEN"
+ },
+ {
+  "name": "Ikolomani",
+  "pcode": "KE037210",
+  "level": "admin2",
+  "parentPcode": "KE037",
+  "country": "KEN"
+ },
+ {
+  "name": "Vihiga",
+  "pcode": "KE038211",
+  "level": "admin2",
+  "parentPcode": "KE038",
+  "country": "KEN"
+ },
+ {
+  "name": "Sabatia",
+  "pcode": "KE038212",
+  "level": "admin2",
+  "parentPcode": "KE038",
+  "country": "KEN"
+ },
+ {
+  "name": "Hamisi",
+  "pcode": "KE038213",
+  "level": "admin2",
+  "parentPcode": "KE038",
+  "country": "KEN"
+ },
+ {
+  "name": "Luanda",
+  "pcode": "KE038214",
+  "level": "admin2",
+  "parentPcode": "KE038",
+  "country": "KEN"
+ },
+ {
+  "name": "Emuhaya",
+  "pcode": "KE038215",
+  "level": "admin2",
+  "parentPcode": "KE038",
+  "country": "KEN"
+ },
+ {
+  "name": "Mt. Elgon",
+  "pcode": "KE039216",
+  "level": "admin2",
+  "parentPcode": "KE039",
+  "country": "KEN"
+ },
+ {
+  "name": "Sirisia",
+  "pcode": "KE039217",
+  "level": "admin2",
+  "parentPcode": "KE039",
+  "country": "KEN"
+ },
+ {
+  "name": "Kabuchai",
+  "pcode": "KE039218",
+  "level": "admin2",
+  "parentPcode": "KE039",
+  "country": "KEN"
+ },
+ {
+  "name": "Bumula",
+  "pcode": "KE039219",
+  "level": "admin2",
+  "parentPcode": "KE039",
+  "country": "KEN"
+ },
+ {
+  "name": "Kanduyi",
+  "pcode": "KE039220",
+  "level": "admin2",
+  "parentPcode": "KE039",
+  "country": "KEN"
+ },
+ {
+  "name": "Webuye East",
+  "pcode": "KE039221",
+  "level": "admin2",
+  "parentPcode": "KE039",
+  "country": "KEN"
+ },
+ {
+  "name": "Webuye West",
+  "pcode": "KE039222",
+  "level": "admin2",
+  "parentPcode": "KE039",
+  "country": "KEN"
+ },
+ {
+  "name": "Kimilili",
+  "pcode": "KE039223",
+  "level": "admin2",
+  "parentPcode": "KE039",
+  "country": "KEN"
+ },
+ {
+  "name": "Tongaren",
+  "pcode": "KE039224",
+  "level": "admin2",
+  "parentPcode": "KE039",
+  "country": "KEN"
+ },
+ {
+  "name": "Teso North",
+  "pcode": "KE040225",
+  "level": "admin2",
+  "parentPcode": "KE040",
+  "country": "KEN"
+ },
+ {
+  "name": "Teso South",
+  "pcode": "KE040226",
+  "level": "admin2",
+  "parentPcode": "KE040",
+  "country": "KEN"
+ },
+ {
+  "name": "Nambale",
+  "pcode": "KE040227",
+  "level": "admin2",
+  "parentPcode": "KE040",
+  "country": "KEN"
+ },
+ {
+  "name": "Matayos",
+  "pcode": "KE040228",
+  "level": "admin2",
+  "parentPcode": "KE040",
+  "country": "KEN"
+ },
+ {
+  "name": "Butula",
+  "pcode": "KE040229",
+  "level": "admin2",
+  "parentPcode": "KE040",
+  "country": "KEN"
+ },
+ {
+  "name": "Funyula",
+  "pcode": "KE040230",
+  "level": "admin2",
+  "parentPcode": "KE040",
+  "country": "KEN"
+ },
+ {
+  "name": "Budalangi",
+  "pcode": "KE040231",
+  "level": "admin2",
+  "parentPcode": "KE040",
+  "country": "KEN"
+ },
+ {
+  "name": "Ugenya",
+  "pcode": "KE041232",
+  "level": "admin2",
+  "parentPcode": "KE041",
+  "country": "KEN"
+ },
+ {
+  "name": "Ugunja",
+  "pcode": "KE041233",
+  "level": "admin2",
+  "parentPcode": "KE041",
+  "country": "KEN"
+ },
+ {
+  "name": "Alego Usonga",
+  "pcode": "KE041234",
+  "level": "admin2",
+  "parentPcode": "KE041",
+  "country": "KEN"
+ },
+ {
+  "name": "Gem",
+  "pcode": "KE041235",
+  "level": "admin2",
+  "parentPcode": "KE041",
+  "country": "KEN"
+ },
+ {
+  "name": "Bondo",
+  "pcode": "KE041236",
+  "level": "admin2",
+  "parentPcode": "KE041",
+  "country": "KEN"
+ },
+ {
+  "name": "Rarieda",
+  "pcode": "KE041237",
+  "level": "admin2",
+  "parentPcode": "KE041",
+  "country": "KEN"
+ },
+ {
+  "name": "Kisumu East",
+  "pcode": "KE042238",
+  "level": "admin2",
+  "parentPcode": "KE042",
+  "country": "KEN"
+ },
+ {
+  "name": "Kisumu West",
+  "pcode": "KE042239",
+  "level": "admin2",
+  "parentPcode": "KE042",
+  "country": "KEN"
+ },
+ {
+  "name": "Kisumu Central",
+  "pcode": "KE042240",
+  "level": "admin2",
+  "parentPcode": "KE042",
+  "country": "KEN"
+ },
+ {
+  "name": "Seme",
+  "pcode": "KE042241",
+  "level": "admin2",
+  "parentPcode": "KE042",
+  "country": "KEN"
+ },
+ {
+  "name": "Nyando",
+  "pcode": "KE042242",
+  "level": "admin2",
+  "parentPcode": "KE042",
+  "country": "KEN"
+ },
+ {
+  "name": "Muhoroni",
+  "pcode": "KE042243",
+  "level": "admin2",
+  "parentPcode": "KE042",
+  "country": "KEN"
+ },
+ {
+  "name": "Nyakach",
+  "pcode": "KE042244",
+  "level": "admin2",
+  "parentPcode": "KE042",
+  "country": "KEN"
+ },
+ {
+  "name": "Kasipul",
+  "pcode": "KE043245",
+  "level": "admin2",
+  "parentPcode": "KE043",
+  "country": "KEN"
+ },
+ {
+  "name": "Kabondo Kasipul",
+  "pcode": "KE043246",
+  "level": "admin2",
+  "parentPcode": "KE043",
+  "country": "KEN"
+ },
+ {
+  "name": "Karachuonyo",
+  "pcode": "KE043247",
+  "level": "admin2",
+  "parentPcode": "KE043",
+  "country": "KEN"
+ },
+ {
+  "name": "Rangwe",
+  "pcode": "KE043248",
+  "level": "admin2",
+  "parentPcode": "KE043",
+  "country": "KEN"
+ },
+ {
+  "name": "Homa Bay",
+  "pcode": "KE043249",
+  "level": "admin2",
+  "parentPcode": "KE043",
+  "country": "KEN"
+ },
+ {
+  "name": "Ndhiwa",
+  "pcode": "KE043250",
+  "level": "admin2",
+  "parentPcode": "KE043",
+  "country": "KEN"
+ },
+ {
+  "name": "Suba North",
+  "pcode": "KE043251",
+  "level": "admin2",
+  "parentPcode": "KE043",
+  "country": "KEN"
+ },
+ {
+  "name": "Suba South",
+  "pcode": "KE043252",
+  "level": "admin2",
+  "parentPcode": "KE043",
+  "country": "KEN"
+ },
+ {
+  "name": "Rongo",
+  "pcode": "KE044253",
+  "level": "admin2",
+  "parentPcode": "KE044",
+  "country": "KEN"
+ },
+ {
+  "name": "Awendo",
+  "pcode": "KE044254",
+  "level": "admin2",
+  "parentPcode": "KE044",
+  "country": "KEN"
+ },
+ {
+  "name": "Suna East",
+  "pcode": "KE044255",
+  "level": "admin2",
+  "parentPcode": "KE044",
+  "country": "KEN"
+ },
+ {
+  "name": "Suna West",
+  "pcode": "KE044256",
+  "level": "admin2",
+  "parentPcode": "KE044",
+  "country": "KEN"
+ },
+ {
+  "name": "Uriri",
+  "pcode": "KE044257",
+  "level": "admin2",
+  "parentPcode": "KE044",
+  "country": "KEN"
+ },
+ {
+  "name": "Nyatike",
+  "pcode": "KE044258",
+  "level": "admin2",
+  "parentPcode": "KE044",
+  "country": "KEN"
+ },
+ {
+  "name": "Kuria West",
+  "pcode": "KE044259",
+  "level": "admin2",
+  "parentPcode": "KE044",
+  "country": "KEN"
+ },
+ {
+  "name": "Kuria East",
+  "pcode": "KE044260",
+  "level": "admin2",
+  "parentPcode": "KE044",
+  "country": "KEN"
+ },
+ {
+  "name": "Bonchari",
+  "pcode": "KE045261",
+  "level": "admin2",
+  "parentPcode": "KE045",
+  "country": "KEN"
+ },
+ {
+  "name": "South Mugirango",
+  "pcode": "KE045262",
+  "level": "admin2",
+  "parentPcode": "KE045",
+  "country": "KEN"
+ },
+ {
+  "name": "Bomachoge Borabu",
+  "pcode": "KE045263",
+  "level": "admin2",
+  "parentPcode": "KE045",
+  "country": "KEN"
+ },
+ {
+  "name": "Bobasi",
+  "pcode": "KE045264",
+  "level": "admin2",
+  "parentPcode": "KE045",
+  "country": "KEN"
+ },
+ {
+  "name": "Bomachoge Chache",
+  "pcode": "KE045265",
+  "level": "admin2",
+  "parentPcode": "KE045",
+  "country": "KEN"
+ },
+ {
+  "name": "Nyaribari Masaba",
+  "pcode": "KE045266",
+  "level": "admin2",
+  "parentPcode": "KE045",
+  "country": "KEN"
+ },
+ {
+  "name": "Nyaribari Chache",
+  "pcode": "KE045267",
+  "level": "admin2",
+  "parentPcode": "KE045",
+  "country": "KEN"
+ },
+ {
+  "name": "Kitutu Chache North",
+  "pcode": "KE045268",
+  "level": "admin2",
+  "parentPcode": "KE045",
+  "country": "KEN"
+ },
+ {
+  "name": "Kitutu Chache South",
+  "pcode": "KE045269",
+  "level": "admin2",
+  "parentPcode": "KE045",
+  "country": "KEN"
+ },
+ {
+  "name": "Kitutu Masaba",
+  "pcode": "KE046270",
+  "level": "admin2",
+  "parentPcode": "KE046",
+  "country": "KEN"
+ },
+ {
+  "name": "West Mugirango",
+  "pcode": "KE046271",
+  "level": "admin2",
+  "parentPcode": "KE046",
+  "country": "KEN"
+ },
+ {
+  "name": "North Mugirango",
+  "pcode": "KE046272",
+  "level": "admin2",
+  "parentPcode": "KE046",
+  "country": "KEN"
+ },
+ {
+  "name": "Borabu",
+  "pcode": "KE046273",
+  "level": "admin2",
+  "parentPcode": "KE046",
+  "country": "KEN"
+ },
+ {
+  "name": "Westlands",
+  "pcode": "KE047274",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Kilimani",
+  "pcode": "KE047275",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Dagoretti",
+  "pcode": "KE047276",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Langata",
+  "pcode": "KE047277",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Kibra",
+  "pcode": "KE047278",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Roysambu",
+  "pcode": "KE047279",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Kasarani",
+  "pcode": "KE047280",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Ruaraka",
+  "pcode": "KE047281",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Embakasi South",
+  "pcode": "KE047282",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Embakasi North",
+  "pcode": "KE047283",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Embakasi Central",
+  "pcode": "KE047284",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Embakasi East",
+  "pcode": "KE047285",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Embakasi West",
+  "pcode": "KE047286",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Makadara",
+  "pcode": "KE047287",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Kamukunji",
+  "pcode": "KE047288",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Starehe",
+  "pcode": "KE047289",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ },
+ {
+  "name": "Mathare",
+  "pcode": "KE047290",
+  "level": "admin2",
+  "parentPcode": "KE047",
+  "country": "KEN"
+ }
+]
