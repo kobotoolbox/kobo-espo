@@ -64,10 +64,11 @@ packs = ["core", "support", "responses", "roster", "sites", "grants", "fivew", "
 <ul>
   <li><strong>What goes by email</strong>: access to a new account (EspoCRM's link to set a password: <code>invite_user</code>, and a CSO contact's portal login); assignment (tasks, cases, applications, projects, responses, sites, as the packs ask); mentions, so the bridge's and the agents' notes that mention someone reach them too (EspoCRM emails a mention if it's still unread after 30 seconds).</li>
   <li><strong>Found</strong>: EspoCRM sends its own emails through the <em>group email account</em> whose address is the from address, not with the Outbound Emails settings, which only its "Send Test Email" uses. The seed makes that account (active, SMTP on, not shared).</li>
+  <li><strong>Scheduled emails</strong> (a CSO's welcome email, made by formula) are sent by EspoCRM's job every 10 minutes, with the system SMTP, which has to be <em>shared</em> for that: the seed shares it. No role gives people access to Email, so nobody can choose <code>noreply@</code> as their From.</li>
   <li><strong>Test users</strong> have Resend's test inbox, <code>delivered+&lt;username&gt;@resend.dev</code>: it accepts everything and never bounces. Contacts and focal points keep <code>example.org</code>: EspoCRM never emails them.</li>
   <li><strong>Test runs</strong> turn assignment and mention emails off while they run (<code>tests/run_all.sh</code>), so a run doesn't use up Resend's daily quota.</li>
 </ul>
-<figure><a href="static/shots/email-settings.jpg"><img src="static/shots/email-settings.jpg" alt="Administration, Outbound Emails: system email address noreply@respond.kobolabs.dev, from name Kobo Respond, not shared."></a><figcaption>Outbound email, as the seed sets it: the address and name EspoCRM sends from. The SMTP server (Resend) is on the group email account of that address.</figcaption></figure>
+<figure><a href="static/shots/email-settings.jpg"><img src="static/shots/email-settings.jpg" alt="Administration, Outbound Emails: system email address noreply@respond.kobolabs.dev, from name Kobo Respond, not shared."></a><figcaption>Outbound email: the address and name EspoCRM sends from. The SMTP server (Resend) is on the group email account of that address. (Taken before the seed shared it.)</figcaption></figure>
 <p>For a real instance, the steps by hand (the sending domain's DNS records first) are in <code>docs/manual-steps.md</code>, "Outgoing email".</p>
 </section>
 

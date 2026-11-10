@@ -19,6 +19,11 @@ A pack, workflows/<name>/:
                                  extension, KoboWorkflows, when it changes
     [portal_roles.<Name>]        a portal's role (access by "account", "contact", "own")
     [[portals]]                  a portal: its name, customId (its URL), tabs, roles
+    [params]                     what an instance sets for it (its own forms' links...):
+                                 defaults here, the instance's in deploy/instance.toml
+                                 [params.<pack>]; a formula says {{name}}, or
+                                 {{pick name $variable}} for a table of values by key
+                                 (e.g. by country, "default" for the rest)
 
     spec = load(['core', 'cso'])    # the packs and what they require, merged
     apply(espo, spec, users=False)  # idempotent; never deletes records
@@ -125,8 +130,34 @@ def merge_ordered(lists):
     return out
 
 
-def load(names, packs_dir=PACKS):
-    """The packs (and what they require), merged into one spec for apply()."""
+def formula_value(v):
+    return "'" + str(v).replace('\\', '\\\\').replace("'", "\\'") + "'"
+
+
+def fill(text, params, where):
+    """A pack's formula with its parameters: {{name}} a quoted string, {{pick name $var}}
+    an expression choosing a table's value by $var's value (its "default" otherwise)."""
+    def one(m):
+        parts = m.group(1).split()
+        if parts[0] == 'pick' and len(parts) == 3:
+            table = params.get(parts[1]) or {}
+            if not isinstance(table, dict):
+                raise ValueError(f'{where}: {{{{pick {parts[1]} ...}}}} needs a table')
+            expr = formula_value(table.get('default', ''))
+            for key, value in reversed([(k, v) for k, v in table.items() if k != 'default']):
+                expr = f"ifThenElse({parts[2]} == {formula_value(key)}, {formula_value(value)}, {expr})"
+            return expr
+        if len(parts) == 1:
+            if parts[0] not in params:
+                raise ValueError(f'{where}: no parameter {parts[0]!r} (the pack\'s [params] or the instance\'s)')
+            return formula_value(params[parts[0]])
+        raise ValueError(f'{where}: {{{{{m.group(1)}}}}}?')
+    return re.sub(r'\{\{\s*([^}]+?)\s*\}\}', one, text)
+
+
+def load(names, packs_dir=PACKS, params=None):
+    """The packs (and what they require), merged into one spec for apply(). `params`: the
+    instance's, by pack ({"cso": {...}}), over each pack's own [params]."""
     packs = order(names, packs_dir)
     lists = lists_of(packs, packs_dir)
     spec = {'packs': packs, 'lists': lists, 'entities': {}, 'fields': {}, 'links': [], 'codes': {}, 'teams': [],
@@ -187,9 +218,11 @@ def load(names, packs_dir=PACKS):
         spec['agent_entities'].update(p.get('agent_entities', {}))
         spec['agent_guarded'] += p.get('agent_guarded', [])
         spec['task_parents'] += p.get('task_parents', [])
+        mine = {**p.get('params', {}), **((params or {}).get(name) or {})}
+        spec.setdefault('params', {})[name] = mine
         for path in sorted((d / 'formulas').glob('*.formula')):
             ent, kind = path.stem.split('.')
-            spec['formulas'].setdefault(ent, {}).setdefault(kind, []).append(path.read_text())
+            spec['formulas'].setdefault(ent, {}).setdefault(kind, []).append(fill(path.read_text(), mine, f'{name} {path.name}'))
         if (d / 'agents.json').exists():
             spec['agents'] += json.loads((d / 'agents.json').read_text())
         if (d / 'migrate.py').exists():

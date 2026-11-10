@@ -120,7 +120,12 @@
 
 <section id="email">
 <h2>Emails</h2>
-<p>EspoCRM sends its emails (portal invitations, assignments, mentions) through Resend, from <code>noreply@respond.kobolabs.dev</code>; see <a href="running.html#email">Running it</a>. Still to build: the email a CSO gets after it registers, with its code and its links (the update form, filled in with its code and key, and the portal).</p>
+<p>EspoCRM sends its emails through Resend, from <code>noreply@respond.kobolabs.dev</code> (<a href="running.html#email">Running it</a>).</p>
+<ul>
+  <li><strong>The welcome email.</strong> A CSO's new focal point, from the Kobo form, gets its CSO's code and its links: the <strong>update form</strong>, with the code and key filled in (so what they send counts), the profile form to send again, and the portal. It's made when the contact is, and EspoCRM sends it within ten minutes; an email problem never stops a registration. It's on the CSO's Account, for the coordinators to see. Contacts added in the portal don't get it: their CSO's people know it already.</li>
+  <li><strong>Its links are the instance's</strong>, in <code>deploy/instance.toml</code> (<code>[params.cso]</code>): each country's forms (a link fills in a form's questions by its Kobo id) and the portal's address. On the test instance only Resend's test inbox gets the welcome email, since the made-up contacts are at <code>example.org</code>.</li>
+  <li><strong>The portal login</strong>: a coordinator asks for it in Claude, through the EspoCRM MCP's <code>invite_portal_user</code> (the contact, the portal, its role); EspoCRM emails them a link to set their password. Or an admin: Contacts, the contact, <em>Create Portal User</em>.</li>
+</ul>
 </section>
 
 <section id="country">
@@ -137,8 +142,9 @@
 <section id="limits">
 <h2>Limits and open questions</h2>
 <ul>
-  <li><strong>Not built yet</strong>: the email after registering, the matching of offers and needs, the four dashboards (the directory, the map of presence, gaps and overlaps, the matching), and follow-up when a profile goes stale. See the plan, <code>plans/cso-mapping-plan.md</code>.</li>
-  <li><strong>Portal logins</strong> are given by a coordinator (EspoCRM needs an admin to make a portal user; an assistant tool for coordinators is next).</li>
+  <li><strong>The forms need a Kobo login</strong> on the test account: for real CSOs, the projects must accept submissions without one.</li>
+  <li><strong>Not built yet</strong>: the matching of offers and needs, the four dashboards (the directory, the map of presence, gaps and overlaps, the matching), and follow-up when a profile goes stale. See the plan, <code>plans/cso-mapping-plan.md</code>.</li>
+  <li><strong>Portal logins</strong> need an admin in EspoCRM, so a coordinator asks for one through the MCP (<code>invite_portal_user</code>) rather than in EspoCRM's screens.</li>
   <li><strong>To agree with WHO</strong>: the hazards list (the draft has none; a suggested one is in), the list of needs on the update form (it uses the offers list now), splitting the CSO type question, the countries after Kenya, the languages, and where it runs and whose data it is.</li>
   <li><strong>Kenya stops at sub-counties</strong>: the boundaries have no wards.</li>
   <li><strong>Jamaica's areas</strong>, from the Hurricane Melissa form, use other codes than the geocoder's, so CSO mapping in Jamaica waits for a decision on them.</li>

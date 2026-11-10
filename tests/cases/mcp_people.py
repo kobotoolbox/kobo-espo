@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
 The EspoCRM MCP's tools for responses, cluster projects and people (kobo-espo-bridge
-espo_mcp/tools.py): U1-U7, against the test droplet. A response set up as an agent would:
-the response, a project, a person invited into it, team changes, and what's refused.
+espo_mcp/tools.py): U1-U8, against the test droplet. A response set up as an agent would:
+the response, a project, a person invited into it, team changes, and what's refused; and a
+contact's portal login (U8, the CSO portal's).
 
     python3 -I tests/cases/mcp_people.py
 
@@ -178,6 +179,39 @@ def run(a, inst):
     again = tools.add_to_team(inst, USER, team_name, confirm=first['confirm'])
     check('U7', 'add_to_team after someone else did it: nothing to do (the token not needed)', again.get('changed') is False,
           again)
+
+    # --- U8: a contact's portal login (invite_portal_user) ---------------------------------------
+    account = a.call('POST', '/Account', body={'name': f'MCPP {RUN} Organisation'})
+    email = f'delivered+mcpp-portal-{RUN}@resend.dev'
+    contact = a.call('POST', '/Contact', body={'firstName': 'Pia', 'lastName': f'Portal {RUN}', 'emailAddress': email,
+                                               'accountId': account['id']}, headers={'X-Skip-Duplicate-Check': 'true'})
+    loose = a.call('POST', '/Contact', body={'firstName': 'Lou', 'lastName': f'Noaccount {RUN}',
+                                             'emailAddress': f'mcpp-loose-{RUN}@example.org'}, headers={'X-Skip-Duplicate-Check': 'true'})
+    check('U8', 'invite_portal_user: an unknown contact, one on no Account, an unknown portal or role: refused',
+          all(refused(f) for f in (lambda: tools.invite_portal_user(inst, 'nobody@example.org', 'CSO portal', 'CSO portal'),
+                                   lambda: tools.invite_portal_user(inst, loose['id'], 'CSO portal', 'CSO portal'),
+                                   lambda: tools.invite_portal_user(inst, email, 'Nope portal', 'CSO portal'),
+                                   lambda: tools.invite_portal_user(inst, email, 'CSO portal', 'Nope role'))))
+    first = tools.invite_portal_user(inst, email, 'CSO portal', 'CSO portal')
+    check('U8', 'first call: what it would make (the contact, its Account, the portal and role), nothing made',
+          first.get('would_create', {}).get('sees what belongs to') == [account['name']] and not by(a, 'User', 'contactId', contact['id']),
+          first)
+    done = tools.invite_portal_user(inst, email, 'CSO portal', 'CSO portal', confirm=first['confirm'])
+    u = by(a, 'User', 'contactId', contact['id'])
+    u = a.call('GET', f'/User/{u[0]["id"]}') if u else {}
+    portal = by(a, 'Portal', 'name', 'CSO portal')[0]
+    check('U8', "with the token: a portal user for the contact, on its Account, in the portal with its role",
+          u.get('type') == 'portal' and u.get('contactId') == contact['id'] and u.get('accountsIds') == [account['id']]
+          and u.get('portalsIds') == [portal['id']] and list((u.get('portalRolesNames') or {}).values()) == ['CSO portal']
+          and done.get('changed'), {k: u.get(k) for k in ('type', 'contactName', 'accountsNames', 'portalsNames', 'portalRolesNames')})
+    check('U8', 'the same contact again: refused (it has a login)',
+          refused(lambda: tools.invite_portal_user(inst, contact['id'], 'CSO portal', 'CSO portal')))
+    check('U8', 'no password field in either answer', not any('password' in k for k in keys(first) | keys(done)))
+    for x in by(a, 'User', 'contactId', contact['id']):
+        a.call('DELETE', f'/User/{x["id"]}')
+    for x in (contact, loose):
+        a.call('DELETE', f'/Contact/{x["id"]}')
+    a.call('DELETE', f'/Account/{account["id"]}')
 
 
 def status(fn):

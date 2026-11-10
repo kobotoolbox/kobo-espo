@@ -394,6 +394,9 @@ Phase 5; the workflow packs (`workflow-packs-plan.md`) before Phase 5.
   and are P-coded on the next run. Its boundaries are COD-AB's, and a country's P-codes
   can change with a new COD-AB edition: the loader's rerun updates the areas, and the
   records keep the P-codes they were given.
+- **The CSO forms need a Kobo login** on the test account (not open to anonymous
+  submissions): real CSOs can't open their links until the projects accept submissions
+  without one (a setting on each Kobo project, at deployment).
 - **Who gives a CSO's new contact portal access**: the country's coordinator (simple,
   slower), or the CSO's first contact as its portal admin (EspoCRM portals have no such
   role by themselves: a formula or agent would invite a contact a portal user marks for

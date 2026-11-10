@@ -23,6 +23,17 @@ tabs = { label = "CSO mapping", entities = ["CCso", "CPresence", "CCsoUpdate"] }
 [settings]
 global_search = ["CCso"]
 
+# What an instance sets (deploy/instance.toml [params.cso]): the welcome email a CSO's new
+# focal point gets, with its code and its links (the forms' links fill in its code and key:
+# {code}, {key}), by country ("default" for the rest). Off unless the instance turns it on
+[params]
+welcome_email = "off"
+from = ""
+portal_url = ""
+email_only_to = ""
+update_links = {}
+profile_links = {}
+
 [entities.Cso]
 label = "CSO"
 labelPlural = "CSOs"

@@ -37,3 +37,30 @@ if (cCsoId && (entity\isNew() || entity\isAttributeChanged('firstName') || entit
     }
     record\update('CCso', cCsoId, 'sharedContact', ifThenElse($text, $text, null));
 }
+
+// The welcome email: a new focal point from Kobo (not one added in the portal, whose people
+// know the CSO already) gets the CSO's code and its links: the update form and the profile
+// form with its code and key filled in, and the portal. Made here as a scheduled email
+// (EspoCRM's job sends it within minutes), so an email problem never stops a registration.
+// The instance's parameters (deploy/instance.toml [params.cso]) turn it on and give the links
+if (entity\isNew() && cCsoId && emailAddress && env\userAttribute('type') != 'portal' && {{welcome_email}} == 'on'
+        && ({{email_only_to}} == '' || string\contains(string\lowerCase(emailAddress), {{email_only_to}}))) {
+    $code = record\attribute('CCso', cCsoId, 'code');
+    $key = record\attribute('CCso', cCsoId, 'updateKey');
+    $cso = record\attribute('CCso', cCsoId, 'name');
+    $c = record\attribute('CCso', cCsoId, 'countryRegistered');
+    $update = string\replace(string\replace({{pick update_links $c}}, '{code}', $code), '{key}', $key);
+    $profile = string\replace(string\replace({{pick profile_links $c}}, '{code}', $code), '{key}', $key);
+    $body = string\concatenate('<p>Hello ', ifThenElse(firstName, firstName, ''), ',</p>',
+        '<p><strong>', $cso, '</strong> is in the CSO mapping, with the code <strong>', $code, '</strong>. ',
+        'You are one of its focal points.</p>',
+        ifThenElse($update, string\concatenate('<p><strong>To say what your organisation is doing in a place</strong> ',
+            '(and what it needs there), use this link: it fills in your code for you.<br><a href="', $update, '">', $update, '</a></p>'), ''),
+        ifThenElse($profile, string\concatenate('<p>To send your profile again from Kobo: <a href="', $profile, '">', $profile, '</a></p>'), ''),
+        ifThenElse({{portal_url}}, string\concatenate('<p>Your coordinator can give you a login to the <strong>CSO portal</strong>, ',
+            'where you keep your profile, places and contacts up to date: <a href="', {{portal_url}}, '">', {{portal_url}}, '</a></p>'), ''),
+        '<p>Keep these links to yourself: they let whoever has them report for your organisation.</p>');
+    record\create('Email', 'name', string\concatenate($cso, ': your code and links for the CSO mapping'),
+        'body', $body, 'isHtml', true, 'to', emailAddress, 'from', {{from}}, 'status', 'Draft',
+        'sendAt', datetime\addMinutes(datetime\now(), 2), 'parentType', 'Account', 'parentId', accountId);
+}

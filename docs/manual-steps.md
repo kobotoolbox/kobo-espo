@@ -52,7 +52,9 @@ A new response's site visit form needs its own `[[list]]` entry (its team) and
      Active, IMAP off, SMTP on with the same server, port, TLS, username and key. This
      EspoCRM sends its own emails (access info, notifications) through the group account
      whose address is the from address; the Outbound Emails page's SMTP alone sends only
-     its "Send Test Email". Leave "Shared" off, so nobody sends as `noreply`.
+     its "Send Test Email". On Outbound Emails, tick "Is Shared": EspoCRM's scheduled
+     emails (a CSO's welcome email) go out with the system SMTP only when it's shared.
+     Nobody can then send as `noreply` from the screens: no role gives people Email.
   4. Administration → Notifications: "Email notifications upon assignment" (entities
      Task, Case, CApplication, CProject, CResponse, CSite) and "...mentions in posts".
   Test users' addresses are Resend's test inbox (`delivered+<username>@resend.dev`): it

@@ -35,7 +35,7 @@
     "ok": true,
     "detail": {
       "would_create": {
-        "api_user": "dash-prj-8h8n-csite",
+        "api_user": "dash-prj-sjec-csite",
         "reads": "CSite records of the team Cluster: Test EQ 1 ETC",
         "fields": [
           "latitude",
@@ -50,7 +50,7 @@
       "note": "Dashboards show what this user reads to anyone their link or password reaches: EspoCRM's teams no longer apply there. Keep personal data out.",
       "changed": false,
       "confirm_required": true,
-      "confirm": "eyJleHAiOiAxNzk0MTU5MjA5LCAiZiI6IHsiYWN0aW9uIjogImNyZWF0ZV9kYXNoYm9hcmRfZmVlZCIsICJlbnRpdHkiOiAiQ1NpdGUiLCAiZmllbGRzIjogWyJsYXRpdHVkZSIsICJsb25naXR1ZGUiLCAicHJvamVjdCIsICJzaXRlQ29kZSIsICJzdGF0dXMiXSwgInRlYW0iOiAiNmFmMDUwNjQ0YmM1YWI4ZTYiLCAidXNlciI6ICJkYXNoLXByai04aDhuLWNzaXRlIn19.s4ZZ3v3-UZKoTZ2pPTFpJlr_xYZhgtM7Hq0Rb9D5bUE",
+      "confirm": "eyJleHAiOiAxNzk0MzI0MzI3LCAiZiI6IHsiYWN0aW9uIjogImNyZWF0ZV9kYXNoYm9hcmRfZmVlZCIsICJlbnRpdHkiOiAiQ1NpdGUiLCAiZmllbGRzIjogWyJsYXRpdHVkZSIsICJsb25naXR1ZGUiLCAicHJvamVjdCIsICJzaXRlQ29kZSIsICJzdGF0dXMiXSwgInRlYW0iOiAiNmFmMDUwNjQ0YmM1YWI4ZTYiLCAidXNlciI6ICJkYXNoLXByai1zamVjLWNzaXRlIn19.C0TTc5jAHvoIqwdoZNDHWlCfGUR8iVFC3MK8Pl4JFd8",
       "next": "Show the user this, and call again with `confirm` only once they have agreed."
     }
   },
@@ -60,7 +60,7 @@
     "ok": true,
     "detail": {
       "changed": true,
-      "api_user": "dash-prj-8h8n-csite",
+      "api_user": "dash-prj-sjec-csite",
       "reads": "CSite of Cluster: Test EQ 1 ETC",
       "fields": [
         "siteCode",
@@ -69,7 +69,7 @@
         "longitude",
         "project"
       ],
-      "its_key": "https://staging.respond.kobolabs.dev/#ApiUser/view/6af0b0257dd069b48 (an admin sees it there)",
+      "its_key": "https://staging.respond.kobolabs.dev/#ApiUser/view/6af3351807661dc5e (an admin sees it there)",
       "next": "Ask the owner to open that page, copy the API key, and paste it into the dashboards admin page (EspoCRM card) with the address https://staging.respond.kobolabs.dev. Never ask for the key in the chat. Then kobo-mcp create_espo_feed with entity CSite and these fields."
     }
   },
@@ -78,22 +78,22 @@
     "check": "an API user, not an admin (kobo-dash accepts it)",
     "ok": true,
     "detail": {
-      "id": "6af0b0257dd069b48",
-      "name": "dash-prj-8h8n-csite",
+      "id": "6af3351807661dc5e",
+      "name": "dash-prj-sjec-csite",
       "deleted": false,
-      "userName": "dash-prj-8h8n-csite",
+      "userName": "dash-prj-sjec-csite",
       "type": "api",
       "salutationName": null,
       "firstName": null,
-      "lastName": "dash-prj-8h8n-csite",
+      "lastName": "dash-prj-sjec-csite",
       "isActive": true,
       "title": null,
       "emailAddress": null,
       "phoneNumber": null,
       "ipAddress": "172.18.0.5",
       "avatarColor": null,
-      "createdAt": "2026-11-08 17:23:49",
-      "modifiedAt": "2026-11-08 17:23:49",
+      "createdAt": "2026-11-10 15:15:36",
+      "modifiedAt": "2026-11-10 15:15:36",
       "middleName": null,
       "emailAddressIsOptedOut": null,
       "emailAddressIsInvalid": null,
@@ -129,7 +129,7 @@
     "check": "its key reads the ETC project's sites only",
     "ok": true,
     "detail": [
-      "DASHF 158581 VSAT hub"
+      "DASHF 323707 VSAT hub"
     ]
   },
   {
@@ -138,14 +138,14 @@
     "ok": true,
     "detail": [
       {
-        "id": "6af0affdf2d60db79",
-        "name": "DASHF 158581 VSAT hub",
-        "createdAt": "2026-11-08 17:23:09",
-        "siteCode": "DF-158581-E",
+        "id": "6af33503d70039d55",
+        "name": "DASHF 323707 VSAT hub",
+        "createdAt": "2026-11-10 15:15:15",
+        "siteCode": "DF-323707-E",
         "status": "operational",
         "latitude": 18,
         "longitude": -76.8,
-        "projectName": "DASHF 158581 ETC"
+        "projectName": "DASHF 323707 ETC"
       }
     ]
   },
@@ -176,7 +176,7 @@
     "test": "D3",
     "check": "a response's feed (its coordinators' team) reads every project's sites",
     "ok": true,
-    "detail": "{'DASHF 158581 VSAT hub', 'DASHF 158581 Water point'}"
+    "detail": "{'DASHF 323707 Water point', 'DASHF 323707 VSAT hub'}"
   },
   {
     "test": "D3",
@@ -189,8 +189,8 @@
     "check": "list_dashboard_feeds: both",
     "ok": true,
     "detail": [
-      "dash-prj-8h8n-csite",
-      "dash-rsp-7men-csite"
+      "dash-prj-sjec-csite",
+      "dash-rsp-e9ze-csite"
     ]
   },
   {
@@ -199,7 +199,7 @@
     "ok": true,
     "detail": {
       "changed": true,
-      "removed": "dash-prj-8h8n-csite"
+      "removed": "dash-prj-sjec-csite"
     }
   },
   {

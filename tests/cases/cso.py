@@ -66,6 +66,9 @@ def cleanup(a):
         for entity, attr in (('CPresence', 'csoId'), ('CCsoUpdate', 'csoId'), ('Contact', 'cCsoId')):
             for r in a.call('GET', f'/{entity}', {'maxSize': 200, 'select': 'id', **where(attr, cso['id'])})['list']:
                 a.call('DELETE', f'/{entity}/{r["id"]}')
+        if cso.get('accountId'):
+            for m in a.call('GET', '/Email', {'maxSize': 50, 'select': 'id', **where('parentId', cso['accountId'])})['list']:
+                a.call('DELETE', f'/Email/{m["id"]}')  # its welcome emails (C11), sent or not
         a.call('DELETE', f'/CCso/{cso["id"]}')
         if cso.get('accountId'):
             a.call('DELETE', f'/Account/{cso["accountId"]}')
@@ -370,6 +373,34 @@ def run(a, kobo, uids, bridges):
               (len(areas), sorted(levels)))
 
     portal_tests(a, kobo, uids, bridges, amani, mto, one, rows)
+    welcome_tests(a, kobo, uids, bridges, one, rows)
+
+
+def welcome_tests(a, kobo, uids, bridges, one, rows):
+    """C11: the welcome email a CSO's new focal point gets (deploy/instance.toml turns it on;
+    on staging only for Resend's test inbox): a scheduled email with the CSO's code, the
+    update form's link filled in with its code and key, the portal."""
+    F = 'FOCAL_POINTS'
+    inbox = f'delivered+cso-{RUN}@resend.dev'
+    s = kobo.submit(uids['cso-profile-ken'], profile('Karibu', [('KE047', 'KE047288')], **{F: [
+        {f'{F}/name': 'Neema Inbox', f'{F}/position': 'Officer', f'{F}/email': inbox},
+        {f'{F}/name': 'Juma Example', f'{F}/position': 'Officer', f'{F}/email': f'juma-{RUN}@example.org'}]}))
+    bridges['cso-profile-ken'].once()
+    cso = one('CCso', 'cKoboSubmissionUuid', s['_uuid'])
+    mails = [a.call('GET', f'/Email/{m["id"]}') for m in a.call('GET', '/Email', {
+        'maxSize': 10, 'select': 'id', **where('parentId', cso.get('accountId') or '-')})['list']]
+    to = sorted(m.get('to') or '' for m in mails)
+    check('C11', 'a new focal point gets one welcome email; one at example.org none (staging: the test inbox only)',
+          to == [inbox], to)
+    m = mails[0] if len(mails) == 1 else {}
+    body = m.get('body') or ''
+    check('C11', 'scheduled (EspoCRM sends it), from noreply@, on the CSO\'s Account',
+          m.get('status') == 'Draft' and m.get('sendAt') and m.get('parentType') == 'Account'
+          and 'noreply@' in (m.get('from') or m.get('fromAddress') or m.get('fromString') or ''),
+          {k: m.get(k) for k in ('status', 'sendAt', 'parentType', 'from', 'fromAddress')})
+    check('C11', "its code, the Kenya update form's link with the code and key filled in, the portal",
+          cso.get('code', '-') in body and 'x/80mzANLS' in body and f'cso%5D={cso.get("code")}' in body
+          and f'key%5D={cso.get("updateKey")}' in body and '/portal/cso/' in body, body[:300])
 
 
 def portal_tests(a, kobo, uids, bridges, amani, mto, one, rows):

@@ -42,7 +42,8 @@ def instance(path=INSTANCE):
 
 def spec(path=INSTANCE):
     """The merged packs of an instance (what the tests read too: its agents, its users)."""
-    return workflows.load(instance(path)['packs'])
+    inst = instance(path)
+    return workflows.load(inst['packs'], params=inst.get('params'))
 
 
 def ensure_email(espo, entities):
@@ -54,7 +55,9 @@ def ensure_email(espo, entities):
     notify = os.environ.get('SEED_EMAIL_NOTIFICATIONS') != 'off'
     espo.call('PUT', '/Settings', body={
         'outboundEmailFromAddress': EMAIL['address'], 'outboundEmailFromName': EMAIL['name'],
-        'outboundEmailIsShared': False, 'smtpServer': EMAIL['host'], 'smtpPort': EMAIL['port'],
+        # Shared, so EspoCRM's scheduled emails (a CSO's welcome, by formula) can go out with it;
+        # nobody can choose noreply@ as their From: no role gives people access to Email
+        'outboundEmailIsShared': True, 'smtpServer': EMAIL['host'], 'smtpPort': EMAIL['port'],
         'smtpSecurity': EMAIL['security'], 'smtpAuth': True, 'smtpUsername': EMAIL['username'], 'smtpPassword': key,
         'assignmentEmailNotifications': notify,
         'assignmentEmailNotificationsEntityList': entities,
@@ -82,7 +85,7 @@ def main():
     args = ap.parse_args()
     espo = admin() if args.url == URL else Espo(args.url, basic=f'admin:{read_secrets()["ESPO_ADMIN_PASSWORD"]}')
     inst = instance(args.instance)
-    s = workflows.load(inst['packs'])
+    s = workflows.load(inst['packs'], params=inst.get('params'))
     print(f'packs: {", ".join(s["packs"])}')
     workflows.apply(espo, s, users=args.users, application_name=inst.get('application_name'),
                     email=lambda e: ensure_email(e, s['settings']['assignment_notifications']))

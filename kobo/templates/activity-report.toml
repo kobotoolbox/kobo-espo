@@ -413,9 +413,10 @@ order_by = "name"
 columns = { name = "code", label = "name", org_type = "orgType" }
 forms = ["5W activity report (espo-kobo test)"]
 
-[[list]]
+[[list]]  # Jamaica's parishes and communities (the Melissa form's P-codes), not other countries'
 file = "areas.csv"
 entity = "CAdminArea"
+where = { country = "JAM" }
 order_by = "pcode"
 columns = { name = "pcode", label = "name", level = "level", parent = "parentPcode" }
 forms = ["5W activity report (espo-kobo test)"]
