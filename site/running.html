@@ -19,11 +19,12 @@
       <li class="header__more"><a href="sites.html">Sites and lists</a></li>
       <li class="header__more"><a href="projects.html">Cluster projects</a></li>
       <li><a href="fivew.html">The 5W</a></li>
-      <li><a href="dashboards.html">Dashboards</a></li>
+      <li><a href="cso.html">CSO mapping</a></li>
+      <li class="header__more"><a href="dashboards.html">Dashboards</a></li>
       <li><a href="connect.html">Connecting a form</a></li>
       <li class="header__more"><a href="running.html" aria-current="page">Running it</a></li>
     </ul>
-    <a class="button button--filled button--m" href="https://espo-test.kobolabs.dev">Open the test EspoCRM</a>
+    <a class="button button--filled button--m" href="https://staging.respond.kobolabs.dev">Open the test EspoCRM</a>
   </div>
 </header>
 
@@ -39,6 +40,8 @@
 <nav class="docs__nav" aria-label="On this page">
   <ul>
     <li><a href="#setup">From nothing</a></li>
+    <li><a href="#workflows">Workflows as packs</a></li>
+    <li><a href="#email">Email</a></li>
     <li><a href="#templates">Templates and connections</a></li>
     <li><a href="#add">A new consortium or response</a></li>
     <li><a href="#people">People and roles</a></li>
@@ -56,16 +59,45 @@
 <pre><code># .env: ESPO_HOST, ESPO_SSH, KOBO_URL, KOBO_TOKEN (a test or bridge account's)
 deploy/up.sh                       # EspoCRM 10.0.11, MariaDB, its scheduler, Caddy (TLS)
 tests/fetch-secrets.sh             # the admin password, to secrets/ (not in git)
-python3 -I espo/seed/seed.py --users   # entities, fields, board, roles, teams, formulas, test users
+python3 -I espo/seed/seed.py --users   # the instance's workflow packs, its email, the test users
 deploy/bridges.sh                  # the bridge: one service for every connection, set up on the server</code></pre>
 <p>Each step can be run again: they all keep what's there and put back what they define.</p>
 <ul>
   <li><code>deploy/up.sh</code> generates the passwords on the server, the first time. It also sets everyone's theme to EspoCRM's light one, which Kobo's look is made for.</li>
   <li><strong>Kobo's look</strong> (colours, logo, favicon) is <code>espo/look/</code>, mounted from the repository: a stylesheet of EspoCRM's own colour variables, and a small module that loads it. A company logo set in Administration → User Interface shows instead of Kobo's.</li>
-  <li>The seed makes the <strong>Response</strong>, <strong>Site</strong> and <strong>Standard</strong> entities, the task board's columns, the five roles, the teams, and the formula scripts (<code>espo/formula/</code>).</li>
+  <li>The seed applies the instance's <strong>workflow packs</strong> (<a href="#workflows">below</a>): their entities, fields, layouts, roles, teams, formulas, reference data and example agents.</li>
   <li>The bridge sets each form up itself: its fields, its teams, and an API user that can do only what that form needs. It does it again when the template changes.</li>
 </ul>
 <div class="warning"><p>EspoCRM 10 doesn't install with all of <code>/var/www/html</code> on one volume (the "legacy" layout): mount <code>data</code>, <code>custom</code> and <code>client/custom</code> separately, as <code>docker-compose.yml</code> does. And publish it only once it has installed itself: its installer is open until then, and scanners found it within seconds.</p></div>
+</section>
+
+<section id="workflows">
+<h2>Workflows as packs</h2>
+<p>Each workflow is a folder of data in <code>workflows/</code>, not code: <strong>core</strong> (agents, admin areas, organisations, the task board), <strong>support</strong> (requests), <strong>responses</strong> (responses and cluster projects), <strong>roster</strong>, <strong>sites</strong>, <strong>grants</strong>, <strong>fivew</strong> (the 5W) and <strong>cso</strong> (CSO mapping). A pack has:</p>
+<ul>
+  <li><code>workflow.toml</code>: the packs it builds on, its entities and their fields, fields it adds to others' entities, links, short codes, teams, roles, layouts, settings, reference data to load, and test users;</li>
+  <li><code>lists/</code>, choice lists with codes (an enum names one: <code>list = "cso-lists.roles"</code>); <code>formulas/</code>, its part of each entity's scripts; <code>agents.json</code>, its example agents; <code>data/</code>;</li>
+  <li>for what the admin API can't set (which link a portal follows), <code>[metadata]</code>, installed as one small EspoCRM extension, <em>Kobo workflows</em>; and <code>[portal_roles]</code>, <code>[[portals]]</code>.</li>
+</ul>
+<p>An instance says which packs it has, in <code>deploy/instance.toml</code>; the test droplet has all eight. A pack's role is put together from every pack that adds to it (the CSO pack gives <em>Internal Staff</em> nothing, the 5W gives the cluster roles its activities). <code>espo/workflows.py</code> applies them, writing only what differs: on an instance that's up to date the seed takes about four minutes and changes nothing.</p>
+<pre><code># deploy/instance.toml
+application_name = "Kobo requests and responses (test)"
+packs = ["core", "support", "responses", "roster", "sites", "grants", "fivew", "cso"]</code></pre>
+<p>A new workflow, or a project's variant of one, is a new pack; a WHO instance with only the CSO mapping would have <code>packs = ["core", "cso"]</code>. <code>tests/snapshot.py</code> records what the seed made, to compare two runs. The plan: <code>plans/workflow-packs-plan.md</code>.</p>
+<figure><a href="static/shots/packs-extension.jpg"><img src="static/shots/packs-extension.jpg" width="1440" height="900" alt="Administration, Extensions: the extension Kobo workflows installed, its description naming the eight packs."></a><figcaption>The packs' metadata, as an extension the seed installs.</figcaption></figure>
+</section>
+
+<section id="email">
+<h2>Email</h2>
+<p>EspoCRM sends its emails through <strong>Resend</strong>, from <code>noreply@respond.kobolabs.dev</code> ("Kobo Respond"), SMTP <code>smtp.resend.com</code> port 2587 with TLS (DigitalOcean blocks 465 and 587), with a send-only API key in <code>secrets/resend.key</code>. The seed sets it up when the key is there.</p>
+<ul>
+  <li><strong>What goes by email</strong>: access to a new account (EspoCRM's link to set a password: <code>invite_user</code>, and a CSO contact's portal login); assignment (tasks, cases, applications, projects, responses, sites, as the packs ask); mentions, so the bridge's and the agents' notes that mention someone reach them too (EspoCRM emails a mention if it's still unread after 30 seconds).</li>
+  <li><strong>Found</strong>: EspoCRM sends its own emails through the <em>group email account</em> whose address is the from address, not with the Outbound Emails settings, which only its "Send Test Email" uses. The seed makes that account (active, SMTP on, not shared).</li>
+  <li><strong>Test users</strong> have Resend's test inbox, <code>delivered+&lt;username&gt;@resend.dev</code>: it accepts everything and never bounces. Contacts and focal points keep <code>example.org</code>: EspoCRM never emails them.</li>
+  <li><strong>Test runs</strong> turn assignment and mention emails off while they run (<code>tests/run_all.sh</code>), so a run doesn't use up Resend's daily quota.</li>
+</ul>
+<figure><a href="static/shots/email-settings.jpg"><img src="static/shots/email-settings.jpg" width="1440" height="900" alt="Administration, Outbound Emails: system email address noreply@respond.kobolabs.dev, from name Kobo Respond, not shared."></a><figcaption>Outbound email, as the seed sets it: the address and name EspoCRM sends from. The SMTP server (Resend) is on the group email account of that address.</figcaption></figure>
+<p>For a real instance, the steps by hand (the sending domain's DNS records first) are in <code>docs/manual-steps.md</code>, "Outgoing email".</p>
 </section>
 
 <section id="templates">
@@ -98,7 +130,7 @@ deploy/bridges.sh                  # the bridge: one service for every connectio
   <li><strong>Internal Staff</strong>, <strong>Support Triager</strong>, <strong>Partner Staff</strong>;</li>
   <li><strong>Roster Expert</strong>, <strong>Volunteer</strong>.</li>
 </ul>
-<p>Then give them the <strong>teams</strong> of the projects and responses they work on, and nothing more. What each role may do is on the <a href="./#access">overview</a>, and in <code>espo/seed/seed.py</code>.</p>
+<p>Then give them the <strong>teams</strong> of the projects and responses they work on, and nothing more. What each role may do is on the <a href="./#access">overview</a>, and in each pack's <code>workflow.toml</code>. CSO mapping's coordinators have <strong>CSO Coordinator</strong> and their country's team (<code>CSO: Kenya</code>); a CSO's people get a portal login (<a href="cso.html#portal">CSO portal</a>).</p>
 <ul>
   <li><strong>A volunteer who's deployed</strong> (from the roster, a contact with profile Volunteer) becomes a user by hand: role Volunteer, the response's team. It's deliberately not automatic.</li>
   <li><strong>Someone who leaves</strong>: take them out of the team, and reassign their open tasks.</li>
@@ -156,7 +188,7 @@ deploy/agents.sh up</code></pre>
 <pre><code>tests/run_all.sh                   # unit tests, seed, isolation, board, agents, connections, MCP, connection (fake Kobo)
 tests/run_all.sh --kobo real       # the connection tests on the Kobo account in .env
 python3 -I tests/cases/latency.py  # submission to record, through the running bridges</code></pre>
-<p>The tests make their own records (named "ISO …" and "WFB …", and cases with a run number). <code>site/demo-data.py</code> clears the instance and fills it with the made-up demo data again. <code>site/shots.py</code> takes this manual's screenshots, and <code>site/build.py</code> builds its pages.</p>
+<p>The tests make their own records (named "ISO …", "WFB …", "CSOT …", and cases with a run number). <code>site/demo-data.py</code> clears the instance and fills it with the made-up demo data again; <code>site/demo-cso.py</code> adds the CSO mapping's (five made-up Kenyan CSOs and a portal login). <code>site/shots.py</code> takes this manual's screenshots, and <code>site/build.py</code> builds its pages.</p>
 </section>
 
 <section id="rules">
@@ -196,7 +228,8 @@ python3 -I tests/cases/latency.py  # submission to record, through the running b
       <li class="header__more"><a href="sites.html">Sites and lists</a></li>
       <li class="header__more"><a href="projects.html">Cluster projects</a></li>
       <li><a href="fivew.html">The 5W</a></li>
-      <li><a href="dashboards.html">Dashboards</a></li>
+      <li><a href="cso.html">CSO mapping</a></li>
+      <li class="header__more"><a href="dashboards.html">Dashboards</a></li>
       <li><a href="connect.html">Connecting a form</a></li>
       <li class="header__more"><a href="running.html" aria-current="page">Running it</a></li>
       </ul>

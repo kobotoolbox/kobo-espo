@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Screenshots for the manual, from the test droplet's EspoCRM, as each role (the seed users'
-passwords from secrets/, never written anywhere else). Needs the demo data (site/demo-data.py).
+passwords from secrets/, never written anywhere else). Needs the demo data (site/demo-data.py,
+and site/demo-cso.py for the CSO mapping's, its portal login among them).
 
     python3 -I site/shots.py [name ...]      all, or only these
 
@@ -34,10 +35,18 @@ def save(page, name, full=False):
     print(f'{name}.jpg {img.size[0]}x{img.size[1]}')
 
 
+PORTAL = 'cso'  # the CSO portal's customId: its pages are /portal/cso/
+PORTAL_USERS = {'cso-portal-amani'}
+
+
+def base(user):
+    return f'{URL}/portal/{PORTAL}/' if user in PORTAL_USERS else URL + '/'
+
+
 def sign_in(browser, user, size=(1440, 900)):
     ctx = browser.new_context(viewport={'width': size[0], 'height': size[1]}, device_scale_factor=2, locale='en-GB')
     page = ctx.new_page()
-    page.goto(URL + '/')
+    page.goto(base(user))
     page.fill('#field-userName', user)
     page.fill('#field-password', secrets()['ESPO_ADMIN_PASSWORD'] if user == 'admin' else secrets('seed')[pw_key(user)])
     page.click('#btn-login')
@@ -46,8 +55,8 @@ def sign_in(browser, user, size=(1440, 900)):
     return ctx, page
 
 
-def go(page, hash_, wait='.list-container, .record, .kanban, .detail', settle=2.5):
-    page.goto(f'{URL}/#{hash_}')
+def go(page, hash_, wait='.list-container, .record, .kanban, .detail', settle=2.5, user=None):
+    page.goto(f'{base(user)}#{hash_}')
     page.wait_for_selector(wait, timeout=30000)
     time.sleep(settle)
 
@@ -69,7 +78,13 @@ def main(only):
         'melissa': find(a, 'CResponse', 'name', 'Hurricane Melissa response, Jamaica'),
         'trucking': find(a, 'CActivity', 'title', 'Water trucking to Black River and Santa Cruz'),
         'jrc': find(a, 'CResponder', 'organisationId', find(a, 'COrganisation', 'code', 'ORG_JRC')),
+        'amani': find(a, 'CCso', 'name', 'Amani Community Health Network'),
+        'kamukunji': find(a, 'CAdminArea', 'pcode', 'KE047288'),
     }
+    ids['amani_place'] = a.call('GET', '/CPresence', {
+        'where[0][type]': 'equals', 'where[0][attribute]': 'csoId', 'where[0][value]': ids['amani'],
+        'where[1][type]': 'equals', 'where[1][attribute]': 'adminAreaId', 'where[1][value]': ids['kamukunji'],
+        'select': 'id', 'maxSize': 1})['list'][0]['id']
     for key, activity in (('trucking_place', 'trucking'),):  # its first community
         ids[key] = a.call('GET', '/CActivityLocation', {
             'where[0][type]': 'equals', 'where[0][attribute]': 'activityId', 'where[0][value]': ids[activity],
@@ -97,6 +112,15 @@ def main(only):
         'fivew-activities': ('staff-1', 'CActivity', None),
         'fivew-activity': ('staff-1', f'CActivity/view/{ids["trucking"]}', None),
         'fivew-location': ('staff-1', f'CActivityLocation/view/{ids["trucking_place"]}', None),
+        'cso-list': ('cso-kenya', 'CCso', None),
+        'cso-profile': ('cso-kenya', f'CCso/view/{ids["amani"]}', None),
+        'cso-place': ('cso-kenya', f'CPresence/view/{ids["amani_place"]}', None),
+        'cso-updates': ('cso-kenya', 'CCsoUpdate', None),
+        'portal-profile': ('cso-portal-amani', f'CCso/view/{ids["amani"]}', None),
+        'portal-places': ('cso-portal-amani', 'CPresence', None),
+        'portal-contacts': ('cso-portal-amani', 'Contact', None),
+        'packs-extension': ('admin', 'Admin/extensions', 'admin'),
+        'email-settings': ('admin', 'Admin/outboundEmails', 'admin'),
     }
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -107,7 +131,8 @@ def main(only):
             if user not in sessions:
                 sessions[user] = sign_in(browser, user)
             page = sessions[user][1]
-            go(page, hash_)
+            go(page, hash_, wait='#main .panel, #main .record, .list-container' if action == 'admin' else
+               '.list-container, .record, .kanban, .detail', user=user)
             if action == 'kanban':
                 page.click('button[data-name="kanban"][data-action="switchViewMode"]')
                 page.wait_for_selector('button[data-name="kanban"].active', timeout=30000)

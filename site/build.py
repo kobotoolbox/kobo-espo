@@ -16,10 +16,10 @@ from pathlib import Path
 SITE = Path(__file__).resolve().parent
 NAV = [('index', 'Overview'), ('requests', 'Requests'), ('responses', 'Responses'),
        ('sites', 'Sites and lists'), ('projects', 'Cluster projects'), ('fivew', 'The 5W'),
-       ('dashboards', 'Dashboards'),
+       ('cso', 'CSO mapping'), ('dashboards', 'Dashboards'),
        ('connect', 'Connecting a form'), ('running', 'Running it')]
 # The header has room for six; the others are in the menu (and the footer) on wide screens
-MORE = {'sites', 'projects', 'running'}
+MORE = {'sites', 'projects', 'dashboards', 'running'}
 
 HEAD = """<!doctype html>
 <html lang="en">
@@ -38,7 +38,7 @@ HEAD = """<!doctype html>
     <ul class="header__nav">
 {nav}
     </ul>
-    <a class="button button--filled button--m" href="https://espo-test.kobolabs.dev">Open the test EspoCRM</a>
+    <a class="button button--filled button--m" href="https://staging.respond.kobolabs.dev">Open the test EspoCRM</a>
   </div>
 </header>
 

@@ -1,0 +1,149 @@
+<!-- title: CSO mapping -->
+<!-- description: The Kobo and WHO CSO mapping in EspoCRM: civil society organisations register with a Kobo form, keep their profile, places and contacts current in a portal, and report what they are doing where; WHO's country coordinators see their country's CSOs, by P-code, with consent respected. Kenya is the pilot. -->
+<section class="banner">
+  <div class="wrap">
+    <h1>CSO mapping: who is there, where, doing what</h1>
+    <p class="banner__lead">From the Kobo and WHO <strong>Draft CSO mapping tool</strong>: civil society organisations working on health emergencies register with a Kobo form, then keep their profile current in a <strong>CSO portal</strong> and report what they are doing in each place. WHO's country coordinators see their country's CSOs, mapped to official P-codes, and only what each CSO agreed to share goes further. <strong>Kenya</strong> is the pilot; another country gets its own forms or uses one generic form.</p>
+  </div>
+</section>
+
+<section class="steps" aria-label="The loop">
+  <div class="wrap">
+    <ol>
+      <li><h3>Register</h3><p>A CSO fills in its profile on a Kobo form: who it is, where it works, what it does, offers and seeks.</p></li>
+      <li><h3>Keep current</h3><p>Its people sign in to the CSO portal: profile, places and contacts, and updates on what they do where.</p></li>
+      <li><h3>Coordinate</h3><p>The country's coordinators see every CSO in their country, by P-code, with flags on what to check.</p></li>
+    </ol>
+  </div>
+</section>
+
+<div class="wrap docs">
+<nav class="docs__nav" aria-label="On this page">
+  <ul>
+    <li><a href="#forms">The forms</a></li>
+    <li><a href="#places">Places and P-codes</a></li>
+    <li><a href="#profile">A CSO's profile</a></li>
+    <li><a href="#who">Who sees what</a></li>
+    <li><a href="#portal">The CSO portal</a></li>
+    <li><a href="#updates">Updates</a></li>
+    <li><a href="#email">Emails</a></li>
+    <li><a href="#country">Adding a country</a></li>
+    <li><a href="#limits">Limits and open questions</a></li>
+  </ul>
+</nav>
+
+<article class="prose">
+
+<section id="forms">
+<h2>The forms</h2>
+<p>Two Kobo forms carry the draft's questions with their lists and codes (<code>workflows/cso/lists/cso-lists.json</code>, read by both the forms and EspoCRM, so the two always agree):</p>
+<ul>
+  <li><strong>The CSO profile</strong>, the draft's 17 questions: name and type, where it's registered, the levels it works at, its focal points (as many as it has), whether its profile may be shared, where it works, the settings and people it reaches, its stages, roles and hazards, the roles it could take on with support, the coordination it takes part in, what it offers and seeks (at most three each), how it prefers to connect.</li>
+  <li><strong>The CSO update</strong>, the draft's 6: which CSO, where, which activities, their status (planned, ready to activate, active, temporarily suspended, completed), whom they reach, and the main gap or need there.</li>
+</ul>
+<p>Each comes in two styles, made by <code>kobo/forms/cso.py</code> together with its bridge template, so a form and its template always match:</p>
+<ul>
+  <li><strong>A country's own form</strong> (Kenya's): places as a cascade, county then sub-county, from the official boundaries.</li>
+  <li><strong>The generic form</strong>, for any other country: the country, then a pin dropped on the map; the place is worked out afterwards (see <a href="#places">P-codes</a>).</li>
+</ul>
+<p>For a cholera mapping, <code>cso.py --cholera</code> asks the draft's 12 cholera roles in place of the general ones; EspoCRM keeps the two lists in separate fields.</p>
+</section>
+
+<section id="places">
+<h2>Places and P-codes</h2>
+<p>Every place ends as an <strong>admin area with its P-code</strong>, the OCHA codes that let data from different organisations line up on one map. Kenya's are the 47 counties and 290 sub-counties of its COD-AB boundaries (<code>KE047</code> Nairobi, <code>KE047288</code> Kamukunji), loaded from the Humanitarian Geocoder (<code>espo/seed/admin_areas.py</code>).</p>
+<ul>
+  <li><strong>From a country's form</strong> the place is the sub-county (or county) picked, linked by its P-code.</li>
+  <li><strong>From a pin</strong>, the agent <em>CSO: P-code the places</em> asks the geocoder, every hour, which areas the pin falls in, and writes their P-codes; the place is then linked to the deepest area EspoCRM has. A pin outside the country's boundaries is flagged. If the geocoder can't be reached, the pin waits for the next hour.</li>
+</ul>
+<p>A place carries the P-code of each level up to its county, its country, and what the dashboards read of its CSO (its type, settings, people reached, roles), so a map of places needs nothing else.</p>
+<figure><a href="static/shots/cso-place.jpg"><img src="static/shots/cso-place.jpg" alt="A CSO place: Kamukunji, Nairobi, for Amani Community Health Network: admin area Kamukunji, country Kenya, P-codes KE047 and KE047288, P-coding: area given, current; the CSO's type, settings, populations and roles."></a><figcaption>A place: the area, its P-codes up to the county, and its CSO's details for the maps.</figcaption></figure>
+</section>
+
+<section id="profile">
+<h2>A CSO's profile</h2>
+<p>A profile is a <strong>CSO</strong> record, with its code (<code>CSO-</code> and four characters) and every answer of the profile form. With it come:</p>
+<ul>
+  <li><strong>its Account</strong>, named after it: what the portal goes by;</li>
+  <li><strong>its contacts</strong>, the focal points from the form, one per person (by email: the same person sent again is the same contact; someone who works with two CSOs is a contact of each);</li>
+  <li><strong>its places</strong>;</li>
+  <li><strong>its countries</strong>: where it's registered, where its places are, and the others it named. They decide its teams (<a href="#who">who sees it</a>).</li>
+</ul>
+<figure><a href="static/shots/cso-list.jpg"><img src="static/shots/cso-list.jpg" alt="The CSOs list as Kenya's coordinator sees it: five CSOs with their codes, types (National NGO, Women-led, Youth-led, Faith-based, Community-based), countries (Kenya), sharing and the date of their profile, all in team CSO: Kenya."></a><figcaption>Kenya's CSOs, as the country's coordinator sees them.</figcaption></figure>
+<figure><a href="static/shots/cso-profile.jpg"><img src="static/shots/cso-profile.jpg" alt="The profile of Amani Community Health Network: acronym ACHN, type National NGO, registered in Kenya, sharing Yes, listed, its shared contact (two people with their titles, emails and phones), its Account; below, its settings, populations, stages, roles, hazards, coordination, offers and seeks; then its places, updates and contacts."></a><figcaption>A profile: its answers, its shared contact, and below it its places, updates and contacts.</figcaption></figure>
+</section>
+
+<section id="who">
+<h2>Who sees what</h2>
+<ul>
+  <li><strong>A country's coordinators</strong> (WHO's country office; role <strong>CSO Coordinator</strong>, team <code>CSO: Kenya</code>) see and keep every CSO in their country, its places, contacts and updates, whatever it answered about sharing. A CSO in two countries is in both teams. A CSO in no country with a team is in <code>CSO: Unassigned</code>, for Kobo's staff to place.</li>
+  <li><strong>Other countries' coordinators</strong> don't see it; nor do the 5W's cluster users.</li>
+  <li><strong>The CSO's own people</strong> see their own CSO, in the portal.</li>
+  <li><strong>Other CSOs and partners</strong> see what the CSO agreed to, through the dashboards (the directory and the matching), never EspoCRM's screens:
+    <ul>
+      <li><em>Yes</em>: its profile and its contacts (those still its, and shown in the directory);</li>
+      <li><em>Profile only</em>: its profile, no contacts;</li>
+      <li><em>No</em>: not listed at all.</li>
+    </ul>
+  </li>
+</ul>
+<p>The profile's <strong>Shared contact</strong> is made by formula from those rules, and it's the only contact the directory reads. When a CSO changes its answer, or a contact changes, it follows.</p>
+</section>
+
+<section id="portal">
+<h2>The CSO portal</h2>
+<p>A CSO registers with the Kobo form once; after that its people keep it current in the <strong>CSO portal</strong> (EspoCRM's own portal, at <code>/portal/cso</code>). A coordinator gives a CSO's contact a portal login; they get an email to set their password.</p>
+<p>Signed in, they see their own CSO only:</p>
+<ul>
+  <li><strong>its profile</strong>, which they can change: its type, its lists, whether it may be shared. Its code, the date of its profile and what's worked out for it (its countries, listing, shared contact) they can read but not change; its key they don't see;</li>
+  <li><strong>its places</strong>: they add a place (a sub-county), and it's their CSO's, with its P-codes and teams; they remove one it no longer works in;</li>
+  <li><strong>its contacts</strong>: as many as it has. Someone who joins is added; someone who leaves is marked <em>no longer a contact of its CSO</em>, and drops out of its shared contact and the directory (contacts aren't deleted, so who was there stays on record). A contact can be kept out of the directory;</li>
+  <li><strong>its updates</strong>: they post one, and it counts at once (they signed in).</li>
+</ul>
+<p>If the CSO sends the Kobo profile again (from the link in its email, offline perhaps), the places the form gives replace the form's earlier ones; places added in the portal stay, and its contacts are matched by email, never removed.</p>
+<figure><a href="static/shots/portal-profile.jpg"><img src="static/shots/portal-profile.jpg" alt="The CSO portal, signed in as Wanjiru Kamau of Amani Community Health Network: tabs CSOs, CSO places, CSO updates, Contacts; the CSO's profile, editable, with its code, countries and shared contact read-only."></a><figcaption>The portal, as a CSO's contact sees their CSO.</figcaption></figure>
+<figure><a href="static/shots/portal-places.jpg"><img src="static/shots/portal-places.jpg" alt="The portal's CSO places: Amani's three places, Kamukunji, Embakasi East and Changamwe, with their P-codes."></a><figcaption>Its places: only its own.</figcaption></figure>
+<figure><a href="static/shots/portal-contacts.jpg"><img src="static/shots/portal-contacts.jpg" alt="The portal's contacts: Amani's two focal points, Wanjiru Kamau and Otieno Ouma, with their titles and emails."></a><figcaption>Its contacts, kept by its own people.</figcaption></figure>
+</section>
+
+<section id="updates">
+<h2>Updates</h2>
+<p>An update says what a CSO is doing in one place now. It counts on the maps when it's the CSO's own:</p>
+<ul>
+  <li>made in the portal, or sent with the CSO's <strong>key</strong> (in the link its email gives it, filled in on the form), it counts;</li>
+  <li>sent with the code only (typed) or a wrong key, it's kept and flagged, but doesn't count until a coordinator sets its key to <em>Confirmed</em>: a guessed code isn't enough to report for a CSO.</li>
+</ul>
+<p>The <strong>latest update of a CSO in a place</strong> is the one that counts; it marks the earlier ones <em>superseded</em>. An update lists everything the CSO is doing there now, so an activity left out of a newer one is no longer counted.</p>
+<p><strong>Data checks</strong> flag, for the coordinators: no key or a wrong one, a pin outside the country, a place that isn't one of the CSO's, an activity that isn't in its profile. Flags, not refusals: the update is kept, and fixed or explained.</p>
+<figure><a href="static/shots/cso-updates.jpg"><img src="static/shots/cso-updates.jpg" alt="Kenya's CSO updates: Amani's in Kamukunji (active, needs supplies and logistics, counts) and its earlier one there (ready, superseded, doesn't count), Pwani Youth for Health in Mvita and Kilifi North, Turkana Pastoralist Health Link in Turkana Central and Loima (suspended), the Tana River women's group in Galole, and one in Mvita flagged: no key, not in the CSO's places."></a><figcaption>Updates: the latest in each place counts, the earlier one is superseded, and one is flagged.</figcaption></figure>
+</section>
+
+<section id="email">
+<h2>Emails</h2>
+<p>EspoCRM sends its emails (portal invitations, assignments, mentions) through Resend, from <code>noreply@respond.kobolabs.dev</code>; see <a href="running.html#email">Running it</a>. Still to build: the email a CSO gets after it registers, with its code and its links (the update form, filled in with its code and key, and the portal).</p>
+</section>
+
+<section id="country">
+<h2>Adding a country</h2>
+<ol>
+  <li>Load its admin areas from the geocoder: <code>python3 -I espo/seed/admin_areas.py UG</code> (its ISO2 or ISO3 code; <code>--max-level 2</code> to stop at districts).</li>
+  <li>Make its team, <code>CSO: </code> and the country's name as its boundaries have it (e.g. <code>CSO: Uganda</code>), and give its coordinators the role <strong>CSO Coordinator</strong>.</li>
+  <li>Either give it forms of its own (add it to <code>COUNTRIES</code> in <code>kobo/forms/cso.py</code> with its levels' names, and rerun it), or share the generic forms with its CSOs.</li>
+  <li>Rerun the seed. CSOs already registered there move into its team.</li>
+</ol>
+<p>A pin anywhere the geocoder has boundaries is P-coded; 110 countries are loaded there.</p>
+</section>
+
+<section id="limits">
+<h2>Limits and open questions</h2>
+<ul>
+  <li><strong>Not built yet</strong>: the email after registering, the matching of offers and needs, the four dashboards (the directory, the map of presence, gaps and overlaps, the matching), and follow-up when a profile goes stale. See the plan, <code>plans/cso-mapping-plan.md</code>.</li>
+  <li><strong>Portal logins</strong> are given by a coordinator (EspoCRM needs an admin to make a portal user; an assistant tool for coordinators is next).</li>
+  <li><strong>To agree with WHO</strong>: the hazards list (the draft has none; a suggested one is in), the list of needs on the update form (it uses the offers list now), splitting the CSO type question, the countries after Kenya, the languages, and where it runs and whose data it is.</li>
+  <li><strong>Kenya stops at sub-counties</strong>: the boundaries have no wards.</li>
+  <li><strong>Jamaica's areas</strong>, from the Hurricane Melissa form, use other codes than the geocoder's, so CSO mapping in Jamaica waits for a decision on them.</li>
+</ul>
+</section>
+
+</article>
+</div>

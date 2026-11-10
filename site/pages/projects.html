@@ -74,7 +74,7 @@
   <li><code>list_projects</code>: the responses, their projects and teams.</li>
 </ul>
 <p>Each change is shown first and made only once you agree, like the connection tools. They make regular users only, never admins, and never use the bridge's or the agents' roles.</p>
-<p><strong>Signing in.</strong> <code>invite_user</code> never takes or shows a password. EspoCRM emails the new person a link to set their own, once its outgoing email is set up (<em>not yet on the test instance</em>). Until then the account exists, and an admin sets its password in Administration, Users.</p>
+<p><strong>Signing in.</strong> <code>invite_user</code> never takes or shows a password. EspoCRM emails the new person a link to set their own, through its outgoing email (Resend on the test instance: see <a href="running.html#email">Email</a>).</p>
 <p>Sites in a project come from Kobo as any site does: the registration connection sets the site's project, and a visit form's site list names the project's team (<code>team = "Cluster: …"</code>), so it lists that project's sites only.</p>
 </section>
 
