@@ -26,6 +26,7 @@
     <li><a href="#who">Who sees what</a></li>
     <li><a href="#portal">The CSO portal</a></li>
     <li><a href="#updates">Updates</a></li>
+    <li><a href="#dashboards">Dashboards</a></li>
     <li><a href="#email">Emails</a></li>
     <li><a href="#country">Adding a country</a></li>
     <li><a href="#limits">Limits and open questions</a></li>
@@ -118,6 +119,21 @@
 <figure><a href="static/shots/cso-updates.jpg"><img src="static/shots/cso-updates.jpg" alt="Kenya's CSO updates: Amani's in Kamukunji (active, needs supplies and logistics, counts) and its earlier one there (ready, superseded, doesn't count), Pwani Youth for Health in Mvita and Kilifi North, Turkana Pastoralist Health Link in Turkana Central and Loima (suspended), the Tana River women's group in Galole, and one in Mvita flagged: no key, not in the CSO's places."></a><figcaption>Updates: the latest in each place counts, the earlier one is superseded, and one is flagged.</figcaption></figure>
 </section>
 
+<section id="dashboards">
+<h2>Dashboards</h2>
+<p>The mapping's outputs are <strong>kobo-dash</strong> dashboards on EspoCRM's records (<a href="dashboards.html">Dashboards</a>): one for Kenya, with a page for three of the four outputs the draft asks for. They read three feeds of the team <code>CSO: Kenya</code>, made with the EspoCRM MCP's <code>create_dashboard_feed</code>, each only the fields it shows, and filtered in EspoCRM so that <strong>only CSOs that agreed to be listed</strong> reach it, and only the places and updates that count now. A CSO that said no isn't in the feed at all.</p>
+<ul>
+  <li><strong>The directory</strong>: how many CSOs, what types, what they do and offer, and the list itself, searchable, with each CSO's contact only where it said yes to sharing it.</li>
+  <li><strong>Presence and reach</strong>: where they work, shaded by sub-county and by county on Kenya's boundaries (the same P-codes as EspoCRM's), the settings and populations they reach.</li>
+  <li><strong>Gaps and overlaps</strong>: what's active or ready, by sub-county; the needs they report (the gaps); several CSOs in one place (the overlaps); and what each CSO is doing where.</li>
+</ul>
+<p>Filters (type of CSO, role) apply to every page. The fourth output, <strong>matching offers and needs</strong>, waits for the matching (see <a href="#limits">Limits</a>). The dashboard updates as EspoCRM does, every five minutes.</p>
+<figure><a href="static/shots/dash-cso-directory.jpg"><img src="static/shots/dash-cso-directory.jpg" alt="The CSO mapping dashboard for Kenya, its Directory page: 4 CSOs in the directory, 10 places, 5 active now; bars of their types, what they do and what they offer; the directory table with each CSO's type, roles, offers, seeks and its shared contact (a dash for the CSO that shares its profile only)."></a><figcaption>The directory: the four CSOs that agreed to be listed (the fifth said no, and isn't there).</figcaption></figure>
+<figure><a href="static/shots/dash-cso-presence.jpg"><img src="static/shots/dash-cso-presence.jpg" alt="The Presence and reach page: Kenya's sub-counties and counties, shaded where CSOs work (Turkana, Tana River, the coast, Nairobi); bars of the settings they reach, the populations they work with, and their places."></a><figcaption>Presence and reach, by sub-county and county.</figcaption></figure>
+<figure><a href="static/shots/dash-cso-gaps.jpg"><img src="static/shots/dash-cso-gaps.jpg" alt="The Gaps and overlaps page: a map of active or ready work by sub-county; the needs reported (logistics or transport first, then funding, supplies, training); activities by sub-county, coloured by status; the status of their work; and a table of what each CSO is doing where, with its needs there."></a><figcaption>Gaps and overlaps, from the CSOs' updates.</figcaption></figure>
+<p>On the test instance the dashboard was built on a local kobo-dash (<code>site/dash-cso-feeds.py</code>, then <code>site/dash-cso.py</code>); on <code>staging.dash.kobolabs.dev</code> it's a conversation with kobo-mcp and the EspoCRM MCP, the owner pasting the feeds' keys into kobo-dash's admin page.</p>
+</section>
+
 <section id="email">
 <h2>Emails</h2>
 <p>EspoCRM sends its emails through Resend, from <code>noreply@respond.kobolabs.dev</code> (<a href="running.html#email">Running it</a>).</p>
@@ -143,7 +159,7 @@
 <h2>Limits and open questions</h2>
 <ul>
   <li><strong>The forms need a Kobo login</strong> on the test account: for real CSOs, the projects must accept submissions without one.</li>
-  <li><strong>Not built yet</strong>: the matching of offers and needs, the four dashboards (the directory, the map of presence, gaps and overlaps, the matching), and follow-up when a profile goes stale. See the plan, <code>plans/cso-mapping-plan.md</code>.</li>
+  <li><strong>Not built yet</strong>: the matching of offers and needs (and its dashboard page), and follow-up when a profile goes stale. See the plan, <code>plans/cso-mapping-plan.md</code>.</li>
   <li><strong>Portal logins</strong> need an admin in EspoCRM, so a coordinator asks for one through the MCP (<code>invite_portal_user</code>) rather than in EspoCRM's screens.</li>
   <li><strong>To agree with WHO</strong>: the hazards list (the draft has none; a suggested one is in), the list of needs on the update form (it uses the offers list now), splitting the CSO type question, the countries after Kenya, the languages, and where it runs and whose data it is.</li>
   <li><strong>Kenya stops at sub-counties</strong>: the boundaries have no wards.</li>

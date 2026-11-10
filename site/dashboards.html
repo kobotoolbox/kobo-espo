@@ -65,7 +65,7 @@
 <p>The EspoCRM MCP's <code>create_dashboard_feed</code> makes an API user for one dashboard feed:</p>
 <ul>
   <li>it reads <strong>one kind of record</strong> (sites, activities, activity locations, organisations);</li>
-  <li>of <strong>one team</strong>: a cluster project's own (that project only), or a response's (all its projects);</li>
+  <li>of <strong>one team</strong>: a cluster project's own (that project only), a response's (all its projects), or a team named directly (a country's CSOs, <code>CSO: Kenya</code>: see <a href="cso.html#dashboards">CSO mapping</a>);</li>
   <li><strong>only the fields chosen</strong>: EspoCRM's field-level access hides the rest;</li>
   <li>and it <strong>writes nothing</strong>.</li>
 </ul>
@@ -79,7 +79,7 @@
 
 <section id="feeds">
 <h2>Feeds</h2>
-<p>A feed keeps one kind of record, some of its fields and a filter, as a table in the dashboard owner's kobo-dash library. Its columns come from EspoCRM: choices with EspoCRM's labels (the 5W's sectors, statuses, location types), several choices, numbers, dates, a linked record by its name, and latitude and longitude as a map point.</p>
+<p>A feed keeps one kind of record, some of its fields and a filter, as a table in the dashboard owner's kobo-dash library. Its columns come from EspoCRM, with EspoCRM's labels (an owner's own labels are kept when the feed reads again): choices with EspoCRM's labels (the 5W's sectors, statuses, location types), several choices, numbers, dates, a linked record by its name, and latitude and longitude as a map point.</p>
 <p>Every five minutes kobo-dash asks EspoCRM whether anything changed; when it did, the feed reads the records again and open dashboards update by themselves. Edits, new records and deletions all show. A feed's table is the feed's only: an upload can't replace it.</p>
 </section>
 

@@ -304,6 +304,14 @@ sub-counties), uploaded to the dashboard with `pcode` as the code property.
 The dashboards are designed through kobo-mcp's dashboard tools, with the feeds set up by
 the EspoCRM MCP's `create_dashboard_feed`, as for the 5W.
 
+**Built (2026-11-10)**, three of the four on a local kobo-dash: one dashboard, "CSO mapping:
+Kenya", with a page each for the directory, presence and reach (choropleths by sub-county
+and county on the geocoder's layers), gaps and overlaps (`site/dash-cso-feeds.py`,
+`site/dash-cso.py`; screenshots in the manual). The feeds filter in EspoCRM (listed, current),
+so a CSO that said no never reaches kobo-dash. Found on the way: `create_dashboard_feed`
+now takes a team as its scope; kobo-dash's feeds now take EspoCRM's field labels. The
+matching page waits for `CMatch`.
+
 ### 9. Follow-up
 
 - **"CSO: profile out of date"**: a scheduled agent, a task for the country coordinator
