@@ -1,11 +1,3 @@
-// A focal point is its activity's: in its teams
-if (activityId && (entity\isNew() || entity\isAttributeChanged('activityId'))) {
-    $teams = record\attribute('CActivity', activityId, 'teamsIds');
-    if (array\length($teams) > 0) {
-        teamsIds = $teams;
-    }
-}
-
 // Workflow F: or its CSO's (a row of the profile's FOCAL_POINTS repeat): in its teams, and
 // in the CSO's shared contacts when the CSO said yes to sharing them
 if (csoId && (entity\isNew() || entity\isAttributeChanged('csoId'))) {

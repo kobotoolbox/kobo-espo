@@ -1,0 +1,124 @@
+[
+ {
+  "name": "CSO: P-code the places",
+  "description": "Every hour: a CSO place given as a pin (the generic form) gets the P-codes of the admin areas it falls in, from the Humanitarian Geocoder; its formula then links the area. Workflow F.",
+  "mode": "dry_run",
+  "entity": "CPresence",
+  "trigger": "schedule",
+  "scheduleEvery": "hour",
+  "scheduleAt": "00:15",
+  "filterField": "pcodeStatus",
+  "filterValue": "pending",
+  "teams": [
+   "CSO: Kenya",
+   "CSO: Uganda",
+   "CSO: Unassigned"
+  ],
+  "readFields": [
+   "name",
+   "latitude",
+   "longitude",
+   "country",
+   "pcodeStatus"
+  ],
+  "tools": [
+   "geocode"
+  ],
+  "outputFields": [
+   "pcode1",
+   "pcode2",
+   "pcode3",
+   "pcodeStatus"
+  ],
+  "model": "",
+  "maxAttempts": 1,
+  "onFailure": "try_again",
+  "instructions": "Rules only: the geocoding is code (agents/tools.py, geocode).",
+  "routes": [
+   {
+    "name": "pcoded",
+    "order": 10,
+    "description": "The geocoder found its areas: their P-codes are written.",
+    "ruleField": "pcodeStatus",
+    "ruleOp": "equals",
+    "ruleValue": "done",
+    "ruleWhen": "before"
+   },
+   {
+    "name": "outside",
+    "order": 20,
+    "description": "The pin is outside the country's boundaries: flagged for the coordinators.",
+    "ruleField": "pcodeStatus",
+    "ruleOp": "equals",
+    "ruleValue": "outside",
+    "ruleWhen": "before"
+   },
+   {
+    "name": "try_again",
+    "order": 30,
+    "description": "The geocoder could not be reached: still pending, tried again next hour."
+   }
+  ]
+ },
+ {
+  "name": "CSO: P-code the updates",
+  "description": "Every hour: a CSO update given as a pin (the generic form) gets the P-codes of the admin areas it falls in, from the Humanitarian Geocoder; its formula then links the area. Workflow F.",
+  "mode": "dry_run",
+  "entity": "CCsoUpdate",
+  "trigger": "schedule",
+  "scheduleEvery": "hour",
+  "scheduleAt": "00:15",
+  "filterField": "pcodeStatus",
+  "filterValue": "pending",
+  "teams": [
+   "CSO: Kenya",
+   "CSO: Uganda",
+   "CSO: Unassigned"
+  ],
+  "readFields": [
+   "name",
+   "latitude",
+   "longitude",
+   "country",
+   "pcodeStatus"
+  ],
+  "tools": [
+   "geocode"
+  ],
+  "outputFields": [
+   "pcode1",
+   "pcode2",
+   "pcode3",
+   "pcodeStatus"
+  ],
+  "model": "",
+  "maxAttempts": 1,
+  "onFailure": "try_again",
+  "instructions": "Rules only: the geocoding is code (agents/tools.py, geocode).",
+  "routes": [
+   {
+    "name": "pcoded",
+    "order": 10,
+    "description": "The geocoder found its areas: their P-codes are written.",
+    "ruleField": "pcodeStatus",
+    "ruleOp": "equals",
+    "ruleValue": "done",
+    "ruleWhen": "before"
+   },
+   {
+    "name": "outside",
+    "order": 20,
+    "description": "The pin is outside the country's boundaries: flagged for the coordinators.",
+    "ruleField": "pcodeStatus",
+    "ruleOp": "equals",
+    "ruleValue": "outside",
+    "ruleWhen": "before"
+   },
+   {
+    "name": "try_again",
+    "order": 30,
+    "description": "The geocoder could not be reached: still pending, tried again next hour."
+   }
+  ]
+ }
+]

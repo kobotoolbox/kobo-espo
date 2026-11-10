@@ -4,7 +4,7 @@
     "check": "a profile makes one CSO, with its CSO- code and a 16-character key, the key given not kept",
     "ok": true,
     "detail": {
-      "code": "CSO-58VR",
+      "code": "CSO-JTSQ",
       "keyGiven": null,
       "count": null
     }
@@ -14,7 +14,7 @@
     "check": "its answers: name, type, registered in Kenya, lists as codes, profile date today",
     "ok": true,
     "detail": {
-      "name": "CSOT 303614 Amani",
+      "name": "CSOT 308246 Amani",
       "csoType": "national_ngo",
       "countryRegistered": "KEN",
       "roles": [
@@ -72,7 +72,7 @@
       "teamsNames": {
         "6af2e5e8eed95f6f3": "CSO: Kenya"
       },
-      "csoName": "CSOT 303614 Amani",
+      "csoName": "CSOT 308246 Amani",
       "csoType": "national_ngo",
       "settings": [
         "informal_settlements",
@@ -104,7 +104,7 @@
     "test": "C1",
     "check": "it said yes to sharing: both focal points in its shared contact",
     "ok": true,
-    "detail": "Baraka Second (Director), baraka-303614@example.org, +254 712 000000\nAmina Focal (Coordinator), amina-303614@example.org, +254 712 000000"
+    "detail": "Baraka Second (Director), baraka-308246@example.org, +254 712 000000\nAmina Focal (Coordinator), amina-308246@example.org, +254 712 000000"
   },
   {
     "test": "C2",
@@ -130,7 +130,7 @@
     "ok": true,
     "detail": {
       "listed": true,
-      "sharedContact": "Amina Focal (Coordinator), amina-303614@example.org, +254 712 000000\nBaraka Second (Director), baraka-303614@example.org, +254 712 000000"
+      "sharedContact": "Amina Focal (Coordinator), amina-308246@example.org, +254 712 000000\nBaraka Second (Director), baraka-308246@example.org, +254 712 000000"
     }
   },
   {
@@ -196,14 +196,14 @@
       [
         "Chege New"
       ],
-      "Chege New (Officer), chege-303614@example.org, +254 712 000000"
+      "Chege New (Officer), chege-308246@example.org, +254 712 000000"
     ]
   },
   {
     "test": "C3",
     "check": "sent with the code but no key: refused, recorded with its reason, the CSO unchanged",
     "ok": true,
-    "detail": "aa0dadda8dec9413abfe0e  submission 3  since 2026-11-10T09:43:34Z  1 attempt(s), next 2026-11-10T09:44:34Z\n    PUT /CCso/6af2e6f986dc06a74: HTTP 400 This profile came without its CSO's key: send it again from the link in the CSO's email.\n"
+    "detail": "a8f19f92e8f984796b1ca8  submission 3  since 2026-11-10T11:00:18Z  1 attempt(s), next 2026-11-10T11:01:18Z\n    PUT /CCso/6af2f8ecb1284f76a: HTTP 400 This profile came without its CSO's key: send it again from the link in the CSO's email.\n"
   },
   {
     "test": "C4",
@@ -275,8 +275,8 @@
     "check": "cso-kenya: Kenya's CSOs (Amani, Pamoja), not Uganda's or the unassigned",
     "ok": true,
     "detail": [
-      "CSOT 303614 Amani",
-      "CSOT 303614 Pamoja"
+      "CSOT 308246 Amani",
+      "CSOT 308246 Pamoja"
     ]
   },
   {
@@ -284,8 +284,8 @@
     "check": "cso-uganda: Uganda's (Mto, Pamoja), not Kenya's",
     "ok": true,
     "detail": [
-      "CSOT 303614 Mto",
-      "CSOT 303614 Pamoja"
+      "CSOT 308246 Mto",
+      "CSOT 308246 Pamoja"
     ]
   },
   {
@@ -315,7 +315,7 @@
     "check": "an update with the CSO's code and key: its CSO, key ok, counted, in its team, the key not kept",
     "ok": true,
     "detail": {
-      "csoName": "CSOT 303614 Amani",
+      "csoName": "CSOT 308246 Amani",
       "keyCheck": "ok",
       "current": true,
       "teamsNames": {
@@ -394,7 +394,7 @@
     "ok": true,
     "detail": {
       "adminAreaName": "Buikwe",
-      "name": "CSOT 303614 Mto: Buikwe"
+      "name": "CSOT 308246 Mto: Buikwe"
     }
   },
   {

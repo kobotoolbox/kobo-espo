@@ -13,8 +13,10 @@ docker-compose.yml          EspoCRM 10.0.11 (apache), MariaDB 11.4, its schedule
 deploy/up.sh                the stack onto the droplet (ESPO_SSH), secrets generated there
 deploy/Caddyfile            TLS for ESPO_HOST: EspoCRM, and the bridge's EspoCRM MCP at /bridge/mcp
 deploy/bridges.sh           the bridge service, kobo-espo-bridge's `serve`: every connection, set up on the server (up | down | logs)
-espo/seed/seed.py           entities (Response, Site, Standard), fields, Task board, roles, teams, users
-espo/formula/               EspoCRM formula scripts, one file per entity and script type
+workflows/<pack>/           the workflows as packs: workflow.toml (entities, fields, roles, teams, layouts,
+                            data), lists, formulas, agents (plans/workflow-packs-plan.md)
+espo/workflows.py           loads and applies the packs; espo/seed/seed.py applies deploy/instance.toml's
+espo/formula/               the formulas' shared snippets (_code, _agent-guard)
 espo/look/                  Kobo's look: a module (metadata) and kobo.css, logo, favicon (plans/espo-kobo-look-plan.md)
 kobo/forms/                 the Kobo forms as XLSForm rows (.json; .xlsx from export.py)
 kobo/templates/             the four forms' bridge templates: the tests' fixtures, and the first copy of

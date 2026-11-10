@@ -8,7 +8,7 @@ writes, for each country with forms of its own (COUNTRIES), cso-profile-<iso3>.j
 cso-update-<iso3>.json (and their bridge templates, kobo/templates/ of the same names), places asked as a cascade of its admin areas (areas.csv, EspoCRM's
 list, P-codes from the geocoder); and for every other country the generic
 cso-profile.json and cso-update.json, places asked as the country and a geopoint (P-coded
-afterwards, the plan's step 3). The choices come from espo/seed/data/cso-lists.json, as
+afterwards, the plan's step 3). The choices come from workflows/cso/lists/cso-lists.json, as
 EspoCRM's enums do, so the two always agree. --cholera asks the cholera roles in place of
 the general ones (files ...-cholera.json); --identity asks the draft's Q2 split (Q2 the
 main type, a select-all for identity).
@@ -21,7 +21,7 @@ import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-LISTS = json.loads((HERE.parents[1] / 'espo' / 'seed' / 'data' / 'cso-lists.json').read_text())
+LISTS = json.loads((HERE.parents[1] / 'workflows' / 'cso' / 'lists' / 'cso-lists.json').read_text())
 # Countries with forms of their own: the labels of their admin levels (the geocoder's levels)
 COUNTRIES = {'KEN': {'name': 'Kenya', 'admin1': 'County', 'admin2': 'Sub-county'}}
 EMAIL = r"regex(., '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')"

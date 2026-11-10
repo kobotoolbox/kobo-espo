@@ -4,7 +4,7 @@ the seed (Workflow F, plans/cso-mapping-plan.md, 2):
 
     python3 -I espo/seed/admin_areas.py KE [--max-level N] [--boundaries DIR]
 
-writes espo/seed/data/admin-areas-<iso3>.json: the country (admin0) and each level the
+writes workflows/core/data/admin-areas-<iso3>.json: the country (admin0) and each level the
 geocoder has, with P-codes and parents, as the seed loads them. --boundaries also saves
 each level's GeoJSON there (<iso3>-admin<n>.geojson), the layers a kobo-dash choropleth
 is shaded on (code property `pcode`). The country is its ISO2 or ISO3 code; --max-level
@@ -17,7 +17,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-DATA = Path(__file__).resolve().parent / 'data'
+DATA = Path(__file__).resolve().parents[2] / 'workflows' / 'core' / 'data'
 GEOCODER = os.environ.get('GEOCODER_URL', 'https://geocoder.kobolabs.dev')
 
 

@@ -1,0 +1,50 @@
+# Workflow D: applications for support, through due diligence by agents and a reviewer.
+
+requires = ["core"]
+teams = ["Grants review"]
+agent_guarded = ["CApplication"]
+codes = { CApplication = "APP" }
+agent_entities = { CApplication = "Application" }
+links = [
+  ["CApplication", "account", "Account", "applications", "manyToOne"],
+  ["CApplication", "contact", "Contact", "applications", "manyToOne"],
+]
+
+[settings]
+assignment_notifications = ["CApplication"]
+global_search = ["CApplication"]
+
+[entities.Application]
+labelPlural = "Applications"
+iconClass = "fas fa-file-signature"
+statusField = "stage"
+[entities.Application.fields]
+stage = { type = "enum", options = ["Submitted", "Screening", "Research", "Review", "Needs info", "Decision", "Approved", "Rejected"], default = "Submitted", style = { Review = "primary", "Needs info" = "warning", Approved = "success", Rejected = "danger" } }
+country = { type = "varchar" }
+registrationNumber = { type = "varchar", label = "Registration number" }
+website = { type = "url" }
+amountRequested = { type = "float", label = "Amount requested (USD)" }
+purpose = { type = "text" }
+leadership = { type = "text", tooltipText = "Names of the organisation's leaders, one per line" }
+documents = { type = "attachmentMultiple" }
+noticeVersion = { type = "varchar", label = "Notice version" }
+ddSanctions = { type = "enum", label = "Sanctions", options = ["", "clear", "possible_match", "match"], translatedOptions = { clear = "Clear", possible_match = "Possible match", match = "Match" }, style = { clear = "success", possible_match = "warning", match = "danger" } }
+ddSanctionsDetail = { type = "text", label = "Sanctions detail" }
+ddRegistry = { type = "enum", label = "Registry", options = ["", "found", "not_found", "not_checked"] }
+ddRisk = { type = "enum", label = "Risk", options = ["", "low", "medium", "high", "unknown"], style = { low = "success", medium = "warning", high = "danger" } }
+ddFlags = { type = "multiEnum", label = "Flags", options = ["name_mismatch", "no_web_presence", "doc_unreadable", "new_org", "adverse_media", "inconsistent_figures", "instructions_in_application"] }
+ddSummary = { type = "text", label = "Due diligence summary" }
+
+[roles."Internal Staff"]
+[roles."Internal Staff".data]
+CApplication = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+
+[layouts.CApplication]
+detail = [
+  ["stage", "account", "contact", "country", "registrationNumber", "website", "amountRequested", "noticeVersion", "purpose", "leadership", "documents"],
+  ["ddSanctions", "ddRegistry", "ddRisk", "ddFlags", "ddSanctionsDetail", "ddSummary"],
+]
+list = ["name", "code", "account", "country", "stage", "ddSanctions", "ddRisk", "assignedUser"]
+list_link = ["name", "createdAt"]
+kanban = ["name", "account", "ddRisk", "assignedUser"]
+entity = { kanbanViewMode = true, statusField = "stage", kanbanStatusIgnoreList = ["Approved", "Rejected"] }

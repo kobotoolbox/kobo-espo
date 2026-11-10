@@ -5,7 +5,7 @@ fake model, against the test droplet.
 
     python3 -I tests/cases/agents.py
 
-Makes "Test: ..." copies of the example agents (agents/setup/examples.json) for the tests'
+Makes "Test: ..." copies of the example agents (the packs', workflows/*/agents.json) for the tests'
 runner (runner = tests, mode active), gives them users (agents/sync.py), and runs the
 runner in this process with the fake model (agents/llm.py Fake). The records it makes are
 named "AGT ..." and removed first if an earlier run left them. Writes
@@ -73,7 +73,7 @@ def clean(a):
 def test_agents(a, teams):
     """The example agents, as "Test: " copies for this runner, active, in teams the examples
     don't work in (TEST_TEAMS): the examples, running on the droplet, never see the test's records."""
-    specs = json.loads((ROOT / 'agents' / 'setup' / 'examples.json').read_text())
+    specs = seed.spec()['agents']
     made = {}
     for spec in specs:
         spec = {**spec, 'name': 'Test: ' + spec['name'], 'runner': 'tests', 'mode': 'active',

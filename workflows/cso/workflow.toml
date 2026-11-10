@@ -1,0 +1,168 @@
+# Workflow F (plans/cso-mapping-plan.md): the Kobo and WHO CSO mapping.
+
+requires = ["core"]
+teams = ["CSO: Kenya", "CSO: Uganda", "CSO: Unassigned"]
+codes = { CCso = "CSO" }
+agent_entities = { CCso = "CSO", CPresence = "CSO place", CCsoUpdate = "CSO update" }
+links = [
+  ["CCso", "presence", "CPresence", "cso", "oneToMany"],
+  ["CCso", "updates", "CCsoUpdate", "cso", "oneToMany"],
+  ["CCso", "focalPoints", "CFocalPoint", "cso", "oneToMany"],
+  ["CCso", "organisation", "COrganisation", "csoProfiles", "manyToOne"],
+  ["CPresence", "adminArea", "CAdminArea", "csoPlaces", "manyToOne"],
+  ["CCsoUpdate", "adminArea", "CAdminArea", "csoUpdates", "manyToOne"],
+  ["CCsoUpdate", "response", "CResponse", "csoUpdates", "manyToOne"],
+]
+
+[settings]
+global_search = ["CCso"]
+
+[entities.Cso]
+label = "CSO"
+labelPlural = "CSOs"
+iconClass = "fas fa-people-carry"
+[entities.Cso.fields]
+acronym = { type = "varchar", maxLength = 40 }
+csoType = { label = "Type", list = "cso-lists.cso_types" }
+csoTypeOther = { type = "varchar", label = "Type (other)" }
+identities = { type = "multiEnum", label = "Also describes it", list = "cso-lists.identities" }
+countryRegistered = { label = "Registered in", list = "cso-lists.countries" }
+otherCountries = { type = "multiEnum", label = "Other countries", list = "cso-lists.countries" }
+countries = { type = "multiEnum", label = "Countries", readOnly = true, tooltipText = "Where it's registered, its places' countries and the others it named (formula): its teams", list = "cso-lists.countries" }
+levels = { type = "multiEnum", label = "Levels", list = "cso-lists.levels" }
+sharing = { label = "Sharing", tooltipText = "May its profile and contacts be shared with other CSOs and partners?", list = "cso-lists.sharing" }
+settings = { type = "multiEnum", label = "Settings it reaches", list = "cso-lists.settings" }
+settingsOther = { type = "varchar", label = "Settings (other)" }
+populations = { type = "multiEnum", label = "Populations", list = "cso-lists.populations" }
+populationsOther = { type = "varchar", label = "Populations (other)" }
+stages = { type = "multiEnum", label = "Stages", list = "cso-lists.stages" }
+roles = { type = "multiEnum", label = "Roles", list = "cso-lists.roles" }
+rolesOther = { type = "varchar", label = "Roles (other)" }
+rolesCholera = { type = "multiEnum", label = "Roles (cholera)", list = "cso-lists.roles_cholera" }
+rolesCholeraOther = { type = "varchar", label = "Roles, cholera (other)" }
+hazards = { type = "multiEnum", label = "Hazards", list = "cso-lists.hazards" }
+hazardsOther = { type = "varchar", label = "Hazards (other)" }
+rolesWithSupport = { type = "multiEnum", label = "Roles with support", list = "cso-lists.roles" }
+rolesWithSupportOther = { type = "varchar", label = "Roles with support (other)" }
+rolesWithSupportCholera = { type = "multiEnum", label = "Roles with support (cholera)", list = "cso-lists.roles_cholera" }
+mechanisms = { type = "multiEnum", label = "Coordination mechanisms", list = "cso-lists.mechanisms" }
+mechanismsOther = { type = "varchar", label = "Mechanisms (other)" }
+offers = { type = "multiEnum", label = "Offers", list = "cso-lists.exchange" }
+offersOther = { type = "varchar", label = "Offers (other)" }
+seeks = { type = "multiEnum", label = "Seeks", list = "cso-lists.exchange" }
+seeksOther = { type = "varchar", label = "Seeks (other)" }
+connectVia = { type = "multiEnum", label = "Connect via", list = "cso-lists.connect_via" }
+connectViaOther = { type = "varchar", label = "Connect via (other)" }
+listed = { type = "bool", label = "Listed", readOnly = true, tooltipText = "In the directory and the matching: it did not say no to sharing (formula)" }
+sharedContact = { type = "text", label = "Shared contact", readOnly = true, tooltipText = "Its focal points' contacts, only if it said yes to sharing them (formula): what the directory shows" }
+lastProfile = { type = "date", label = "Profile sent", readOnly = true }
+updateKey = { type = "varchar", label = "Key", maxLength = 16, readOnly = true, tooltipText = "In the links it is emailed: a submission without it doesn't change this CSO or count as its update" }
+keyGiven = { type = "varchar", label = "Key given", maxLength = 40, tooltipText = "The key a submission came with: checked, never kept" }
+verified = { type = "bool", label = "Verified by WHO" }
+
+[entities.Presence]
+label = "CSO place"
+labelPlural = "CSO places"
+iconClass = "fas fa-map-marker-alt"
+stream = false
+[entities.Presence.fields]
+country = { label = "Country", list = "cso-lists.countries" }
+pcode1 = { type = "varchar", label = "P-code (admin1)", maxLength = 30 }
+pcode2 = { type = "varchar", label = "P-code (admin2)", maxLength = 30 }
+pcode3 = { type = "varchar", label = "P-code (admin3)", maxLength = 30 }
+latitude = { type = "float", label = "Latitude" }
+longitude = { type = "float", label = "Longitude" }
+pcodeStatus = { type = "enum", label = "P-coding", options = ["", "given", "pending", "done", "outside"], translatedOptions = { "" = "", given = "Area given", pending = "Pin, to P-code", done = "P-coded from the pin", outside = "Pin outside the boundaries" }, style = { outside = "danger", pending = "warning" } }
+csoType = { label = "CSO type", readOnly = true, list = "cso-lists.cso_types" }
+listed = { type = "bool", label = "Listed", readOnly = true, tooltipText = "In the directory and the matching (the CSO did not say no to sharing)" }
+current = { type = "bool", label = "Current", default = true, tooltipText = "From the CSO's latest profile (formula)" }
+settings = { type = "multiEnum", label = "Settings it reaches", readOnly = true, list = "cso-lists.settings" }
+populations = { type = "multiEnum", label = "Populations", readOnly = true, list = "cso-lists.populations" }
+roles = { type = "multiEnum", label = "Roles", readOnly = true, list = "cso-lists.roles" }
+
+[entities.CsoUpdate]
+label = "CSO update"
+labelPlural = "CSO updates"
+iconClass = "fas fa-bullhorn"
+[entities.CsoUpdate.fields]
+country = { label = "Country", list = "cso-lists.countries" }
+pcode1 = { type = "varchar", label = "P-code (admin1)", maxLength = 30 }
+pcode2 = { type = "varchar", label = "P-code (admin2)", maxLength = 30 }
+pcode3 = { type = "varchar", label = "P-code (admin3)", maxLength = 30 }
+latitude = { type = "float", label = "Latitude" }
+longitude = { type = "float", label = "Longitude" }
+pcodeStatus = { type = "enum", label = "P-coding", options = ["", "given", "pending", "done", "outside"], translatedOptions = { "" = "", given = "Area given", pending = "Pin, to P-code", done = "P-coded from the pin", outside = "Pin outside the boundaries" }, style = { outside = "danger", pending = "warning" } }
+csoType = { label = "CSO type", readOnly = true, list = "cso-lists.cso_types" }
+listed = { type = "bool", label = "Listed", readOnly = true, tooltipText = "In the directory and the matching (the CSO did not say no to sharing)" }
+locality = { type = "varchar", label = "Locality" }
+roles = { type = "multiEnum", label = "Roles", list = "cso-lists.roles" }
+rolesOther = { type = "varchar", label = "Roles (other)" }
+rolesCholera = { type = "multiEnum", label = "Roles (cholera)", list = "cso-lists.roles_cholera" }
+rolesCholeraOther = { type = "varchar", label = "Roles, cholera (other)" }
+status = { label = "Status", style = { active = "success", ready = "primary", suspended = "warning" }, list = "cso-lists.update_status" }
+populations = { type = "multiEnum", label = "Populations", list = "cso-lists.populations" }
+populationsOther = { type = "varchar", label = "Populations (other)" }
+facility = { type = "varchar", label = "Facility" }
+needs = { type = "multiEnum", label = "Needs", list = "cso-lists.exchange" }
+needsOther = { type = "varchar", label = "Needs (other)" }
+needsNote = { type = "text", label = "About the need" }
+keyGiven = { type = "varchar", label = "Key given", maxLength = 40, tooltipText = "The key the submission came with: checked, never kept" }
+keyCheck = { type = "enum", label = "Key", options = ["", "ok", "missing", "wrong", "confirmed"], translatedOptions = { "" = "", ok = "The CSO's", missing = "No key", wrong = "Wrong key", confirmed = "Confirmed by a coordinator" }, style = { wrong = "danger", missing = "warning" }, tooltipText = "Set \"Confirmed\" once you know the update is the CSO's: it then counts" }
+superseded = { type = "bool", label = "Superseded", readOnly = true, tooltipText = "A newer update of the CSO in this place counts instead (formula)" }
+current = { type = "bool", label = "Counts", readOnly = true, tooltipText = "The CSO's (its key, or confirmed) and not superseded: what the maps read" }
+dataChecks = { type = "multiEnum", label = "Data checks", options = ["key_missing", "key_wrong", "outside", "not_in_presence", "role_not_in_profile"], translatedOptions = { key_missing = "No key: check it is the CSO's", key_wrong = "Wrong key: not the CSO's link", outside = "The pin is outside the country", not_in_presence = "Not in the CSO's places", role_not_in_profile = "A role not in the CSO's profile" }, tooltipText = "What looks wrong (formula); fix it or explain in a note" }
+
+[fields.CFocalPoint]
+current = { type = "bool", label = "Current", default = true }
+
+[roles."CSO Coordinator"]
+assignmentPermission = "team"
+userPermission = "team"
+mentionPermission = "team"
+exportPermission = "no"
+massUpdatePermission = "no"
+[roles."CSO Coordinator".data]
+CCso = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CPresence = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CCsoUpdate = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CFocalPoint = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+Task = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CAdminArea = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+COrganisation = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+Team = { read = "team" }
+User = { read = "team" }
+
+[layouts.CCso]
+detail = [
+  ["acronym", "csoType", "csoTypeOther", "identities", "countryRegistered", "otherCountries", "countries", "levels", "sharing", "listed", "sharedContact", "lastProfile", "verified", "organisation"],
+  ["settings", "settingsOther", "populations", "populationsOther", "stages", "roles", "rolesOther", "rolesCholera", "rolesCholeraOther", "hazards", "hazardsOther", "rolesWithSupport", "rolesWithSupportOther", "rolesWithSupportCholera", "mechanisms", "mechanismsOther", "offers", "offersOther", "seeks", "seeksOther", "connectVia", "connectViaOther", "updateKey"],
+]
+list = ["name", "code", "csoType", "countries", "sharing", "lastProfile", "teams"]
+relationships = ["presence", "updates", "focalPoints"]
+
+[layouts.CPresence]
+detail = [
+  ["cso", "adminArea", "country", "pcode1", "pcode2", "pcode3", "latitude", "longitude", "pcodeStatus", "current", "csoType", "listed"],
+]
+list = ["name", "cso", "adminArea", "country", "pcodeStatus", "current"]
+
+[layouts.CCsoUpdate]
+detail = [
+  ["cso", "status", "adminArea", "locality", "country", "pcode1", "pcode2", "pcode3", "latitude", "longitude", "pcodeStatus", "roles", "rolesOther", "rolesCholera", "rolesCholeraOther", "populations", "populationsOther", "facility", "needs", "needsOther", "needsNote", "response", "keyCheck", "superseded", "current", "dataChecks"],
+]
+list = ["name", "cso", "status", "adminArea", "roles", "needs", "current", "dataChecks", "createdAt"]
+
+[layouts.CFocalPoint]
+detail = [["activity", "emailAddress", "phone", "jobTitle"], ["cso", "current"]]
+
+[[users]]
+username = "cso-kenya"
+name = "Kendi Coordinator"
+role = "CSO Coordinator"
+teams = ["CSO: Kenya"]
+
+[[users]]
+username = "cso-uganda"
+name = "Ugo Coordinator"
+role = "CSO Coordinator"
+teams = ["CSO: Uganda"]

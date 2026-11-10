@@ -1,0 +1,63 @@
+# Workflow A: support requests from a Kobo form become Cases, one team per consortium project.
+
+requires = ["core"]
+teams = ["Project: Consortium A", "Project: Consortium B"]
+agent_entities = { Case = "Case" }
+
+[settings]
+assignment_notifications = ["Case"]
+global_search = ["Case"]
+
+[fields.Case]
+source = { type = "enum", options = ["Kobo form", "Email", "Manual"], default = "Manual" }
+
+[roles."Internal Staff"]
+[roles."Internal Staff".data]
+Case = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+
+[roles."Support Triager"]
+assignmentPermission = "team"
+userPermission = "team"
+mentionPermission = "team"
+exportPermission = "no"
+massUpdatePermission = "no"
+[roles."Support Triager".data]
+Case = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+Contact = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+Account = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+Team = { read = "team" }
+User = { read = "team" }
+
+[roles."Partner Staff"]
+assignmentPermission = "team"
+userPermission = "team"
+mentionPermission = "team"
+exportPermission = "no"
+massUpdatePermission = "no"
+[roles."Partner Staff".data]
+Case = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+Contact = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+Account = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+Team = { read = "team" }
+User = { read = "team" }
+
+[layouts.Case]
+detail = [["cSource"]]
+
+[[users]]
+username = "triager"
+name = "Tess Triager"
+role = "Support Triager"
+teams = ["Project: Consortium A", "Project: Consortium B"]
+
+[[users]]
+username = "partner-a"
+name = "Pat Partner-A"
+role = "Partner Staff"
+teams = ["Project: Consortium A"]
+
+[[users]]
+username = "partner-b"
+name = "Pam Partner-B"
+role = "Partner Staff"
+teams = ["Project: Consortium B"]

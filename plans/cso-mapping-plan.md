@@ -229,6 +229,37 @@ would show the names of those that said `no` to sharing. So:
   (`[[list]]`, filtered by their team, no key needed: the coordinator's form is shared
   only with them).
 
+**Kobo to register, the portal to keep it current (Josh, 2026-11-10).** The Kobo profile
+form is how a CSO registers (and the offline way in); after that, the CSO keeps its profile,
+its places and its focal points current in an **EspoCRM portal** (core EspoCRM, not paid).
+The update form stays in Kobo (fieldwork, offline), its link in the email and in the portal.
+
+- **A CSO is an Account** (made with the CSO by formula, named after it), and its places
+  and updates carry the Account too (formula, as teams are): a portal role limits records
+  by the portal user's Account, so that is what a CSO's people see.
+- **Focal points are Contacts of that Account, as many as the CSO has.** The profile's
+  FOCAL_POINTS rows become Contacts (by email, so the same person isn't made twice) and
+  `CFocalPoint` goes from the CSO mapping (the 5W keeps its own). In the portal a CSO's
+  people add, edit and remove its contacts: someone leaving is a contact removed, someone
+  joining one added, without a new profile. A coordinator (or the CSO's own portal admin,
+  see questions) gives a contact portal access: an invitation email (Resend).
+- **Role "CSO portal"** (a portal role): its CSO (`CCso`, read and edit, account level),
+  its places (`CPresence`, create, edit, delete), its updates (`CCsoUpdate`, read, create),
+  its contacts (`Contact`, account level). Field-level: the key, `keyGiven`, `verified`,
+  `listed`, `sharedContact`, `countries`, P-codes and `current` read-only or hidden.
+- **The formulas run on portal edits as on Kobo's**: sharing changed, the shared contact
+  and the listing follow; a place added in the portal gets its P-codes and its country's
+  team; `sharedContact` is made from the Account's contacts that the CSO marks as shared.
+- **A profile sent from Kobo again** is the registration form, not the way to update: with
+  a portal, the email's links are the portal and the update form. A profile sent again
+  with the code and key still updates the CSO (offline CSOs), but its places are added,
+  not replacing the portal's (the "not current" rule only for CSOs without portal users).
+- **The directory and matching stay in kobo-dash**: a portal role can't say "every CSO
+  but those that said no", so other CSOs aren't browsed in the portal.
+
+Built after the workflow packs, as the CSO pack's (its role, portal, formulas, tests: a
+portal user sees and edits its CSO only, not another's; contacts added and removed).
+
 ### 7. Matching offers and needs: `CMatch`, made by a rules agent
 
 Q15 (offers) and Q16 or update Q6 (needs) use the same exchange list. A match is the same
@@ -362,6 +393,10 @@ Phase 5; the workflow packs (`workflow-packs-plan.md`) before Phase 5.
   and are P-coded on the next run. Its boundaries are COD-AB's, and a country's P-codes
   can change with a new COD-AB edition: the loader's rerun updates the areas, and the
   records keep the P-codes they were given.
+- **Who gives a CSO's new contact portal access**: the country's coordinator (simple,
+  slower), or the CSO's first contact as its portal admin (EspoCRM portals have no such
+  role by themselves: a formula or agent would invite a contact a portal user marks for
+  access). Suggested: the coordinator for the pilot.
 - **Volume** is small next to the 5W's: hundreds to a few thousand CSOs per region, with
   updates weekly at most. What's large is the admin areas (see 2).
 - **Matching noise**: "Training or mentoring" offered by many and sought by many, all in one

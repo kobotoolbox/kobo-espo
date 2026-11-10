@@ -1,7 +1,28 @@
 # Workflow packs: workflows as data on a standard instance
 
-Status: 2026-11-10, a plan, not started. To start once the CSO mapping's tests
-(`tests/cases/cso.py`) pass on staging, before its Phase 5.
+Status: 2026-11-10, phases 0–2 built and checked (branch `workflow-packs`, not yet
+committed). On staging: the snapshot diff before/after is the agents' "Works on" order only;
+a rerun writes nothing and takes 218 s (was 25 min: the loader writes only what differs,
+reads metadata once per run, retries EspoCRM's transient 500 once); cso 39/39, fivew
+38/38, agents 42/42, isolation 80/80, projects 44/44. Not rerun: connection, mcp (it
+reruns the seed), dash_feeds. Next: phase 3 (traits). As built:
+
+- the loader is `espo/workflows.py` in kobo-espo for now (kobo-espo-bridge untouched while
+  this is proven; it moves there with the MCP tools, phase 5); `deploy/instance.toml`
+  names the staging droplet's packs (all eight);
+- the packs were generated from the seed's own data (a one-off converter), and checked in
+  process: loaded, they equal the seed's entities, fields, links, codes, teams, roles,
+  users, agents and settings, but for the order of the agents' "Works on" options (now
+  the packs' order);
+- `requires`: support, responses, grants and cso on core; roster, sites and fivew on
+  responses. The Melissa lists file is responses' (sectors are a response's clusters),
+  admin areas core's (every country's file);
+- a pack extending a role it doesn't define (sites adding sites to "Roster Expert") is
+  skipped when no pack here defines it;
+- not moved yet: the forms and the bridge templates (`kobo/forms`, `kobo/templates`):
+  they move with the template check (5); the Task formula (responses') still has the
+  sites' block (a task on a site): split with the traits (3);
+- the snapshot is `tests/snapshot.py`, not `tools/`.
 
 ## Goal
 

@@ -131,7 +131,7 @@ def update(code, key, area=None, admin1=None, roles='risk_communication', state=
 def run(a, kobo, uids, bridges):
     team = {t['name']: t['id'] for t in a.call('GET', '/Team', {'maxSize': 100})['list']}
     ken, uga, none = team['CSO: Kenya'], team['CSO: Uganda'], team['CSO: Unassigned']
-    uga_areas = json.loads((ROOT / 'espo' / 'seed' / 'data' / 'admin-areas-uga.json').read_text())
+    uga_areas = json.loads((ROOT / 'workflows' / 'core' / 'data' / 'admin-areas-uga.json').read_text())
     uga2 = next(x for x in uga_areas if x['level'] == 'admin2')
 
     def one(entity, attr, value):

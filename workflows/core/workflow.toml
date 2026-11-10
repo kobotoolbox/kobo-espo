@@ -1,0 +1,195 @@
+# The standard instance: agents (plans/espo-agents-plan.md), admin areas (COD P-codes), the organisations list,
+# focal points, the task board, short codes, email; Kobo staff (Internal Kobo, Internal Staff).
+
+requires = []
+teams = ["Internal Kobo"]
+agent_guarded = ["Task"]
+codes = { Task = "TSK" }
+agent_entities = { Task = "Task" }
+links = [
+  ["CAgent", "routes", "CAgentRoute", "agent", "oneToMany"],
+  ["CAgent", "user", "User", "agentProfiles", "manyToOne"],
+  ["CAgentRoute", "assignUser", "User", "agentRoutes", "manyToOne"],
+  ["CAgentRoute", "assignAgent", "CAgent", "routedHere", "manyToOne"],
+  ["CAgent", "runs", "CAgentRun", "agent", "oneToMany"],
+]
+
+[settings]
+assignment_notifications = ["Task"]
+global_search = ["Contact", "Account", "Task", "COrganisation"]
+
+[entities.Organisation]
+label = "Organisation"
+labelPlural = "Organisations"
+iconClass = "fas fa-building"
+stream = false
+[entities.Organisation.fields]
+code = { type = "varchar", required = true, maxLength = 60, tooltipText = "The 5W form's code, e.g. ORG_ADRA" }
+
+[entities.FocalPoint]
+label = "Focal point"
+labelPlural = "Focal points"
+iconClass = "fas fa-id-badge"
+stream = false
+[entities.FocalPoint.fields]
+emailAddress = { type = "varchar", label = "Email", maxLength = 150 }
+phone = { type = "varchar", maxLength = 40 }
+jobTitle = { type = "varchar", label = "Job title" }
+
+[entities.AdminArea]
+label = "Admin area"
+labelPlural = "Admin areas"
+iconClass = "fas fa-map"
+stream = false
+[entities.AdminArea.fields]
+pcode = { type = "varchar", label = "P-code", required = true, maxLength = 30 }
+level = { type = "enum", options = ["admin0", "admin1", "admin2", "admin3", "admin4"], default = "admin1" }
+parentPcode = { type = "varchar", label = "Parent P-code", maxLength = 30 }
+country = { type = "varchar", label = "Country (ISO3)", maxLength = 3 }
+
+[entities.Agent]
+labelPlural = "Agents"
+iconClass = "fas fa-robot"
+stream = false
+[entities.Agent.fields]
+mode = { type = "enum", options = ["off", "dry_run", "active"], default = "off", translatedOptions = { off = "Off", dry_run = "Dry run", active = "Active" }, style = { active = "success", dry_run = "warning" }, audited = true }
+runner = { type = "enum", options = ["droplet", "tests"], default = "droplet", tooltipText = "Which runner runs it: the one on the server, or the tests." }
+entity = { type = "enum", label = "Works on", options = [], translatedOptions = {} }
+trigger = { type = "enum", options = ["stage", "change", "schedule"], translatedOptions = { stage = "Records in a stage", change = "When a field changes", schedule = "On a schedule" } }
+triggerStage = { type = "varchar", label = "Stage" }
+watchField = { type = "varchar", label = "Watched field" }
+scheduleEvery = { type = "enum", label = "Repeats", options = ["", "hour", "day", "week"], translatedOptions = { "" = "", hour = "Every hour", day = "Every day", week = "Every week" } }
+scheduleAt = { type = "varchar", label = "At (UTC)", maxLength = 5, tooltipText = "HH:MM, e.g. 06:00. Every hour: only the minutes count." }
+scheduleWeekday = { type = "enum", label = "On (every week)", options = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], default = "Mon" }
+idleField = { type = "varchar", label = "Only if this date is older than", tooltipText = "A date field, e.g. lastVisit or modifiedAt; with the days next to it." }
+idleDays = { type = "int", label = "days", min = 1 }
+filterField = { type = "varchar", label = "Only where field" }
+filterValue = { type = "varchar", label = "equals" }
+readFields = { type = "array", label = "Reads", audited = true }
+readNotes = { type = "bool", label = "Reads the latest note" }
+readAttachments = { type = "varchar", label = "Reads the files in field" }
+tools = { type = "multiEnum", options = [], audited = true }
+instructions = { type = "text", audited = true }
+outputFields = { type = "array", label = "Fills in", audited = true }
+model = { type = "enum", options = ["", "claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5"], translatedOptions = { "" = "None (rules only)" }, default = "claude-opus-5-5", audited = true }
+maxAttempts = { type = "int", label = "Max attempts", default = 3, min = 1, max = 10 }
+budgetPerRun = { type = "float", label = "Budget per run (USD)", default = 0.5 }
+onFailure = { type = "varchar", label = "Route on failure" }
+version = { type = "int", default = 1, readOnly = true }
+activeSince = { type = "datetime", label = "Working since", readOnly = true }
+
+[entities.AgentRoute]
+labelPlural = "Agent routes"
+iconClass = "fas fa-route"
+stream = false
+[entities.AgentRoute.fields]
+order = { type = "int", default = 10 }
+ruleField = { type = "varchar", label = "Rule: field", tooltipText = "A field, a tool result, or \"text\" (the read fields and note)" }
+ruleOp = { type = "enum", label = "Rule: test", options = ["", "equals", "in", "contains", "matches"] }
+ruleValue = { type = "varchar", label = "Rule: value", maxLength = 500 }
+ruleWhen = { type = "enum", label = "Rule applies", options = ["before", "after"], translatedOptions = { before = "Before the model (skips it)", after = "After the model (overrides it)" } }
+moveToStage = { type = "varchar", label = "Move to stage" }
+clearAssignee = { type = "bool", label = "Unassign" }
+createTask = { type = "bool", label = "Create a task" }
+taskName = { type = "varchar", label = "Task name", tooltipText = "e.g. Urgent: {name}" }
+taskStatus = { type = "varchar", label = "Task status", default = "Backlog" }
+taskPriority = { type = "enum", label = "Task priority", options = ["Low", "Normal", "High", "Urgent"], default = "Normal" }
+taskAssignFrom = { type = "varchar", label = "Task assignee from", tooltipText = "A user link on the record or its response, e.g. response.lead" }
+setFields = { type = "text", label = "Set fields (JSON)" }
+fixedNote = { type = "text", label = "Fixed note", tooltipText = "Posted instead of the model's words" }
+notify = { type = "bool", label = "Mention the assignee" }
+onlyOneOpen = { type = "bool", label = "Not while one is open", tooltipText = "No new task while the record's last one from here is still open" }
+
+[entities.AgentRun]
+labelPlural = "Agent runs"
+iconClass = "fas fa-history"
+stream = false
+[entities.AgentRun.fields]
+status = { type = "enum", options = ["running", "done", "dry_run", "failed"], default = "running", style = { done = "success", failed = "danger", dry_run = "warning" } }
+recordType = { type = "varchar" }
+recordId = { type = "varchar" }
+recordName = { type = "varchar" }
+triggerKey = { type = "varchar", maxLength = 255 }
+agentVersion = { type = "int" }
+model = { type = "varchar" }
+promptHash = { type = "varchar" }
+route = { type = "varchar" }
+routeBy = { type = "enum", options = ["", "rule_before", "model", "rule_after", "failure"] }
+reason = { type = "text" }
+output = { type = "text" }
+error = { type = "text" }
+attempts = { type = "int", default = 0 }
+inputTokens = { type = "int" }
+outputTokens = { type = "int" }
+cost = { type = "float", decimalPlaces = 4 }
+durationS = { type = "float", label = "Duration (s)" }
+
+[roles."Internal Staff"]
+assignmentPermission = "team"
+userPermission = "team"
+mentionPermission = "team"
+exportPermission = "no"
+massUpdatePermission = "yes"
+[roles."Internal Staff".data]
+Task = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+Contact = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+Account = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CFocalPoint = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CAdminArea = { create = "yes", read = "all", edit = "all", delete = "no", stream = "all" }
+COrganisation = { create = "yes", read = "all", edit = "all", delete = "no", stream = "all" }
+Team = { read = "all" }
+User = { read = "team" }
+
+[layouts.CFocalPoint]
+detail = [["emailAddress", "phone", "jobTitle"]]
+list = ["name", "emailAddress", "phone", "jobTitle"]
+
+[layouts.COrganisation]
+detail = [["code"]]
+list = ["name", "code"]
+
+[layouts.CAdminArea]
+detail = [["pcode", "level", "parentPcode", "country"]]
+list = ["name", "pcode", "level", "parentPcode", "country"]
+
+[layouts.Task]
+kanban = ["name", "assignedUser", "dateEnd"]
+filters = ["status", "assignedUser"]
+
+[layouts.CAgent]
+detail = [
+  ["description", "mode", "runner", "entity", "trigger", "triggerStage", "watchField", "scheduleEvery", "scheduleAt", "scheduleWeekday", "idleField", "idleDays", "filterField", "filterValue", "readFields", "readNotes", "readAttachments", "tools", "instructions", "outputFields", "model", "maxAttempts", "budgetPerRun", "onFailure", "version", "activeSince"],
+]
+list = ["name", "mode", "entity", "trigger", "model", "version", "activeSince"]
+relationships = ["routes", "runs"]
+
+[layouts.CAgentRoute]
+detail = [
+  ["agent", "description", "assignUser", "assignAgent", "order", "ruleField", "ruleOp", "ruleValue", "ruleWhen", "moveToStage", "clearAssignee", "createTask", "taskName", "taskStatus", "taskPriority", "taskAssignFrom", "setFields", "fixedNote", "notify", "onlyOneOpen"],
+]
+list = ["name", "agent", "order", "ruleWhen", "moveToStage", "createTask"]
+
+[layouts.CAgentRun]
+detail = [
+  ["agent", "status", "recordType", "recordId", "recordName", "triggerKey", "agentVersion", "model", "promptHash", "route", "routeBy", "reason", "output", "error", "attempts", "inputTokens", "outputTokens", "cost", "durationS"],
+]
+list = ["createdAt", "agent", "recordName", "status", "route", "routeBy", "cost"]
+list_link = ["name", "createdAt"]
+
+[[users]]
+username = "staff-1"
+name = "Sam Staff"
+role = "Internal Staff"
+teams = ["Internal Kobo", "Project: Consortium A", "Response: Test EQ 1", "Response: Test EQ 2", "Roster and volunteers"]
+
+[[users]]
+username = "staff-2"
+name = "Sasha Staff"
+role = "Internal Staff"
+teams = ["Internal Kobo", "Project: Consortium B", "Grants review"]
+
+[[data]]
+entity = "CAdminArea"
+file = "data/admin-areas-*.json"
+match = "pcode"
+sync_by = "country"

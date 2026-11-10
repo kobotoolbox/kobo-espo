@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Records for the example agents (agents/setup/examples.json) to pick up: a site visit that
+Records for the example agents (workflows/*/agents.json) to pick up: a site visit that
 needs a repair (and is a danger to people), a routine one, a site needing a repair that
 nobody has visited for 10 days (Repair follow-up: at its next time, Monday 06:00 UTC, or set
 it to every hour to see it sooner), and an application waiting in Research. For trying the agents with a real model; it doesn't check anything itself.

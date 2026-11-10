@@ -1,0 +1,91 @@
+# Workflow C: sites and their visits (Kobo), the standards a site follows, follow-up tasks.
+
+requires = ["responses"]
+agent_guarded = ["CSite"]
+task_parents = ["CSite"]
+agent_entities = { CSite = "Site" }
+links = [
+  ["CResponse", "sites", "CSite", "response", "oneToMany"],
+  ["CStandard", "sites", "CSite", "standard", "oneToMany"],
+  ["CProject", "sites", "CSite", "project", "oneToMany"],
+]
+
+[settings]
+assignment_notifications = ["CSite"]
+global_search = ["CSite", "CStandard"]
+
+[entities.Site]
+labelPlural = "Sites"
+iconClass = "fas fa-map-marker-alt"
+[entities.Site.fields]
+siteCode = { type = "varchar", label = "Site code", required = true }
+siteType = { type = "enum", label = "Site type", options = ["", "water_point", "solar", "health_post", "shelter", "other"], translatedOptions = { water_point = "Water point", solar = "Solar installation", health_post = "Health post", shelter = "Shelter", other = "Other" } }
+status = { type = "enum", options = ["planned", "operational", "needs_repair", "decommissioned"], translatedOptions = { planned = "Planned", operational = "Operational", needs_repair = "Needs repair", decommissioned = "Decommissioned" }, default = "planned", style = { operational = "success", needs_repair = "danger" } }
+region = { type = "varchar" }
+latitude = { type = "float", decimalPlaces = 6 }
+longitude = { type = "float", decimalPlaces = 6 }
+installedAt = { type = "date", label = "Installed" }
+equipment = { type = "text" }
+lastVisit = { type = "date", label = "Last visit" }
+photos = { type = "attachmentMultiple" }
+
+[entities.Standard]
+labelPlural = "Standards"
+iconClass = "fas fa-book"
+[entities.Standard.fields]
+code = { type = "varchar", required = true }
+category = { type = "enum", options = ["", "WASH", "Shelter", "Health", "Energy", "Protection"] }
+requirement = { type = "text" }
+source = { type = "varchar" }
+
+[roles."Internal Staff"]
+[roles."Internal Staff".data]
+CSite = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CStandard = { create = "yes", read = "all", edit = "all", delete = "no", stream = "all" }
+
+[roles."Roster Expert"]
+[roles."Roster Expert".data]
+CSite = { create = "no", read = "team", edit = "own", delete = "no", stream = "team" }
+CStandard = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+
+[roles.Volunteer]
+[roles.Volunteer.data]
+CSite = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CStandard = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+
+[roles."Cluster Lead"]
+[roles."Cluster Lead".data]
+CSite = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CStandard = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+
+[roles."Cluster Partner"]
+[roles."Cluster Partner".data]
+CSite = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CStandard = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+
+[roles."Cluster Viewer"]
+[roles."Cluster Viewer".data]
+CSite = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CStandard = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+
+[layouts.CSite]
+detail = [
+  ["siteCode", "siteType", "status", "region", "response", "project", "standard", "installedAt", "lastVisit", "latitude", "longitude", "equipment", "photos"],
+]
+list = ["name", "siteCode", "siteType", "status", "region", "project", "lastVisit"]
+relationships = ["tasks"]
+
+[layouts.CStandard]
+detail = [["code", "category", "source", "requirement"]]
+list = ["name", "code", "category", "source"]
+
+[layouts.CProject]
+relationships = [{ name = "sites", before = "tasks" }]
+
+[layouts.CResponse]
+relationships = ["sites"]
+
+[[data]]
+entity = "CStandard"
+file = "data/standards.json"
+match = "code"

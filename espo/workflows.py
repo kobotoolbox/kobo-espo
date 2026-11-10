@@ -1,0 +1,629 @@
+"""Workflow packs (plans/workflow-packs-plan.md): each workflow a folder of data, applied to
+an instance by one generic loader. The seed (espo/seed/seed.py) applies the packs an
+instance names (deploy/instance.toml).
+
+A pack, workflows/<name>/:
+
+    workflow.toml   requires; entities and their fields; fields on others' entities; links;
+                    codes; teams; roles (merged across packs); users (tests only); layouts;
+                    settings; data to load; removed fields and links; agent_entities,
+                    agent_guarded, task_parents
+    lists/*.json    choice lists with codes: an enum names one, "<file>.<list>"
+    formulas/       <Entity>.<script>.formula: this pack's block of that entity's script
+    agents.json     its example agents
+    data/           its reference data
+    migrate.py      migrate(espo): what data can't say (old codes moved), run after applying
+
+    spec = load(['core', 'cso'])    # the packs and what they require, merged
+    apply(espo, spec, users=False)  # idempotent; never deletes records
+
+Merging: entities are each one pack's; `fields` add fields to any entity; a role is the
+union of every pack's access to it (its permissions from the pack that defines it); ordered
+lists (relationship panels, a board's card) are joined in `requires` order, an entry with
+`before` going in front of that entry; settings' lists are joined.
+"""
+import json
+import re
+import secrets
+import sys
+import time
+import tomllib
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+PACKS = ROOT / 'workflows'
+FORMULA = ROOT / 'espo' / 'formula'  # the shared snippets: _code, _agent-guard
+sys.path.insert(0, str(ROOT / 'tests'))
+sys.path.insert(0, str(ROOT / 'agents'))
+from lib import pw_key, secrets as read_secrets  # noqa: E402
+import tools as agent_tools  # noqa: E402  (the code tools an agent may use: its Tools field's options)
+
+ALL, TEAM, OWN, NO = 'all', 'team', 'own', 'no'
+PERMISSIONS = ('assignmentPermission', 'userPermission', 'mentionPermission', 'exportPermission', 'massUpdatePermission')
+CODE_FIELD = {'type': 'varchar', 'label': 'Code', 'maxLength': 12, 'readOnly': True,
+              'tooltipText': 'Given by EspoCRM, e.g. PRJ-7K3Q: to name this record, and in Kobo lists'}
+TASK_STATUS = ['Backlog', 'Not Started', 'Started', 'Blocked', 'Completed', 'Canceled', 'Deferred']
+TASK_LABELS = {'Backlog': 'Backlog', 'Not Started': 'To do', 'Started': 'In progress',
+               'Blocked': 'Blocked', 'Completed': 'Done', 'Canceled': 'Canceled', 'Deferred': 'Deferred'}
+
+
+# --- loading ----------------------------------------------------------------------------------
+
+def order(names, packs_dir=PACKS):
+    """The packs named and those they require, each after what it requires."""
+    out, seen = [], set()
+
+    def visit(name, path=()):
+        if name in path:
+            raise ValueError(f'packs require each other: {" -> ".join(path + (name,))}')
+        if name in seen:
+            return
+        meta = read(name, packs_dir)
+        for r in meta.get('requires', []):
+            visit(r, path + (name,))
+        seen.add(name)
+        out.append(name)
+    for n in names:
+        visit(n)
+    return out
+
+
+def read(name, packs_dir=PACKS):
+    path = packs_dir / name / 'workflow.toml'
+    if not path.exists():
+        raise ValueError(f'no pack {name!r} ({path})')
+    return tomllib.loads(path.read_text())
+
+
+def lists_of(names, packs_dir=PACKS):
+    """Every choice list of these packs: "<file stem>.<list>" -> [{code, label}]."""
+    out = {}
+    for name in names:
+        for path in sorted((packs_dir / name / 'lists').glob('*.json')):
+            for key, value in json.loads(path.read_text()).items():
+                if isinstance(value, dict) and 'choices' in value:
+                    value = value['choices']
+                if isinstance(value, list):
+                    out[f'{path.stem}.{key}'] = value
+    return out
+
+
+def expand(field, lists, where):
+    """A field as EspoCRM takes it: an enum naming a list gets its options and labels."""
+    if 'list' not in field:
+        return dict(field)
+    f = {k: v for k, v in field.items() if k not in ('list', 'blank')}
+    if field['list'] not in lists:
+        raise ValueError(f'{where}: no list {field["list"]!r} (a pack it requires has it?)')
+    opts = {c['code']: c['label'] for c in lists[field['list']]}
+    f.setdefault('type', 'enum')
+    blank = field.get('blank', f['type'] == 'enum')
+    return {'type': f.pop('type'), 'options': ([''] if blank else []) + list(opts), 'translatedOptions': opts, **f}
+
+
+def merge_ordered(lists):
+    """Ordered lists from several packs: entries in order, an entry {name, before} in front
+    of `before` (or at the end if that isn't there)."""
+    out = []
+    for items in lists:
+        for item in items:
+            name, before = (item, None) if isinstance(item, str) else (item['name'], item.get('before'))
+            if name in out:
+                continue
+            out.insert(out.index(before), name) if before in out else out.append(name)
+    return out
+
+
+def load(names, packs_dir=PACKS):
+    """The packs (and what they require), merged into one spec for apply()."""
+    packs = order(names, packs_dir)
+    lists = lists_of(packs, packs_dir)
+    spec = {'packs': packs, 'lists': lists, 'entities': {}, 'fields': {}, 'links': [], 'codes': {}, 'teams': [],
+            'roles': {}, 'users': [], 'layouts': {}, 'data': [], 'removed': {'fields': {}, 'links': []},
+            'settings': {'assignment_notifications': [], 'global_search': []}, 'formulas': {}, 'agents': [],
+            'migrations': [], 'agent_entities': {}, 'agent_guarded': [], 'task_parents': []}
+    ordered = {}
+    for name in packs:
+        p, d = read(name, packs_dir), packs_dir / name
+        for ent, e in p.get('entities', {}).items():
+            if ent in spec['entities']:
+                raise ValueError(f'{name}: entity {ent} is also {spec["entities"][ent]["pack"]}\'s')
+            spec['entities'][ent] = {**{k: v for k, v in e.items() if k != 'fields'}, 'pack': name,
+                                     'fields': {f: expand(v, lists, f'{name} {ent}.{f}') for f, v in e.get('fields', {}).items()}}
+        for ent, fields in p.get('fields', {}).items():
+            spec['fields'].setdefault(ent, {}).update({f: expand(v, lists, f'{name} {ent}.{f}') for f, v in fields.items()})
+        spec['links'] += [tuple(x) for x in p.get('links', [])]
+        spec['codes'].update(p.get('codes', {}))
+        spec['teams'] += [t for t in p.get('teams', []) if t not in spec['teams']]
+        for role, r in p.get('roles', {}).items():
+            have = spec['roles'].setdefault(role, {'data': {}, 'fieldData': {}, 'packs': []})
+            have['packs'].append(name)
+            for ent, access in r.get('data', {}).items():
+                if ent in have['data'] and have['data'][ent] != access:
+                    raise ValueError(f'{name}: role {role}: {ent} access differs from another pack\'s')
+                have['data'][ent] = access
+            have['fieldData'].update(r.get('fieldData', {}))
+            for k in PERMISSIONS:
+                if k in r:
+                    if k in have and have[k] != r[k]:
+                        raise ValueError(f'{name}: role {role}: {k} differs from another pack\'s')
+                    have[k] = r[k]
+        spec['users'] += p.get('users', [])
+        for ent, lay in p.get('layouts', {}).items():
+            have = spec['layouts'].setdefault(ent, {'detail': [], 'filters': []})
+            have['detail'] += lay.get('detail', [])
+            have['filters'] += lay.get('filters', [])
+            for k in ('list', 'list_link', 'entity'):
+                if k in lay:
+                    have[k] = lay[k]
+            for k in ('relationships', 'kanban'):
+                if k in lay:
+                    ordered.setdefault((ent, k), []).append(lay[k])
+        for k in ('assignment_notifications', 'global_search'):
+            spec['settings'][k] += [x for x in p.get('settings', {}).get(k, []) if x not in spec['settings'][k]]
+        spec['data'] += [{**x, 'pack': name} for x in p.get('data', [])]
+        spec['removed']['links'] += [tuple(x) for x in p.get('removed', {}).get('links', [])]
+        for ent, fields in p.get('removed', {}).get('fields', {}).items():
+            spec['removed']['fields'].setdefault(ent, []).extend(fields)
+        spec['agent_entities'].update(p.get('agent_entities', {}))
+        spec['agent_guarded'] += p.get('agent_guarded', [])
+        spec['task_parents'] += p.get('task_parents', [])
+        for path in sorted((d / 'formulas').glob('*.formula')):
+            ent, kind = path.stem.split('.')
+            spec['formulas'].setdefault(ent, {}).setdefault(kind, []).append(path.read_text())
+        if (d / 'agents.json').exists():
+            spec['agents'] += json.loads((d / 'agents.json').read_text())
+        if (d / 'migrate.py').exists():
+            spec['migrations'].append(d / 'migrate.py')
+    for (ent, k), parts in ordered.items():
+        spec['layouts'][ent][k] = merge_ordered(parts)
+    # The agents' "Works on" and Tools: from the packs' entities and agents/tools.py
+    agent = spec['entities'].get('Agent')
+    if agent:
+        agent['fields']['entity'].update(options=list(spec['agent_entities']), translatedOptions=dict(spec['agent_entities']))
+        agent['fields']['tools']['options'] = [*agent_tools.TOOLS, *sorted(agent_tools.SERVER_TOOLS)]
+    return spec
+
+
+# --- applying ---------------------------------------------------------------------------------
+
+class Admin:
+    """The admin API, with EspoCRM's metadata writes retried once on a 500: its own jobs
+    rebuilding the cache make a write fail now and then ("Error while clearing cache").
+    Labels (I18n) read once per run, to write only what differs."""
+
+    def __init__(self, espo):
+        self.espo, self._i18n, self._meta = espo, None, {}
+
+    def metadata(self, key):
+        """Metadata read once per run (entity definitions, scopes); a write forgets it."""
+        if key not in self._meta:
+            self._meta[key] = self.espo.call('GET', '/Metadata', {'key': key}) or {}
+        return self._meta[key]
+
+    def __getattr__(self, name):
+        return getattr(self.espo, name)
+
+    def call(self, method, path, *args, **kw):
+        if method != 'GET':
+            self._meta.clear()
+        try:
+            return self.espo.call(method, path, *args, **kw)
+        except Exception as e:
+            if method == 'GET' or getattr(e, 'status', None) != 500 or not path.startswith(('/Admin/', '/EntityManager/')):
+                raise
+            print(f'retry: {method} {path} ({e})')
+            time.sleep(5)
+            return self.espo.call(method, path, *args, **kw)
+
+    def i18n(self, refresh=False):
+        if self._i18n is None or refresh:
+            self._i18n = self.espo.call('GET', '/I18n')
+        return self._i18n
+
+
+def metadata(espo, key):
+    if isinstance(espo, Admin):
+        return espo.metadata(key)
+    return espo.call('GET', '/Metadata', {'key': key}) or {}
+
+
+def same_field(espo, entity, full, have, body):
+    """Is the field already as `body` says? Labels, option labels and tooltips are in
+    EspoCRM's I18n, the rest in its entity definitions. Unsure means no (it's written)."""
+    lang = (espo.i18n() if isinstance(espo, Admin) else espo.call('GET', '/I18n')).get(entity) or {}
+    for k, v in body.items():
+        if k == 'label':
+            ok = (lang.get('fields') or {}).get(full) == v
+        elif k == 'translatedOptions':
+            got = (lang.get('options') or {}).get(full) or {}
+            ok = all(got.get(o) == t for o, t in v.items() if o != '')
+        elif k == 'tooltipText':
+            ok = (lang.get('tooltips') or {}).get(full) == v
+        else:
+            ok = have.get(k) == v or (v is False and k not in have)
+        if not ok:
+            return False
+    return True
+
+
+def find(espo, entity, attr, value):
+    return espo.find(entity, attr, value)
+
+
+def ensure(espo, entity, attr, value, body, update=False):
+    row = find(espo, entity, attr, value)
+    if row is None:
+        row = espo.call('POST', f'/{entity}', body=body)
+        print(f'{entity} created: {value}')
+    elif update:
+        espo.call('PUT', f'/{entity}/{row["id"]}', body=body)
+    return row
+
+
+def every(espo, entity, select, **where):
+    """All records of an entity, 200 a page (EspoCRM's most)."""
+    out, offset = [], 0
+    while True:
+        page = espo.call('GET', f'/{entity}', {'maxSize': 200, 'offset': offset, 'select': select, **where})['list']
+        out += page
+        offset += 200
+        if len(page) < 200:
+            return out
+
+
+def code_field(entity):
+    return 'code' if entity.startswith('C') and entity not in ('Case', 'Contact') else 'cCode'
+
+
+def link_label(link):
+    """leadOrganisation -> "Lead organisation", as the fields' labels are."""
+    words = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', link).split(' ')
+    return ' '.join([words[0].capitalize()] + [w.lower() for w in words[1:]])
+
+
+def ensure_field(espo, entity, name, spec):
+    defs = metadata(espo, f'entityDefs.{entity}.fields')
+    # Custom fields of EspoCRM's own entities get a "c" prefix; a custom entity's don't
+    custom = metadata(espo, f'scopes.{entity}').get('isCustom')
+    full = name if custom else 'c' + name[0].upper() + name[1:]
+    body = {'label': spec.get('label', name[0].upper() + name[1:]), **{k: v for k, v in spec.items() if k != 'label'}}
+    if full in defs:
+        if same_field(espo, entity, full, defs[full], body):
+            return full
+        espo.call('PUT', f'/Admin/fieldManager/{entity}/{full}', body=body)
+        print(f'field updated: {entity}.{full}')
+    else:
+        espo.call('POST', f'/Admin/fieldManager/{entity}', body={'name': name, **body})
+        print(f'field created: {entity}.{full}')
+    return full
+
+
+def ensure_entities(espo, spec):
+    scopes = metadata(espo, 'scopes')
+    for name, e in spec['entities'].items():
+        if f'C{name}' not in scopes:
+            espo.call('POST', '/EntityManager/action/createEntity', body={
+                'name': name, 'type': 'Base', 'labelSingular': e.get('label', name), 'labelPlural': e['labelPlural'],
+                'stream': e.get('stream', True), 'iconClass': e['iconClass']})
+            print(f'entity created: C{name}')
+        status = e.get('statusField', 'status' if 'status' in e['fields'] else None)
+        if status and scopes.get(f'C{name}', {}).get('statusField') != status:
+            espo.call('POST', '/EntityManager/action/updateEntity', body={'name': f'C{name}', 'statusField': status})
+        for field, fspec in e['fields'].items():
+            ensure_field(espo, f'C{name}', field, fspec)
+    i18n = None
+    for entity, link, foreign, link_foreign, kind in spec['links']:
+        if link not in metadata(espo, f'entityDefs.{entity}.links'):
+            espo.call('POST', '/EntityManager/action/createLink', body={
+                'entity': entity, 'link': link, 'linkForeign': link_foreign, 'entityForeign': foreign,
+                'linkType': kind, 'label': link_label(link), 'labelForeign': link_label(link_foreign),
+                'relationName': None})
+            print(f'link created: {entity}.{link} -> {foreign}.{link_foreign}')
+            continue
+        i18n = i18n or espo.call('GET', '/I18n')
+        # On EspoCRM's own entities a custom link's name gets a "c" (Task.cResponse)
+        on_foreign = link_foreign if foreign[0] == 'C' and foreign[1].isupper() else 'c' + link_foreign[0].upper() + link_foreign[1:]
+        if any(((i18n.get(e) or {}).get('links') or {}).get(name) != link_label(label_of)
+               for e, name, label_of in ((entity, link, link), (foreign, on_foreign, link_foreign))):  # made before
+            espo.call('POST', '/EntityManager/action/updateLink', body={  # labels were split into words
+                'entity': entity, 'link': link, 'entityForeign': foreign, 'linkForeign': on_foreign,
+                'label': link_label(link), 'labelForeign': link_label(link_foreign)})
+            print(f'link labels: {entity}.{link} "{link_label(link)}", {foreign}.{link_foreign} "{link_label(link_foreign)}"')
+
+
+def remove_obsolete(espo, spec):
+    for entity, link in spec['removed']['links']:
+        if link in metadata(espo, f'entityDefs.{entity}.links'):
+            espo.call('POST', '/EntityManager/action/removeLink', body={'entity': entity, 'link': link})
+            print(f'link removed: {entity}.{link}')
+    for entity, names in spec['removed']['fields'].items():
+        defs = metadata(espo, f'entityDefs.{entity}.fields')
+        for name in names:
+            if name in defs:
+                espo.call('DELETE', f'/Admin/fieldManager/{entity}/{name}')
+                print(f'field removed: {entity}.{name}')
+
+
+def ensure_codes(espo, spec):
+    for entity in spec['codes']:
+        ensure_field(espo, entity, 'code', CODE_FIELD)
+        filters = metadata(espo, f'entityDefs.{entity}.collection').get('textFilterFields') or ['name']
+        if code_field(entity) not in filters:  # found by its code in the list's search box
+            espo.call('POST', '/EntityManager/action/updateEntity',
+                      body={'name': entity, 'textFilterFields': filters + [code_field(entity)]})
+
+
+def ensure_task_board(espo, spec):
+    status = metadata(espo, 'entityDefs.Task.fields.status')
+    espo.call('PUT', '/Admin/fieldManager/Task/status', body={
+        'type': 'enum', 'options': TASK_STATUS, 'translatedOptions': TASK_LABELS, 'default': 'Backlog',
+        'style': {**status.get('style', {}), 'Blocked': 'danger', 'Backlog': 'default'},
+        'notActualOptions': ['Completed', 'Canceled', 'Deferred']})
+    espo.call('POST', '/EntityManager/action/updateEntity', body={
+        'name': 'Task', 'kanbanViewMode': True, 'statusField': 'status',
+        'kanbanStatusIgnoreList': ['Canceled', 'Deferred']})
+    print('Task: board columns, Kanban on')
+    # A task's parent (EspoCRM's own "Parent" field, which takes a Case already) can be one
+    # of the packs' records too (task_parents); they get a Tasks panel
+    parent = metadata(espo, 'entityDefs.Task.fields.parent')
+    ours = spec['task_parents']
+    if ours and not set(ours) <= set(parent.get('entityList', [])):
+        espo.call('POST', '/EntityManager/action/updateLink', body={
+            'entity': 'Task', 'link': 'parent', 'linkForeign': 'tasks',
+            'parentEntityTypeList': sorted(set(parent.get('entityList', [])) | set(ours)), 'foreignLinkEntityTypeList': ours})
+        print(f'Task: a parent can be {", ".join(ours)}')
+
+
+def ensure_formulas(espo, spec):
+    """Each entity's scripts: the packs' blocks for it in `requires` order; the short code
+    (_code.formula) first in the Before Save Custom Script of each entity with a code, and
+    the agent guard (_agent-guard.formula) first in the API Before Save Script of the
+    agent_guarded (its stage block only where the entity has a stage)."""
+    by_entity = {e: {k: '\n'.join(blocks) for k, blocks in scripts.items()} for e, scripts in spec['formulas'].items()}
+    guard = (FORMULA / '_agent-guard.formula').read_text()
+    code = (FORMULA / '_code.formula').read_text()
+    for entity, prefix in spec['codes'].items():
+        scripts = by_entity.setdefault(entity, {})
+        snippet = code.replace('FIELD', code_field(entity)).replace('PREFIX', prefix).replace('ENTITY', entity)
+        scripts['beforeSaveCustomScript'] = snippet + '\n' + scripts.get('beforeSaveCustomScript', '')
+    for entity in spec['agent_guarded']:
+        g = guard
+        if 'stage' not in metadata(espo, f'entityDefs.{entity}.fields'):
+            g = re.sub(r'\n *// stage:begin.*?// stage:end\n', '\n', g, flags=re.S)
+        scripts = by_entity.setdefault(entity, {})
+        scripts['beforeSaveApiScript'] = g + '\n' + scripts.get('beforeSaveApiScript', '')
+    have = metadata(espo, 'formula')
+    for entity, scripts in by_entity.items():
+        if all((have.get(entity) or {}).get(k) == v for k, v in scripts.items()):
+            continue
+        espo.call('POST', '/EntityManager/action/formula', body={'scope': entity, 'data': scripts})
+        print(f'formula: {entity} ({", ".join(scripts)})')
+
+
+def ensure_layout_fields(espo, entity, names, panel='Details'):
+    """Add fields to the first panel of the detail layout if they aren't on it (and drop
+    cells for fields that don't exist, e.g. from an earlier run with a wrong name)."""
+    detail = espo.call('GET', f'/{entity}/layout/detail')
+    fields = metadata(espo, f'entityDefs.{entity}.fields')
+    stale = False
+    for p in detail:
+        for row in p.get('rows', []):
+            for i, c in enumerate(row):
+                if c and c.get('name') not in fields:
+                    row[i], stale = False, True
+    have = {c['name'] for p in detail for row in p.get('rows', []) for c in row if c}
+    missing = [n for n in names if n not in have]
+    if not missing:
+        if stale:
+            espo.call('PUT', f'/{entity}/layout/detail', body=detail)
+        return
+    rows = [[{'name': n} for n in missing[i:i + 2]] for i in range(0, len(missing), 2)]
+    detail[0].setdefault('rows', []).extend(r + [False] * (2 - len(r)) for r in rows)
+    espo.call('PUT', f'/{entity}/layout/detail', body=detail)
+    print(f'layout: {entity} detail + {", ".join(missing)}')
+
+
+def put_layout(espo, entity, kind, body):
+    if espo.call('GET', f'/{entity}/layout/{kind}') != body:
+        espo.call('PUT', f'/{entity}/layout/{kind}', body=body)
+
+
+def ensure_layouts(espo, spec):
+    """Per entity: detail fields (each group added if missing), the list's columns, the
+    relationship panels, a board's card, filters (added to EspoCRM's), board options."""
+    for entity, lay in spec['layouts'].items():
+        for group in lay['detail']:
+            ensure_layout_fields(espo, entity, group)
+        if 'list' in lay:
+            link = set(lay.get('list_link', ['name']))
+            put_layout(espo, entity, 'list', [{'name': n, **({'link': True} if n in link else {})} for n in lay['list']])
+        if 'relationships' in lay:
+            put_layout(espo, entity, 'relationships', [{'name': n} for n in lay['relationships']])
+        if 'kanban' in lay:
+            put_layout(espo, entity, 'kanban', [{'name': n, **({'link': True} if n == 'name' else {})} for n in lay['kanban']])
+        if lay['filters']:
+            defs = metadata(espo, f'entityDefs.{entity}.fields')
+            espo.call('PUT', f'/{entity}/layout/filters',  # (without fields that don't exist, e.g. from an earlier run)
+                      body=sorted(f for f in set(espo.call('GET', f'/{entity}/layout/filters') or []) | set(lay['filters']) if f in defs))
+        if 'entity' in lay:
+            espo.call('POST', '/EntityManager/action/updateEntity', body={'name': entity, **lay['entity']})
+    for entity in spec['codes']:
+        ensure_layout_fields(espo, entity, [code_field(entity)])
+    print(f'layouts: {len(spec["layouts"])} entities')
+
+
+def backfill_codes(espo, spec):
+    """Records made before they had codes: saved once, so the formula gives them one (the
+    field is read-only: the API can't set it)."""
+    for entity in spec['codes']:
+        field, done = code_field(entity), set()
+        while True:
+            rows = espo.call('GET', f'/{entity}', {'maxSize': 100, 'select': 'id,name',
+                                                   'where[0][type]': 'isNull', 'where[0][attribute]': field})['list']
+            rows = [r for r in rows if r['id'] not in done]
+            if not rows:
+                break
+            for r in rows:
+                espo.call('PUT', f'/{entity}/{r["id"]}', body={'name': r['name']})
+                done.add(r['id'])
+            print(f'codes: {entity} +{len(rows)}')
+
+
+def ensure_settings(espo, spec, application_name=None):
+    settings = espo.call('GET', '/Settings')
+    s = spec['settings']
+    body = {'assignmentNotificationsEntityList': sorted(set(settings.get('assignmentNotificationsEntityList') or [])
+                                                        | set(s['assignment_notifications'])),
+            # In global search, so the isolation tests (T8) search them too
+            'globalSearchEntityList': sorted(set(settings.get('globalSearchEntityList') or []) | set(s['global_search']))}
+    if application_name:
+        body['applicationName'] = application_name
+    espo.call('PUT', '/Settings', body=body)
+    print(f'settings: assignment notifications for {", ".join(s["assignment_notifications"])}; global search')
+
+
+def load_data(espo, spec):
+    """[[data]]: reference records from a file (or a pack's list), matched on a field; only
+    what differs is written. With `sync_by`, the file holds every record of each value of
+    that field (a country's admin areas): records of that value not in it are removed."""
+    for d in spec['data']:
+        pack_dir = PACKS / d['pack']
+        if 'list' in d:
+            sources = [(d['list'], spec['lists'][d['list']])]
+        else:
+            sources = [(p.name, json.loads(p.read_text())) for p in sorted(pack_dir.glob(d['file']))]
+        for label, rows in sources:
+            fmap = d.get('map')
+            want = {}
+            for r in rows:
+                body = {k: (r.get(v) or '') for k, v in fmap.items()} if fmap else dict(r)
+                want[body[d['match']]] = body
+            if not want:
+                continue
+            select = ','.join(dict.fromkeys(['id', d['match'], *next(iter(want.values()))]))
+            where = {}
+            if d.get('sync_by'):
+                value = next(iter(want.values()))[d['sync_by']]
+                where = {'where[0][type]': 'equals', 'where[0][attribute]': d['sync_by'], 'where[0][value]': value}
+            have = {r[d['match']]: r for r in every(espo, d['entity'], select, **where)}
+            written = 0
+            for key, body in want.items():
+                if key not in have:
+                    espo.call('POST', f'/{d["entity"]}', body=body, headers={'X-Skip-Duplicate-Check': 'true'})
+                    written += 1
+                elif any(have[key].get(k) != v for k, v in body.items()):
+                    espo.call('PUT', f'/{d["entity"]}/{have[key]["id"]}', body=body)
+                    written += 1
+            gone = set(have) - set(want) if d.get('sync_by') else set()
+            for key in gone:
+                espo.call('DELETE', f'/{d["entity"]}/{have[key]["id"]}')
+            print(f'data {d["entity"]} ({label}): {len(want)}, {written} written' + (f', {len(gone)} removed' if gone else ''))
+
+
+def ensure_roles(espo, spec):
+    """Each role: the packs' access to it, merged; access to entities no pack here defines
+    (a Kobo connection's, granted through the bridge's MCP) is kept."""
+    roles = {}
+    for name, r in spec['roles'].items():
+        if not any(k in r for k in PERMISSIONS):
+            print(f'role {name}: only extended ({", ".join(r["packs"])}), not defined by a pack here: skipped')
+            continue
+        body = {k: r[k] for k in PERMISSIONS if k in r}
+        have = find(espo, 'Role', 'name', name)
+        have = espo.call('GET', f'/Role/{have["id"]}') if have else {}
+        mine = set(r['data'])
+        data = {**{e: v for e, v in (have.get('data') or {}).items() if e not in mine}, **r['data']}
+        fields = {**{e: v for e, v in (have.get('fieldData') or {}).items() if e not in mine}, **r['fieldData']}
+        roles[name] = ensure(espo, 'Role', 'name', name, {'name': name, **body, 'data': data, 'fieldData': fields},
+                             update=True)['id']
+    return roles
+
+
+def make_agent(espo, spec, teams):
+    """An Agent and its routes from a spec as in a pack's agents.json: route targets by name
+    (assignUser: a user name, assignAgent: an agent's name), teams by name."""
+    body = {k: v for k, v in spec.items() if k not in ('routes', 'teams')}
+    body['teamsIds'] = [teams[t] for t in spec.get('teams', [])]
+    agent = espo.call('POST', '/CAgent', body=body)
+    for route in spec.get('routes', []):
+        r = {k: v for k, v in route.items() if k not in ('assignUser', 'assignAgent')}
+        if route.get('assignUser'):
+            r['assignUserId'] = espo.find('User', 'userName', route['assignUser'])['id']
+        if route.get('assignAgent'):
+            r['assignAgentId'] = espo.find('CAgent', 'name', route['assignAgent'])['id']
+        if isinstance(r.get('setFields'), dict):
+            r['setFields'] = json.dumps(r['setFields'])
+        espo.call('POST', '/CAgentRoute', body={**r, 'agentId': agent['id']})
+    return agent
+
+
+def ensure_agents(espo, spec, teams):
+    """The packs' example agents, made if missing, in their mode there (dry run or off):
+    what someone changed on an agent since isn't overwritten."""
+    for a in spec['agents']:
+        if find(espo, 'CAgent', 'name', a['name']):
+            continue
+        make_agent(espo, a, teams)
+        print(f'agent created: {a["name"]}')
+
+
+def ensure_users(espo, spec, teams, roles):
+    """The packs' test users, their passwords in secrets/seed.secrets (kept across runs). A
+    user's teams that no pack here has are left out."""
+    path = ROOT / 'secrets' / 'seed.secrets'
+    have = read_secrets('seed')
+    out = dict(have)
+    for u in spec['users']:
+        first, last = u['name'].split(' ', 1)
+        key = pw_key(u['username'])
+        password = have.get(key) or secrets.token_urlsafe(14)
+        team_ids = [teams[t] for t in u['teams'] if t in teams]
+        body = {'userName': u['username'], 'firstName': first, 'lastName': last, 'type': 'regular',
+                'isActive': True, 'rolesIds': [roles[u['role']]], 'teamsIds': team_ids,
+                'defaultTeamId': team_ids[0], 'emailAddress': f'delivered+{u["username"]}@resend.dev'}
+        user = find(espo, 'User', 'userName', u['username'])
+        if user is None:
+            espo.call('POST', '/User', body={**body, 'password': password})
+            print(f'user created: {u["username"]} ({u["role"]}; {", ".join(u["teams"])})')
+        else:  # teams and roles as defined here; the password too if it was lost
+            espo.call('PUT', f'/User/{user["id"]}', body={**body, **({} if key in have else {'password': password})})
+        out[key] = password
+    path.parent.mkdir(mode=0o700, exist_ok=True)
+    path.write_text(''.join(f'{k}={v}\n' for k, v in out.items()))
+    path.chmod(0o600)
+    print(f'users: {len(spec["users"])}, passwords in {path.relative_to(ROOT)}')
+
+
+def migrate(espo, spec):
+    for path in spec['migrations']:
+        ns = {}
+        exec(compile(path.read_text(), str(path), 'exec'), ns)
+        ns['migrate'](espo)
+        print(f'migrate: {path.parent.name}')
+
+
+def apply(espo, spec, users=False, application_name=None, email=None):
+    """Make EspoCRM as the packs say. `email` is the core's ensure_email (secrets/resend.key)."""
+    espo = espo if isinstance(espo, Admin) else Admin(espo)
+    ensure_settings(espo, spec, application_name)
+    if email:
+        email(espo)
+    ensure_entities(espo, spec)
+    remove_obsolete(espo, spec)
+    for entity, fields in spec['fields'].items():
+        for name, fspec in fields.items():
+            ensure_field(espo, entity, name, fspec)
+    ensure_codes(espo, spec)
+    ensure_task_board(espo, spec)
+    ensure_formulas(espo, spec)
+    ensure_layouts(espo, spec)
+    backfill_codes(espo, spec)
+    load_data(espo, spec)
+    migrate(espo, spec)
+    teams = {name: ensure(espo, 'Team', 'name', name, {'name': name})['id'] for name in spec['teams']}
+    roles = ensure_roles(espo, spec)
+    print(f'teams: {len(teams)}, roles: {", ".join(roles)}')
+    ensure_agents(espo, spec, teams)
+    if users:
+        ensure_users(espo, spec, teams, roles)

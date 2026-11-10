@@ -1,0 +1,218 @@
+# Workflow E (plans/workflow-e-5w-plan.md): a response's 5W on the Hurricane Melissa form's model.
+
+requires = ["responses"]
+agent_guarded = ["CResponder"]
+task_parents = ["CResponder"]
+codes = { CResponder = "REG", CActivity = "ACT" }
+agent_entities = { CResponder = "Responding organisation", CActivity = "Activity" }
+links = [
+  ["CResponse", "responders", "CResponder", "response", "oneToMany"],
+  ["CResponder", "account", "Account", "responderProfiles", "manyToOne"],
+  ["CResponder", "contact", "Contact", "responderProfiles", "manyToOne"],
+  ["CResponder", "activities", "CActivity", "responder", "oneToMany"],
+  ["CProject", "activities", "CActivity", "project", "oneToMany"],
+  ["CResponse", "activities", "CActivity", "response", "oneToMany"],
+  ["CResponder", "organisation", "COrganisation", "registrations", "manyToOne"],
+  ["CActivity", "leadOrganisation", "COrganisation", "activitiesLed", "manyToOne"],
+  ["CActivity", "implementingOrganisation", "COrganisation", "activitiesImplemented", "manyToOne"],
+  ["CActivity", "locations", "CActivityLocation", "activity", "oneToMany"],
+  ["CActivity", "focalPoints", "CFocalPoint", "activity", "oneToMany"],
+  ["CActivityLocation", "parish", "CAdminArea", "locationsInParish", "manyToOne"],
+  ["CActivityLocation", "community", "CAdminArea", "locationsInCommunity", "manyToOne"],
+  ["CActivityLocation", "site", "CSite", "activityLocations", "manyToOne"],
+  ["CActivityLocation", "project", "CProject", "activityLocations", "manyToOne"],
+  ["CActivityLocation", "response", "CResponse", "activityLocations", "manyToOne"],
+]
+
+[settings]
+global_search = ["CResponder", "CActivity"]
+
+[entities.Responder]
+label = "Responding organisation"
+labelPlural = "Responding organisations"
+iconClass = "fas fa-hands-helping"
+[entities.Responder.fields]
+acronym = { type = "varchar", maxLength = 30 }
+orgType = { label = "Type", list = "fivew-melissa.org_types" }
+organisationOther = { type = "varchar", label = "Organisation (not in the list)" }
+clusters = { type = "multiEnum", label = "Sectors", list = "fivew-melissa.sectors" }
+status = { type = "enum", options = ["registered", "active", "inactive"], default = "registered", translatedOptions = { registered = "Registered", active = "Reporting", inactive = "Inactive" }, style = { active = "success", inactive = "info" } }
+focalPoint = { type = "varchar", label = "Focal point" }
+focalPointPhone = { type = "varchar", label = "Focal point phone", maxLength = 40 }
+registrationKey = { type = "varchar", label = "Registration key", tooltipText = "Response and organisation: registering again updates the same record" }
+lastReport = { type = "date", label = "Last report" }
+
+[entities.Activity]
+label = "Activity"
+labelPlural = "Activities"
+iconClass = "fas fa-clipboard-check"
+[entities.Activity.fields]
+leadOrganisationOther = { type = "varchar", label = "Lead organisation (not in the list)" }
+implementingOrganisationOther = { type = "varchar", label = "Implementing organisation (not in the list)" }
+sector = { list = "fivew-melissa.sectors" }
+sectorOther = { type = "varchar", label = "Sector (other)" }
+activityType = { label = "Activity type", list = "fivew-melissa.activity_types" }
+activityTypeOther = { type = "varchar", label = "Activity type (other)" }
+title = { type = "varchar", label = "Activity title" }
+status = { default = "IN_PROGRESS", style = { COMPLETED = "success" }, list = "fivew-melissa.activity_status", blank = false }
+comments = { type = "text", label = "Comments / description" }
+resourceUrl = { type = "url", label = "Resources (link)" }
+resourceType = { label = "Resource type", list = "fivew-melissa.resource_types" }
+resourceTypeOther = { type = "varchar", label = "Resource type (other)" }
+resourceUnit = { label = "Unit", list = "fivew-melissa.resource_units" }
+resourceUnitOther = { type = "varchar", label = "Unit (other)" }
+startDate = { type = "date", label = "Start date" }
+endDate = { type = "date", label = "End date" }
+reportDate = { type = "date", label = "Reported on" }
+communities = { type = "int", label = "Communities" }
+quantity = { type = "float", label = "Quantity (all communities)" }
+budget = { type = "float", label = "Budget (all communities)" }
+peopleTargeted = { type = "int", label = "People targeted" }
+peopleReached = { type = "int", label = "People reached" }
+dataChecks = { type = "multiEnum", label = "Data checks", options = ["completed_nobody_reached", "no_communities", "completed_ends_later"], translatedOptions = { completed_nobody_reached = "Completed, nobody reached", no_communities = "No community given", completed_ends_later = "Completed, but ends in the future" }, tooltipText = "What looks wrong (formula); fix it or explain in a note" }
+
+[entities.ActivityLocation]
+label = "Activity location"
+labelPlural = "Activity locations"
+iconClass = "fas fa-map-pin"
+stream = false
+[entities.ActivityLocation.fields]
+locationType = { label = "Location type", list = "fivew-melissa.location_types" }
+locationTypeOther = { type = "varchar", label = "Location type (other)" }
+locationComments = { type = "text", label = "Address or comments" }
+quantity = { type = "float" }
+budget = { type = "float", label = "Budget / value" }
+populationTargeted = { type = "int", label = "People targeted", min = 0 }
+populationReached = { type = "int", label = "People reached", min = 0 }
+populationGroups = { type = "multiEnum", label = "Groups of people", list = "fivew-melissa.population_groups" }
+populationGroupsOther = { type = "varchar", label = "Groups (other)" }
+dataChecks = { type = "multiEnum", label = "Data checks", options = ["reached_over_targeted", "groups_over_total", "group_parts_dont_add_up"], translatedOptions = { reached_over_targeted = "More reached than targeted", groups_over_total = "The groups add up to more than the total reached", group_parts_dont_add_up = "A group's women, men and children don't add up to its people" }, tooltipText = "What looks wrong (formula); fix it or explain in a note" }
+idpPeopleTargeted = { type = "int", min = 0, label = "Internally Displaced People: people targeted" }
+idpWomenTargeted = { type = "int", min = 0, label = "Internally Displaced People: women targeted" }
+idpMenTargeted = { type = "int", min = 0, label = "Internally Displaced People: men targeted" }
+idpChildrenTargeted = { type = "int", min = 0, label = "Internally Displaced People: children targeted" }
+idpHouseholdsTargeted = { type = "int", min = 0, label = "Internally Displaced People: households targeted" }
+idpPeopleReached = { type = "int", min = 0, label = "Internally Displaced People: people reached" }
+idpWomenReached = { type = "int", min = 0, label = "Internally Displaced People: women reached" }
+idpMenReached = { type = "int", min = 0, label = "Internally Displaced People: men reached" }
+idpChildrenReached = { type = "int", min = 0, label = "Internally Displaced People: children reached" }
+idpHouseholdsReached = { type = "int", min = 0, label = "Internally Displaced People: households reached" }
+hostingPeopleTargeted = { type = "int", min = 0, label = "People Hosting: people targeted" }
+hostingWomenTargeted = { type = "int", min = 0, label = "People Hosting: women targeted" }
+hostingMenTargeted = { type = "int", min = 0, label = "People Hosting: men targeted" }
+hostingChildrenTargeted = { type = "int", min = 0, label = "People Hosting: children targeted" }
+hostingHouseholdsTargeted = { type = "int", min = 0, label = "People Hosting: households targeted" }
+hostingPeopleReached = { type = "int", min = 0, label = "People Hosting: people reached" }
+hostingWomenReached = { type = "int", min = 0, label = "People Hosting: women reached" }
+hostingMenReached = { type = "int", min = 0, label = "People Hosting: men reached" }
+hostingChildrenReached = { type = "int", min = 0, label = "People Hosting: children reached" }
+hostingHouseholdsReached = { type = "int", min = 0, label = "People Hosting: households reached" }
+ndpPeopleTargeted = { type = "int", min = 0, label = "Non Displaced People (Resident): people targeted" }
+ndpWomenTargeted = { type = "int", min = 0, label = "Non Displaced People (Resident): women targeted" }
+ndpMenTargeted = { type = "int", min = 0, label = "Non Displaced People (Resident): men targeted" }
+ndpChildrenTargeted = { type = "int", min = 0, label = "Non Displaced People (Resident): children targeted" }
+ndpHouseholdsTargeted = { type = "int", min = 0, label = "Non Displaced People (Resident): households targeted" }
+ndpPeopleReached = { type = "int", min = 0, label = "Non Displaced People (Resident): people reached" }
+ndpWomenReached = { type = "int", min = 0, label = "Non Displaced People (Resident): women reached" }
+ndpMenReached = { type = "int", min = 0, label = "Non Displaced People (Resident): men reached" }
+ndpChildrenReached = { type = "int", min = 0, label = "Non Displaced People (Resident): children reached" }
+ndpHouseholdsReached = { type = "int", min = 0, label = "Non Displaced People (Resident): households reached" }
+otherPeopleTargeted = { type = "int", min = 0, label = "Other: people targeted" }
+otherWomenTargeted = { type = "int", min = 0, label = "Other: women targeted" }
+otherMenTargeted = { type = "int", min = 0, label = "Other: men targeted" }
+otherChildrenTargeted = { type = "int", min = 0, label = "Other: children targeted" }
+otherHouseholdsTargeted = { type = "int", min = 0, label = "Other: households targeted" }
+otherPeopleReached = { type = "int", min = 0, label = "Other: people reached" }
+otherWomenReached = { type = "int", min = 0, label = "Other: women reached" }
+otherMenReached = { type = "int", min = 0, label = "Other: men reached" }
+otherChildrenReached = { type = "int", min = 0, label = "Other: children reached" }
+otherHouseholdsReached = { type = "int", min = 0, label = "Other: households reached" }
+
+[fields.COrganisation]
+orgType = { label = "Type", list = "fivew-melissa.org_types" }
+
+[roles."Internal Staff"]
+[roles."Internal Staff".data]
+CResponder = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CActivity = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CActivityLocation = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+
+[roles."Cluster Lead"]
+[roles."Cluster Lead".data]
+CResponder = { create = "no", read = "team", edit = "team", delete = "no", stream = "team" }
+CActivity = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CActivityLocation = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+
+[roles."Cluster Partner"]
+[roles."Cluster Partner".data]
+CResponder = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CActivity = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
+CActivityLocation = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
+
+[roles."Cluster Viewer"]
+[roles."Cluster Viewer".data]
+CResponder = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CActivity = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CActivityLocation = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+
+[layouts.CResponder]
+detail = [
+  ["response", "organisation", "organisationOther", "acronym", "orgType", "clusters", "status", "focalPoint", "contact", "focalPointPhone", "lastReport", "registrationKey"],
+]
+list = ["name", "code", "organisation", "clusters", "status", "lastReport", "response"]
+relationships = ["activities", "tasks"]
+
+[layouts.CActivity]
+detail = [
+  ["response", "project", "leadOrganisation", "leadOrganisationOther", "implementingOrganisation", "implementingOrganisationOther", "responder", "sector", "sectorOther", "activityType", "activityTypeOther", "title", "status", "startDate", "endDate", "reportDate", "resourceType", "resourceTypeOther", "resourceUnit", "resourceUnitOther", "comments", "resourceUrl"],
+  ["communities", "quantity", "budget", "peopleTargeted", "peopleReached", "dataChecks"],
+]
+list = [
+  "name",
+  "code",
+  "leadOrganisation",
+  "sector",
+  "activityType",
+  "status",
+  "communities",
+  "peopleReached",
+  "startDate",
+  "dataChecks",
+]
+relationships = ["locations", "focalPoints"]
+
+[layouts.CActivityLocation]
+detail = [
+  ["activity", "project", "response", "parish", "community", "site", "locationType", "locationTypeOther", "locationComments", "quantity", "budget", "populationTargeted", "populationReached", "populationGroups", "populationGroupsOther", "dataChecks"],
+  ["idpPeopleTargeted", "idpWomenTargeted", "idpMenTargeted", "idpChildrenTargeted", "idpHouseholdsTargeted", "idpPeopleReached", "idpWomenReached", "idpMenReached", "idpChildrenReached", "idpHouseholdsReached", "hostingPeopleTargeted", "hostingWomenTargeted", "hostingMenTargeted", "hostingChildrenTargeted", "hostingHouseholdsTargeted", "hostingPeopleReached", "hostingWomenReached", "hostingMenReached", "hostingChildrenReached", "hostingHouseholdsReached", "ndpPeopleTargeted", "ndpWomenTargeted", "ndpMenTargeted", "ndpChildrenTargeted", "ndpHouseholdsTargeted", "ndpPeopleReached", "ndpWomenReached", "ndpMenReached", "ndpChildrenReached", "ndpHouseholdsReached", "otherPeopleTargeted", "otherWomenTargeted", "otherMenTargeted", "otherChildrenTargeted", "otherHouseholdsTargeted", "otherPeopleReached", "otherWomenReached", "otherMenReached", "otherChildrenReached", "otherHouseholdsReached"],
+]
+list = ["name", "activity", "parish", "community", "locationType", "populationTargeted", "populationReached"]
+
+[layouts.CFocalPoint]
+detail = [["activity"]]
+list = ["name", "activity", "emailAddress", "phone", "jobTitle"]
+
+[layouts.COrganisation]
+detail = [["orgType"]]
+list = ["name", "code", "orgType"]
+relationships = ["activitiesLed", "registrations"]
+
+[layouts.CResponse]
+relationships = [{ name = "responders", before = "tasks" }]
+
+[layouts.CProject]
+relationships = [{ name = "activities", before = "tasks" }]
+
+[layouts.CSite]
+relationships = ["activityLocations"]
+
+[[data]]
+entity = "COrganisation"
+list = "fivew-melissa.organisations"
+match = "code"
+map = { name = "label", code = "code", orgType = "org_type" }
+
+[removed]
+links = [["CActivity", "adminArea"], ["CActivity", "site"]]
+[removed.fields]
+CActivity = ["girls", "boys", "women", "men", "elderlyWomen", "elderlyMen", "households", "unit"]

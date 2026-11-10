@@ -1,0 +1,49 @@
+[
+ {
+  "name": "5W: no report",
+  "description": "Every morning: a follow-up task for each registered organisation that hasn't reported an activity for a week (or ever, a week after registering). One open task per organisation at a time.",
+  "mode": "dry_run",
+  "entity": "CResponder",
+  "trigger": "schedule",
+  "scheduleEvery": "day",
+  "scheduleAt": "06:00",
+  "filterField": "status",
+  "filterValue": "registered, active",
+  "idleField": "lastReport",
+  "idleDays": 7,
+  "teams": [
+   "Response: Test EQ 1"
+  ],
+  "readFields": [
+   "name",
+   "status",
+   "lastReport",
+   "clusters",
+   "focalPoint",
+   "responseName"
+  ],
+  "outputFields": [],
+  "model": "",
+  "maxAttempts": 1,
+  "onFailure": "no_report",
+  "routes": [
+   {
+    "name": "no_report",
+    "order": 10,
+    "description": "No 5W report for a week: the response lead follows it up with the organisation's focal point.",
+    "ruleField": "status",
+    "ruleOp": "in",
+    "ruleValue": "registered, active",
+    "ruleWhen": "before",
+    "createTask": true,
+    "onlyOneOpen": true,
+    "taskName": "No 5W report from {name}",
+    "taskStatus": "Not Started",
+    "taskPriority": "Normal",
+    "taskAssignFrom": "response.lead",
+    "notify": true,
+    "fixedNote": "This organisation hasn't reported an activity for over a week: a follow-up task for the response lead (its focal point is on its page)."
+   }
+  ]
+ }
+]

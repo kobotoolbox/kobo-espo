@@ -1,0 +1,126 @@
+# Responses and their cluster projects (plans/espo-kobo-setup-plan.md, Workflow C): teams, leads, starter
+# tasks, tasks on the board by project and response. Its lists file is the Melissa 5W form's (sectors).
+
+requires = ["core"]
+teams = ["Response: Test EQ 1", "Response: Test EQ 2", "Cluster: Test EQ 1 ETC", "Cluster: Test EQ 1 WASH"]
+codes = { CResponse = "RSP", CProject = "PRJ" }
+links = [
+  ["CResponse", "tasks", "Task", "response", "oneToMany"],
+  ["CResponse", "projects", "CProject", "response", "oneToMany"],
+  ["CProject", "tasks", "Task", "project", "oneToMany"],
+  ["CProject", "lead", "User", "leadOfProjects", "manyToOne"],
+  ["CResponse", "lead", "User", "leadOfResponses", "manyToOne"],
+]
+
+[settings]
+assignment_notifications = ["CResponse", "CProject"]
+global_search = ["CResponse", "CProject"]
+
+[entities.Response]
+labelPlural = "Responses"
+iconClass = "fas fa-house-damage"
+[entities.Response.fields]
+status = { type = "enum", options = ["Planning", "Active", "Closed"], default = "Planning", style = { Active = "success", Closed = "info" } }
+emergencyType = { type = "enum", label = "Emergency type", options = ["", "Earthquake", "Flood", "Cyclone", "Drought", "Conflict", "Epidemic", "Other"] }
+country = { type = "varchar" }
+startDate = { type = "date", label = "Start date" }
+endDate = { type = "date", label = "End date" }
+
+[entities.Project]
+label = "Cluster project"
+labelPlural = "Cluster projects"
+iconClass = "fas fa-layer-group"
+[entities.Project.fields]
+cluster = { label = "Sector", list = "fivew-melissa.sectors" }
+status = { type = "enum", options = ["Planning", "Active", "Closed"], default = "Planning", style = { Active = "success", Closed = "info" } }
+startDate = { type = "date", label = "Start date" }
+endDate = { type = "date", label = "End date" }
+
+[roles."Internal Staff"]
+[roles."Internal Staff".data]
+CResponse = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CProject = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+
+[roles."Cluster Lead"]
+assignmentPermission = "team"
+userPermission = "team"
+mentionPermission = "team"
+exportPermission = "no"
+massUpdatePermission = "no"
+[roles."Cluster Lead".data]
+CProject = { create = "no", read = "team", edit = "team", delete = "no", stream = "team" }
+Task = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CResponse = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CFocalPoint = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CAdminArea = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+COrganisation = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+Team = { read = "team" }
+User = { read = "team" }
+
+[roles."Cluster Partner"]
+assignmentPermission = "team"
+userPermission = "team"
+mentionPermission = "team"
+exportPermission = "no"
+massUpdatePermission = "no"
+[roles."Cluster Partner".data]
+CProject = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+Task = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
+CResponse = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CFocalPoint = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CAdminArea = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+COrganisation = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+Team = { read = "team" }
+User = { read = "team" }
+
+[roles."Cluster Viewer"]
+assignmentPermission = "no"
+userPermission = "team"
+mentionPermission = "team"
+exportPermission = "no"
+massUpdatePermission = "no"
+[roles."Cluster Viewer".data]
+CProject = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+Task = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CResponse = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CAdminArea = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+COrganisation = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
+Team = { read = "team" }
+User = { read = "team" }
+
+[roles."CSO Coordinator"]
+[roles."CSO Coordinator".data]
+CResponse = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+
+[layouts.CResponse]
+detail = [["status", "emergencyType", "country", "lead", "startDate", "endDate"]]
+list = ["name", "code", "status", "emergencyType", "country", "lead", "teams"]
+relationships = ["projects", "tasks"]
+
+[layouts.CProject]
+detail = [["cluster", "status", "response", "lead", "startDate", "endDate"]]
+list = ["name", "code", "cluster", "status", "response", "lead", "teams"]
+relationships = ["tasks"]
+
+[layouts.Task]
+detail = [["cResponse", "cProject"]]
+kanban = [{ name = "cProject", before = "assignedUser" }, { name = "cResponse", before = "assignedUser" }]
+filters = ["cResponse", "cProject"]
+
+[[users]]
+username = "cluster-lead"
+name = "Cleo Lead"
+role = "Cluster Lead"
+teams = ["Cluster: Test EQ 1 ETC"]
+
+[[users]]
+username = "cluster-partner"
+name = "Cai Partner"
+role = "Cluster Partner"
+teams = ["Cluster: Test EQ 1 ETC"]
+
+[[users]]
+username = "cluster-viewer"
+name = "Vera Viewer"
+role = "Cluster Viewer"
+teams = ["Cluster: Test EQ 1 WASH"]

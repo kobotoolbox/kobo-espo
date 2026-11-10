@@ -1,0 +1,59 @@
+# Workflow B: volunteers and roster experts, their availability, their response's tasks.
+
+requires = ["responses"]
+teams = ["Roster and volunteers"]
+
+[fields.Contact]
+profileType = { type = "enum", label = "Profile type", options = ["", "Roster", "Volunteer", "Partner contact"] }
+availability = { type = "text" }
+
+[roles."Roster Expert"]
+assignmentPermission = "team"
+userPermission = "team"
+mentionPermission = "team"
+exportPermission = "no"
+massUpdatePermission = "no"
+[roles."Roster Expert".data]
+Task = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
+CResponse = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+Team = { read = "team" }
+User = { read = "team" }
+
+[roles.Volunteer]
+assignmentPermission = "no"
+userPermission = "team"
+mentionPermission = "team"
+exportPermission = "no"
+massUpdatePermission = "no"
+[roles.Volunteer.data]
+Task = { create = "no", read = "team", edit = "own", delete = "no", stream = "team" }
+CResponse = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+Team = { read = "team" }
+User = { read = "team" }
+
+[layouts.Contact]
+detail = [["cProfileType", "cAvailability"]]
+
+[[users]]
+username = "roster-1"
+name = "Rui Roster"
+role = "Roster Expert"
+teams = ["Response: Test EQ 1"]
+
+[[users]]
+username = "roster-2"
+name = "Rana Roster"
+role = "Roster Expert"
+teams = ["Response: Test EQ 1", "Response: Test EQ 2"]
+
+[[users]]
+username = "volunteer-1"
+name = "Vic Volunteer"
+role = "Volunteer"
+teams = ["Response: Test EQ 2"]
+
+[[users]]
+username = "volunteer-2"
+name = "Val Volunteer"
+role = "Volunteer"
+teams = ["Response: Test EQ 1"]

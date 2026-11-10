@@ -1,0 +1,4 @@
+# The packs this instance has (plans/workflow-packs-plan.md): the staging droplet has
+# every workflow. espo/seed/seed.py applies them (--instance for another file).
+application_name = "Kobo requests and responses (test)"
+packs = ["core", "support", "responses", "roster", "sites", "grants", "fivew", "cso"]

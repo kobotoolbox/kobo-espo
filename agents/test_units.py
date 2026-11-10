@@ -85,7 +85,7 @@ class Rules(unittest.TestCase):
 
     def test_safety_pattern(self):
         import json
-        spec = json.loads((Path(__file__).parent / 'setup' / 'examples.json').read_text())
+        spec = json.loads((Path(__file__).parents[1] / 'workflows' / 'sites' / 'agents.json').read_text())
         rule = next(r for a in spec for r in a['routes'] if r['name'] == 'urgent_safety')
         for text in ['two children got sick', 'Water contaminated after the flood', 'un enfant est malade',
                      'hay heridos', 'the wall collapsed']:

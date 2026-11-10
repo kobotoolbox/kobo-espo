@@ -8,7 +8,7 @@ the Melissa form's, so its submissions fit EspoCRM as the Melissa form's do. Wha
 the response is picked from EspoCRM's list (responses.csv); the organisations
 (organisations.csv) and the parishes and communities (areas.csv) are EspoCRM's lists,
 not the form's own choices; a community row can name a registered site (site_code).
-Then espo/seed/data/fivew-melissa.json holds the form's other lists for EspoCRM.
+Then workflows/responses/lists/fivew-melissa.json holds the form's other lists for EspoCRM.
 """
 import json
 import sys
