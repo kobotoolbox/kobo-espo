@@ -1,4 +1,9 @@
-// Workflow F: a place where a CSO works (a row of its profile's PRESENCE repeat).
+// Workflow F: a place where a CSO works (a row of its profile's PRESENCE repeat, or added
+// in the CSO portal).
+// Added in the CSO portal: the CSO of whoever added it (their own contact's)
+if (!csoId && entity\isNew() && env\userAttribute('type') == 'portal' && env\userAttribute('contactId')) {
+    csoId = record\attribute('Contact', env\userAttribute('contactId'), 'cCsoId');
+}
 // From a pin: the area of the deepest P-code the P-coding step found
 // (the deepest level EspoCRM has: a country's areas may be loaded to fewer levels than the
 // geocoder knows)
@@ -52,6 +57,7 @@ if (csoId && (entity\isNew() || entity\isAttributeChanged('csoId') || entity\isA
         record\update('CCso', csoId, 'countries', array\push($countries, country));
     }
     teamsIds = record\attribute('CCso', csoId, 'teamsIds');
+    accountId = record\attribute('CCso', csoId, 'accountId');
     csoType = record\attribute('CCso', csoId, 'csoType');
     settings = record\attribute('CCso', csoId, 'settings');
     populations = record\attribute('CCso', csoId, 'populations');

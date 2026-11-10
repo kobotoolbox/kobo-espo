@@ -232,13 +232,19 @@ def template(kind, stem, title, country, cholera):
               'columns = { name = "pcode", label = "name", level = "level", parent = "parentPcode" }\n'
               f'forms = ["{title} (espo-kobo test)"]\n'] if country else [])
     if kind == 'profile':
-        body = ['# A CSO\'s profile (CCso). Sent again from the link in its email (its code and key), it\n'
-                '# updates the same CSO; its places and focal points are the new submission\'s.\n'
+        body = ['# A CSO\'s profile (CCso): how a CSO registers. Kept current in the CSO portal after that;\n'
+                '# sent again from the link in its email (its code and key), it updates the same CSO,\n'
+                '# its places from Kobo the new submission\'s (the portal\'s stay).\n'
                 '[record]\nentity = "CCso"\npanel = "Profile"\nname = "{cso_name}"\nmatch = { code = "cso" }\n'
                 'required = ["cso_name", "cso_type", "sharing"]\n',
                 *fields(PROFILE_FIELDS, cholera),
-                '[[repeat]]\ngroup = "FOCAL_POINTS"\nentity = "CFocalPoint"\nlink = "cso"\nname = "{name}"\n',
-                *fields([('email', 'emailAddress', None), ('phone', 'phone', None), ('position', 'jobTitle', None)],
+                '# Its focal points: Contacts of the CSO (and its Account, formula), one per person and CSO\n'
+                '# by email, so the same person sent again is the same Contact (and someone in two CSOs\n'
+                '# is a contact of each). Kept in the portal from then on\n'
+                '[[repeat]]\ngroup = "FOCAL_POINTS"\nentity = "Contact"\nlink = "cCso"\nname = "{name}"\n'
+                'match = { emailAddress = "email", cCsoId = "@record" }\n',
+                '[[repeat.field]]\nkobo = "name"\nespo = "name"\ntype = "personName"\n',
+                *fields([('email', 'emailAddress', None), ('phone', 'phoneNumber', None), ('position', 'title', None)],
                         cholera, 'repeat.field'),
                 '[[repeat]]\ngroup = "PRESENCE"\nentity = "CPresence"\nlink = "cso"\nname = "{cso_name}"  # then the place\'s (formula)\n',
                 *place_fields(country, 'repeat.field')]

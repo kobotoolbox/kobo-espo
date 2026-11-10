@@ -14,6 +14,12 @@ A pack, workflows/<name>/:
     data/           its reference data
     migrate.py      migrate(espo): what data can't say (old codes moved), run after applying
 
+    [metadata.<type>.<Entity>]   metadata the admin API can't set (aclDefs: which link a
+                                 portal's "account" level follows): installed as one
+                                 extension, KoboWorkflows, when it changes
+    [portal_roles.<Name>]        a portal's role (access by "account", "contact", "own")
+    [[portals]]                  a portal: its name, customId (its URL), tabs, roles
+
     spec = load(['core', 'cso'])    # the packs and what they require, merged
     apply(espo, spec, users=False)  # idempotent; never deletes records
 
@@ -22,12 +28,17 @@ union of every pack's access to it (its permissions from the pack that defines i
 lists (relationship panels, a board's card) are joined in `requires` order, an entry with
 `before` going in front of that entry; settings' lists are joined.
 """
+import base64
+import hashlib
+import io
 import json
 import re
 import secrets
 import sys
 import time
 import tomllib
+import urllib.request
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -120,8 +131,9 @@ def load(names, packs_dir=PACKS):
     lists = lists_of(packs, packs_dir)
     spec = {'packs': packs, 'lists': lists, 'entities': {}, 'fields': {}, 'links': [], 'codes': {}, 'teams': [],
             'roles': {}, 'users': [], 'layouts': {}, 'data': [], 'removed': {'fields': {}, 'links': []},
-            'settings': {'assignment_notifications': [], 'global_search': []}, 'formulas': {}, 'agents': [],
-            'migrations': [], 'agent_entities': {}, 'agent_guarded': [], 'task_parents': []}
+            'settings': {'assignment_notifications': [], 'global_search': []}, 'formulas': {}, 'agents': [], 'tabs': [],
+            'migrations': [], 'agent_entities': {}, 'agent_guarded': [], 'task_parents': [],
+            'metadata': {}, 'portal_roles': {}, 'portals': []}
     ordered = {}
     for name in packs:
         p, d = read(name, packs_dir), packs_dir / name
@@ -161,10 +173,17 @@ def load(names, packs_dir=PACKS):
                     ordered.setdefault((ent, k), []).append(lay[k])
         for k in ('assignment_notifications', 'global_search'):
             spec['settings'][k] += [x for x in p.get('settings', {}).get(k, []) if x not in spec['settings'][k]]
+        if p.get('tabs'):  # its group in the navigation: { label, entities }
+            spec['tabs'].append(p['tabs'])
         spec['data'] += [{**x, 'pack': name} for x in p.get('data', [])]
         spec['removed']['links'] += [tuple(x) for x in p.get('removed', {}).get('links', [])]
         for ent, fields in p.get('removed', {}).get('fields', {}).items():
             spec['removed']['fields'].setdefault(ent, []).extend(fields)
+        for kind, scopes in p.get('metadata', {}).items():
+            for scope, value in scopes.items():
+                spec['metadata'].setdefault(kind, {}).setdefault(scope, {}).update(value)
+        spec['portal_roles'].update(p.get('portal_roles', {}))
+        spec['portals'] += p.get('portals', [])
         spec['agent_entities'].update(p.get('agent_entities', {}))
         spec['agent_guarded'] += p.get('agent_guarded', [])
         spec['task_parents'] += p.get('task_parents', [])
@@ -479,6 +498,17 @@ def ensure_settings(espo, spec, application_name=None):
             'globalSearchEntityList': sorted(set(settings.get('globalSearchEntityList') or []) | set(s['global_search']))}
     if application_name:
         body['applicationName'] = application_name
+    # Each pack's group in the navigation, before EspoCRM's delimiter (what's after it is in
+    # the "more" menu): a divider with its label, then its entities, moved there if elsewhere
+    tabs = list(settings.get('tabList') or [])
+    for group in spec['tabs']:
+        mine = group['entities']
+        if any(isinstance(t, dict) and t.get('text') == group['label'] for t in tabs):
+            continue
+        tabs = [t for t in tabs if t not in mine]
+        at = tabs.index('_delimiter_') if '_delimiter_' in tabs else len(tabs)
+        tabs[at:at] = [{'type': 'divider', 'text': group['label'], 'id': hashlib.md5(group['label'].encode()).hexdigest()[:6]}, *mine]
+        body['tabList'] = tabs
     espo.call('PUT', '/Settings', body=body)
     print(f'settings: assignment notifications for {", ".join(s["assignment_notifications"])}; global search')
 
@@ -558,6 +588,63 @@ def make_agent(espo, spec, teams):
     return agent
 
 
+MODULE = 'KoboWorkflows'
+
+
+def module_zip(spec):
+    """The packs' metadata as an EspoCRM extension: (zip bytes, its contents' hash)."""
+    files = {f'files/custom/Espo/Modules/{MODULE}/Resources/module.json': json.dumps({'order': 40})}
+    for kind, scopes in sorted(spec['metadata'].items()):
+        for scope, value in sorted(scopes.items()):
+            files[f'files/custom/Espo/Modules/{MODULE}/Resources/metadata/{kind}/{scope}.json'] = json.dumps(value, indent=1, sort_keys=True)
+    digest = hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest()[:12]
+    manifest = {'name': 'Kobo workflows', 'version': f'1.0.{int(time.time())}', 'acceptableVersions': ['>=8.0.0'],
+                'author': 'kobo-espo', 'releaseDate': time.strftime('%Y-%m-%d'),
+                'description': f'Metadata of the workflow packs ({", ".join(spec["packs"])}). Contents {digest}'}
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, 'w', zipfile.ZIP_DEFLATED) as z:
+        z.writestr('manifest.json', json.dumps(manifest, indent=1))
+        for name, text in files.items():
+            z.writestr(name, text)
+    return buf.getvalue(), digest
+
+
+def ensure_module(espo, spec):
+    """Install the packs' metadata (KoboWorkflows) if what's installed has other contents.
+    Needs the instance's adminExtensionUpload (deploy/up.sh sets it)."""
+    if not spec['metadata']:
+        return
+    data, digest = module_zip(spec)
+    have = [x for x in espo.call('GET', '/Extension', {'maxSize': 50})['list'] if x.get('name') == 'Kobo workflows' and x.get('isInstalled')]
+    if any(digest in (x.get('description') or '') for x in have):
+        return
+    raw = espo.espo if isinstance(espo, Admin) else espo
+    req = urllib.request.Request(raw.base + '/Extension/action/upload', method='POST',
+                                 data=('data:application/zip;base64,' + base64.b64encode(data).decode()).encode(),
+                                 headers={**raw.headers, 'Content-Type': 'application/zip', 'Accept': 'application/json'})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        uploaded = json.loads(r.read())
+    espo.call('POST', '/Extension/action/install', body={'id': uploaded['id']})
+    print(f'module: {MODULE} {uploaded["version"]} installed ({", ".join(f"{k} {", ".join(v)}" for k, v in spec["metadata"].items())})')
+
+
+def ensure_portal_roles(espo, spec):
+    ids = {}
+    for name, r in spec['portal_roles'].items():
+        ids[name] = ensure(espo, 'PortalRole', 'name', name, {'name': name, **r}, update=True)['id']
+    return ids
+
+
+def ensure_portals(espo, spec, portal_roles):
+    """A portal by its name: its URL's customId, tabs, roles; made or brought to this."""
+    for p in spec['portals']:
+        body = {k: v for k, v in p.items() if k != 'roles'}
+        body['portalRolesIds'] = [portal_roles[r] for r in p.get('roles', [])]
+        body.setdefault('isActive', True)
+        ensure(espo, 'Portal', 'name', p['name'], body, update=True)
+        print(f'portal: {p["name"]} (/portal/{p.get("customId", "")})')
+
+
 def ensure_agents(espo, spec, teams):
     """The packs' example agents, made if missing, in their mode there (dry run or off):
     what someone changed on an agent since isn't overwritten."""
@@ -618,12 +705,14 @@ def apply(espo, spec, users=False, application_name=None, email=None):
     ensure_task_board(espo, spec)
     ensure_formulas(espo, spec)
     ensure_layouts(espo, spec)
+    ensure_module(espo, spec)
     backfill_codes(espo, spec)
     load_data(espo, spec)
     migrate(espo, spec)
     teams = {name: ensure(espo, 'Team', 'name', name, {'name': name})['id'] for name in spec['teams']}
     roles = ensure_roles(espo, spec)
     print(f'teams: {len(teams)}, roles: {", ".join(roles)}')
+    ensure_portals(espo, spec, ensure_portal_roles(espo, spec))
     ensure_agents(espo, spec, teams)
     if users:
         ensure_users(espo, spec, teams, roles)

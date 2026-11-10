@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-C1-C9: Workflow F, the CSO mapping (plans/cso-mapping-plan.md): the CSO forms through the
+C1-C10: Workflow F, the CSO mapping (plans/cso-mapping-plan.md): the CSO forms through the
 bridge (kobo/templates/cso-*.toml, generated with the forms by kobo/forms/cso.py) into
-CCso, CPresence, CFocalPoint and CCsoUpdate, and their formulas: codes and keys, teams by
-country, consent, a profile sent again, superseded updates, P-codes, data checks. Access
-as the CSO coordinators of Kenya and Uganda (cso-kenya, cso-uganda) with their own
-passwords.
+CCso (and its Account), CPresence, Contact and CCsoUpdate, and their formulas: codes and
+keys, teams by country, consent, a profile sent again, superseded updates, P-codes, data
+checks. Access as the CSO coordinators of Kenya and Uganda (cso-kenya, cso-uganda) with
+their own passwords, and as a CSO's contact in the CSO portal (C10, a portal user made
+for the run).
 
     python3 -I tests/cases/cso.py [--kobo fake|real]
 
@@ -18,13 +19,14 @@ import csv
 import io
 import json
 import re
+import secrets
 import sys
 import time
 from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from lib import ROOT, BridgeError, admin, as_user, env  # noqa: E402
+from lib import ROOT, URL, BridgeError, Espo, admin, as_user, env  # noqa: E402
 
 from bridges import Bridge, by, ensure_secrets  # noqa: E402
 
@@ -58,11 +60,15 @@ def where(attr, value, kind='equals'):
 
 
 def cleanup(a):
-    for cso in a.call('GET', '/CCso', {'maxSize': 200, 'select': 'id', **where('name', PREFIX, 'startsWith')})['list']:
-        for entity in ('CPresence', 'CCsoUpdate', 'CFocalPoint'):
-            for r in a.call('GET', f'/{entity}', {'maxSize': 200, 'select': 'id', **where('csoId', cso['id'])})['list']:
+    for u in a.call('GET', '/User', {'maxSize': 50, 'select': 'id', **where('userName', 'csot-', 'startsWith')})['list']:
+        a.call('DELETE', f'/User/{u["id"]}')
+    for cso in a.call('GET', '/CCso', {'maxSize': 200, 'select': 'id,accountId', **where('name', PREFIX, 'startsWith')})['list']:
+        for entity, attr in (('CPresence', 'csoId'), ('CCsoUpdate', 'csoId'), ('Contact', 'cCsoId')):
+            for r in a.call('GET', f'/{entity}', {'maxSize': 200, 'select': 'id', **where(attr, cso['id'])})['list']:
                 a.call('DELETE', f'/{entity}/{r["id"]}')
         a.call('DELETE', f'/CCso/{cso["id"]}')
+        if cso.get('accountId'):
+            a.call('DELETE', f'/Account/{cso["accountId"]}')
 
 
 def main():
@@ -139,7 +145,8 @@ def run(a, kobo, uids, bridges):
         return a.call('GET', f'/{entity}/{rows[0]["id"]}') if len(rows) == 1 else {'count': len(rows)}
 
     def rows(entity, cso, **filters):
-        return [a.call('GET', f'/{entity}/{r["id"]}') for r in by(a, entity, 'csoId', cso['id'])
+        attr = 'cCsoId' if entity == 'Contact' else 'csoId'
+        return [a.call('GET', f'/{entity}/{r["id"]}') for r in by(a, entity, attr, cso['id'])
                 if all(a.call('GET', f'/{entity}/{r["id"]}').get(k) == v for k, v in filters.items())]
 
     # --- C1: a Kenyan CSO's profile, from the Kenya form ------------------------------------------
@@ -170,11 +177,18 @@ def run(a, kobo, uids, bridges):
           kam.get('teamsIds') == [ken] and kam.get('csoName') == amani.get('name') and kam.get('csoType') == 'national_ngo'
           and kam.get('settings') == ['informal_settlements', 'rural'] and kam.get('roles') == ['risk_communication', 'wash']
           and kam.get('listed') is True, {k: kam.get(k) for k in ('teamsNames', 'csoName', 'csoType', 'settings', 'listed')})
-    fps = rows('CFocalPoint', amani)
-    check('C1', 'two focal points, current, in its team, position as job title',
-          len(fps) == 2 and all(f.get('current') and f.get('teamsIds') == [ken] for f in fps)
-          and {f.get('jobTitle') for f in fps} == {'Coordinator', 'Director'}, [(f.get('name'), f.get('teamsNames')) for f in fps])
     amani = a.call('GET', f'/CCso/{amani["id"]}')
+    account = a.call('GET', f'/Account/{amani["accountId"]}') if amani.get('accountId') else {}
+    check('C1', 'its Account: made with it, named after it, in its team', account.get('name') == amani['name']
+          and account.get('teamsIds') == [ken], {k: account.get(k) for k in ('name', 'teamsNames')})
+    check('C1', 'its places on its Account too', all(p.get('accountId') == amani['accountId'] for p in places),
+          [p.get('accountId') for p in places])
+    fps = rows('Contact', amani)
+    check('C1', "two contacts (its focal points): its Account's, in its team, position as title, names split",
+          len(fps) == 2 and all(f.get('accountId') == amani['accountId'] and f.get('teamsIds') == [ken] for f in fps)
+          and {f.get('title') for f in fps} == {'Coordinator', 'Director'}
+          and {(f.get('firstName'), f.get('lastName')) for f in fps} == {('Amina', 'Focal'), ('Baraka', 'Second')},
+          [(f.get('name'), f.get('accountName'), f.get('teamsNames')) for f in fps])
     shared = amani.get('sharedContact') or ''
     check('C1', 'it said yes to sharing: both focal points in its shared contact',
           'Amina Focal (Coordinator)' in shared and f'baraka-{RUN}@example.org' in shared, shared)
@@ -215,17 +229,27 @@ def run(a, kobo, uids, bridges):
     old = a.call('GET', f'/CPresence/{kam["id"]}')
     check('C3', "an old place got the CSO's new roles too (the CSO's formula keeps its places' copies)",
           old.get('roles') == ['risk_communication', 'mhpss'], old.get('roles'))
-    fps = rows('CFocalPoint', amani, current=True)
+    fps = rows('Contact', amani)
     got = a.call('GET', f'/CCso/{amani["id"]}')
-    check('C3', 'its focal point now the new one only, and its shared contact', [f.get('name') for f in fps] == ['Chege New']
-          and 'Chege New' in (got.get('sharedContact') or '') and 'Amina' not in (got.get('sharedContact') or ''),
+    check('C3', 'a new focal point is a new contact; the others stay (the portal is where they are removed)',
+          sorted(f.get('name') for f in fps) == ['Amina Focal', 'Baraka Second', 'Chege New']
+          and 'Chege New' in (got.get('sharedContact') or '') and 'Amina' in (got.get('sharedContact') or ''),
           ([f.get('name') for f in fps], got.get('sharedContact')))
+    s2b = kobo.submit(uids['cso-profile-ken'], profile('Amani', [('KE047', 'KE047289')], focal=(('Chege Newer', 'Lead'),),
+                                                       cso=amani['code'], key=amani['updateKey'], roles='risk_communication mhpss',
+                                                       **{'FOCAL_POINTS': [{'FOCAL_POINTS/name': 'Chege Newer', 'FOCAL_POINTS/position': 'Lead',
+                                                                            'FOCAL_POINTS/email': f'chege-{RUN}@example.org'}]}))
+    bridges['cso-profile-ken'].once()
+    fps = rows('Contact', amani)
+    check('C3', 'the same person again (their email): the same contact, updated, not a second one',
+          sorted(f.get('name') for f in fps) == ['Amina Focal', 'Baraka Second', 'Chege Newer']
+          and next(f for f in fps if f.get('firstName') == 'Chege').get('title') == 'Lead', [(f.get('name'), f.get('title')) for f in fps])
     s3 = kobo.submit(uids['cso-profile-ken'], profile('Amani hijacked', [('KE001', None)], cso=amani['code']))
     code, log, st = bridges['cso-profile-ken'].once()
     got = a.call('GET', f'/CCso/{amani["id"]}')
     failed = bridges['cso-profile-ken'].failed()
     check('C3', 'sent with the code but no key: refused, recorded with its reason, the CSO unchanged',
-          got.get('name') == f'{PREFIX} {RUN} Amani' and got.get('cKoboSubmissionUuid') == s2['_uuid']
+          got.get('name') == f'{PREFIX} {RUN} Amani' and got.get('cKoboSubmissionUuid') == s2b['_uuid']
           and f'submission {s3["_id"]}' in failed and "key" in failed, failed[-400:])
 
     # --- C4: teams by country ---------------------------------------------------------------------
@@ -275,9 +299,9 @@ def run(a, kobo, uids, bridges):
     check('C6', "cso-kenya: Kenya's CSOs (Amani, Pamoja), not Uganda's or the unassigned", seen(k_user) == n('Amani', 'Pamoja'),
           seen(k_user))
     check('C6', "cso-uganda: Uganda's (Mto, Pamoja), not Kenya's", seen(u_user) == n('Mto', 'Pamoja'), seen(u_user))
-    k_fps = {r['name'] for r in k_user.call('GET', '/CFocalPoint', {'maxSize': 50, 'select': 'name', **where('csoId', amani['id'])})['list']}
-    check('C6', "cso-kenya: reads a Kenyan CSO's focal points; cso-uganda doesn't",
-          'Chege New' in k_fps and not u_user.call('GET', '/CFocalPoint', {'maxSize': 50, **where('csoId', amani['id'])})['list'],
+    k_fps = {r['name'] for r in k_user.call('GET', '/Contact', {'maxSize': 50, 'select': 'name', **where('cCsoId', amani['id'])})['list']}
+    check('C6', "cso-kenya: reads a Kenyan CSO's contacts; cso-uganda doesn't",
+          'Chege Newer' in k_fps and not u_user.call('GET', '/Contact', {'maxSize': 50, **where('cCsoId', amani['id'])})['list'],
           k_fps)
     check('C6', "cso-uganda: opening a Kenyan CSO refused", status(lambda: u_user.call('GET', f'/CCso/{amani["id"]}')) == 403)
     viewer = as_user('cluster-viewer')
@@ -344,6 +368,72 @@ def run(a, kobo, uids, bridges):
         check('C9', "areas.csv on the Kenya forms: Kenya's country, 47 counties and 290 sub-counties, nothing else",
               len(areas) == 338 and all(r['name'].startswith('KE') for r in areas) and levels == {'admin0', 'admin1', 'admin2'},
               (len(areas), sorted(levels)))
+
+    portal_tests(a, kobo, uids, bridges, amani, mto, one, rows)
+
+
+def portal_tests(a, kobo, uids, bridges, amani, mto, one, rows):
+    """C10: a CSO's contact in the CSO portal, with their own password, through the portal's
+    API (what its pages call)."""
+    portal = by(a, 'Portal', 'name', 'CSO portal')
+    role = by(a, 'PortalRole', 'name', 'CSO portal')
+    check('C10', 'the CSO portal (customId cso) and its role are there', len(portal) == 1 and len(role) == 1
+          and a.call('GET', f'/Portal/{portal[0]["id"]}').get('customId') == 'cso', (len(portal), len(role)))
+    if not (portal and role):
+        return
+    chege = next(c for c in rows('Contact', amani) if c.get('firstName') == 'Chege')
+    password = secrets.token_urlsafe(14)
+    a.call('POST', '/User', body={'userName': f'csot-{RUN}', 'type': 'portal', 'password': password, 'contactId': chege['id'],
+                                  'firstName': 'Chege', 'lastName': 'Newer', 'portalsIds': [portal[0]['id']],
+                                  'portalRolesIds': [role[0]['id']], 'isActive': True,
+                                  # its Accounts: what the portal's "account" level checks (EspoCRM's
+                                  # "Create Portal User" on a contact fills them; the API doesn't)
+                                  'accountsIds': [chege['accountId']]})
+    me = Espo(URL, basic=f'csot-{RUN}:{password}')
+    me.base = f'{URL}/api/v1/portal-access/{portal[0]["id"]}'
+    seen = {r['name'] for r in me.call('GET', '/CCso', {'maxSize': 50, 'select': 'name'})['list']}
+    check('C10', 'a contact sees their CSO only', seen == {amani['name']}, seen)
+    got = me.call('GET', f'/CCso/{amani["id"]}')
+    check('C10', "their CSO's profile, without its key", got.get('name') == amani['name'] and 'updateKey' not in got
+          and 'keyGiven' not in got, sorted(k for k in got if 'ey' in k))
+    check('C10', 'another CSO refused', status(lambda: me.call('GET', f'/CCso/{mto["id"]}')) == 403)
+    me.call('PUT', f'/CCso/{amani["id"]}', body={'sharing': 'profile_only', 'updateKey': 'X' * 16})
+    got = a.call('GET', f'/CCso/{amani["id"]}')
+    check('C10', 'they change its sharing (the formulas follow: no shared contact), not its key',
+          got.get('sharing') == 'profile_only' and not got.get('sharedContact') and got.get('updateKey') == amani['updateKey'],
+          {k: got.get(k) for k in ('sharing', 'sharedContact')})
+    me.call('PUT', f'/CCso/{amani["id"]}', body={'sharing': 'yes'})
+    area = by(a, 'CAdminArea', 'pcode', 'KE001001')[0]
+    place = me.call('POST', '/CPresence', body={'name': 'x', 'adminAreaId': area['id']})
+    got = a.call('GET', f'/CPresence/{place["id"]}')
+    check('C10', "a place they add: their CSO's (not picked), its Account and teams, P-codes, current",
+          got.get('csoId') == amani['id'] and got.get('accountId') == amani['accountId'] and got.get('pcode2') == 'KE001001'
+          and got.get('teamsIds') == amani['teamsIds'] and got.get('current') is True,
+          {k: got.get(k) for k in ('csoName', 'accountName', 'pcode2', 'teamsNames', 'current')})
+    new = me.call('POST', '/Contact', body={'firstName': 'Dalia', 'lastName': 'Joined', 'emailAddress': f'dalia-{RUN}@example.org'})
+    got = a.call('GET', f'/Contact/{new["id"]}')
+    shared = a.call('GET', f'/CCso/{amani["id"]}').get('sharedContact') or ''
+    check('C10', "a contact they add: their CSO's, its Account and teams, in its shared contact",
+          got.get('cCsoId') == amani['id'] and got.get('accountId') == amani['accountId'] and 'Dalia Joined' in shared,
+          ({k: got.get(k) for k in ('cCsoName', 'accountName')}, shared))
+    amina = next(c for c in rows('Contact', amani) if c.get('firstName') == 'Amina')
+    me.call('PUT', f'/Contact/{amina["id"]}', body={'cCsoActive': False})
+    shared = a.call('GET', f'/CCso/{amani["id"]}').get('sharedContact') or ''
+    check('C10', 'someone who left: marked no longer its contact, gone from its shared contact',
+          'Amina' not in shared and 'Dalia' in shared, shared)
+    up = me.call('POST', '/CCsoUpdate', body={'name': 'x', 'adminAreaId': area['id'], 'status': 'active', 'roles': ['wash']})
+    got = a.call('GET', f'/CCsoUpdate/{up["id"]}')
+    check('C10', 'an update they make: their CSO\'s, counted without a key (they signed in)',
+          got.get('csoId') == amani['id'] and got.get('keyCheck') == 'ok' and got.get('current') is True,
+          {k: got.get(k) for k in ('csoName', 'keyCheck', 'current')})
+    other = rows('CPresence', mto)
+    check('C10', "another CSO's place refused", other and status(lambda: me.call('GET', f'/CPresence/{other[0]["id"]}')) == 403)
+    s9 = kobo.submit(uids['cso-profile-ken'], profile('Amani', [('KE047', 'KE047288')], cso=amani['code'], key=amani['updateKey'],
+                                                      roles='risk_communication mhpss wash'))
+    bridges['cso-profile-ken'].once()
+    got = a.call('GET', f'/CPresence/{place["id"]}')
+    check('C10', 'the profile sent again from Kobo: the place added in the portal stays current', got.get('current') is True,
+          got.get('current'))
 
 
 if __name__ == '__main__':

@@ -8,8 +8,9 @@ secret = "ESPO_CSO_PROFILE_API_KEY"
 [form]
 name = "CSO profile (espo-kobo test)"
 
-# A CSO's profile (CCso). Sent again from the link in its email (its code and key), it
-# updates the same CSO; its places and focal points are the new submission's.
+# A CSO's profile (CCso): how a CSO registers. Kept current in the CSO portal after that;
+# sent again from the link in its email (its code and key), it updates the same CSO,
+# its places from Kobo the new submission's (the portal's stay).
 [record]
 entity = "CCso"
 panel = "Profile"
@@ -142,11 +143,20 @@ type = "multiEnum"
 kobo = "connect_via_other"
 espo = "connectViaOther"
 
+# Its focal points: Contacts of the CSO (and its Account, formula), one per person and CSO
+# by email, so the same person sent again is the same Contact (and someone in two CSOs
+# is a contact of each). Kept in the portal from then on
 [[repeat]]
 group = "FOCAL_POINTS"
-entity = "CFocalPoint"
-link = "cso"
+entity = "Contact"
+link = "cCso"
 name = "{name}"
+match = { emailAddress = "email", cCsoId = "@record" }
+
+[[repeat.field]]
+kobo = "name"
+espo = "name"
+type = "personName"
 
 [[repeat.field]]
 kobo = "email"
@@ -154,11 +164,11 @@ espo = "emailAddress"
 
 [[repeat.field]]
 kobo = "phone"
-espo = "phone"
+espo = "phoneNumber"
 
 [[repeat.field]]
 kobo = "position"
-espo = "jobTitle"
+espo = "title"
 
 [[repeat]]
 group = "PRESENCE"

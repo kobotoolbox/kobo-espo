@@ -1,0 +1,39 @@
+// Workflow F: a CSO's contact (a focal point, from its Kobo profile or added in the CSO
+// portal). Added in the portal, it's the CSO of whoever added it (their own contact's)
+if (!cCsoId && entity\isNew() && env\userAttribute('type') == 'portal' && env\userAttribute('contactId')) {
+    cCsoId = record\attribute('Contact', env\userAttribute('contactId'), 'cCsoId');
+}
+// On its CSO's Account, in its CSO's teams
+if (cCsoId && (entity\isNew() || entity\isAttributeChanged('cCsoId'))) {
+    accountId = record\attribute('CCso', cCsoId, 'accountId');
+    teamsIds = record\attribute('CCso', cCsoId, 'teamsIds');
+}
+// The CSO's shared contact, when the CSO said yes: its contacts still its and in the
+// directory, this one as it is now
+if (cCsoId && (entity\isNew() || entity\isAttributeChanged('firstName') || entity\isAttributeChanged('lastName')
+        || entity\isAttributeChanged('title') || entity\isAttributeChanged('emailAddress') || entity\isAttributeChanged('phoneNumber')
+        || entity\isAttributeChanged('cCsoActive') || entity\isAttributeChanged('cCsoShared') || entity\isAttributeChanged('cCsoId'))) {
+    $text = '';
+    if (record\attribute('CCso', cCsoId, 'sharing') == 'yes') {
+        if (cCsoActive && cCsoShared) {
+            $text = string\concatenate(string\trim(string\concatenate(firstName, ' ', lastName)),
+                ifThenElse(title, string\concatenate(' (', title, ')'), ''),
+                ifThenElse(emailAddress, string\concatenate(', ', emailAddress), ''),
+                ifThenElse(phoneNumber, string\concatenate(', ', phoneNumber), ''));
+        }
+        $cs = record\findMany('Contact', 50, 'createdAt', 'asc', 'cCsoId=', cCsoId, 'cCsoActive=', true, 'cCsoShared=', true);
+        $i = 0;
+        while ($i < array\length($cs)) {
+            $f = array\at($cs, $i);
+            if ($f != id) {
+                $text = string\concatenate($text, ifThenElse($text, '\n', ''),
+                    string\trim(string\concatenate(record\attribute('Contact', $f, 'firstName'), ' ', record\attribute('Contact', $f, 'lastName'))),
+                    ifThenElse(record\attribute('Contact', $f, 'title'), string\concatenate(' (', record\attribute('Contact', $f, 'title'), ')'), ''),
+                    ifThenElse(record\attribute('Contact', $f, 'emailAddress'), string\concatenate(', ', record\attribute('Contact', $f, 'emailAddress')), ''),
+                    ifThenElse(record\attribute('Contact', $f, 'phoneNumber'), string\concatenate(', ', record\attribute('Contact', $f, 'phoneNumber')), ''));
+            }
+            $i = $i + 1;
+        }
+    }
+    record\update('CCso', cCsoId, 'sharedContact', ifThenElse($text, $text, null));
+}

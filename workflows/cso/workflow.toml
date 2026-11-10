@@ -1,4 +1,6 @@
-# Workflow F (plans/cso-mapping-plan.md): the Kobo and WHO CSO mapping.
+# Workflow F (plans/cso-mapping-plan.md): the Kobo and WHO CSO mapping. A CSO registers
+# with the Kobo profile form and keeps its profile, places and contacts current in the CSO
+# portal: a CSO is an Account (formula), its focal points are that Account's Contacts.
 
 requires = ["core"]
 teams = ["CSO: Kenya", "CSO: Uganda", "CSO: Unassigned"]
@@ -7,12 +9,16 @@ agent_entities = { CCso = "CSO", CPresence = "CSO place", CCsoUpdate = "CSO upda
 links = [
   ["CCso", "presence", "CPresence", "cso", "oneToMany"],
   ["CCso", "updates", "CCsoUpdate", "cso", "oneToMany"],
-  ["CCso", "focalPoints", "CFocalPoint", "cso", "oneToMany"],
+  ["CCso", "contacts", "Contact", "cso", "oneToMany"],
+  ["CCso", "account", "Account", "csoProfiles", "manyToOne"],
+  ["CPresence", "account", "Account", "csoPlaces", "manyToOne"],
+  ["CCsoUpdate", "account", "Account", "csoUpdates", "manyToOne"],
   ["CCso", "organisation", "COrganisation", "csoProfiles", "manyToOne"],
   ["CPresence", "adminArea", "CAdminArea", "csoPlaces", "manyToOne"],
   ["CCsoUpdate", "adminArea", "CAdminArea", "csoUpdates", "manyToOne"],
   ["CCsoUpdate", "response", "CResponse", "csoUpdates", "manyToOne"],
 ]
+tabs = { label = "CSO mapping", entities = ["CCso", "CPresence", "CCsoUpdate"] }
 
 [settings]
 global_search = ["CCso"]
@@ -112,8 +118,87 @@ superseded = { type = "bool", label = "Superseded", readOnly = true, tooltipText
 current = { type = "bool", label = "Counts", readOnly = true, tooltipText = "The CSO's (its key, or confirmed) and not superseded: what the maps read" }
 dataChecks = { type = "multiEnum", label = "Data checks", options = ["key_missing", "key_wrong", "outside", "not_in_presence", "role_not_in_profile"], translatedOptions = { key_missing = "No key: check it is the CSO's", key_wrong = "Wrong key: not the CSO's link", outside = "The pin is outside the country", not_in_presence = "Not in the CSO's places", role_not_in_profile = "A role not in the CSO's profile" }, tooltipText = "What looks wrong (formula); fix it or explain in a note" }
 
-[fields.CFocalPoint]
-current = { type = "bool", label = "Current", default = true }
+# A CSO's contacts (its focal points): kept in the portal. Not deleted there: no longer
+# the CSO's, they leave its shared contact and the directory
+[fields.Contact]
+csoActive = { type = "bool", label = "Still a contact of its CSO", default = true }
+csoShared = { type = "bool", label = "In the CSO directory", default = true, tooltipText = "Shown to other CSOs and partners when the CSO said yes to sharing its contacts" }
+
+# The portal's "account" level follows these links (EspoCRM's entity manager doesn't set
+# them for a custom entity)
+[metadata.aclDefs.CCso]
+accountLink = "account"
+[metadata.aclDefs.CPresence]
+accountLink = "account"
+[metadata.aclDefs.CCsoUpdate]
+accountLink = "account"
+
+# The CSO portal (/portal/cso): a CSO's people see and keep current their CSO only
+[[portals]]
+name = "CSO portal"
+customId = "cso"
+tabList = ["CCso", "CPresence", "CCsoUpdate", "Contact"]
+quickCreateList = ["CPresence", "CCsoUpdate", "Contact"]
+roles = ["CSO portal"]
+
+[portal_roles."CSO portal"]
+exportPermission = "no"
+massUpdatePermission = "no"
+[portal_roles."CSO portal".data]
+CCso = { create = "no", read = "account", edit = "account", delete = "no", stream = "account" }
+CPresence = { create = "yes", read = "account", edit = "account", delete = "account", stream = "no" }
+CCsoUpdate = { create = "yes", read = "account", edit = "no", delete = "no", stream = "no" }
+Contact = { create = "yes", read = "account", edit = "account", delete = "no", stream = "no" }
+Account = { create = "no", read = "account", edit = "no", delete = "no", stream = "no" }
+CAdminArea = { create = "no", read = "all", edit = "no", delete = "no", stream = "no" }
+[portal_roles."CSO portal".fieldData.CCso]
+# the bridge's Kobo links: for the coordinators, not the CSO's people
+cKoboAsset = { read = "no", edit = "no" }
+cKoboSubmissionId = { read = "no", edit = "no" }
+cKoboSubmissionUuid = { read = "no", edit = "no" }
+cKoboLink = { read = "no", edit = "no" }
+updateKey = { read = "no", edit = "no" }
+keyGiven = { read = "no", edit = "no" }
+code = { read = "yes", edit = "no" }
+verified = { read = "yes", edit = "no" }
+listed = { read = "yes", edit = "no" }
+sharedContact = { read = "yes", edit = "no" }
+countries = { read = "yes", edit = "no" }
+lastProfile = { read = "yes", edit = "no" }
+organisation = { read = "no", edit = "no" }
+[portal_roles."CSO portal".fieldData.CPresence]
+# the bridge's Kobo links: for the coordinators, not the CSO's people
+cKoboAsset = { read = "no", edit = "no" }
+cKoboSubmissionId = { read = "no", edit = "no" }
+cKoboSubmissionUuid = { read = "no", edit = "no" }
+cKoboLink = { read = "no", edit = "no" }
+pcode1 = { read = "yes", edit = "no" }
+pcode2 = { read = "yes", edit = "no" }
+pcode3 = { read = "yes", edit = "no" }
+pcodeStatus = { read = "yes", edit = "no" }
+current = { read = "yes", edit = "no" }
+listed = { read = "no", edit = "no" }
+[portal_roles."CSO portal".fieldData.CCsoUpdate]
+# the bridge's Kobo links: for the coordinators, not the CSO's people
+cKoboAsset = { read = "no", edit = "no" }
+cKoboSubmissionId = { read = "no", edit = "no" }
+cKoboSubmissionUuid = { read = "no", edit = "no" }
+cKoboLink = { read = "no", edit = "no" }
+keyGiven = { read = "no", edit = "no" }
+keyCheck = { read = "no", edit = "no" }
+superseded = { read = "yes", edit = "no" }
+current = { read = "yes", edit = "no" }
+dataChecks = { read = "no", edit = "no" }
+listed = { read = "no", edit = "no" }
+[portal_roles."CSO portal".fieldData.Contact]
+# the bridge's Kobo links: for the coordinators, not the CSO's people
+cKoboAsset = { read = "no", edit = "no" }
+cKoboSubmissionId = { read = "no", edit = "no" }
+cKoboSubmissionUuid = { read = "no", edit = "no" }
+cKoboLink = { read = "no", edit = "no" }
+cCsoActive = { read = "yes", edit = "yes" }
+cCsoShared = { read = "yes", edit = "yes" }
+cCso = { read = "yes", edit = "no" }
 
 [roles."CSO Coordinator"]
 assignmentPermission = "team"
@@ -125,7 +210,8 @@ massUpdatePermission = "no"
 CCso = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
 CPresence = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
 CCsoUpdate = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
-CFocalPoint = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+Contact = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+Account = { create = "no", read = "team", edit = "team", delete = "no", stream = "team" }
 Task = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
 CAdminArea = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
 COrganisation = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
@@ -138,7 +224,7 @@ detail = [
   ["settings", "settingsOther", "populations", "populationsOther", "stages", "roles", "rolesOther", "rolesCholera", "rolesCholeraOther", "hazards", "hazardsOther", "rolesWithSupport", "rolesWithSupportOther", "rolesWithSupportCholera", "mechanisms", "mechanismsOther", "offers", "offersOther", "seeks", "seeksOther", "connectVia", "connectViaOther", "updateKey"],
 ]
 list = ["name", "code", "csoType", "countries", "sharing", "lastProfile", "teams"]
-relationships = ["presence", "updates", "focalPoints"]
+relationships = ["presence", "updates", "contacts"]
 
 [layouts.CPresence]
 detail = [
@@ -152,8 +238,8 @@ detail = [
 ]
 list = ["name", "cso", "status", "adminArea", "roles", "needs", "current", "dataChecks", "createdAt"]
 
-[layouts.CFocalPoint]
-detail = [["activity", "emailAddress", "phone", "jobTitle"], ["cso", "current"]]
+[layouts.Contact]
+detail = [["cCso", "cCsoActive", "cCsoShared"]]
 
 [[users]]
 username = "cso-kenya"
@@ -166,3 +252,9 @@ username = "cso-uganda"
 name = "Ugo Coordinator"
 role = "CSO Coordinator"
 teams = ["CSO: Uganda"]
+
+# Before the portal, a CSO's focal points were CFocalPoint records (the 5W's)
+[removed]
+links = [["CCso", "focalPoints"]]
+[removed.fields]
+CFocalPoint = ["current"]

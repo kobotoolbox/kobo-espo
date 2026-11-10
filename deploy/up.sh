@@ -42,6 +42,9 @@ case $CMD in
         e() { compose exec -T espocrm bin/command "$@"; }
         e config:set theme Espo
         e config:set userThemesDisabled true --type=bool
+        # The workflow packs' metadata the admin API can't set (aclDefs: a portal's links)
+        # comes as an extension the seed uploads (espo/workflows.py ensure_module)
+        e config:set adminExtensionUpload true --type=bool
         e clear-cache ;;
     down) compose down ;;
     destroy) compose down -v ;;

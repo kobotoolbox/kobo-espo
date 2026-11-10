@@ -238,7 +238,8 @@ The update form stays in Kobo (fieldwork, offline), its link in the email and in
   and updates carry the Account too (formula, as teams are): a portal role limits records
   by the portal user's Account, so that is what a CSO's people see.
 - **Focal points are Contacts of that Account, as many as the CSO has.** The profile's
-  FOCAL_POINTS rows become Contacts (by email, so the same person isn't made twice) and
+  FOCAL_POINTS rows become Contacts (by email within the CSO, so the same person isn't made twice
+  for one CSO, and someone in two CSOs is a contact of each) and
   `CFocalPoint` goes from the CSO mapping (the 5W keeps its own). In the portal a CSO's
   people add, edit and remove its contacts: someone leaving is a contact removed, someone
   joining one added, without a new profile. A coordinator (or the CSO's own portal admin,

@@ -4,7 +4,7 @@
     "check": "a profile makes one CSO, with its CSO- code and a 16-character key, the key given not kept",
     "ok": true,
     "detail": {
-      "code": "CSO-JTSQ",
+      "code": "CSO-FSXM",
       "keyGiven": null,
       "count": null
     }
@@ -14,7 +14,7 @@
     "check": "its answers: name, type, registered in Kenya, lists as codes, profile date today",
     "ok": true,
     "detail": {
-      "name": "CSOT 308246 Amani",
+      "name": "CSOT 313369 Amani",
       "csoType": "national_ngo",
       "countryRegistered": "KEN",
       "roles": [
@@ -72,7 +72,7 @@
       "teamsNames": {
         "6af2e5e8eed95f6f3": "CSO: Kenya"
       },
-      "csoName": "CSOT 308246 Amani",
+      "csoName": "CSOT 313369 Amani",
       "csoType": "national_ngo",
       "settings": [
         "informal_settlements",
@@ -83,17 +83,39 @@
   },
   {
     "test": "C1",
-    "check": "two focal points, current, in its team, position as job title",
+    "check": "its Account: made with it, named after it, in its team",
+    "ok": true,
+    "detail": {
+      "name": "CSOT 313369 Amani",
+      "teamsNames": {
+        "6af2e5e8eed95f6f3": "CSO: Kenya"
+      }
+    }
+  },
+  {
+    "test": "C1",
+    "check": "its places on its Account too",
+    "ok": true,
+    "detail": [
+      "6af30cefb6cdf599b",
+      "6af30cefb6cdf599b"
+    ]
+  },
+  {
+    "test": "C1",
+    "check": "two contacts (its focal points): its Account's, in its team, position as title, names split",
     "ok": true,
     "detail": [
       [
         "Baraka Second",
+        "CSOT 313369 Amani",
         {
           "6af2e5e8eed95f6f3": "CSO: Kenya"
         }
       ],
       [
         "Amina Focal",
+        "CSOT 313369 Amani",
         {
           "6af2e5e8eed95f6f3": "CSO: Kenya"
         }
@@ -104,7 +126,7 @@
     "test": "C1",
     "check": "it said yes to sharing: both focal points in its shared contact",
     "ok": true,
-    "detail": "Baraka Second (Director), baraka-308246@example.org, +254 712 000000\nAmina Focal (Coordinator), amina-308246@example.org, +254 712 000000"
+    "detail": "Baraka Second (Director), baraka-313369@example.org, +254712000000\nAmina Focal (Coordinator), amina-313369@example.org, +254712000000"
   },
   {
     "test": "C2",
@@ -130,7 +152,7 @@
     "ok": true,
     "detail": {
       "listed": true,
-      "sharedContact": "Amina Focal (Coordinator), amina-308246@example.org, +254 712 000000\nBaraka Second (Director), baraka-308246@example.org, +254 712 000000"
+      "sharedContact": "Amina Focal (Coordinator), amina-313369@example.org, +254712000000\nBaraka Second (Director), baraka-313369@example.org, +254712000000"
     }
   },
   {
@@ -190,20 +212,41 @@
   },
   {
     "test": "C3",
-    "check": "its focal point now the new one only, and its shared contact",
+    "check": "a new focal point is a new contact; the others stay (the portal is where they are removed)",
     "ok": true,
     "detail": [
       [
-        "Chege New"
+        "Chege New",
+        "Baraka Second",
+        "Amina Focal"
       ],
-      "Chege New (Officer), chege-308246@example.org, +254 712 000000"
+      "Chege New (Officer), chege-313369@example.org, +254712000000\nAmina Focal (Coordinator), amina-313369@example.org, +254712000000\nBaraka Second (Director), baraka-313369@example.org, +254712000000"
+    ]
+  },
+  {
+    "test": "C3",
+    "check": "the same person again (their email): the same contact, updated, not a second one",
+    "ok": true,
+    "detail": [
+      [
+        "Chege Newer",
+        "Lead"
+      ],
+      [
+        "Baraka Second",
+        "Director"
+      ],
+      [
+        "Amina Focal",
+        "Coordinator"
+      ]
     ]
   },
   {
     "test": "C3",
     "check": "sent with the code but no key: refused, recorded with its reason, the CSO unchanged",
     "ok": true,
-    "detail": "a8f19f92e8f984796b1ca8  submission 3  since 2026-11-10T11:00:18Z  1 attempt(s), next 2026-11-10T11:01:18Z\n    PUT /CCso/6af2f8ecb1284f76a: HTTP 400 This profile came without its CSO's key: send it again from the link in the CSO's email.\n"
+    "detail": "a0dae719eef554c0694c68  submission 4  since 2026-11-10T12:25:50Z  1 attempt(s), next 2026-11-10T12:26:50Z\n    PUT /CCso/6af30cef9805cc590: HTTP 400 This profile came without its CSO's key: send it again from the link in the CSO's email.\n"
   },
   {
     "test": "C4",
@@ -275,8 +318,8 @@
     "check": "cso-kenya: Kenya's CSOs (Amani, Pamoja), not Uganda's or the unassigned",
     "ok": true,
     "detail": [
-      "CSOT 308246 Amani",
-      "CSOT 308246 Pamoja"
+      "CSOT 313369 Amani",
+      "CSOT 313369 Pamoja"
     ]
   },
   {
@@ -284,18 +327,18 @@
     "check": "cso-uganda: Uganda's (Mto, Pamoja), not Kenya's",
     "ok": true,
     "detail": [
-      "CSOT 308246 Mto",
-      "CSOT 308246 Pamoja"
+      "CSOT 313369 Mto",
+      "CSOT 313369 Pamoja"
     ]
   },
   {
     "test": "C6",
-    "check": "cso-kenya: reads a Kenyan CSO's focal points; cso-uganda doesn't",
+    "check": "cso-kenya: reads a Kenyan CSO's contacts; cso-uganda doesn't",
     "ok": true,
     "detail": [
       "Amina Focal",
       "Baraka Second",
-      "Chege New"
+      "Chege Newer"
     ]
   },
   {
@@ -315,7 +358,7 @@
     "check": "an update with the CSO's code and key: its CSO, key ok, counted, in its team, the key not kept",
     "ok": true,
     "detail": {
-      "csoName": "CSOT 308246 Amani",
+      "csoName": "CSOT 313369 Amani",
       "keyCheck": "ok",
       "current": true,
       "teamsNames": {
@@ -394,7 +437,7 @@
     "ok": true,
     "detail": {
       "adminAreaName": "Buikwe",
-      "name": "CSOT 308246 Mto: Buikwe"
+      "name": "CSOT 313369 Mto: Buikwe"
     }
   },
   {
@@ -409,5 +452,97 @@
         "admin2"
       ]
     ]
+  },
+  {
+    "test": "C10",
+    "check": "the CSO portal (customId cso) and its role are there",
+    "ok": true,
+    "detail": [
+      1,
+      1
+    ]
+  },
+  {
+    "test": "C10",
+    "check": "a contact sees their CSO only",
+    "ok": true,
+    "detail": [
+      "CSOT 313369 Amani"
+    ]
+  },
+  {
+    "test": "C10",
+    "check": "their CSO's profile, without its key",
+    "ok": true,
+    "detail": []
+  },
+  {
+    "test": "C10",
+    "check": "another CSO refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "C10",
+    "check": "they change its sharing (the formulas follow: no shared contact), not its key",
+    "ok": true,
+    "detail": {
+      "sharing": "profile_only",
+      "sharedContact": null
+    }
+  },
+  {
+    "test": "C10",
+    "check": "a place they add: their CSO's (not picked), its Account and teams, P-codes, current",
+    "ok": true,
+    "detail": {
+      "csoName": "CSOT 313369 Amani",
+      "accountName": "CSOT 313369 Amani",
+      "pcode2": "KE001001",
+      "teamsNames": {
+        "6af2e5e8eed95f6f3": "CSO: Kenya"
+      },
+      "current": true
+    }
+  },
+  {
+    "test": "C10",
+    "check": "a contact they add: their CSO's, its Account and teams, in its shared contact",
+    "ok": true,
+    "detail": [
+      {
+        "cCsoName": "CSOT 313369 Amani",
+        "accountName": "CSOT 313369 Amani"
+      },
+      "Dalia Joined, dalia-313369@example.org\nAmina Focal (Coordinator), amina-313369@example.org, +254712000000\nBaraka Second (Director), baraka-313369@example.org, +254712000000\nChege Newer (Lead), chege-313369@example.org, +254712000000"
+    ]
+  },
+  {
+    "test": "C10",
+    "check": "someone who left: marked no longer its contact, gone from its shared contact",
+    "ok": true,
+    "detail": "Baraka Second (Director), baraka-313369@example.org, +254712000000\nChege Newer (Lead), chege-313369@example.org, +254712000000\nDalia Joined, dalia-313369@example.org"
+  },
+  {
+    "test": "C10",
+    "check": "an update they make: their CSO's, counted without a key (they signed in)",
+    "ok": true,
+    "detail": {
+      "csoName": "CSOT 313369 Amani",
+      "keyCheck": "ok",
+      "current": true
+    }
+  },
+  {
+    "test": "C10",
+    "check": "another CSO's place refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "C10",
+    "check": "the profile sent again from Kobo: the place added in the portal stays current",
+    "ok": true,
+    "detail": true
   }
 ]
