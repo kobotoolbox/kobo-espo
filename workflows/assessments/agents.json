@@ -1,0 +1,159 @@
+[
+ {
+  "name": "Assessments: no report",
+  "description": "Every morning: a task for the response lead for each assessment completed 14 days ago or more with no report or report link. One open task per assessment at a time.",
+  "mode": "dry_run",
+  "entity": "CAssessment",
+  "teams": [
+   "Response: Test EQ 1"
+  ],
+  "readFields": [
+   "name",
+   "code",
+   "status",
+   "organisationName",
+   "sectors",
+   "startDate",
+   "endDate",
+   "reportAvailable",
+   "overlapsWith",
+   "responseName"
+  ],
+  "outputFields": [],
+  "model": "",
+  "maxAttempts": 1,
+  "onFailure": "has_report",
+  "trigger": "schedule",
+  "scheduleEvery": "day",
+  "scheduleAt": "06:15",
+  "filterField": "status",
+  "filterValue": "completed",
+  "idleField": "endDate",
+  "idleDays": 14,
+  "routes": [
+   {
+    "order": 10,
+    "createTask": true,
+    "onlyOneOpen": true,
+    "taskStatus": "Not Started",
+    "taskPriority": "Normal",
+    "taskAssignFrom": "response.lead",
+    "notify": true,
+    "name": "no_report",
+    "description": "Completed, no report after 14 days: the A&A Cell asks the organisation for it (or why there isn't one).",
+    "ruleField": "reportAvailable",
+    "ruleOp": "matches",
+    "ruleValue": "^false$",
+    "ruleWhen": "before",
+    "taskName": "No report yet: {name}",
+    "fixedNote": "Completed 14 days ago or more, and no report or link to one: a task to ask the organisation for it."
+   },
+   {
+    "name": "has_report",
+    "order": 20,
+    "description": "It has a report (or a link to one): nothing to do.",
+    "ruleField": "reportAvailable",
+    "ruleOp": "matches",
+    "ruleValue": "^true$",
+    "ruleWhen": "before"
+   }
+  ]
+ },
+ {
+  "name": "Assessments: start passed",
+  "description": "Every morning: a task for the response lead for each planned assessment whose start date has passed: has it started, moved or been dropped?",
+  "mode": "dry_run",
+  "entity": "CAssessment",
+  "teams": [
+   "Response: Test EQ 1"
+  ],
+  "readFields": [
+   "name",
+   "code",
+   "status",
+   "organisationName",
+   "sectors",
+   "startDate",
+   "endDate",
+   "reportAvailable",
+   "overlapsWith",
+   "responseName"
+  ],
+  "outputFields": [],
+  "model": "",
+  "maxAttempts": 1,
+  "onFailure": "start_passed",
+  "trigger": "schedule",
+  "scheduleEvery": "day",
+  "scheduleAt": "06:15",
+  "filterField": "status",
+  "filterValue": "planned",
+  "idleField": "startDate",
+  "idleDays": 1,
+  "routes": [
+   {
+    "order": 10,
+    "createTask": true,
+    "onlyOneOpen": true,
+    "taskStatus": "Not Started",
+    "taskPriority": "Normal",
+    "taskAssignFrom": "response.lead",
+    "notify": true,
+    "name": "start_passed",
+    "description": "Still planned after its start date: ask the organisation whether it started.",
+    "ruleField": "status",
+    "ruleOp": "equals",
+    "ruleValue": "planned",
+    "ruleWhen": "before",
+    "taskName": "Has it started? {name}",
+    "fixedNote": "Still planned, though its start date has passed: a task to ask the organisation for its status."
+   }
+  ]
+ },
+ {
+  "name": "Assessments: overlap",
+  "description": "When an assessment is found to overlap another organisation's (the same sector, place and time): a task for the response lead to put the organisations in touch.",
+  "mode": "dry_run",
+  "entity": "CAssessment",
+  "teams": [
+   "Response: Test EQ 1"
+  ],
+  "readFields": [
+   "name",
+   "code",
+   "status",
+   "organisationName",
+   "sectors",
+   "startDate",
+   "endDate",
+   "reportAvailable",
+   "overlapsWith",
+   "responseName"
+  ],
+  "outputFields": [],
+  "model": "",
+  "maxAttempts": 1,
+  "onFailure": "overlap",
+  "trigger": "change",
+  "watchField": "overlapsWith",
+  "routes": [
+   {
+    "order": 10,
+    "createTask": true,
+    "onlyOneOpen": true,
+    "taskStatus": "Not Started",
+    "taskPriority": "Normal",
+    "taskAssignFrom": "response.lead",
+    "notify": true,
+    "name": "overlap",
+    "description": "Overlaps another organisation's assessment: the A&A Cell puts them in touch (harmonise, or join up).",
+    "ruleField": "overlapsWith",
+    "ruleOp": "matches",
+    "ruleValue": ".",
+    "ruleWhen": "before",
+    "taskName": "Overlapping assessments: {name} and {overlapsWith}",
+    "fixedNote": "Another organisation is assessing a sector this one has, in the same places, at the same time: a task to put them in touch."
+   }
+  ]
+ }
+]

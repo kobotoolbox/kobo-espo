@@ -8,6 +8,7 @@ requires = ["responses"]
 # Both write an organisation's Account's teams (plans/fivew-organisations-plan.md)
 conflicts = ["cso"]
 codes = { CAssessment = "ASM" }
+task_parents = ["CAssessment"]
 agent_entities = { CAssessment = "Assessment", CAssessmentArea = "Assessment area" }
 links = [
   ["CResponse", "assessments", "CAssessment", "response", "oneToMany"],

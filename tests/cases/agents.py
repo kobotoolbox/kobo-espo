@@ -30,7 +30,8 @@ SECRETS = ROOT / 'secrets' / 'agents.secrets'
 TEST_SITE = 'https://agents.test.invalid'  # marks the test's accounts
 # Not the example agents' teams (Response: Test EQ 1, Grants review); staff-1 leads, staff-2 reviews
 TEST_TEAMS = {'CSite': 'Response: Test EQ 2', 'CApplication': 'Internal Kobo', 'CResponder': 'Response: Test EQ 2',
-              'CPresence': 'Internal Kobo', 'CCsoUpdate': 'Internal Kobo'}  # (the CSO examples work in the CSO teams)
+              'CPresence': 'Internal Kobo', 'CCsoUpdate': 'Internal Kobo',  # (the CSO examples work in the CSO teams)
+              'CAssessment': 'Internal Kobo'}
 results = []
 
 
@@ -63,7 +64,10 @@ def clean(a):
         for t in a.call('GET', '/Task', {**where(('equals', 'cResponseId', resp['id'])), 'maxSize': 200,
                                          'select': 'id'})['list']:
             a.call('DELETE', f'/Task/{t["id"]}')
-    for entity in ('CSite', 'CResponder', 'CResponse', 'CApplication'):
+    for asm in named(a, 'CAssessment', 'AGT '):  # the assessments' tasks (their parent), then them
+        for t in a.call('GET', '/Task', {**where(('equals', 'parentId', asm['id'])), 'maxSize': 50, 'select': 'id'})['list']:
+            a.call('DELETE', f'/Task/{t["id"]}')
+    for entity in ('CSite', 'CResponder', 'CAssessment', 'CResponse', 'CApplication'):
         for row in named(a, entity, 'AGT '):
             a.call('DELETE', f'/{entity}/{row["id"]}')
     for row in a.call('GET', '/Account', {**where(('equals', 'website', TEST_SITE)), 'maxSize': 200, 'select': 'id'})['list']:
@@ -286,6 +290,50 @@ def main():
     runner.once()
     runs_never = runs(a, nr['id'], orgs['never']['id'])
     check('N5', 'it reports: no more runs for it', len(runs_never) == 3, [r['triggerKey'] for r in runs_never])
+    runner.clock = time.time
+
+    # --- The assessment registry's follow-up (plans/assessment-registry-plan.md) --------------
+    resp4 = a.call('POST', '/CResponse', body={'name': f'AGT Response assessments {time.strftime("%H%M%S")}', 'status': 'Active',
+                                               'teamsIds': [teams[TEST_TEAMS['CAssessment']]], 'leadId': users['staff-1']})
+    org = {c: a.call('GET', '/COrganisation', {**where(('equals', 'code', c)), 'maxSize': 1})['list'][0]['id']
+           for c in ('ORG_ADRA', 'ORG_AMERICARES')}
+    clock = now + 12 * day  # a morning after the 5W's
+    on = lambda d: time.strftime('%Y-%m-%d', time.gmtime(clock + d * day))  # noqa: E731
+    asm = {}
+    for key, kw in [('silent', {'status': 'completed', 'startDate': on(-30), 'endDate': on(-20)}),
+                    ('reported', {'status': 'completed', 'startDate': on(-30), 'endDate': on(-20), 'reportLink': 'https://reliefweb.int/x'}),
+                    ('late', {'status': 'planned', 'startDate': on(-3), 'endDate': on(10)}),
+                    ('soon', {'status': 'planned', 'startDate': on(9), 'endDate': on(12)})]:
+        asm[key] = a.call('POST', '/CAssessment', body={'name': f'AGT Assessment {key}', 'responseId': resp4['id'],
+                                                        'organisationId': org['ORG_ADRA'], 'sectors': ['WASH'],
+                                                        'geoLevel': 'admin1', 'areaCodes': 'JM17', **kw})
+
+    def asked(prefix):
+        return sorted(t['name'] for k, r in asm.items() for t in a.call('GET', '/Task', {
+            **where(('equals', 'parentId', r['id'])), 'maxSize': 20, 'select': 'name,assignedUserId'})['list']
+            if t['name'].startswith(prefix))
+
+    runner.clock = lambda: clock
+    runner.once()
+    check('AS1', 'completed 20 days ago without a report: a task for the response lead; not the one with its report',
+          asked('No report yet') == ['No report yet: AGT Assessment silent'], asked('No report yet'))
+    check('AS2', "planned, its start 3 days ago: a task asking whether it started; not the one starting in 9 days",
+          asked('Has it started?') == ['Has it started? AGT Assessment late'], asked('Has it started?'))
+    asm['other'] = a.call('POST', '/CAssessment', body={'name': 'AGT Assessment other', 'responseId': resp4['id'],
+                                                        'organisationId': org['ORG_AMERICARES'], 'sectors': ['WASH', 'HEALTH'],
+                                                        'geoLevel': 'admin2', 'areaCodes': 'JM17001',
+                                                        'status': 'planned', 'startDate': on(-1), 'endDate': on(8)})
+    runner.once()
+    got = a.call('GET', f'/CAssessment/{asm["other"]["id"]}')
+    late_code = a.call('GET', f'/CAssessment/{asm["late"]["id"]}')['code']
+    check('AS3', "another organisation's, in a community of the same parish at the same time: a task to put them in touch",
+          got.get('overlapsWith') == late_code
+          and asked('Overlapping') == [f'Overlapping assessments: AGT Assessment other and {late_code}'],
+          {'overlapsWith': got.get('overlapsWith'), 'tasks': asked('Overlapping')})
+    runner.once()
+    check('AS4', 'run again: no second task for any of them',
+          len(asked('No report yet')) == len(asked('Has it started?')) == len(asked('Overlapping')) == 1,
+          (asked('No report yet'), asked('Has it started?'), asked('Overlapping')))
     runner.clock = time.time
 
     # --- Due diligence (Workflow D) --------------------------------------------------------

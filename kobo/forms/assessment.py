@@ -73,7 +73,7 @@ def survey():
               constraint=r"regex(., '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')",
               constraint_message='An email address, e.g. name@example.org'),
         ]),
-        *group('ASSESSMENT', 'The assessment', [
+        *group('ABOUT', 'The assessment', [  # not ASSESSMENT: Kobo's names are case-blind, and "assessment" is the code's
             q('text', 'title', 'Its title', required='true'),
             *pick('sectors', 'Sectors it covers', 'sectors', many=True),
             *pick('coordination', 'How is it coordinated?', 'coordination'),

@@ -1,0 +1,198 @@
+[
+  {
+    "test": "A1",
+    "check": "a submission makes one assessment, with its ASM- code, planned, not checked yet",
+    "ok": true,
+    "detail": {
+      "code": "ASM-NRWW",
+      "status": "planned",
+      "review": "new"
+    }
+  },
+  {
+    "test": "A1",
+    "check": "its organisation's Account (the list entry's), its registrant's Contact, its response",
+    "ok": true,
+    "detail": {
+      "accountId": "6af41a4db84bd4cb7",
+      "contactId": "6af450a255cea293b",
+      "responseId": "6af450927a68955ee"
+    }
+  },
+  {
+    "test": "A1",
+    "check": "its answers: sectors and methodology as codes, dates, level, the participating organisations linked",
+    "ok": true,
+    "detail": {
+      "sectors": [
+        "WASH",
+        "HEALTH"
+      ],
+      "methodology": [
+        "key_informant",
+        "direct_observation"
+      ],
+      "startDate": "2026-11-13",
+      "endDate": "2026-11-23",
+      "geoLevel": "admin2",
+      "participantsIds": [
+        "6af093d350ba30c49",
+        "6af093cfd05c0ca29"
+      ]
+    }
+  },
+  {
+    "test": "A2",
+    "check": "in the response's team and every cluster project's (ETC too, not one of its sectors)",
+    "ok": true,
+    "detail": {
+      "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
+      "6af050661f10ba21a": "Cluster: Test EQ 1 WASH",
+      "6aec41fec6f7a5f27": "Response: Test EQ 1"
+    }
+  },
+  {
+    "test": "A2",
+    "check": "a new cluster project in the response: its team gets the assessment",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "A2",
+    "check": "cluster-viewer (WASH) and cluster-partner (ETC) read it; staff-2 (not in the response) does not",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "A3",
+    "check": "one row per area, each linked to its admin area, with its P-codes up its parents and its country",
+    "ok": true,
+    "detail": [
+      {
+        "pcode": "JM08",
+        "pcode1": "JM08",
+        "pcode2": null,
+        "country": "JAM",
+        "adminAreaName": "ST.ANDREW"
+      },
+      {
+        "pcode": "JM17001",
+        "pcode1": "JM17",
+        "pcode2": "JM17001",
+        "country": "JAM",
+        "adminAreaName": "Allman Town"
+      }
+    ]
+  },
+  {
+    "test": "A3",
+    "check": "a row has its assessment's teams, response, Account, sectors, status and dates; it's current",
+    "ok": true,
+    "detail": {
+      "responseId": "6af450927a68955ee",
+      "accountId": "6af41a4db84bd4cb7",
+      "sectors": [
+        "WASH",
+        "HEALTH"
+      ],
+      "status": "planned",
+      "startDate": "2026-11-13",
+      "current": true,
+      "name": "ASM-NRWW: Allman Town"
+    }
+  },
+  {
+    "test": "A4",
+    "check": "a Health assessment of Kingston (the parish) while ADRA's covers a community in it: flagged, naming ADRA's",
+    "ok": true,
+    "detail": {
+      "dataChecks": [
+        "overlap"
+      ],
+      "overlapsWith": "ASM-NRWW"
+    }
+  },
+  {
+    "test": "A4",
+    "check": "another sector, or another time: no overlap",
+    "ok": true,
+    "detail": [
+      [],
+      []
+    ]
+  },
+  {
+    "test": "A5",
+    "check": "staff-1 (the A&A Cell, the response's team) marks it checked; cluster-partner can't edit it",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "A5",
+    "check": "sent again with its code: the same assessment, completed, its dates moved, not checked any more",
+    "ok": true,
+    "detail": {
+      "id": "6af450a2db82a47ef",
+      "status": "completed",
+      "endDate": "2026-10-22",
+      "review": "new"
+    }
+  },
+  {
+    "test": "A5",
+    "check": "its areas: the new submission's current, the dropped one not",
+    "ok": true,
+    "detail": [
+      [
+        "JM08",
+        true,
+        "completed"
+      ],
+      [
+        "JM08",
+        false,
+        "completed"
+      ],
+      [
+        "JM17001",
+        false,
+        "completed"
+      ]
+    ]
+  },
+  {
+    "test": "A6",
+    "check": "completed 20 days ago with no report: flagged; given a report link: the flag goes",
+    "ok": true,
+    "detail": [
+      "no_report"
+    ]
+  },
+  {
+    "test": "A6",
+    "check": "... report available, no flag",
+    "ok": true,
+    "detail": {
+      "reportAvailable": true,
+      "dataChecks": []
+    }
+  },
+  {
+    "test": "A6",
+    "check": "planned, its start passed, no areas given: both flagged; a typed-in organisation gets an Account of its name",
+    "ok": true,
+    "detail": {
+      "dataChecks": [
+        "start_passed",
+        "no_areas"
+      ],
+      "accountId": "6af4515c489044e0d"
+    }
+  },
+  {
+    "test": "A7",
+    "check": "an end before its start: refused (any save through the API)",
+    "ok": true,
+    "detail": ""
+  }
+]

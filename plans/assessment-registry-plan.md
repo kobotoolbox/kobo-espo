@@ -23,6 +23,15 @@ tests/cases/assessments.py A1-A7 (17/17, fake Kobo). As built, differing from th
   ["status"], for cases) is [] in this template;
 - a checked assessment sent again goes back to "not checked yet".
 
+Built 2026-11-11, phases 3-5 but the portal (PRODUCT-447): three rules-only agents
+(workflows/assessments/agents.json: no report, start passed, overlap; tests/cases/agents.py
+AS1-AS4); the dashboard on a local kobo-dash (site/dash-assessments-feeds.py,
+site/dash-assessments.py; demo data site/demo-assessments.py in the demo response); the
+manual's page (site/pages/assessments.html). The form is on the Kobo test account
+(assessments.py --kobo real: 17/17). Not done: the public view (checked only), assessments
+in the organisation portal (with E12's portal). Jamaica's parishes on the map are the
+geocoder's, re-keyed to Melissa's P-codes by name (PRODUCT-428).
+
 ## Why
 
 The handbook asks the UNDAC team's Assessment and Analysis (A&A) Cell to "establish

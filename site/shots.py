@@ -81,6 +81,8 @@ def main(only):
         'amani': find(a, 'CCso', 'name', 'Amani Community Health Network'),
         'kamukunji': find(a, 'CAdminArea', 'pcode', 'KE047288'),
     }
+    ids['wash_survey'] = find(a, 'CAssessment', 'name', 'Household WASH survey')  # site/demo-assessments.py
+    ids['wash_survey_area'] = find(a, 'CAssessmentArea', 'assessmentId', ids['wash_survey'])
     ids['amani_place'] = a.call('GET', '/CPresence', {
         'where[0][type]': 'equals', 'where[0][attribute]': 'csoId', 'where[0][value]': ids['amani'],
         'where[1][type]': 'equals', 'where[1][attribute]': 'adminAreaId', 'where[1][value]': ids['kamukunji'],
@@ -119,6 +121,9 @@ def main(only):
         'portal-profile': ('cso-portal-amani', f'CCso/view/{ids["amani"]}', None),
         'portal-places': ('cso-portal-amani', 'CPresence', None),
         'portal-contacts': ('cso-portal-amani', 'Contact', None),
+        'assessments': ('admin', 'CAssessment', None),  # (the demo response's team has no test user)
+        'assessment': ('admin', f'CAssessment/view/{ids["wash_survey"]}', None),
+        'assessment-area': ('admin', f'CAssessmentArea/view/{ids["wash_survey_area"]}', None),
         'packs-extension': ('admin', 'Admin/extensions', 'admin'),
         'email-settings': ('admin', 'Admin/outboundEmails', 'admin'),
     }

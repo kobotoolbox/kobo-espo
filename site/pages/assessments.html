@@ -1,0 +1,123 @@
+<!-- title: Assessment registry -->
+<!-- description: Who is assessing what, where and when in a response: organisations register their assessments with a Kobo form, the A&A Cell reviews them in EspoCRM, overlaps and missing reports are flagged and followed up, and a dashboard shows the coverage by parish and the gaps. -->
+<section class="banner">
+  <div class="wrap">
+    <h1>Assessment registry: who is assessing what, where, when</h1>
+    <p class="banner__lead">The UNDAC Handbook asks a response's <strong>Assessment and Analysis (A&amp;A) Cell</strong> to keep a registry of planned, ongoing and finished assessments, so that organisations don't assess the same people twice, and to share coverage maps back. Here, organisations register their assessments with a <strong>Kobo form</strong>, the A&amp;A Cell reviews them in <strong>EspoCRM</strong>, overlaps and missing reports are flagged and followed up, and a <strong>dashboard</strong> shows who covers which parish and where the gaps are. It runs next to the 5W on the response's instance.</p>
+  </div>
+</section>
+
+<section class="steps" aria-label="The loop">
+  <div class="wrap">
+    <ol>
+      <li><h3>Register</h3><p>An organisation fills in the form: what, which sectors, where, when, how, and later its report.</p></li>
+      <li><h3>Check</h3><p>The A&amp;A Cell reviews it; overlaps with other organisations' assessments are flagged.</p></li>
+      <li><h3>Share</h3><p>The whole response sees the registry and its coverage; a follow-up asks for reports.</p></li>
+    </ol>
+  </div>
+</section>
+
+<div class="wrap docs">
+<nav class="docs__nav" aria-label="On this page">
+  <ul>
+    <li><a href="#form">The form</a></li>
+    <li><a href="#record">An assessment</a></li>
+    <li><a href="#who">Who sees what</a></li>
+    <li><a href="#review">Review and sending again</a></li>
+    <li><a href="#overlaps">Overlaps and data checks</a></li>
+    <li><a href="#followup">Follow-up</a></li>
+    <li><a href="#dashboard">Dashboard</a></li>
+    <li><a href="#limits">Limits and open questions</a></li>
+  </ul>
+</nav>
+
+<article class="prose">
+
+<section id="form">
+<h2>The form</h2>
+<p>One Kobo form, <em>Assessment registration</em>, on the model of OCHA's registry for the 2026 Venezuela earthquakes, with the response's own lists where that one asks free text, so that an organisation is spelled one way:</p>
+<ul>
+  <li><strong>the response</strong>, <strong>the organisation</strong> registering it and <strong>its lead</strong> (the 5W's organisations list, or a name typed in), the participating organisations, and the person registering (a Contact, by email);</li>
+  <li><strong>the assessment</strong>: its title, the sectors it covers (the response's sectors, and <em>Inter-cluster</em>), how it's coordinated (the handbook's three levels: <em>uncoordinated</em>, <em>harmonised</em>, <em>joint</em>), its methodology and how often it's done;</li>
+  <li><strong>when</strong>: start and end dates (the end estimated until it's done);</li>
+  <li><strong>where</strong>: the level (parish, community, sites, or the whole affected area), then one row per area, picked from the country's admin areas, and localities;</li>
+  <li><strong>its status</strong> (planned, ongoing, completed, report shared, cancelled), the report and the dataset (files), a link to where the report is published, and who may see each (public, within the response, on request).</li>
+</ul>
+<p>The form and its connection template are written together (<code>kobo/forms/assessment.py</code>), from the same lists EspoCRM uses (<code>workflows/assessments/lists/</code>), so the two always agree.</p>
+</section>
+
+<section id="record">
+<h2>An assessment</h2>
+<p>A submission makes an <strong>Assessment</strong> with a short code (<code>ASM-4P4W</code>), and one <strong>Assessment area</strong> for each area it covers. An area has its P-codes up to the parish and its country, and copies its assessment's sectors, status and dates, so a map can count assessments by parish in any sector.</p>
+<figure><a href="static/shots/assessments.jpg"><img src="static/shots/assessments.jpg" alt="The Assessments list: ten assessments of the Hurricane Melissa response with their codes, organisations (OCHA, UNICEF, IFRC, PAHO, WFP, IOM, Mercy Corps, ADRA, Samaritan's Purse), sectors, status, review, dates, whether a report is available, and data checks."></a><figcaption>The registry in EspoCRM: every assessment of the response.</figcaption></figure>
+<p>The organisation is the 5W's: the assessment is on <strong>its organisation's Account</strong>, the same one its 5W registrations are on, so an organisation's page shows its assessments next to its activities.</p>
+<figure><a href="static/shots/assessment.jpg"><img src="static/shots/assessment.jpg" alt="An assessment, Household WASH survey by Mercy Corps: ongoing, not checked yet, WASH, uncoordinated, household survey, once, 6 to 20 November, one community; it overlaps ASM-CT2K and is flagged; its teams are the response's and every cluster's; below, its one area."></a><figcaption>An assessment: its answers, its review, the overlap found, and its areas.</figcaption></figure>
+<figure><a href="static/shots/assessment-area.jpg"><img src="static/shots/assessment-area.jpg" alt="An assessment area: Aberdeen, a community of St. Elizabeth, with its P-codes JM11 and JM11002, country JAM, current, the assessment's sector, status and dates."></a><figcaption>An area: its P-codes up to the parish, and its assessment's sector, status and dates.</figcaption></figure>
+</section>
+
+<section id="who">
+<h2>Who sees what</h2>
+<p>A registry is meant to be shared, so <strong>the whole response sees every assessment</strong>: it is in the response's team and every cluster project's team in it, not only those of its sectors (a WASH assessment is seen by the Shelter cluster too, which may plan its own in the same place). A cluster project added later gets them all as well.</p>
+<ul>
+  <li><strong>The A&amp;A Cell</strong> (the response's coordinators, Internal Staff in the response's team) reads and edits every assessment, and is the only one who can set its <em>review</em>.</li>
+  <li><strong>Cluster leads and partners</strong> read them all, register their own, and edit only their own.</li>
+  <li><strong>Cluster viewers</strong> read them.</li>
+  <li><strong>People outside the response</strong> see none of them.</li>
+</ul>
+</section>
+
+<section id="review">
+<h2>Review and sending again</h2>
+<p>A new assessment is <em>Not checked yet</em>. The A&amp;A Cell checks it and marks it <em>Checked</em>, <em>Needs information</em> or <em>Duplicate</em>. It shows on the response's dashboard straight away, marked as not checked; a public view would show checked ones only.</p>
+<p>An organisation updates its assessment by <strong>sending the form again with the assessment's code</strong> (in the link it's given): the same assessment changes, its status with it. Its areas become the new submission's (an area dropped stops counting), and a checked assessment goes back to <em>Not checked yet</em>, as there is something new to look at.</p>
+</section>
+
+<section id="overlaps">
+<h2>Overlaps and data checks</h2>
+<p>The handbook's A&amp;A guidance is about harmonising assessments: the same places, at agreed times, with comparable questions. So when an assessment is saved, it's compared with the others in the response. It <strong>overlaps</strong> another organisation's when they share a sector, an area (the same P-code, or one inside the other: a community is inside its parish) and dates. The later of the two is flagged, naming the earlier one, and the A&amp;A Cell puts the organisations in touch.</p>
+<p>The other flags (the <em>Data checks</em> field, never a refusal):</p>
+<ul>
+  <li><strong>Completed 14 days ago, no report</strong>: no report file and no link to one.</li>
+  <li><strong>Planned, but its start has passed</strong>.</li>
+  <li><strong>Not completed, but its end has passed</strong>.</li>
+  <li><strong>No areas given</strong>, where it isn't for the whole affected area.</li>
+</ul>
+<p>An assessment that <strong>ends before it starts</strong> is refused, from the form or anywhere else.</p>
+</section>
+
+<section id="followup">
+<h2>Follow-up</h2>
+<p>Three agents follow the registry up, rules only (no AI model), each making a task for the response's lead, about the assessment, one open task at a time:</p>
+<ul>
+  <li><strong>Assessments: no report</strong>, every morning: completed 14 days ago or more, and no report or link. Ask the organisation for it.</li>
+  <li><strong>Assessments: start passed</strong>, every morning: still planned after its start date. Ask whether it started, moved or was dropped.</li>
+  <li><strong>Assessments: overlap</strong>, when an overlap is found: put the two organisations in touch.</li>
+</ul>
+<p>They are set up in dry run on the test instance (what they would do is recorded, nothing made), as every example agent is: see <a href="responses.html">Responses</a> for how agents work.</p>
+</section>
+
+<section id="dashboard">
+<h2>Dashboard</h2>
+<p>A kobo-dash dashboard reads the response's assessments and their areas from two EspoCRM feeds, scoped to the response's team (the feeds leave out cancelled assessments, and areas no longer current). Its filters, sector and status, work on every page.</p>
+<figure><a href="static/shots/dash-assessments-registry.jpg"><img src="static/shots/dash-assessments-registry.jpg" alt="The dashboard's registry page: 10 assessments, 7 planned or ongoing, 2 reports available, 4 not checked yet; bars of status, sectors and who is assessing; the table of every assessment with its organisation, sectors, status, dates, report, sharing and review."></a><figcaption>The registry: totals, who assesses what, and every assessment, with its report and review.</figcaption></figure>
+<figure><a href="static/shots/dash-assessments-coverage.jpg"><img src="static/shots/dash-assessments-coverage.jpg" alt="The coverage page: Jamaica's parishes shaded by the number of assessments (Westmoreland and St. Elizabeth darkest); the places assessed; when assessments start; how they are coordinated."></a><figcaption>Coverage: assessments by parish, the places assessed, when they start, how they're coordinated.</figcaption></figure>
+<figure><a href="static/shots/dash-assessments-gaps.jpg"><img src="static/shots/dash-assessments-gaps.jpg" alt="The gaps and overlaps page with WASH chosen: the one overlap (Mercy Corps's household survey and UNICEF's water systems assessment), what to follow up, the parishes with a WASH assessment (Westmoreland, St. Elizabeth) and those without, and the WASH assessments planned or ongoing by start date."></a><figcaption>Gaps and overlaps, with WASH chosen: the overlap to resolve, and the parishes no one is assessing for WASH.</figcaption></figure>
+<p>The parishes' boundaries come from the Humanitarian Geocoder, given the Hurricane Melissa P-codes EspoCRM has (the geocoder numbers Jamaica's parishes differently). The dashboard is built by <code>site/dash-assessments.py</code> from feeds made by <code>site/dash-assessments-feeds.py</code>; the demo data is <code>site/demo-assessments.py</code>.</p>
+</section>
+
+<section id="limits">
+<h2>Limits and open questions</h2>
+<ul>
+  <li><strong>Only the later of two overlapping assessments is flagged</strong>: the earlier one gets its flag the next time it's saved. The overlap agent's task names both.</li>
+  <li><strong>"The whole affected area"</strong> isn't compared for overlaps (it has no areas to compare).</li>
+  <li><strong>An area outside the response's country</strong> isn't checked yet: a response's country is free text.</li>
+  <li><strong>A public view</strong> (checked assessments only, nothing shared "on request") isn't set up yet.</li>
+  <li><strong>Assessments in the organisation portal</strong> come with the portal itself (the 5W plan).</li>
+  <li><strong>The form lists Jamaica's areas</strong> (the test response's): another country's response needs its own areas list.</li>
+  <li><strong>Joint assessments</strong> are one record of type <em>joint</em> with its participating organisations, for now.</li>
+</ul>
+<p>The plan: <code>plans/assessment-registry-plan.md</code>.</p>
+</section>
+
+</article>
+</div>

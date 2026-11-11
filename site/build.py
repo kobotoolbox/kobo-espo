@@ -16,10 +16,10 @@ from pathlib import Path
 SITE = Path(__file__).resolve().parent
 NAV = [('index', 'Overview'), ('requests', 'Requests'), ('responses', 'Responses'),
        ('sites', 'Sites and lists'), ('projects', 'Cluster projects'), ('fivew', 'The 5W'),
-       ('cso', 'CSO mapping'), ('dashboards', 'Dashboards'),
+       ('assessments', 'Assessments'), ('cso', 'CSO mapping'), ('dashboards', 'Dashboards'),
        ('connect', 'Connecting a form'), ('running', 'Running it')]
 # The header has room for six; the others are in the menu (and the footer) on wide screens
-MORE = {'sites', 'projects', 'dashboards', 'running'}
+MORE = {'sites', 'projects', 'assessments', 'dashboards', 'running'}
 
 HEAD = """<!doctype html>
 <html lang="en">
