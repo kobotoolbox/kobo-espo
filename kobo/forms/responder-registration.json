@@ -2,7 +2,7 @@
  "settings": {
   "form_title": "Responding organisation registration (espo-kobo test)",
   "form_id": "responder_registration",
-  "version": "2"
+  "version": "3"
  },
  "survey": [
   {
@@ -65,6 +65,41 @@
    "type": "text",
    "name": "focal_phone",
    "label": "Focal point: phone"
+  },
+  {
+   "type": "text",
+   "name": "focal_position",
+   "label": "Focal point: position"
+  },
+  {
+   "type": "begin_repeat",
+   "name": "FOCAL_POINTS",
+   "label": "Other focal points (optional)",
+   "hint": "Others the coordinators can contact about your organisation's work in this response"
+  },
+  {
+   "type": "text",
+   "name": "name",
+   "label": "Name"
+  },
+  {
+   "type": "text",
+   "name": "email",
+   "label": "Email",
+   "constraint": "regex(., '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')"
+  },
+  {
+   "type": "text",
+   "name": "phone",
+   "label": "Phone"
+  },
+  {
+   "type": "text",
+   "name": "position",
+   "label": "Position"
+  },
+  {
+   "type": "end_repeat"
   },
   {
    "type": "calculate",

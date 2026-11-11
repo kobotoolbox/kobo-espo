@@ -413,7 +413,9 @@ def main():
     reg = {'response': resp[0]['code'], 'org_type': 'INTERNATIONAL_NGO', 'organisation': 'other',
            'organisation_other': org_name, 'org_acronym': f'T{RUN}', 'sectors': 'EMERGENCY_TELECOMS',
            'focal_name': 'Fola Point', 'focal_email': f'focal-{RUN}@example.org', 'focal_phone': '+1 876 555 0100',
-           'registration_key': f'{resp[0]["code"]}/{org_name}'}
+           'focal_position': 'Country director', 'registration_key': f'{resp[0]["code"]}/{org_name}',
+           'FOCAL_POINTS': [{'FOCAL_POINTS/name': 'Ade Second', 'FOCAL_POINTS/email': f'delivered+focal2-{RUN}@resend.dev',
+                             'FOCAL_POINTS/phone': '+1 876 555 0101', 'FOCAL_POINTS/position': 'IM officer'}]}
     submit(uids['responder-registration'], reg)
     code, log, st = orgs.once()
     org = by(a, 'CResponder', 'registrationKey', reg['registration_key'])
@@ -423,6 +425,14 @@ def main():
           and org.get('clusters') == ['EMERGENCY_TELECOMS'] and (org.get('code') or '').startswith('REG-'),
           {k: org.get(k) for k in ('responseId', 'name', 'organisationName', 'clusters', 'code')} or log[-300:])
     check('W7', "its focal point's Contact", bool(org.get('contactId')), org.get('contactId'))
+    people = {e: by(a, 'Contact', 'emailAddress', e) for e in (f'focal-{RUN}@example.org', f'delivered+focal2-{RUN}@resend.dev')}
+    people = {e: a.call('GET', f'/Contact/{r[0]["id"]}') if r else {} for e, r in people.items()}
+    acc = a.call('GET', f'/Account/{org["accountId"]}') if org.get('accountId') else {}
+    check('W7', "both focal points are Contacts on the organisation's Account, with their position, in its teams",
+          all(c.get('accountId') == org.get('accountId') for c in people.values()) and bool(acc)
+          and [c.get('title') for c in people.values()] == ['Country director', 'IM officer']
+          and all(set(c.get('teamsIds') or []) == set(acc.get('teamsIds') or []) for c in people.values()),
+          {e: {k: c.get(k) for k in ('accountId', 'title', 'teamsNames')} for e, c in people.items()})
     check('W7', "in the response's team and the ETC project's (its sector), not WASH's",
           set(org.get('teamsIds') or []) == {team['Response: Test EQ 1'], etc_team}, org.get('teamsNames'))
     submit(uids['responder-registration'], {**reg, 'sectors': 'EMERGENCY_TELECOMS WASH'})
@@ -431,6 +441,10 @@ def main():
     check('W7', "registering again (now with WASH): the same record, updated, in both projects' teams",
           len(again) == 1 and a.call('GET', f'/CResponder/{again[0]["id"]}')['clusters'] == ['EMERGENCY_TELECOMS', 'WASH']
           and wash_team in a.call('GET', f'/CResponder/{again[0]["id"]}')['teamsIds'], [r['id'] for r in again])
+    second = by(a, 'Contact', 'emailAddress', f'delivered+focal2-{RUN}@resend.dev')
+    check('W7', "... the same people (one Contact each), now in WASH's team too (their Account's)",
+          len(second) == 1 and wash_team in a.call('GET', f'/Contact/{second[0]["id"]}')['teamsIds'],
+          [a.call('GET', f'/Contact/{c["id"]}').get('teamsNames') for c in second])
 
     code, log, st = reports.once()
     media = kobo.media_of(uids['activity-report']) if hasattr(kobo, 'media_of') else kobo.media[uids['activity-report']]

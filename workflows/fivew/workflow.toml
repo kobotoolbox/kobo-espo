@@ -44,6 +44,7 @@ clusters = { type = "multiEnum", label = "Sectors", list = "fivew-melissa.sector
 status = { type = "enum", options = ["registered", "active", "inactive"], default = "registered", translatedOptions = { registered = "Registered", active = "Reporting", inactive = "Inactive" }, style = { active = "success", inactive = "info" } }
 focalPoint = { type = "varchar", label = "Focal point" }
 focalPointPhone = { type = "varchar", label = "Focal point phone", maxLength = 40 }
+focalPointPosition = { type = "varchar", label = "Focal point position", tooltipText = "As the form gives it: the focal point's Contact takes it (formula)" }
 registrationKey = { type = "varchar", label = "Registration key", tooltipText = "Response and organisation: registering again updates the same record" }
 lastReport = { type = "date", label = "Last report" }
 
@@ -141,12 +142,14 @@ CActivityLocation = { create = "yes", read = "team", edit = "team", delete = "no
 
 [roles."Cluster Lead"]
 [roles."Cluster Lead".data]
+Contact = { create = "no", read = "team", edit = "team", delete = "no", stream = "team" }
 CResponder = { create = "no", read = "team", edit = "team", delete = "no", stream = "team" }
 CActivity = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
 CActivityLocation = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
 
 [roles."Cluster Partner"]
 [roles."Cluster Partner".data]
+Contact = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CResponder = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CActivity = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
 CActivityLocation = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
@@ -156,6 +159,15 @@ CActivityLocation = { create = "yes", read = "team", edit = "own", delete = "no"
 CResponder = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CActivity = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CActivityLocation = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+
+# An organisation's people: Contacts on its Account (its registrations' focal points, one
+# per person and organisation by email), in its Account's teams (traits), active or not
+[fields.Contact]
+active = { type = "bool", label = "Active", default = true, tooltipText = "Still one of the organisation's people for the response: unticked, they're kept, and left out of the contact list" }
+shared = { type = "bool", label = "Shared", tooltipText = "May be shown to other organisations (a directory), not only to the coordinators" }
+
+[layouts.Contact]
+detail = [["account", "title", "cActive", "cShared"]]
 
 [layouts.CResponder]
 detail = [
@@ -257,3 +269,8 @@ inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds"] }]
 teams_from_clusters = { clusters = "clusters" }
 account_from_organisation = { organisation = "organisation", other = "organisationOther", acronym = "acronym", type = "orgType" }
 teams_up = { link = "account", entity = "Account" }
+
+# An organisation's people are in its Account's teams, and follow them (cascade): the
+# coordinators and the clusters it's in see them
+[traits.Contact]
+inherit = [{ link = "account", entity = "Account", copy = ["teamsIds"], cascade = true }]

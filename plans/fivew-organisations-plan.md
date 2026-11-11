@@ -93,6 +93,17 @@ As the CSO's focal points:
   coordinators and the clusters the organisation is in see its people, no one else;
 - `focalPoint` and `focalPointPhone` on the registration go (migrated to Contacts).
 
+As built (2026-11-11, PRODUCT-438): the registration form keeps its first focal point
+(the bridge's requester Contact, by email; the registration's formula puts it on the
+Account, with the phone and position given, if it has none) and adds a repeat of others
+(FOCAL_POINTS: name, email, phone, position), each a Contact on the Account through
+kobo-espo-bridge's new `set = { accountId = "@record.account" }`, matched by email within
+it. Contact's `cActive` (default on) and `cShared` are the fivew pack's; a Contact inherits
+its Account's teams, and the Account's changes cascade to its Contacts. Cluster leads and
+partners read the people of organisations in their clusters, viewers none. The
+registration's focalPoint and focalPointPhone stay for now (the migration copies them onto
+the Contact); dropping them waits for the activity focal points (phase 3).
+
 ### 3. An activity's focal points: the same Contacts
 
 `CFocalPoint` stays, as **this person for this activity**: the report named them. Its

@@ -66,6 +66,8 @@ def cleanup(a):
             for r in a.call('GET', f'/{entity}', {'maxSize': 200, 'select': 'id', **where(attr, resp['id'])})['list']:
                 a.call('DELETE', f'/{entity}/{r["id"]}')
         a.call('DELETE', f'/CResponse/{resp["id"]}')
+    for c in a.call('GET', '/Contact', {'maxSize': 50, 'select': 'id', **where('emailAddress', 'delivered+fivew-', 'startsWith')})['list']:
+        a.call('DELETE', f'/Contact/{c["id"]}')
     for acc in a.call('GET', '/Account', {'maxSize': 50, 'select': 'id', **where('name', 'FIVEW ', 'startsWith')})['list']:
         a.call('DELETE', f'/Account/{acc["id"]}')
     for o in a.call('GET', '/COrganisation', {'maxSize': 5, 'select': 'id', **where('code', 'ORG_FIVEW_TEST')})['list']:
@@ -304,6 +306,22 @@ def run(a, team, user):
     check('W11', 'added to the list and picked: the registration keeps its Account, which takes the list entry',
           get('CResponder', r_a)['accountId'] == acc_a['id'] and get('Account', acc_a).get('cOrganisationId') == listed['id'],
           (get('CResponder', r_a)['accountId'], get('Account', acc_a).get('cOrganisationId')))
+
+    # --- W12: an organisation's people: Contacts on its Account, in its teams ------------------------
+    ana = a.call('POST', '/Contact', body={'firstName': 'Ana', 'lastName': 'FIVEW Relief', 'accountId': acc_a['id'],
+                                           'emailAddress': 'delivered+fivew-ana@resend.dev'})
+    olu = a.call('POST', '/Contact', body={'firstName': 'Olu', 'lastName': 'FIVEW Other', 'accountId': moved,
+                                           'emailAddress': 'delivered+fivew-olu@resend.dev'})
+    check('W12', "a Contact on an organisation's Account: in the Account's teams, active",
+          set(get('Contact', ana)['teamsIds']) == set(get('Account', acc_a)['teamsIds']) and get('Contact', ana).get('cActive') is True,
+          (get('Contact', ana).get('teamsNames'), get('Contact', ana).get('cActive')))
+    check('W12', "cluster-lead (ETC) reads the people of an organisation in ETC, not of one only in another response",
+          status(lambda: lead.call('GET', f'/Contact/{ana["id"]}')) == 200
+          and status(lambda: lead.call('GET', f'/Contact/{olu["id"]}')) == 403)
+    check('W12', 'cluster-viewer reads no one (people\'s contacts)', status(lambda: viewer.call('GET', f'/Contact/{ana["id"]}')) == 403)
+    a.call('PUT', f'/CResponder/{r_b["id"]}', body={'organisationOther': None, 'organisationId': listed['id']})
+    check('W12', "the organisation registered in a second response: its people get that response's team too (cascade)",
+          eq2 in get('Contact', ana)['teamsIds'], get('Contact', ana).get('teamsNames'))
 
 if __name__ == '__main__':
     main()

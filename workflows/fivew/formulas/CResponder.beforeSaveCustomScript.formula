@@ -11,3 +11,16 @@ if (organisationId && (entity\isNew() || entity\isAttributeChanged('organisation
         orgType = record\attribute('COrganisation', organisationId, 'orgType');
     }
 }
+
+// Its focal point (the Contact the form's email gave): on its organisation's Account, with
+// the phone and position the form gave (only if the Contact has none)
+if (contactId && accountId && (entity\isNew() || entity\isAttributeChanged('contactId') || entity\isAttributeChanged('accountId'))
+        && !record\attribute('Contact', contactId, 'accountId')) {
+    record\update('Contact', contactId, 'accountId', accountId);
+}
+if (contactId && focalPointPhone && !record\attribute('Contact', contactId, 'phoneNumber')) {
+    record\update('Contact', contactId, 'phoneNumber', focalPointPhone);
+}
+if (contactId && focalPointPosition && !record\attribute('Contact', contactId, 'title')) {
+    record\update('Contact', contactId, 'title', focalPointPosition);
+}

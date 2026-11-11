@@ -64,6 +64,10 @@ kobo = "focal_phone"
 espo = "focalPointPhone"
 
 [[field]]
+kobo = "focal_position"
+espo = "focalPointPosition"
+
+[[field]]
 kobo = "registration_key"
 espo = "registrationKey"
 
@@ -81,3 +85,30 @@ entity = "COrganisation"
 order_by = "name"
 columns = { name = "code", label = "name", org_type = "orgType" }
 forms = ["Responding organisation registration (espo-kobo test)"]
+
+# Its other focal points: Contacts on the organisation's Account (its formula's), one per
+# person and organisation by email, so the same person registered again (or in another
+# response) is the same Contact. In the Account's teams (their formula)
+[[repeat]]
+group = "FOCAL_POINTS"
+entity = "Contact"
+name = "{name}"
+set = { accountId = "@record.account" }
+match = { emailAddress = "email", accountId = "@record.account" }
+
+[[repeat.field]]
+kobo = "name"
+espo = "name"
+type = "personName"
+
+[[repeat.field]]
+kobo = "email"
+espo = "emailAddress"
+
+[[repeat.field]]
+kobo = "phone"
+espo = "phoneNumber"
+
+[[repeat.field]]
+kobo = "position"
+espo = "title"

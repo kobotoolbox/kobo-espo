@@ -4,11 +4,11 @@
     "check": "every new record has its short code (RSP-, PRJ-, REG-, ACT-, TSK-)",
     "ok": true,
     "detail": {
-      "CResponse": "RSP-2VHB",
-      "CProject": "PRJ-YQ5X",
-      "CResponder": "REG-XB6S",
-      "CActivity": "ACT-RVK2",
-      "Task": "TSK-GWQ2"
+      "CResponse": "RSP-V8QG",
+      "CProject": "PRJ-G4X3",
+      "CResponder": "REG-F5ZZ",
+      "CActivity": "ACT-ZJEQ",
+      "Task": "TSK-PFPJ"
     }
   },
   {
@@ -23,9 +23,9 @@
     "ok": true,
     "detail": [
       {
-        "id": "6af432566b82860ee",
+        "id": "6af464a30ccf25894",
         "name": "FIVEW ETC",
-        "createdAt": "2026-11-11 09:16:06",
+        "createdAt": "2026-11-11 12:50:43",
         "createdById": "6aec3ee286e4b3936",
         "assignedUserId": null
       }
@@ -67,7 +67,7 @@
     "check": "its sector's project (WASH), and that project's teams",
     "ok": true,
     "detail": {
-      "projectId": "6af432572b283480b",
+      "projectId": "6af464a3edfbbafde",
       "teamsIds": [
         "6af050661f10ba21a",
         "6aec41fec6f7a5f27"
@@ -112,8 +112,8 @@
         "6af050661f10ba21a",
         "6aec41fec6f7a5f27"
       ],
-      "projectId": "6af432572b283480b",
-      "responseId": "6af4325589c9becb6"
+      "projectId": "6af464a3edfbbafde",
+      "responseId": "6af464a1a929cf058"
     }
   },
   {
@@ -241,7 +241,7 @@
         "6af050644bc5ab8e6",
         "6aec41fec6f7a5f27"
       ],
-      "responseId": "6af4325589c9becb6"
+      "responseId": "6af464a1a929cf058"
     }
   },
   {
@@ -393,7 +393,7 @@
     "check": "registered in a second response: the same Account, in both responses' teams",
     "ok": true,
     "detail": [
-      "6af43299847ea038f",
+      "6af464e66fd7b1833",
       [
         "6af050644bc5ab8e6",
         "6af050661f10ba21a",
@@ -422,8 +422,44 @@
     "check": "added to the list and picked: the registration keeps its Account, which takes the list entry",
     "ok": true,
     "detail": [
-      "6af43299847ea038f",
-      "6af432ac8e79307c7"
+      "6af464e66fd7b1833",
+      "6af464fb53cfc140d"
     ]
+  },
+  {
+    "test": "W12",
+    "check": "a Contact on an organisation's Account: in the Account's teams, active",
+    "ok": true,
+    "detail": [
+      {
+        "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
+        "6af050661f10ba21a": "Cluster: Test EQ 1 WASH",
+        "6aec41fec6f7a5f27": "Response: Test EQ 1"
+      },
+      true
+    ]
+  },
+  {
+    "test": "W12",
+    "check": "cluster-lead (ETC) reads the people of an organisation in ETC, not of one only in another response",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W12",
+    "check": "cluster-viewer reads no one (people's contacts)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W12",
+    "check": "the organisation registered in a second response: its people get that response's team too (cascade)",
+    "ok": true,
+    "detail": {
+      "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
+      "6af050661f10ba21a": "Cluster: Test EQ 1 WASH",
+      "6aec41fec6f7a5f27": "Response: Test EQ 1",
+      "6aec420039254967f": "Response: Test EQ 2"
+    }
   }
 ]

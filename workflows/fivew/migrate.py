@@ -1,5 +1,5 @@
 """The 5W's records from before organisations were Accounts (plans/fivew-organisations-plan.md,
-phase 1): each saved once, so its formula finds or makes its organisation's Account.
+phases 1 and 2): each saved once, so its formula finds or makes its organisation's Account.
 Locations take their activity's (their formula takes it only when made or moved). A rerun
 finds nothing to do."""
 
@@ -54,5 +54,14 @@ def migrate(espo):
             if acc:
                 espo.call('PUT', f'/{entity}/{r["id"]}', body={'accountId': acc})
                 done[entity] = done.get(entity, 0) + 1
+    # Registrations' focal points (their Contacts, by the form's email) on the organisation's
+    # Account, from before people were (PRODUCT-438): their Account's teams follow (formula)
+    for r in every(espo, 'CResponder', 'id,contactId,accountId,focalPointPhone', ('isNotNull', 'contactId'), ('isNotNull', 'accountId')):
+        c = espo.call('GET', f'/Contact/{r["contactId"]}', {'select': 'accountId,phoneNumber'})
+        if not c.get('accountId'):
+            espo.call('PUT', f'/Contact/{r["contactId"]}', body={
+                'accountId': r['accountId'], **({'phoneNumber': r['focalPointPhone']}
+                                                if r.get('focalPointPhone') and not c.get('phoneNumber') else {})})
+            done['Contact'] = done.get('Contact', 0) + 1
     if done:
         print('fivew: Accounts for ' + ', '.join(f'{n} {e}' for e, n in done.items()))
