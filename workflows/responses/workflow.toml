@@ -10,6 +10,7 @@ links = [
   ["CProject", "tasks", "Task", "project", "oneToMany"],
   ["CProject", "lead", "User", "leadOfProjects", "manyToOne"],
   ["CResponse", "lead", "User", "leadOfResponses", "manyToOne"],
+  ["COrganisation", "accounts", "Account", "organisation", "oneToMany"],
 ]
 
 [settings]
@@ -36,6 +37,16 @@ status = { type = "enum", options = ["Planning", "Active", "Closed"], default = 
 startDate = { type = "date", label = "Start date" }
 endDate = { type = "date", label = "End date" }
 
+# The organisations list's type, and an organisation, once, whatever the response: an
+# Account (a 5W registration's or an assessment's formula finds or makes it, the trait
+# account_from_organisation; plans/fivew-organisations-plan.md)
+[fields.COrganisation]
+orgType = { label = "Type", list = "fivew-melissa.org_types" }
+
+[fields.Account]
+acronym = { type = "varchar", maxLength = 30 }
+orgType = { label = "Type", list = "fivew-melissa.org_types" }
+
 [roles."Internal Staff"]
 [roles."Internal Staff".data]
 CResponse = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
@@ -48,6 +59,7 @@ mentionPermission = "team"
 exportPermission = "no"
 massUpdatePermission = "no"
 [roles."Cluster Lead".data]
+Account = { create = "no", read = "team", edit = "team", delete = "no", stream = "team" }
 CProject = { create = "no", read = "team", edit = "team", delete = "no", stream = "team" }
 Task = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
 CResponse = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
@@ -64,6 +76,7 @@ mentionPermission = "team"
 exportPermission = "no"
 massUpdatePermission = "no"
 [roles."Cluster Partner".data]
+Account = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CProject = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 Task = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
 CResponse = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
@@ -80,6 +93,7 @@ mentionPermission = "team"
 exportPermission = "no"
 massUpdatePermission = "no"
 [roles."Cluster Viewer".data]
+Account = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CProject = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 Task = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CResponse = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
@@ -101,6 +115,15 @@ relationships = ["projects", "tasks"]
 detail = [["cluster", "status", "response", "lead", "startDate", "endDate"]]
 list = ["name", "code", "cluster", "status", "response", "lead", "teams"]
 relationships = ["tasks"]
+
+[layouts.Account]
+detail = [["cOrganisation", "cAcronym", "cOrgType"]]
+relationships = ["contacts", "cases", "documents"]
+
+[layouts.COrganisation]
+detail = [["orgType"]]
+list = ["name", "code", "orgType"]
+relationships = ["accounts"]
 
 [layouts.Task]
 detail = [["cResponse", "cProject"]]

@@ -98,6 +98,11 @@ What phase 1 of E12 put in `fivew` that assessments need too moves to the `respo
 
 So the `assessments` pack stands without `fivew`, and the 5W's formulas get shorter.
 
+Built 2026-11-11 (PRODUCT-445): both traits in espo/traits.py; teams_from_clusters also
+writes the project's side (a new project, or its cluster changed, gives its teams to the
+response's records in that cluster, or all of them with `all = true`), which replaces the
+block in CProject's formula that named CResponder (a 5W entity in the responses pack).
+
 ### 4. The form and the connection
 
 A Kobo form, `assessment-registration` (generated, as kobo/forms/melissa.py makes the 5W's),
@@ -145,18 +150,14 @@ assessments only, showing nothing marked "within the response" or "on request".
 5. **Portal and manual**: assessments in the organisation portal (E12), an "Assessments"
    page.
 
-## Questions
+## Decided (Josh, 2026-11-11, as suggested)
 
-- **Who sees an assessment**: the whole response (suggested: the registry is a shared
-  good), or only its sectors' clusters, as the 5W?
-- **Review before it shows**: on the response's dashboard straight away, with
-  "not checked yet" (suggested), or only once checked? The public view: checked only.
-- **The form's language and lists**: the Venezuela form is Spanish, its sectors list
-  differs a little from the 5W's (inter-cluster, shelter/NFI, early recovery); use the
-  response's sectors list (suggested), with "inter-cluster" added.
-- **Joint assessments** (the MIRA-like multi-sector one the AAWG runs with the government,
-  pp. 164-165): one record of type "joint", with many participating organisations, or a
-  project of its own? Suggested: a record, at first.
+- **Who sees an assessment**: the whole response (its team and every cluster project's
+  team in it): the registry is a shared good.
+- **Review before it shows**: on the response's dashboard straight away, marked "not
+  checked yet"; the public view shows checked assessments only.
+- **Sectors**: the response's sectors list, with "inter-cluster" added.
+- **Joint assessments**: one record of type "joint", with its participating organisations.
 
 ## Other response workflows the handbook describes
 

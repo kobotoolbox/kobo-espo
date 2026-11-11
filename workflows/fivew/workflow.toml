@@ -11,7 +11,6 @@ agent_entities = { CResponder = "Responding organisation", CActivity = "Activity
 links = [
   ["CResponse", "responders", "CResponder", "response", "oneToMany"],
   ["CResponder", "account", "Account", "responderProfiles", "manyToOne"],
-  ["COrganisation", "accounts", "Account", "organisation", "oneToMany"],
   ["CActivity", "account", "Account", "fivewActivities", "manyToOne"],
   ["CActivityLocation", "account", "Account", "fivewLocations", "manyToOne"],
   ["CResponder", "contact", "Contact", "responderProfiles", "manyToOne"],
@@ -134,14 +133,6 @@ otherMenReached = { type = "int", min = 0, label = "Other: men reached" }
 otherChildrenReached = { type = "int", min = 0, label = "Other: children reached" }
 otherHouseholdsReached = { type = "int", min = 0, label = "Other: households reached" }
 
-[fields.COrganisation]
-orgType = { label = "Type", list = "fivew-melissa.org_types" }
-
-# An organisation, once, whatever the response (its registrations' formula makes it)
-[fields.Account]
-acronym = { type = "varchar", maxLength = 30 }
-orgType = { label = "Type", list = "fivew-melissa.org_types" }
-
 [roles."Internal Staff"]
 [roles."Internal Staff".data]
 CResponder = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
@@ -150,21 +141,18 @@ CActivityLocation = { create = "yes", read = "team", edit = "team", delete = "no
 
 [roles."Cluster Lead"]
 [roles."Cluster Lead".data]
-Account = { create = "no", read = "team", edit = "team", delete = "no", stream = "team" }
 CResponder = { create = "no", read = "team", edit = "team", delete = "no", stream = "team" }
 CActivity = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
 CActivityLocation = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
 
 [roles."Cluster Partner"]
 [roles."Cluster Partner".data]
-Account = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CResponder = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CActivity = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
 CActivityLocation = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
 
 [roles."Cluster Viewer"]
 [roles."Cluster Viewer".data]
-Account = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CResponder = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CActivity = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CActivityLocation = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
@@ -207,13 +195,10 @@ detail = [["activity"]]
 list = ["name", "activity", "emailAddress", "phone", "jobTitle"]
 
 [layouts.Account]
-detail = [["cOrganisation", "cAcronym", "cOrgType"]]
-relationships = ["contacts", "responderProfiles", "fivewActivities", "cases", "documents"]
+relationships = [{ name = "responderProfiles", before = "cases" }, { name = "fivewActivities", before = "cases" }]
 
 [layouts.COrganisation]
-detail = [["orgType"]]
-list = ["name", "code", "orgType"]
-relationships = ["accounts", "activitiesLed", "registrations"]
+relationships = ["activitiesLed", "registrations"]
 
 [layouts.CResponse]
 relationships = [{ name = "responders", before = "tasks" }]
@@ -265,7 +250,10 @@ group_parts_dont_add_up = "$parts"
 [traits.CFocalPoint]
 inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds"] }]
 
-# A registration's Account (its organisation, once, whatever the response) is in the teams
-# of all the organisation's registrations: each response and cluster sees it
+# A registration is in its response's teams and those of its sectors' projects (and a new
+# project's, in its sector). Its organisation's Account (once, whatever the response) is in
+# the teams of all the organisation's registrations: each response and cluster sees it
 [traits.CResponder]
+teams_from_clusters = { clusters = "clusters" }
+account_from_organisation = { organisation = "organisation", other = "organisationOther", acronym = "acronym", type = "orgType" }
 teams_up = { link = "account", entity = "Account" }

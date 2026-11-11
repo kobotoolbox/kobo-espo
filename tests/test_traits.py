@@ -92,6 +92,16 @@ class Traits(unittest.TestCase):
         self.assertIn("record\\update('Account', $left, 'teamsIds', $teams);", s)
         self.assertLess(s.index("accountId = $acc;"), s.index('(trait teams_up)'))  # after its block finds the Account
 
+    def test_teams_from_clusters(self):
+        r = custom(self.spec, 'CResponder')
+        self.assertLess(r.index('(trait teams_from_clusters)'), r.index('(trait account_from_organisation)'))
+        p = custom(self.spec, 'CProject')  # the project's side, made from the registration's trait
+        self.assertIn("record\\update('CResponder', $o, 'teamsIds', $have);", p)
+        self.assertNotIn('CResponder', custom(workflows.load(['core', 'responses']), 'CProject'))
+        every = traits.teams_from_clusters({'all': True}, 'CAssessment')
+        self.assertIn('if (true) {', every)
+        self.assertNotIn("isAttributeChanged('clusters')", every)
+
     def test_quoting(self):
         self.assertEqual(traits.q("it's"), "'it\\'s'")
 

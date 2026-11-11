@@ -22,16 +22,25 @@ pack's own formula block is then only what is particular to it.
     teams_up = { link = "account", entity = "Account" }   # its parent's teams: its own and its
                                     # siblings' (the parent it left: the others'), written when
                                     # its teams or its parent change
+    teams_from_clusters = { clusters = "clusters" }       # a response's record: the response's
+                                    # teams and those of its cluster projects in its sectors
+                                    # (all = true: every project's); a new project, or one whose
+                                    # cluster changes, gives its teams to them (on CProject)
+    account_from_organisation = { organisation = "organisation", other = "organisationOther",
+                                  acronym = "acronym", type = "orgType" }
+                                    # its organisation's Account: the one linked to its list
+                                    # entry, else the unlisted one of the typed name; made if none
 
-Where they go in the Before Save Custom Script: portal_default, pcodes and inherit before
-the packs' blocks, checks, supersede, teams_up and the cascades (the parent's side of an
-inherit with `cascade`) after them. A block with a line `// trait: <name>` has that trait there instead
+Where they go in the Before Save Custom Script: portal_default, pcodes, inherit,
+teams_from_clusters and account_from_organisation before the packs' blocks; checks,
+supersede, teams_up, the cascades (the parent's side of an inherit with `cascade`) and the
+cluster teams (the project's side of teams_from_clusters) after them. A block with a line `// trait: <name>` has that trait there instead
 (e.g. a link the block finds first, then inherit).
 """
 
-BEFORE = ('portal_default', 'pcodes', 'inherit')
-AFTER = ('checks', 'supersede', 'teams_up', 'cascade')
-TRAITS = BEFORE + AFTER[:-1]  # cascade is made from the inherits, not named
+BEFORE = ('portal_default', 'pcodes', 'inherit', 'teams_from_clusters', 'account_from_organisation')
+AFTER = ('checks', 'supersede', 'teams_up', 'cascade', 'cluster_teams')
+TRAITS = BEFORE + AFTER[:-2]  # cascade and cluster_teams are made from other traits, not named
 ROWS = 1000  # the most child records a cascade or supersede reads
 
 
@@ -191,6 +200,94 @@ if (!entity\\isNew() && entity\\isAttributeChanged({q(link)}) && entity\\attribu
 }}"""
 
 
+def union_into(var, source, indent):
+    """Formula lines adding the ids of the list `source` to the list variable `var`."""
+    lines = [f"$add = {source};", "$j = 0;", "while ($j < array\\length($add)) {",
+             f"    if (!array\\includes({var}, array\\at($add, $j))) {{",
+             f"        {var} = array\\push({var}, array\\at($add, $j));", "    }", "    $j = $j + 1;", "}"]
+    return '\n'.join(indent + x for x in lines)
+
+
+def teams_from_clusters(t, entity):
+    clusters = t.get('clusters', 'clusters')
+    which = 'projects' if t.get('all') else f'projects in its sectors ({clusters})'
+    cond = 'true' if t.get('all') else f"array\\includes({clusters}, record\\attribute('CProject', $p, 'cluster'))"
+    watch = ['responseId'] + ([] if t.get('all') else [clusters])
+    return f"""// In its response's teams and those of the response's {which}: those clusters' people
+// see it, and the coordinators (trait teams_from_clusters)
+if (responseId && ({changed(watch)})) {{
+    $teams = record\\attribute('CResponse', responseId, 'teamsIds');
+    $projects = record\\findMany('CProject', 200, 'createdAt', 'asc', 'responseId=', responseId);
+    $i = 0;
+    while ($i < array\\length($projects)) {{
+        $p = array\\at($projects, $i);
+        if ({cond}) {{
+{union_into('$teams', "record\\attribute('CProject', $p, 'teamsIds')", ' ' * 12)}
+        }}
+        $i = $i + 1;
+    }}
+    if (array\\length($teams) > 0) {{
+        teamsIds = $teams;
+    }}
+}}"""
+
+
+def cluster_teams(children, entity):
+    """The project's side of teams_from_clusters: (child, its clusters field, or None for
+    every project's)."""
+    out = []
+    for child, clusters in children:
+        cond = 'true' if clusters is None else f"array\\includes(record\\attribute({q(child)}, $o, {q(clusters)}), cluster)"
+        out.append(f"""// A new project, or its cluster changed: the response's {child} records {'(all)' if clusters is None else 'in that cluster'}
+// get its teams (trait teams_from_clusters, {child}'s)
+if (responseId && cluster && (entity\\isNew() || entity\\isAttributeChanged('cluster'))) {{
+    $rows = record\\findMany({q(child)}, {ROWS}, 'createdAt', 'asc', 'responseId=', responseId);
+    $i = 0;
+    while ($i < array\\length($rows)) {{
+        $o = array\\at($rows, $i);
+        if ({cond}) {{
+            $have = record\\attribute({q(child)}, $o, 'teamsIds');
+{union_into('$have', 'teamsIds', ' ' * 12)}
+            record\\update({q(child)}, $o, 'teamsIds', $have);
+        }}
+        $i = $i + 1;
+    }}
+}}""")
+    return '\n'.join(out)
+
+
+def account_from_organisation(t, entity):
+    org, other = f"{t.get('organisation', 'organisation')}Id", t.get('other', 'organisationOther')
+    extra = ''.join(f", {q(a)}, {v}" for a, v in (
+        ('cAcronym', t.get('acronym')),
+        ('cOrgType', f"ifThenElse($listed, record\\attribute('COrganisation', {org}, 'orgType'), {t['type']})" if t.get('type') else None)) if v)
+    return f"""// Its organisation's Account (one per organisation, whatever the response): the one linked
+// to its organisation in the list, else (typed in, "Other") the unlisted one of that name;
+// made if there's none. A typed-in organisation later picked from the list: it moves to
+// that organisation's Account, or its Account takes the list entry
+// (trait account_from_organisation)
+$listed = {org} && record\\attribute('COrganisation', {org}, 'code') != 'other';
+if (!accountId || {changed([org, other], new=False)}) {{
+    $acc = null;
+    $orgName = ifThenElse($listed, record\\attribute('COrganisation', {org}, 'name'), {other});
+    if ($listed) {{
+        $acc = record\\findOne('Account', 'createdAt', 'asc', 'cOrganisationId=', {org});
+        if (!$acc && accountId && !record\\attribute('Account', accountId, 'cOrganisationId')) {{
+            record\\update('Account', accountId, 'cOrganisationId', {org}, 'name', $orgName);
+            $acc = accountId;
+        }}
+    }} else if ({other}) {{
+        $acc = record\\findOne('Account', 'createdAt', 'asc', 'name=', {other}, 'cOrganisationId=', null);
+    }}
+    if (!$acc && $orgName) {{
+        $acc = record\\create('Account', 'name', $orgName, 'cOrganisationId', ifThenElse($listed, {org}, null){extra});
+    }}
+    if ($acc) {{
+        accountId = $acc;
+    }}
+}}"""
+
+
 def cascade(children, entity):
     """The parent's side of its children's inherits with `cascade`: (child, link, copy)."""
     out = []
@@ -205,7 +302,9 @@ def cascade(children, entity):
 
 
 RENDER = {'portal_default': portal_default, 'pcodes': pcodes, 'inherit': inherit, 'checks': checks,
-          'supersede': supersede, 'teams_up': teams_up, 'cascade': cascade}
+          'supersede': supersede, 'teams_up': teams_up, 'cascade': cascade,
+          'teams_from_clusters': teams_from_clusters, 'cluster_teams': cluster_teams,
+          'account_from_organisation': account_from_organisation}
 
 
 def cascades(traits):
@@ -220,9 +319,21 @@ def cascades(traits):
     return out
 
 
-def script(entity, blocks, traits, children=()):
-    """An entity's Before Save Custom Script: its traits' snippets and the packs' blocks."""
-    t = {**traits, **({'cascade': list(children)} if children else {})}
+def derived(traits):
+    """What other entities' traits put in an entity's script, by entity: the cascades (its
+    children's inherits) and the cluster teams (on CProject, from teams_from_clusters)."""
+    out = {e: {'cascade': c} for e, c in cascades(traits).items()}
+    clusters = [(child, None if t['teams_from_clusters'].get('all') else t['teams_from_clusters'].get('clusters', 'clusters'))
+                for child, t in traits.items() if 'teams_from_clusters' in t]
+    if clusters:
+        out.setdefault('CProject', {})['cluster_teams'] = clusters
+    return out
+
+
+def script(entity, blocks, traits, extra=None):
+    """An entity's Before Save Custom Script: its traits' snippets (and those other entities'
+    traits put in it, derived()) and the packs' blocks."""
+    t = {**traits, **(extra or {})}
     text = '\n'.join(blocks)
     before, after = [], []
     for name in BEFORE + AFTER:

@@ -456,11 +456,11 @@ def scripts(spec):
     """Each entity's scripts from the packs: their blocks for it in `requires` order, and in
     its Before Save Custom Script its traits' snippets (espo/traits.py)."""
     by_entity = {e: {k: '\n'.join(blocks) for k, blocks in s.items()} for e, s in spec['formulas'].items()}
-    children = traits.cascades(spec['traits'])
-    for entity in {*spec['traits'], *children}:
+    extra = traits.derived(spec['traits'])
+    for entity in {*spec['traits'], *extra}:
         blocks = spec['formulas'].get(entity, {}).get('beforeSaveCustomScript', [])
         by_entity.setdefault(entity, {})['beforeSaveCustomScript'] = traits.script(
-            entity, blocks, spec['traits'].get(entity, {}), children.get(entity, ()))
+            entity, blocks, spec['traits'].get(entity, {}), extra.get(entity))
     return by_entity
 
 
