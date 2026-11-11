@@ -60,9 +60,12 @@ if (!{f} && entity\\isNew() && env\\userAttribute('type') == 'portal' && env\\us
 }}"""
 
 
-def pcodes(area, entity):
+def pcodes(t, entity):
+    """t: the area link's name, or { area, pins = false } for records with no pin (areas
+    picked from a list): no pcodeStatus, no P-coding step."""
+    area, pins = (t, True) if isinstance(t, str) else (t['area'], t.get('pins', True))
     a = f'{area}Id'
-    return f"""// Where (trait pcodes): from a P-coded pin, the area of the deepest P-code the P-coding
+    pin = f"""// Where (trait pcodes): from a P-coded pin, the area of the deepest P-code the P-coding
 // step found that EspoCRM has (a country's areas may be loaded to fewer levels than the
 // geocoder knows); the area's P-codes up its parents, and its country
 if (!{a} && pcodeStatus == 'done') {{
@@ -76,7 +79,17 @@ if (!{a} && pcodeStatus == 'done') {{
         {a} = record\\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', pcode1);
     }}
 }}
-if ({a} && ({changed([a])})) {{
+""" if pins else "// Where (trait pcodes): the area's P-codes up its parents, and its country\n"
+    given = f"""
+    if (pcodeStatus != 'done') {{
+        pcodeStatus = 'given';
+    }}""" if pins else ''
+    pending = f"""
+// A pin not P-coded yet: the P-coding step's work
+if (!{a} && latitude != null && !pcodeStatus) {{
+    pcodeStatus = 'pending';
+}}""" if pins else ''
+    return pin + f"""if ({a} && ({changed([a])})) {{
     $a = {a};
     $n = 0;
     while ($a && $n < 5) {{
@@ -92,15 +105,8 @@ if ({a} && ({changed([a])})) {{
         $a = ifThenElse($level != 'admin0' && $parent, record\\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', $parent), null);
         $n = $n + 1;
     }}
-    country = record\\attribute('CAdminArea', {a}, 'country');
-    if (pcodeStatus != 'done') {{
-        pcodeStatus = 'given';
-    }}
-}}
-// A pin not P-coded yet: the P-coding step's work
-if (!{a} && latitude != null && !pcodeStatus) {{
-    pcodeStatus = 'pending';
-}}"""
+    country = record\\attribute('CAdminArea', {a}, 'country');{given}
+}}{pending}"""
 
 
 def copy_lines(source, idvar, copy, indent='    '):
@@ -356,7 +362,8 @@ def check(entity, traits, fields):
         raise ValueError(f'{entity}: unknown traits {sorted(unknown)} (traits: {", ".join(TRAITS)})')
     if fields is None:
         return
-    need = {'pcodes': ['pcode1', 'pcode2', 'pcode3', 'country', 'pcodeStatus', 'latitude'],
+    pins = not isinstance(traits.get('pcodes'), dict) or traits['pcodes'].get('pins', True)
+    need = {'pcodes': ['pcode1', 'pcode2', 'pcode3', 'country'] + (['pcodeStatus', 'latitude'] if pins else []),
             'supersede': ['superseded', 'current'], 'checks': ['dataChecks']}
     for name, fs in need.items():
         missing = [f for f in fs if name in traits and f not in fields]

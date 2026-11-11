@@ -1,0 +1,140 @@
+{
+ "status": [
+  {
+   "code": "planned",
+   "label": "Planned"
+  },
+  {
+   "code": "ongoing",
+   "label": "Ongoing"
+  },
+  {
+   "code": "completed",
+   "label": "Completed"
+  },
+  {
+   "code": "report_shared",
+   "label": "Report shared"
+  },
+  {
+   "code": "cancelled",
+   "label": "Cancelled"
+  }
+ ],
+ "coordination": [
+  {
+   "code": "uncoordinated",
+   "label": "Uncoordinated (one organisation, its own method)"
+  },
+  {
+   "code": "harmonised",
+   "label": "Harmonised (separate, comparable: shared indicators, places and timing agreed)"
+  },
+  {
+   "code": "joint",
+   "label": "Joint (one method, shared resources, joint analysis)"
+  }
+ ],
+ "methodology": [
+  {
+   "code": "key_informant",
+   "label": "Key informant interviews"
+  },
+  {
+   "code": "household_survey",
+   "label": "Household survey"
+  },
+  {
+   "code": "focus_groups",
+   "label": "Focus group discussions"
+  },
+  {
+   "code": "direct_observation",
+   "label": "Direct observation"
+  },
+  {
+   "code": "secondary_data",
+   "label": "Secondary data review"
+  },
+  {
+   "code": "remote",
+   "label": "Remote (phone, satellite imagery)"
+  },
+  {
+   "code": "other",
+   "label": "Other"
+  }
+ ],
+ "frequency": [
+  {
+   "code": "single",
+   "label": "Once"
+  },
+  {
+   "code": "daily",
+   "label": "Daily"
+  },
+  {
+   "code": "weekly",
+   "label": "Weekly"
+  },
+  {
+   "code": "monthly",
+   "label": "Monthly"
+  },
+  {
+   "code": "other",
+   "label": "Other"
+  }
+ ],
+ "geo_level": [
+  {
+   "code": "admin1",
+   "label": "By parish (admin 1)"
+  },
+  {
+   "code": "admin2",
+   "label": "By community (admin 2)"
+  },
+  {
+   "code": "sites",
+   "label": "Sites or camps"
+  },
+  {
+   "code": "whole_area",
+   "label": "The whole affected area"
+  }
+ ],
+ "sharing": [
+  {
+   "code": "public",
+   "label": "Public"
+  },
+  {
+   "code": "response",
+   "label": "Within the response"
+  },
+  {
+   "code": "on_request",
+   "label": "On request"
+  }
+ ],
+ "review": [
+  {
+   "code": "new",
+   "label": "Not checked yet"
+  },
+  {
+   "code": "checked",
+   "label": "Checked"
+  },
+  {
+   "code": "needs_info",
+   "label": "Needs information"
+  },
+  {
+   "code": "duplicate",
+   "label": "Duplicate"
+  }
+ ]
+}

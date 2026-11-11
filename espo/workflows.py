@@ -111,13 +111,14 @@ def lists_of(names, packs_dir=PACKS):
 
 
 def expand(field, lists, where):
-    """A field as EspoCRM takes it: an enum naming a list gets its options and labels."""
+    """A field as EspoCRM takes it: an enum naming a list gets its options and labels (and
+    those of `add`, first: a pack's own options on another pack's list)."""
     if 'list' not in field:
         return dict(field)
-    f = {k: v for k, v in field.items() if k not in ('list', 'blank')}
+    f = {k: v for k, v in field.items() if k not in ('list', 'blank', 'add')}
     if field['list'] not in lists:
         raise ValueError(f'{where}: no list {field["list"]!r} (a pack it requires has it?)')
-    opts = {c['code']: c['label'] for c in lists[field['list']]}
+    opts = {**field.get('add', {}), **{c['code']: c['label'] for c in lists[field['list']]}}
     f.setdefault('type', 'enum')
     blank = field.get('blank', f['type'] == 'enum')
     return {'type': f.pop('type'), 'options': ([''] if blank else []) + list(opts), 'translatedOptions': opts, **f}
@@ -395,8 +396,14 @@ def ensure_entities(espo, spec):
             espo.call('POST', '/EntityManager/action/createLink', body={
                 'entity': entity, 'link': link, 'linkForeign': link_foreign, 'entityForeign': foreign,
                 'linkType': kind, 'label': link_label(link), 'labelForeign': link_label(link_foreign),
+                **({'linkMultipleField': True} if kind == 'manyToMany' else {}),  # its field on the record (participantsIds)
                 'relationName': None})
             print(f'link created: {entity}.{link} -> {foreign}.{link_foreign}')
+        elif kind == 'manyToMany' and link not in metadata(espo, f'entityDefs.{entity}.fields'):
+            espo.call('POST', '/EntityManager/action/updateLink', body={
+                'entity': entity, 'link': link, 'entityForeign': foreign, 'linkForeign': link_foreign,
+                'linkMultipleField': True})
+            print(f'link field: {entity}.{link}')
             continue
         i18n = i18n or espo.call('GET', '/I18n')
         # On EspoCRM's own entities a custom link's name gets a "c" (Task.cResponse)

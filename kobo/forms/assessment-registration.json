@@ -1,0 +1,496 @@
+{
+ "settings": {
+  "form_title": "Assessment registration (espo-kobo test)",
+  "form_id": "assessment_registration",
+  "version": "1",
+  "style": "pages"
+ },
+ "survey": [
+  {
+   "type": "start",
+   "name": "start"
+  },
+  {
+   "type": "end",
+   "name": "end"
+  },
+  {
+   "type": "hidden",
+   "name": "assessment"
+  },
+  {
+   "type": "note",
+   "name": "intro",
+   "label": "Register an assessment your organisation is planning, doing or has done in this response, so that the response can see who is assessing what, where and when, avoid duplication and share the results. Send it again (from the link you are emailed) when it moves on."
+  },
+  {
+   "type": "select_one_from_file responses.csv",
+   "name": "response",
+   "label": "Response",
+   "required": "true",
+   "appearance": "minimal"
+  },
+  {
+   "type": "begin_group",
+   "name": "REPORTER",
+   "label": "Who is registering it"
+  },
+  {
+   "type": "select_one_from_file organisations.csv",
+   "name": "organisation",
+   "label": "Your organisation",
+   "required": "true",
+   "appearance": "minimal autocomplete"
+  },
+  {
+   "type": "text",
+   "name": "organisation_other",
+   "label": "Its name",
+   "required": "true",
+   "relevant": "${organisation} = 'other'"
+  },
+  {
+   "type": "text",
+   "name": "reporter_name",
+   "label": "Your name",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "reporter_email",
+   "label": "Your email",
+   "required": "true",
+   "constraint": "regex(., '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')",
+   "constraint_message": "An email address, e.g. name@example.org"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "begin_group",
+   "name": "ASSESSMENT",
+   "label": "The assessment"
+  },
+  {
+   "type": "text",
+   "name": "title",
+   "label": "Its title",
+   "required": "true"
+  },
+  {
+   "type": "select_multiple sectors",
+   "name": "sectors",
+   "label": "Sectors it covers",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "sectors_other",
+   "label": "Please specify",
+   "required": "true",
+   "relevant": "selected(${sectors}, 'other_sector')"
+  },
+  {
+   "type": "select_one coordination",
+   "name": "coordination",
+   "label": "How is it coordinated?",
+   "required": "true"
+  },
+  {
+   "type": "select_multiple methodology",
+   "name": "methodology",
+   "label": "Methodology",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "methodology_other",
+   "label": "Please specify",
+   "required": "true",
+   "relevant": "selected(${methodology}, 'other')"
+  },
+  {
+   "type": "select_one frequency",
+   "name": "frequency",
+   "label": "How often is it done?",
+   "required": "true"
+  },
+  {
+   "type": "text",
+   "name": "frequency_other",
+   "label": "Please specify",
+   "required": "true",
+   "relevant": "${frequency} = 'other'"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "begin_group",
+   "name": "ORGS",
+   "label": "Organisations"
+  },
+  {
+   "type": "select_one_from_file organisations.csv",
+   "name": "lead_organisation",
+   "label": "Lead organisation",
+   "required": "true",
+   "appearance": "minimal autocomplete",
+   "hint": "Yours, if it leads it"
+  },
+  {
+   "type": "text",
+   "name": "lead_organisation_other",
+   "label": "Its name",
+   "required": "true",
+   "relevant": "${lead_organisation} = 'other'"
+  },
+  {
+   "type": "select_multiple_from_file organisations.csv",
+   "name": "participants",
+   "label": "Participating organisations",
+   "appearance": "minimal autocomplete"
+  },
+  {
+   "type": "text",
+   "name": "participants_other",
+   "label": "Participating organisations not in the list"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "begin_group",
+   "name": "DATES",
+   "label": "When"
+  },
+  {
+   "type": "date",
+   "name": "start_date",
+   "label": "Start date",
+   "required": "true"
+  },
+  {
+   "type": "date",
+   "name": "end_date",
+   "label": "End date (estimated, if not done yet)",
+   "constraint": ". >= ${start_date}",
+   "constraint_message": "It can't end before it starts."
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "begin_group",
+   "name": "WHERE",
+   "label": "Where"
+  },
+  {
+   "type": "select_one geo_level",
+   "name": "geo_level",
+   "label": "At what level does it cover places?",
+   "required": "true"
+  },
+  {
+   "type": "begin_repeat",
+   "name": "AREAS",
+   "label": "An area it covers",
+   "relevant": "${geo_level} != 'whole_area'"
+  },
+  {
+   "type": "select_one_from_file areas.csv",
+   "name": "admin1",
+   "label": "Parish",
+   "required": "true",
+   "choice_filter": "level='admin1'",
+   "appearance": "minimal"
+  },
+  {
+   "type": "select_one_from_file areas.csv",
+   "name": "admin2",
+   "label": "Community",
+   "choice_filter": "parent=${admin1}",
+   "appearance": "minimal autocomplete",
+   "relevant": "${geo_level} = 'admin2' or ${geo_level} = 'sites'"
+  },
+  {
+   "type": "calculate",
+   "name": "area",
+   "calculation": "if(${admin2} != '', ${admin2}, ${admin1})"
+  },
+  {
+   "type": "end_repeat"
+  },
+  {
+   "type": "calculate",
+   "name": "area_codes",
+   "calculation": "join(' ', ${area})"
+  },
+  {
+   "type": "text",
+   "name": "localities",
+   "label": "Localities, sites or camps",
+   "hint": "Names, if it covers particular places"
+  },
+  {
+   "type": "end_group"
+  },
+  {
+   "type": "begin_group",
+   "name": "STATUS",
+   "label": "Where it is now, and its results"
+  },
+  {
+   "type": "select_one status",
+   "name": "status",
+   "label": "Status",
+   "required": "true"
+  },
+  {
+   "type": "file",
+   "name": "report",
+   "label": "The report, if there is one",
+   "relevant": "${status} != 'planned'"
+  },
+  {
+   "type": "select_one sharing",
+   "name": "report_sharing",
+   "label": "Who may see the report?",
+   "relevant": "${report} != '' or ${report_link} != ''"
+  },
+  {
+   "type": "text",
+   "name": "report_link",
+   "label": "Or a link to it (ReliefWeb, HDX...)",
+   "relevant": "${status} != 'planned'"
+  },
+  {
+   "type": "file",
+   "name": "dataset",
+   "label": "The dataset, if it can be shared",
+   "relevant": "${status} != 'planned'"
+  },
+  {
+   "type": "select_one sharing",
+   "name": "data_sharing",
+   "label": "Who may see the data?",
+   "relevant": "${dataset} != ''"
+  },
+  {
+   "type": "text",
+   "name": "notes",
+   "label": "Anything else",
+   "appearance": "multiline"
+  },
+  {
+   "type": "end_group"
+  }
+ ],
+ "choices": [
+  {
+   "list_name": "sectors",
+   "name": "INTER_CLUSTER",
+   "label": "Inter-cluster"
+  },
+  {
+   "list_name": "sectors",
+   "name": "CASH",
+   "label": "Cash Transfer"
+  },
+  {
+   "list_name": "sectors",
+   "name": "CHILD_PROTECTION",
+   "label": "Child Protection"
+  },
+  {
+   "list_name": "sectors",
+   "name": "COORDINATION",
+   "label": "Coordination"
+  },
+  {
+   "list_name": "sectors",
+   "name": "EARLY_RECOVERY",
+   "label": "Early recovery"
+  },
+  {
+   "list_name": "sectors",
+   "name": "EDUCATION",
+   "label": "Education"
+  },
+  {
+   "list_name": "sectors",
+   "name": "EMERGENCY_TELECOMS",
+   "label": "Emergency Telecommunications"
+  },
+  {
+   "list_name": "sectors",
+   "name": "FOOD_SECURITY",
+   "label": "Food Security"
+  },
+  {
+   "list_name": "sectors",
+   "name": "HEALTH",
+   "label": "Health"
+  },
+  {
+   "list_name": "sectors",
+   "name": "NUTRITION",
+   "label": "Nutrition"
+  },
+  {
+   "list_name": "sectors",
+   "name": "PROTECTION",
+   "label": "Protection"
+  },
+  {
+   "list_name": "sectors",
+   "name": "SHELTER",
+   "label": "Shelter & NFIs"
+  },
+  {
+   "list_name": "sectors",
+   "name": "WASH",
+   "label": "WASH"
+  },
+  {
+   "list_name": "sectors",
+   "name": "other_sector",
+   "label": "Other"
+  },
+  {
+   "list_name": "coordination",
+   "name": "uncoordinated",
+   "label": "Uncoordinated (one organisation, its own method)"
+  },
+  {
+   "list_name": "coordination",
+   "name": "harmonised",
+   "label": "Harmonised (separate, comparable: shared indicators, places and timing agreed)"
+  },
+  {
+   "list_name": "coordination",
+   "name": "joint",
+   "label": "Joint (one method, shared resources, joint analysis)"
+  },
+  {
+   "list_name": "methodology",
+   "name": "key_informant",
+   "label": "Key informant interviews"
+  },
+  {
+   "list_name": "methodology",
+   "name": "household_survey",
+   "label": "Household survey"
+  },
+  {
+   "list_name": "methodology",
+   "name": "focus_groups",
+   "label": "Focus group discussions"
+  },
+  {
+   "list_name": "methodology",
+   "name": "direct_observation",
+   "label": "Direct observation"
+  },
+  {
+   "list_name": "methodology",
+   "name": "secondary_data",
+   "label": "Secondary data review"
+  },
+  {
+   "list_name": "methodology",
+   "name": "remote",
+   "label": "Remote (phone, satellite imagery)"
+  },
+  {
+   "list_name": "methodology",
+   "name": "other",
+   "label": "Other"
+  },
+  {
+   "list_name": "frequency",
+   "name": "single",
+   "label": "Once"
+  },
+  {
+   "list_name": "frequency",
+   "name": "daily",
+   "label": "Daily"
+  },
+  {
+   "list_name": "frequency",
+   "name": "weekly",
+   "label": "Weekly"
+  },
+  {
+   "list_name": "frequency",
+   "name": "monthly",
+   "label": "Monthly"
+  },
+  {
+   "list_name": "frequency",
+   "name": "other",
+   "label": "Other"
+  },
+  {
+   "list_name": "geo_level",
+   "name": "admin1",
+   "label": "By parish (admin 1)"
+  },
+  {
+   "list_name": "geo_level",
+   "name": "admin2",
+   "label": "By community (admin 2)"
+  },
+  {
+   "list_name": "geo_level",
+   "name": "sites",
+   "label": "Sites or camps"
+  },
+  {
+   "list_name": "geo_level",
+   "name": "whole_area",
+   "label": "The whole affected area"
+  },
+  {
+   "list_name": "status",
+   "name": "planned",
+   "label": "Planned"
+  },
+  {
+   "list_name": "status",
+   "name": "ongoing",
+   "label": "Ongoing"
+  },
+  {
+   "list_name": "status",
+   "name": "completed",
+   "label": "Completed"
+  },
+  {
+   "list_name": "status",
+   "name": "report_shared",
+   "label": "Report shared"
+  },
+  {
+   "list_name": "status",
+   "name": "cancelled",
+   "label": "Cancelled"
+  },
+  {
+   "list_name": "sharing",
+   "name": "public",
+   "label": "Public"
+  },
+  {
+   "list_name": "sharing",
+   "name": "response",
+   "label": "Within the response"
+  },
+  {
+   "list_name": "sharing",
+   "name": "on_request",
+   "label": "On request"
+  }
+ ]
+}

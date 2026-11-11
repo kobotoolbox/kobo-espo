@@ -1,0 +1,5 @@
+// An assessment's dates must make sense. API Before Save runs for every save through the
+// API: the bridge's, an import's, and the UI's
+if (startDate && endDate && datetime\diff(endDate, startDate, 'days') < 0) {
+    recordService\throwBadRequest('The assessment ends before it starts.');
+}

@@ -1,0 +1,11 @@
+// An area an assessment covers (a row of its form's AREAS repeat): its assessment's teams,
+// response, Account, sectors, status and dates, and its P-codes: traits (workflow.toml).
+// In its assessment's latest submission (its formula marks the others not current)
+if (entity\isNew() || entity\isAttributeChanged('cKoboSubmissionUuid')) {
+    current = true;
+}
+// Named after its assessment and its area ("ASM-7K3Q: Kingston")
+if (assessmentId && (entity\isNew() || entity\isAttributeChanged('assessmentId') || entity\isAttributeChanged('adminAreaId'))) {
+    name = string\concatenate(record\attribute('CAssessment', assessmentId, 'code'), ': ',
+        ifThenElse(adminAreaId, record\attribute('CAdminArea', adminAreaId, 'name'), ifThenElse(pcode, pcode, 'area')));
+}

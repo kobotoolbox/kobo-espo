@@ -5,6 +5,24 @@ Status: 2026-11-11, a plan. A new pack, `assessments`, on the **response instanc
 for the Venezuela earthquakes (github.com/UN-OCHA/assessment-registry-venezuela-earthquakes-2026)
 and the UNDAC Handbook (8th ed., 2024, F.2.2-F.2.3, in ../undac-simex).
 
+Built 2026-11-11, phases 1-2 (PRODUCT-446): the `assessments` pack (CAssessment,
+CAssessmentArea; workflows/assessments/), the form and its template
+(kobo/forms/assessment.py: kobo/forms/assessment-registration.json,
+kobo/templates/assessment-registration.toml; Jamaica's areas for the test response),
+tests/cases/assessments.py A1-A7 (17/17, fake Kobo). As built, differing from the design:
+
+- the areas are a repeat (one row per area); the form also sends their P-codes joined
+  (`area_codes`), which is what the overlap check compares, so it runs in the
+  assessment's own save (a formula can't see rows saved after it);
+- overlaps: the later assessment is flagged, naming the earlier ones (the earlier one
+  isn't re-flagged until it's saved again); P-codes compared by prefix (a COD P-code
+  starts with its parent's: JM17 and JM17001). "Whole affected area" isn't compared;
+- the "area outside the response's country" check isn't built: a response's country is
+  free text, not an ISO3 code;
+- a resend's status is the form's: kobo-espo-bridge's `[record] keep_on_update` (default
+  ["status"], for cases) is [] in this template;
+- a checked assessment sent again goes back to "not checked yet".
+
 ## Why
 
 The handbook asks the UNDAC team's Assessment and Analysis (A&A) Cell to "establish

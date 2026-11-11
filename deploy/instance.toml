@@ -1,7 +1,7 @@
 # The packs this instance has (plans/workflow-packs-plan.md): the staging droplet has
 # every workflow. espo/seed/seed.py applies them (--instance for another file).
 application_name = "Kobo requests and responses (test)"
-packs = ["core", "support", "responses", "roster", "sites", "grants", "fivew", "cso"]
+packs = ["core", "support", "responses", "roster", "sites", "grants", "fivew", "assessments", "cso"]
 
 # The CSO mapping's links on this instance: its forms on the Kobo test account (a link fills
 # in the CSO's code and key: Enketo's d[/<form's asset uid>/<question>]), its portal. The

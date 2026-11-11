@@ -1,0 +1,91 @@
+// An assessment in the registry (plans/assessment-registry-plan.md). Its teams (the whole
+// response's) and its organisation's Account: traits (workflow.toml)
+// Its participating organisations, from the codes the form gives (space-separated)
+if (entity\isNew() || entity\isAttributeChanged('participantCodes')) {
+    $ids = list();
+    if (participantCodes) {
+        $codes = string\split(string\trim(participantCodes), ' ');
+        $i = 0;
+        while ($i < array\length($codes)) {
+            $o = record\findOne('COrganisation', 'createdAt', 'asc', 'code=', array\at($codes, $i));
+            if ($o && !array\includes($ids, $o)) {
+                $ids = array\push($ids, $o);
+            }
+            $i = $i + 1;
+        }
+    }
+    participantsIds = $ids;
+}
+reportAvailable = ifThenElse(reportFile || reportLink, true, false);
+
+// Sent again from Kobo (its code in the link): the areas the submission before gave are no
+// longer current (the new one's rows follow), and a checked assessment is not checked any more
+if (!entity\isNew() && entity\isAttributeChanged('cKoboSubmissionUuid')) {
+    $rows = record\findMany('CAssessmentArea', 500, 'createdAt', 'asc', 'assessmentId=', id, 'current=', true);
+    $i = 0;
+    while ($i < array\length($rows)) {
+        $r = array\at($rows, $i);
+        if (record\attribute('CAssessmentArea', $r, 'cKoboSubmissionUuid') != cKoboSubmissionUuid) {
+            record\update('CAssessmentArea', $r, 'current', false);
+        }
+        $i = $i + 1;
+    }
+    if (review == 'checked') {
+        review = 'new';
+    }
+}
+
+// Overlaps, for the A&A Cell to put organisations in touch (the AAWG's synchronising):
+// another organisation's assessment in the response, not cancelled, of a sector this one
+// has, in one of its areas (the same P-code, or one inside the other: COD P-codes start
+// with their parent's), at the same time. This one is flagged, naming the others; the
+// follow-up agent makes the task
+$overlaps = '';
+if (responseId && areaCodes && sectors && status != 'cancelled') {
+    $mine = string\split(string\trim(areaCodes), ' ');
+    $others = record\findMany('CAssessment', 500, 'createdAt', 'asc', 'responseId=', responseId);
+    $i = 0;
+    while ($i < array\length($others)) {
+        $o = array\at($others, $i);
+        $same = $o == id || record\attribute('CAssessment', $o, 'status') == 'cancelled'
+            || (accountId && record\attribute('CAssessment', $o, 'accountId') == accountId);
+        $theirs = record\attribute('CAssessment', $o, 'areaCodes');
+        if (!$same && $theirs) {
+            $sector = false;
+            $os = record\attribute('CAssessment', $o, 'sectors');
+            $j = 0;
+            while ($j < array\length($os)) {
+                if (array\includes(sectors, array\at($os, $j))) {
+                    $sector = true;
+                }
+                $j = $j + 1;
+            }
+            $s = record\attribute('CAssessment', $o, 'startDate');
+            $e = record\attribute('CAssessment', $o, 'endDate');
+            $when = (!endDate || !$s || datetime\diff(endDate, $s, 'days') >= 0)
+                && (!$e || !startDate || datetime\diff($e, startDate, 'days') >= 0);
+            $where = false;
+            if ($sector && $when) {
+                $t = string\split(string\trim($theirs), ' ');
+                $j = 0;
+                while ($j < array\length($mine)) {
+                    $k = 0;
+                    while ($k < array\length($t)) {
+                        $a = array\at($mine, $j);
+                        $b = array\at($t, $k);
+                        if ($a && $b && (string\pos($a, $b) == 0 || string\pos($b, $a) == 0)) {
+                            $where = true;
+                        }
+                        $k = $k + 1;
+                    }
+                    $j = $j + 1;
+                }
+            }
+            if ($sector && $when && $where) {
+                $overlaps = string\concatenate($overlaps, ifThenElse($overlaps, ', ', ''), record\attribute('CAssessment', $o, 'code'));
+            }
+        }
+        $i = $i + 1;
+    }
+}
+overlapsWith = ifThenElse($overlaps, $overlaps, null);

@@ -20,7 +20,7 @@ python3 -I espo/seed/seed.py --users > /dev/null || fail=1
 emails=$(python3 -I tests/email_notifications.py off) || fail=1
 export SEED_EMAIL_NOTIFICATIONS=off
 [[ -n ${emails:-} ]] && trap 'python3 -I tests/email_notifications.py restore "$emails"' EXIT
-for t in look isolation projects fivew workflow_b agents serve mcp mcp_people; do python3 -I tests/cases/$t.py | tail -1 || fail=1; done
+for t in look isolation projects fivew assessments workflow_b agents serve mcp mcp_people; do python3 -I tests/cases/$t.py | tail -1 || fail=1; done
 .venv/bin/python -I tests/cases/mcp_http.py 2>&1 | tail -1 || fail=1
 python3 -I tests/cases/connection.py "$@" | tail -1 || fail=1
 exit $fail

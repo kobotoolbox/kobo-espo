@@ -1,0 +1,145 @@
+# The assessment registry (plans/assessment-registry-plan.md): who is assessing what, where
+# and when, on a response's instance. Organisations register their assessments with a Kobo
+# form (kobo/forms/assessment.py); the A&A Cell (the response's coordinators) reviews them;
+# the formulas flag overlaps and missing reports; the dashboard shows coverage and gaps.
+# The whole response sees every assessment (a registry is a shared good).
+
+requires = ["responses"]
+# Both write an organisation's Account's teams (plans/fivew-organisations-plan.md)
+conflicts = ["cso"]
+codes = { CAssessment = "ASM" }
+agent_entities = { CAssessment = "Assessment", CAssessmentArea = "Assessment area" }
+links = [
+  ["CResponse", "assessments", "CAssessment", "response", "oneToMany"],
+  ["CAssessment", "organisation", "COrganisation", "assessmentsReported", "manyToOne"],
+  ["CAssessment", "leadOrganisation", "COrganisation", "assessmentsLed", "manyToOne"],
+  ["CAssessment", "participants", "COrganisation", "assessmentsJoined", "manyToMany"],
+  ["CAssessment", "account", "Account", "assessments", "manyToOne"],
+  ["CAssessment", "contact", "Contact", "assessmentsReported", "manyToOne"],
+  ["CAssessment", "areas", "CAssessmentArea", "assessment", "oneToMany"],
+  ["CAssessmentArea", "adminArea", "CAdminArea", "assessmentAreas", "manyToOne"],
+  ["CAssessmentArea", "response", "CResponse", "assessmentAreas", "manyToOne"],
+  ["CAssessmentArea", "account", "Account", "assessmentAreas", "manyToOne"],
+]
+tabs = { label = "Assessments", entities = ["CAssessment", "CAssessmentArea"] }
+
+[settings]
+global_search = ["CAssessment"]
+
+[entities.Assessment]
+label = "Assessment"
+labelPlural = "Assessments"
+iconClass = "fas fa-clipboard-list"
+[entities.Assessment.fields]
+# readOnly = false said outright on what the bridge sets: EspoCRM's API ignores read-only
+# fields, and a field's update keeps what it isn't told
+sectors = { type = "multiEnum", label = "Sectors", list = "fivew-melissa.sectors", add = { INTER_CLUSTER = "Inter-cluster" } }
+sectorsOther = { type = "varchar", label = "Sectors (other)" }
+coordination = { label = "Coordination", list = "assessment-lists.coordination", tooltipText = "The UNDAC Handbook's three levels (F.2.2): uncoordinated, harmonised, joint" }
+methodology = { type = "multiEnum", label = "Methodology", list = "assessment-lists.methodology" }
+methodologyOther = { type = "varchar", label = "Methodology (other)" }
+frequency = { label = "Frequency", list = "assessment-lists.frequency" }
+frequencyOther = { type = "varchar", label = "Frequency (other)" }
+organisationOther = { type = "varchar", label = "Organisation (not in the list)" }
+leadOrganisationOther = { type = "varchar", label = "Lead organisation (not in the list)" }
+participantCodes = { type = "varchar", label = "Participating organisations (codes)", maxLength = 2000, tooltipText = "As the form gives them: the participating organisations' links follow (formula)" }
+participantsOther = { type = "varchar", label = "Participating organisations (not in the list)", maxLength = 500 }
+startDate = { type = "date", label = "Start" }
+endDate = { type = "date", label = "End", tooltipText = "Estimated until it's done" }
+geoLevel = { label = "Geographic level", list = "assessment-lists.geo_level" }
+areaCodes = { type = "varchar", readOnly = false, label = "Areas (P-codes)", maxLength = 2000, tooltipText = "Its areas' P-codes, as the form gives them (the bridge sets it): what the overlap check compares" }
+localities = { type = "text", label = "Localities" }
+status = { list = "assessment-lists.status", default = "planned", blank = false, style = { ongoing = "primary", completed = "success", report_shared = "success", cancelled = "info" } }
+review = { label = "Review", list = "assessment-lists.review", default = "new", blank = false, style = { checked = "success", needs_info = "warning", duplicate = "danger" }, tooltipText = "The A&A Cell's: a checked assessment sent again is not checked any more" }
+reportFile = { type = "varchar", readOnly = false, label = "Report", tooltipText = "The report's file name (the file is in Files)" }
+datasetFile = { type = "varchar", readOnly = false, label = "Dataset", tooltipText = "The dataset's file name (the file is in Files)" }
+files = { type = "attachmentMultiple", label = "Files" }
+reportSharing = { label = "Report sharing", list = "assessment-lists.sharing" }
+dataSharing = { label = "Data sharing", list = "assessment-lists.sharing" }
+reportLink = { type = "url", label = "Report link", tooltipText = "Where it's published (ReliefWeb, HDX...)" }
+reportAvailable = { type = "bool", label = "Report available", readOnly = true }
+notes = { type = "text", label = "Notes" }
+overlapsWith = { type = "varchar", label = "Overlaps with", maxLength = 500, readOnly = true, tooltipText = "Other organisations' assessments of a sector it has, in its areas, at the same time (formula): the A&A Cell puts them in touch" }
+dataChecks = { type = "multiEnum", label = "Data checks", options = ["overlap", "no_report", "start_passed", "past_end", "no_areas"], translatedOptions = { overlap = "Overlaps another organisation's", no_report = "Completed 14 days ago, no report", start_passed = "Planned, but its start has passed", past_end = "Not completed, but its end has passed", no_areas = "No areas given" }, tooltipText = "What looks wrong (formula); fix it or explain in a note" }
+
+[entities.AssessmentArea]
+label = "Assessment area"
+labelPlural = "Assessment areas"
+iconClass = "fas fa-map-marked-alt"
+stream = false
+[entities.AssessmentArea.fields]
+pcode = { type = "varchar", label = "P-code", maxLength = 30, tooltipText = "As the form gives it" }
+pcode1 = { type = "varchar", label = "P-code (admin 1)", maxLength = 30, readOnly = true }
+pcode2 = { type = "varchar", label = "P-code (admin 2)", maxLength = 30, readOnly = true }
+pcode3 = { type = "varchar", label = "P-code (admin 3)", maxLength = 30, readOnly = true }
+country = { type = "varchar", label = "Country (ISO3)", maxLength = 3, readOnly = true }
+current = { type = "bool", label = "Current", default = true, readOnly = true, tooltipText = "In its assessment's latest submission (formula)" }
+sectors = { type = "multiEnum", label = "Sectors", readOnly = true, list = "fivew-melissa.sectors", add = { INTER_CLUSTER = "Inter-cluster" } }
+status = { list = "assessment-lists.status", default = "planned", blank = false, readOnly = true }
+startDate = { type = "date", label = "Start", readOnly = true }
+endDate = { type = "date", label = "End", readOnly = true }
+
+# The A&A Cell (the response's coordinators, Internal Staff) reviews; cluster leads and
+# partners register and correct their own (the whole response reads every one)
+[roles."Internal Staff"]
+[roles."Internal Staff".data]
+CAssessment = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CAssessmentArea = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+
+[roles."Cluster Lead"]
+[roles."Cluster Lead".data]
+CAssessment = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
+CAssessmentArea = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
+[roles."Cluster Lead".fieldData.CAssessment]
+review = { read = "yes", edit = "no" }
+
+[roles."Cluster Partner"]
+[roles."Cluster Partner".data]
+CAssessment = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
+CAssessmentArea = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
+[roles."Cluster Partner".fieldData.CAssessment]
+review = { read = "yes", edit = "no" }
+
+[roles."Cluster Viewer"]
+[roles."Cluster Viewer".data]
+CAssessment = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CAssessmentArea = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+
+[layouts.CAssessment]
+detail = [
+  ["response", "status", "review", "organisation", "organisationOther", "account", "contact", "leadOrganisation", "leadOrganisationOther", "participants", "participantsOther", "sectors", "sectorsOther", "coordination", "methodology", "methodologyOther", "frequency", "frequencyOther", "startDate", "endDate"],
+  ["geoLevel", "areaCodes", "localities", "reportAvailable", "reportFile", "datasetFile", "files", "reportSharing", "dataSharing", "reportLink", "notes", "overlapsWith", "dataChecks"],
+]
+list = ["name", "code", "organisation", "sectors", "status", "review", "startDate", "endDate", "reportAvailable", "dataChecks"]
+relationships = ["areas"]
+filters = ["status", "review", "sectors", "organisation", "response"]
+
+[layouts.CAssessmentArea]
+detail = [["assessment", "adminArea", "pcode", "pcode1", "pcode2", "pcode3", "country", "current", "sectors", "status", "startDate", "endDate", "response", "account"]]
+list = ["name", "assessment", "adminArea", "sectors", "status", "current"]
+
+[layouts.CResponse]
+relationships = ["assessments"]
+
+[layouts.Account]
+relationships = [{ name = "assessments", before = "cases" }]
+
+# The formulas' shared patterns (espo/traits.py); the pack's own blocks are in formulas/.
+# An assessment is in its response's teams and every cluster project's there (and a new
+# project's); its organisation's Account (a 5W registration's, if it has one)
+[traits.CAssessment]
+teams_from_clusters = { all = true }
+account_from_organisation = { organisation = "organisation", other = "organisationOther" }
+
+[traits.CAssessment.checks]
+overlap = "$overlaps != ''"
+no_report = "(status == 'completed' || status == 'report_shared') && !reportAvailable && endDate && datetime\\diff(datetime\\today(), endDate, 'days') >= 14"
+start_passed = "status == 'planned' && startDate && datetime\\diff(datetime\\today(), startDate, 'days') > 0"
+past_end = "(status == 'planned' || status == 'ongoing') && endDate && datetime\\diff(datetime\\today(), endDate, 'days') > 0"
+no_areas = "geoLevel != 'whole_area' && !areaCodes"
+
+# An area is its assessment's (its teams, response, Account, sectors, status, dates), and
+# follows it; its P-codes up its area's parents
+[traits.CAssessmentArea]
+pcodes = { area = "adminArea", pins = false }
+inherit = [{ link = "assessment", entity = "CAssessment", copy = ["teamsIds", "responseId", "accountId", "sectors", "status", "startDate", "endDate"], cascade = true }]
