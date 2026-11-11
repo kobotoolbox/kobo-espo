@@ -1,7 +1,10 @@
 // A project is in its own teams and its response's: the response's coordinators see every
 // project's sites and tasks, a project's people only their project's
-// (a new record's link-multiple attributes can't be read unless the request sets them)
-if (responseId && (entity\isNew() || entity\isAttributeChanged('responseId') || entity\isAttributeChanged('teamsIds'))) {
+// (a new record's link-multiple attributes can't be read unless the request sets them).
+// Only when new or moved: its response's teams_down changes its teams while the response's
+// new teams aren't saved yet, so reading them here would put a removed one back. Someone
+// taking the response's teams off by hand: its API script puts them back.
+if (responseId && (entity\isNew() || entity\isAttributeChanged('responseId'))) {
     $teams = list();
     if (!entity\isNew() || entity\isAttributeChanged('teamsIds')) {
         $teams = teamsIds;

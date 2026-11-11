@@ -100,6 +100,8 @@ def run(a, team, user):
     community = a.call('GET', '/CAdminArea', {'maxSize': 2, 'orderBy': 'pcode', **where('parentPcode', 'JM17')})['list']
     resp = a.call('POST', '/CResponse', body={'name': RESPONSE, 'status': 'Active', 'teamsIds': [eq1],
                                               'leadId': user['staff-1'], 'emergencyType': 'Cyclone', 'country': 'Jamaica'})
+    # its country's coordination team, made or found by the response's formula (PRODUCT-443)
+    coord = a.call('GET', '/Team', {'maxSize': 1, **where('name', 'Coordination: Jamaica')})['list'][0]['id']
     p_etc = a.call('POST', '/CProject', body={'name': 'FIVEW ETC', 'cluster': 'EMERGENCY_TELECOMS', 'status': 'Active',
                                               'responseId': resp['id'], 'teamsIds': [etc], 'leadId': user['cluster-lead']})
     p_wash = a.call('POST', '/CProject', body={'name': 'FIVEW WASH', 'cluster': 'WASH', 'status': 'Active',
@@ -135,10 +137,10 @@ def run(a, team, user):
     reg = a.call('GET', f'/CResponder/{adra["id"]}')
     check('W2', "registered: named after the organisation in the list, with its type",
           (reg['name'], reg.get('orgType')) == (org['ORG_ADRA']['name'], 'INTERNATIONAL_NGO'), (reg['name'], reg.get('orgType')))
-    check('W2', "in the response's team and both sectors' projects'", teams('CResponder', adra) == {eq1, etc, wash},
+    check('W2', "in the response's team and both sectors' projects'", teams('CResponder', adra) == {coord, eq1, etc, wash},
           teams('CResponder', adra))
     a.call('PUT', f'/CResponder/{adra["id"]}', body={'clusters': ['WASH']})
-    check('W2', 'no longer in Emergency Telecommunications: its team goes', teams('CResponder', adra) == {eq1, wash})
+    check('W2', 'no longer in Emergency Telecommunications: its team goes', teams('CResponder', adra) == {coord, eq1, wash})
     a.call('PUT', f'/CResponder/{adra["id"]}', body={'clusters': ['WASH', 'SHELTER']})
     shelter = a.call('POST', '/Team', body={'name': 'FIVEW Shelter'})
     try:
@@ -152,7 +154,7 @@ def run(a, team, user):
     # --- W3: an activity ---------------------------------------------------------------------
     got = a.call('GET', f'/CActivity/{act["id"]}')
     check('W3', "its sector's project (WASH), and that project's teams", got.get('projectId') == p_wash['id']
-          and set(got['teamsIds']) == {eq1, wash}, {k: got.get(k) for k in ('projectId', 'teamsIds')})
+          and set(got['teamsIds']) == {coord, eq1, wash}, {k: got.get(k) for k in ('projectId', 'teamsIds')})
     check('W3', 'the lead organisation implements it when no other is named',
           got.get('implementingOrganisationId') == org['ORG_ADRA']['id'])
     check('W3', "named after its organisation's code", got['name'] == 'ADRA · Water trucking', got['name'])
@@ -161,7 +163,7 @@ def run(a, team, user):
     health = activity(name='Clinic', sector='HEALTH')
     got = a.call('GET', f'/CActivity/{health["id"]}')
     check('W3', "a sector with no project in the response: the response's team only (coordinators)",
-          not got.get('projectId') and set(got['teamsIds']) == {eq1}, {k: got.get(k) for k in ('projectId', 'teamsIds')})
+          not got.get('projectId') and set(got['teamsIds']) == {coord, eq1}, {k: got.get(k) for k in ('projectId', 'teamsIds')})
 
     # --- W4: its locations (communities) -------------------------------------------------------
     def location(activity_rec, comm, **kw):
@@ -171,7 +173,7 @@ def run(a, team, user):
                     populationGroups=['idp'], idpWomenReached=30, idpMenReached=20, idpChildrenReached=10)
     location(act, community[1], quantity=5, budget=250, populationTargeted=50, populationReached=40)
     got = a.call('GET', f'/CActivityLocation/{loc1["id"]}')
-    check('W4', "a location: its activity's teams, project and response", set(got['teamsIds']) == {eq1, wash}
+    check('W4', "a location: its activity's teams, project and response", set(got['teamsIds']) == {coord, eq1, wash}
           and got.get('projectId') == p_wash['id'] and got.get('responseId') == resp['id'],
           {k: got.get(k) for k in ('teamsIds', 'projectId', 'responseId')})
     check('W4', 'its parish from the community, and named after both',
@@ -185,7 +187,7 @@ def run(a, team, user):
     check('W4', 'a location changed: the totals follow (120 reached)',
           a.call('GET', f'/CActivity/{act["id"]}').get('peopleReached') == 120)
     fp = a.call('POST', '/CFocalPoint', body={'name': 'Fola Point', 'activityId': act['id'], 'emailAddress': 'f@example.org'})
-    check('W4', "a focal point: its activity's teams", teams('CFocalPoint', fp) == {eq1, wash})
+    check('W4', "a focal point: its activity's teams", teams('CFocalPoint', fp) == {coord, eq1, wash})
 
     # --- W5: an organisation not in the list ---------------------------------------------------
     activity(name='Hot meals', leadOrganisationId=org['other']['id'], leadOrganisationOther='Kingston Kitchen Collective')
@@ -225,7 +227,7 @@ def run(a, team, user):
                                               'assignedUserId': user['cluster-partner']})  # as the UI sends it
     got = a.call('GET', f'/CActivity/{mine["id"]}')
     check('W7', "cluster-partner: reports an activity in their project, in its teams and response",
-          set(got['teamsIds']) == {eq1, etc} and got.get('responseId') == rid, {k: got.get(k) for k in ('teamsIds', 'responseId')})
+          set(got['teamsIds']) == {coord, eq1, etc} and got.get('responseId') == rid, {k: got.get(k) for k in ('teamsIds', 'responseId')})
     check('W7', "cluster-partner: edits their own activity, not one they didn't make",
           status(lambda: p.call('PUT', f'/CActivity/{mine["id"]}', body={'comments': 'x'})) == 200
           and status(lambda: p.call('PUT', f'/CActivity/{act_etc["id"]}', body={'comments': 'x'})) == 403)
@@ -280,27 +282,27 @@ def run(a, team, user):
     check('W11', 'a typed-in organisation: an Account of that name, not linked to the list, with its type',
           (acc_a['name'], acc_a.get('cOrganisationId'), acc_a.get('cOrgType')) == (typed, None, 'NATIONAL_NGO'),
           {k: acc_a.get(k) for k in ('name', 'cOrganisationId', 'cOrgType')})
-    check('W11', "in ETC only: the Account in the response's and ETC's teams", set(acc_a['teamsIds']) == {eq1, etc}, acc_a['teamsIds'])
+    check('W11', "in ETC only: the Account in the response's and ETC's teams", set(acc_a['teamsIds']) == {coord, eq1, etc}, acc_a['teamsIds'])
     lead, viewer = as_user('cluster-lead'), as_user('cluster-viewer')
     check('W11', "cluster-lead (ETC) reads it; cluster-viewer (WASH) doesn't",
           status(lambda: lead.call('GET', f'/Account/{acc_a["id"]}')) == 200
           and status(lambda: viewer.call('GET', f'/Account/{acc_a["id"]}')) == 403)
     a.call('PUT', f'/CResponder/{r_a["id"]}', body={'clusters': ['EMERGENCY_TELECOMS', 'WASH']})
     check('W11', 'now in WASH too: the Account in WASH\'s team, and cluster-viewer reads it',
-          set(get('Account', acc_a)['teamsIds']) == {eq1, etc, wash}
+          set(get('Account', acc_a)['teamsIds']) == {coord, eq1, etc, wash}
           and status(lambda: viewer.call('GET', f'/Account/{acc_a["id"]}')) == 200, get('Account', acc_a)['teamsIds'])
     eq2 = team['Response: Test EQ 2']
     resp_b = a.call('POST', '/CResponse', body={'name': RESPONSE + ' B', 'status': 'Active', 'teamsIds': [eq2], 'country': 'Jamaica'})
     r_b = a.call('POST', '/CResponder', body={'name': 'x', 'organisationId': org['other']['id'], 'organisationOther': typed,
                                               'responseId': resp_b['id'], 'clusters': ['WASH']})
     check('W11', 'registered in a second response: the same Account, in both responses\' teams',
-          get('CResponder', r_b)['accountId'] == acc_a['id'] and set(get('Account', acc_a)['teamsIds']) == {eq1, etc, wash, eq2},
+          get('CResponder', r_b)['accountId'] == acc_a['id'] and set(get('Account', acc_a)['teamsIds']) == {coord, eq1, etc, wash, eq2},
           (get('CResponder', r_b)['accountId'], get('Account', acc_a)['teamsIds']))
     a.call('PUT', f'/CResponder/{r_b["id"]}', body={'organisationOther': 'FIVEW Other Collective'})
     moved = get('CResponder', r_b)['accountId']
     check('W11', "its name corrected to another organisation's: a new Account; the first leaves that response's team",
-          moved != acc_a['id'] and set(get('Account', moved)['teamsIds']) == {eq2}
-          and set(get('Account', acc_a)['teamsIds']) == {eq1, etc, wash},
+          moved != acc_a['id'] and set(get('Account', moved)['teamsIds']) == {coord, eq2}
+          and set(get('Account', acc_a)['teamsIds']) == {coord, eq1, etc, wash},
           (get('Account', moved)['teamsIds'], get('Account', acc_a)['teamsIds']))
     listed = a.call('POST', '/COrganisation', body={'name': typed, 'code': 'ORG_FIVEW_TEST', 'orgType': 'NATIONAL_NGO'})
     a.call('PUT', f'/CResponder/{r_a["id"]}', body={'organisationId': listed['id'], 'organisationOther': None})

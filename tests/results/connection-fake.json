@@ -1,8 +1,8 @@
 {
-  "when": "2026-11-11T16:16:02Z",
+  "when": "2026-11-11T18:09:10Z",
   "espo": "https://staging.respond.kobolabs.dev",
   "kobo": "fake",
-  "run": "413189",
+  "run": "419963",
   "passed": 89,
   "failed": 0,
   "results": [
@@ -17,7 +17,7 @@
       "check": "name, category, priority, project from the answers",
       "ok": true,
       "detail": {
-        "name": "Forms and XLSForm: Form will not deploy (413189)",
+        "name": "Forms and XLSForm: Form will not deploy (419963)",
         "cCategory": "forms",
         "priority": "High",
         "cProject": "consortium_a"
@@ -42,9 +42,9 @@
       "check": "requester Contact by email, with their name",
       "ok": true,
       "detail": {
-        "emailAddress": "req-a-413189@example.org",
+        "emailAddress": "req-a-419963@example.org",
         "firstName": "Test Requester",
-        "lastName": "413189"
+        "lastName": "419963"
       }
     },
     {
@@ -64,7 +64,7 @@
       "check": "media: the attached file is copied onto the case",
       "ok": true,
       "detail": {
-        "6af4931a03eb81857": "screenshot.png"
+        "6af4ad86bdb7b9556": "screenshot.png"
       }
     },
     {
@@ -83,7 +83,7 @@
       "test": "T1",
       "check": "latency of one pass (submission -> case), seconds",
       "ok": true,
-      "detail": 11.3
+      "detail": 13.5
     },
     {
       "test": "T2",
@@ -168,8 +168,8 @@
       "check": "the pass goes on (the good ones still go through)",
       "ok": true,
       "detail": {
-        "last_pass": "2026-11-11T16:10:44Z",
-        "last_success": "2026-11-11T16:10:44Z",
+        "last_pass": "2026-11-11T18:03:36Z",
+        "last_success": "2026-11-11T18:03:36Z",
         "ok": true,
         "error": null,
         "counts": {
@@ -191,7 +191,7 @@
         },
         "failed": 2,
         "failed_elsewhere": 0,
-        "oldest_failed": "2026-11-11T16:10:44Z",
+        "oldest_failed": "2026-11-11T18:03:36Z",
         "oldest_error": "required answer missing: summary"
       }
     },
@@ -199,7 +199,7 @@
       "test": "T4",
       "check": "missing answer: \"required answer missing: summary\" in the ledger",
       "ok": true,
-      "detail": "af0bfe19753b340eea644d  submission 4  since 2026-11-11T16:10:44Z  1 attempt(s), next 2026-11-11T16:11:44Z\n    required answer missing: summary\naf0bfe19753b340eea644d  submission 5  since 2026-11-11T16:10:44Z  1 attempt(s), next 2026-11-11T16:11:44Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "a2db5259c528b4718b98a8  submission 4  since 2026-11-11T18:03:36Z  1 attempt(s), next 2026-11-11T18:04:36Z\n    required answer missing: summary\na2db5259c528b4718b98a8  submission 5  since 2026-11-11T18:03:36Z  1 attempt(s), next 2026-11-11T18:04:36Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -211,7 +211,7 @@
       "test": "T4",
       "check": "invalid email: refused by EspoCRM, recorded with its reason",
       "ok": true,
-      "detail": "af0bfe19753b340eea644d  submission 4  since 2026-11-11T16:10:44Z  1 attempt(s), next 2026-11-11T16:11:44Z\n    required answer missing: summary\naf0bfe19753b340eea644d  submission 5  since 2026-11-11T16:10:44Z  1 attempt(s), next 2026-11-11T16:11:44Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "a2db5259c528b4718b98a8  submission 4  since 2026-11-11T18:03:36Z  1 attempt(s), next 2026-11-11T18:04:36Z\n    required answer missing: summary\na2db5259c528b4718b98a8  submission 5  since 2026-11-11T18:03:36Z  1 attempt(s), next 2026-11-11T18:04:36Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -518,16 +518,16 @@
       "ok": true,
       "detail": [
         {
-          "name": "RSP-ZQG9",
-          "label": "AGT Response 153357"
+          "name": "RSP-FC4V",
+          "label": "AGT Response 175216"
         },
         {
-          "name": "RSP-TAN5",
-          "label": "AGT Response 5W 154043"
+          "name": "RSP-YC86",
+          "label": "AGT Response 5W 175855"
         },
         {
-          "name": "RSP-W9SG",
-          "label": "AGT Response assessments 154408"
+          "name": "RSP-6M3J",
+          "label": "AGT Response assessments 180230"
         }
       ]
     },
@@ -583,16 +583,19 @@
     },
     {
       "test": "C2",
-      "check": "in its response's team (Site formula)",
+      "check": "in its response's teams, its country's coordination team too (Site formula)",
       "ok": true,
-      "detail": ""
+      "detail": {
+        "6af4a1b6154a583fc": "Coordination: Testland",
+        "6aec41fec6f7a5f27": "Response: Test EQ 1"
+      }
     },
     {
       "test": "C2",
       "check": "media: the site photo is on the site, with the answer's file name (Kobo stores site_photo_1.png)",
       "ok": true,
       "detail": {
-        "6af493fd33824b8d4": "site photo (1).png"
+        "6af4ae7518611ad2f": "site photo (1).png"
       }
     },
     {
@@ -621,7 +624,7 @@
       "test": "C2",
       "check": "a standard code EspoCRM has no record for: recorded, no site made",
       "ok": true,
-      "detail": "ae7d765b8371a41ccbb9c8  submission 4  since 2026-11-11T16:13:04Z  1 attempt(s), next 2026-11-11T16:14:04Z\n    standard: 0 CStandard records with that code\n"
+      "detail": "a92d617513149467d84d75  submission 4  since 2026-11-11T18:05:59Z  1 attempt(s), next 2026-11-11T18:06:59Z\n    standard: 0 CStandard records with that code\n"
     },
     {
       "test": "C2",
@@ -709,6 +712,18 @@
         {
           "name": "EQ1-WP-413189",
           "label": "EQ1-WP-413189 \u00b7 Water point 413189",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-417884",
+          "label": "EQ1-WP-417884 \u00b7 Water point 417884",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-419963",
+          "label": "EQ1-WP-419963 \u00b7 Water point 419963",
           "status": "planned",
           "region": "North"
         },
@@ -746,7 +761,7 @@
       "check": "media: the visit's photo is on its note",
       "ok": true,
       "detail": {
-        "6af4942394d64f50d": "leak.png"
+        "6af4ae9c2b640856a": "leak.png"
       }
     },
     {
@@ -839,6 +854,18 @@
           "region": "North"
         },
         {
+          "name": "EQ1-WP-417884",
+          "label": "EQ1-WP-417884 \u00b7 Water point 417884",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-419963",
+          "label": "EQ1-WP-419963 \u00b7 Water point 419963",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
           "name": "ISO-S1",
           "label": "ISO-S1 \u00b7 ISO Site R1",
           "status": "planned",
@@ -850,7 +877,7 @@
       "test": "C3",
       "check": "a visit to an unknown site is recorded, not guessed",
       "ok": true,
-      "detail": "a3f84378d6ea540f198e66  submission 2  since 2026-11-11T16:13:39Z  1 attempt(s), next 2026-11-11T16:14:39Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
+      "detail": "a9faf9999b36f48b9acb7d  submission 2  since 2026-11-11T18:06:38Z  1 attempt(s), next 2026-11-11T18:07:38Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
     },
     {
       "test": "W7",
@@ -858,38 +885,40 @@
       "ok": true,
       "detail": {
         "responseId": "6af1e048da39a7ac0",
-        "name": "Telecom Partners 413189",
+        "name": "Telecom Partners 419963",
         "organisationName": "Other",
         "clusters": [
           "EMERGENCY_TELECOMS"
         ],
-        "code": "REG-S5ZK"
+        "code": "REG-SRJT"
       }
     },
     {
       "test": "W7",
       "check": "its focal point's Contact",
       "ok": true,
-      "detail": "6af4943fe0b287ce7"
+      "detail": "6af4aebba05b48dcf"
     },
     {
       "test": "W7",
       "check": "both focal points are Contacts on the organisation's Account, with their position, in its teams",
       "ok": true,
       "detail": {
-        "focal-413189@example.org": {
-          "accountId": "6af49440a81596263",
+        "focal-419963@example.org": {
+          "accountId": "6af4aebc43646481c",
           "title": "Country director",
           "teamsNames": {
             "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
+            "6af4a1b6154a583fc": "Coordination: Testland",
             "6aec41fec6f7a5f27": "Response: Test EQ 1"
           }
         },
-        "delivered+focal2-413189@resend.dev": {
-          "accountId": "6af49440a81596263",
+        "delivered+focal2-419963@resend.dev": {
+          "accountId": "6af4aebc43646481c",
           "title": "IM officer",
           "teamsNames": {
             "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
+            "6af4a1b6154a583fc": "Coordination: Testland",
             "6aec41fec6f7a5f27": "Response: Test EQ 1"
           }
         }
@@ -897,10 +926,11 @@
     },
     {
       "test": "W7",
-      "check": "in the response's team and the ETC project's (its sector), not WASH's",
+      "check": "in the response's teams and the ETC project's (its sector), not WASH's",
       "ok": true,
       "detail": {
         "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
+        "6af4a1b6154a583fc": "Coordination: Testland",
         "6aec41fec6f7a5f27": "Response: Test EQ 1"
       }
     },
@@ -909,7 +939,7 @@
       "check": "registering again (now with WASH): the same record, updated, in both projects' teams",
       "ok": true,
       "detail": [
-        "6af4944086e7e40ee"
+        "6af4aebc31882774c"
       ]
     },
     {
@@ -920,6 +950,7 @@
         {
           "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
           "6af050661f10ba21a": "Cluster: Test EQ 1 WASH",
+          "6af4a1b6154a583fc": "Coordination: Testland",
           "6aec41fec6f7a5f27": "Response: Test EQ 1"
         }
       ]
@@ -976,6 +1007,7 @@
         "projectId": "6af1e09f80fa479fb",
         "teamsIds": [
           "6af050644bc5ab8e6",
+          "6af4a1b6154a583fc",
           "6aec41fec6f7a5f27"
         ]
       }
@@ -989,7 +1021,7 @@
           "cKoboRow": 1,
           "communityId": "6af08d79e656e8169",
           "parishId": "6af08d61e414c2498",
-          "siteId": "6af493fda9c14aa55",
+          "siteId": "6af4ae7593441898e",
           "locationType": "shelter"
         },
         {
@@ -1018,19 +1050,19 @@
       "ok": true,
       "detail": [
         {
-          "id": "6af4949bb88b11a16",
+          "id": "6af4af1eca66f1f4f",
           "name": "Ama Focal",
           "deleted": false,
           "description": null,
-          "createdAt": "2026-11-11 16:15:23",
-          "modifiedAt": "2026-11-11 16:15:23",
-          "emailAddress": "ama-413189@example.org",
+          "createdAt": "2026-11-11 18:08:30",
+          "modifiedAt": "2026-11-11 18:08:30",
+          "emailAddress": "ama-419963@example.org",
           "phone": "+1 876 555 0101",
           "jobTitle": "Coordinator",
-          "cKoboAsset": "a4ad5badb67ce4d99868b0",
+          "cKoboAsset": "a4bfc55f38e4e42059166e",
           "cKoboSubmissionId": 1,
-          "cKoboSubmissionUuid": "d98a49d1-e003-4325-9cbe-87b19540dc44",
-          "cKoboLink": "http://127.0.0.1:55606/#/forms/a4ad5badb67ce4d99868b0/data/table",
+          "cKoboSubmissionUuid": "333624b9-60c4-41ce-b687-18c76e0d39c7",
+          "cKoboLink": "http://127.0.0.1:50536/#/forms/a4bfc55f38e4e42059166e/data/table",
           "cKoboRow": 1,
           "createdById": "6af07e3ad7b5a8dca",
           "createdByName": "kobo-activities",
@@ -1038,7 +1070,7 @@
           "modifiedByName": null,
           "assignedUserId": null,
           "assignedUserName": null,
-          "activityId": "6af4949657c089f34",
+          "activityId": "6af4af18afa71d8e5",
           "activityName": "AMERICARES \u00b7 Other",
           "accountId": "6af42d32be6891259",
           "accountName": "Americares",
@@ -1051,13 +1083,13 @@
       "test": "W10",
       "check": "a report that ends before it starts: recorded with its reason, not made",
       "ok": true,
-      "detail": "a4ad5badb67ce4d99868b0  submission 2  since 2026-11-11T16:15:42Z  1 attempt(s), next 2026-11-11T16:16:42Z\n    POST /CActivity: HTTP 400 The activity ends before it starts.\na4ad5badb67ce4d99868b0  submission 3  since 2026-11-11T16:15:42Z  1 attempt(s), next 2026-11-11T16:16:42Z\n    FIGURES_COMMUNITY row 2: community: 0 CAdminArea records with that pcode\n"
+      "detail": "a4bfc55f38e4e42059166e  submission 2  since 2026-11-11T18:08:50Z  1 attempt(s), next 2026-11-11T18:09:50Z\n    POST /CActivity: HTTP 400 The activity ends before it starts.\na4bfc55f38e4e42059166e  submission 3  since 2026-11-11T18:08:50Z  1 attempt(s), next 2026-11-11T18:09:50Z\n    FIGURES_COMMUNITY row 2: community: 0 CAdminArea records with that pcode\n"
     },
     {
       "test": "W10",
       "check": "a community P-code EspoCRM doesn't have: recorded with its row, the good row kept, retried later",
       "ok": true,
-      "detail": "a4ad5badb67ce4d99868b0  submission 2  since 2026-11-11T16:15:42Z  1 attempt(s), next 2026-11-11T16:16:42Z\n    POST /CActivity: HTTP 400 The activity ends before it starts.\na4ad5badb67ce4d99868b0  submission 3  since 2026-11-11T16:15:42Z  1 attempt(s), next 2026-11-11T16:16:42Z\n    FIGURES_COMMUNITY row 2: community: 0 CAdminArea records with that pcode\n"
+      "detail": "a4bfc55f38e4e42059166e  submission 2  since 2026-11-11T18:08:50Z  1 attempt(s), next 2026-11-11T18:09:50Z\n    POST /CActivity: HTTP 400 The activity ends before it starts.\na4bfc55f38e4e42059166e  submission 3  since 2026-11-11T18:08:50Z  1 attempt(s), next 2026-11-11T18:09:50Z\n    FIGURES_COMMUNITY row 2: community: 0 CAdminArea records with that pcode\n"
     }
   ]
 }

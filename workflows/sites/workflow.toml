@@ -98,3 +98,7 @@ inherit = [
   { link = "project", entity = "CProject", copy = ["teamsIds", "responseId"], cascade = true },
   { link = "response", entity = "CResponse", copy = ["teamsIds"], unless = "project" },
 ]
+
+# A response's team changes reach its sites outside a project (those in one follow it)
+[traits.CResponse]
+teams_down = [{ entity = "CSite", link = "response", unless = "project" }]

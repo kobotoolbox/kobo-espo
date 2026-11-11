@@ -175,6 +175,11 @@ inherit = [{ link = "project", entity = "CProject", copy = ["teamsIds"], cascade
 account_from_organisation = { organisation = "organisation", other = "organisationOther" }
 find_or_make_contact = { account = "account", email = "emailAddress", phone = "phone", name = "name", title = "jobTitle" }
 
+# A response's teams added or taken off (its country's coordination team, say) follow to its
+# projects, and its tasks outside them; the projects' cascades take them further
+[traits.CResponse]
+teams_down = [{ entity = "CProject", link = "response" }, { entity = "Task", link = "cResponse", unless = "cProject" }]
+
 # A new cluster project: its sector's kind, and its global leads suggested (UNDAC Handbook
 # fig. A.4, in the sectors list), unless given
 [traits.CProject]

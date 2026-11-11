@@ -47,9 +47,17 @@ pack's own formula block is then only what is particular to it.
                                     # unless given; in the sector approach (the government
                                     # leads) the global lead is suggested as a co-lead
 
+    [traits.CResponse]
+    teams_down = [{ entity = "CProject", link = "response" },
+                  { entity = "Task", link = "cResponse", unless = "cProject" }]
+                                    # its teams added and taken off follow to its records of
+                                    # these entities (each keeps its other teams); `unless`:
+                                    # those with that link set follow it instead. Several packs
+                                    # add theirs (as inherit)
+
 Where they go in the Before Save Custom Script: portal_default, pcodes, inherit,
 teams_from_clusters, account_from_organisation, find_or_make_contact and suggest_leads before the packs' blocks; checks,
-supersede, teams_up, the cascades (the parent's side of an inherit with `cascade`) and the
+supersede, teams_up, teams_down, the cascades (the parent's side of an inherit with `cascade`) and the
 cluster teams (the project's side of teams_from_clusters) after them. A block with a line `// trait: <name>` has that trait there instead
 (e.g. a link the block finds first, then inherit).
 """
@@ -57,7 +65,7 @@ cluster teams (the project's side of teams_from_clusters) after them. A block wi
 import json
 
 BEFORE = ('portal_default', 'pcodes', 'inherit', 'teams_from_clusters', 'account_from_organisation', 'find_or_make_contact', 'suggest_leads')
-AFTER = ('checks', 'supersede', 'teams_up', 'cascade', 'cluster_teams')
+AFTER = ('checks', 'supersede', 'teams_up', 'teams_down', 'cascade', 'cluster_teams')
 TRAITS = BEFORE + AFTER[:-2]  # cascade and cluster_teams are made from other traits, not named
 ROWS = 1000  # the most child records a cascade or supersede reads
 
@@ -389,6 +397,46 @@ def suggest_leads(t, entity):
     return '\n'.join(out)
 
 
+def teams_down(entries, entity):
+    out = [f"// Its teams added and taken off follow to its records: {', '.join(e['entity'] for e in entries)}; each keeps its",
+           "// other teams (trait teams_down)",
+           "if (!entity\\isNew() && entity\\isAttributeChanged('teamsIds')) {",
+           "    $was = entity\\attributeFetched('teamsIds');",
+           "    $added = list();",
+           "    $removed = list();",
+           "    $i = 0;",
+           "    while ($i < array\\length(teamsIds)) {",
+           "        if (!array\\includes($was, array\\at(teamsIds, $i))) {",
+           "            $added = array\\push($added, array\\at(teamsIds, $i));", "        }",
+           "        $i = $i + 1;", "    }",
+           "    $i = 0;",
+           "    while ($i < array\\length($was)) {",
+           "        if (!array\\includes(teamsIds, array\\at($was, $i))) {",
+           "            $removed = array\\push($removed, array\\at($was, $i));", "        }",
+           "        $i = $i + 1;", "    }"]
+    for e in entries:
+        unless = f", {q(e['unless'] + 'Id=')}, null" if e.get('unless') else ''
+        out += [f"    $rows = record\\findMany({q(e['entity'])}, {ROWS}, 'createdAt', 'asc', {q(e['link'] + 'Id=')}, id{unless});",
+                "    $r = 0;",
+                "    while ($r < array\\length($rows)) {",
+                f"        $had = record\\attribute({q(e['entity'])}, array\\at($rows, $r), 'teamsIds');",
+                "        $teams = list();",
+                "        $i = 0;",
+                "        while ($i < array\\length($had)) {",
+                "            if (!array\\includes($removed, array\\at($had, $i))) {",
+                "                $teams = array\\push($teams, array\\at($had, $i));", "            }",
+                "            $i = $i + 1;", "        }",
+                "        $i = 0;",
+                "        while ($i < array\\length($added)) {",
+                "            if (!array\\includes($teams, array\\at($added, $i))) {",
+                "                $teams = array\\push($teams, array\\at($added, $i));", "            }",
+                "            $i = $i + 1;", "        }",
+                f"        record\\update({q(e['entity'])}, array\\at($rows, $r), 'teamsIds', $teams);",
+                "        $r = $r + 1;", "    }"]
+    out.append('}')
+    return '\n'.join(out)
+
+
 def cascade(children, entity):
     """The parent's side of its children's inherits with `cascade`: (child, link, copy)."""
     out = []
@@ -406,7 +454,7 @@ RENDER = {'portal_default': portal_default, 'pcodes': pcodes, 'inherit': inherit
           'supersede': supersede, 'teams_up': teams_up, 'cascade': cascade,
           'teams_from_clusters': teams_from_clusters, 'cluster_teams': cluster_teams,
           'account_from_organisation': account_from_organisation, 'find_or_make_contact': find_or_make_contact,
-          'suggest_leads': suggest_leads}
+          'suggest_leads': suggest_leads, 'teams_down': teams_down}
 
 
 def cascades(traits):

@@ -13,12 +13,12 @@
     "check": "a project's site: the project's teams, and its response",
     "ok": true,
     "detail": {
-      "id": "6af48eb9d6dc40d94",
+      "id": "6af4abef1574dd3eb",
       "name": "PRJ VSAT hub",
       "deleted": false,
       "description": null,
-      "createdAt": "2026-11-11 15:50:17",
-      "modifiedAt": "2026-11-11 15:50:17",
+      "createdAt": "2026-11-11 17:54:55",
+      "modifiedAt": "2026-11-11 17:54:55",
       "siteCode": "PRJ-E1",
       "siteType": null,
       "status": "planned",
@@ -35,7 +35,7 @@
       "location": null,
       "standardCode": null,
       "registeredAt": null,
-      "streamUpdatedAt": "2026-11-11 15:50:17",
+      "streamUpdatedAt": "2026-11-11 17:54:55",
       "createdById": "6aec3ee286e4b3936",
       "createdByName": "Admin",
       "modifiedById": null,
@@ -50,13 +50,13 @@
         "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
         "6aec41fec6f7a5f27": "Response: Test EQ 1"
       },
-      "responseId": "6af48eb6dae65bc56",
+      "responseId": "6af4abea9795ae78d",
       "responseName": "PRJ Hurricane",
       "photosIds": [],
       "photosNames": {},
       "standardId": null,
       "standardName": null,
-      "projectId": "6af48eb8060c93c7f",
+      "projectId": "6af4abebdc05d9fc9",
       "projectName": "PRJ Hurricane ETC",
       "isFollowed": false,
       "followersIds": [],
@@ -69,7 +69,7 @@
     "check": "a project's task: the project's teams, and its response",
     "ok": true,
     "detail": {
-      "id": "6af48ebbe5d8888f1",
+      "id": "6af4abf0edd332757",
       "name": "PRJ ETC task of the lead",
       "deleted": false,
       "status": "Backlog",
@@ -81,10 +81,10 @@
       "dateCompleted": null,
       "reminders": [],
       "description": null,
-      "createdAt": "2026-11-11 15:50:19",
-      "modifiedAt": "2026-11-11 15:50:19",
-      "cCode": "TSK-8XFK",
-      "streamUpdatedAt": "2026-11-11 15:50:19",
+      "createdAt": "2026-11-11 17:54:56",
+      "modifiedAt": "2026-11-11 17:54:56",
+      "cCode": "TSK-V4AP",
+      "streamUpdatedAt": "2026-11-11 17:54:56",
       "parentId": null,
       "parentType": null,
       "parentName": null,
@@ -114,9 +114,9 @@
       },
       "attachmentsIds": [],
       "attachmentsNames": {},
-      "cResponseId": "6af48eb6dae65bc56",
+      "cResponseId": "6af4abea9795ae78d",
       "cResponseName": "PRJ Hurricane",
-      "cProjectId": "6af48eb8060c93c7f",
+      "cProjectId": "6af4abebdc05d9fc9",
       "cProjectName": "PRJ Hurricane ETC",
       "isFollowed": false,
       "followersIds": [
@@ -327,8 +327,8 @@
     "check": "a task on a site: in the site's project, response and teams",
     "ok": true,
     "detail": {
-      "cProjectId": "6af48eb8060c93c7f",
-      "cResponseId": "6af48eb6dae65bc56",
+      "cProjectId": "6af4abebdc05d9fc9",
+      "cResponseId": "6af4abea9795ae78d",
       "teamsIds": [
         "6af050644bc5ab8e6",
         "6aec41fec6f7a5f27"
@@ -419,12 +419,12 @@
       [
         "6aec41fec6f7a5f27",
         "6af050644bc5ab8e6",
-        "6af48f05f285a6aca"
+        "6af4ac4a17126c80b"
       ],
       [
         "6aec41fec6f7a5f27",
         "6af050644bc5ab8e6",
-        "6af48f05f285a6aca"
+        "6af4ac4a17126c80b"
       ]
     ]
   },
@@ -478,7 +478,7 @@
     "detail": [
       "PRJ Ministry of Health",
       {
-        "6af48f1f0b1b597d8": "PRJ Health NGO"
+        "6af4ac6528ad1312d": "PRJ Health NGO"
       }
     ]
   },
@@ -524,7 +524,7 @@
     "test": "P10",
     "check": "a government focal point, their ministry typed in: an Account of that name, the person a Contact on it",
     "ok": true,
-    "detail": "6af48f2f271bd85b2"
+    "detail": "6af4ac7d251fca31d"
   },
   {
     "test": "P10",
@@ -540,6 +540,99 @@
       "6aec41fb5be629a65",
       "6aec41fec6f7a5f27",
       "6af050644bc5ab8e6"
+    ]
+  },
+  {
+    "test": "P11",
+    "check": "a response in a country: in \"Coordination: <country>\" (made), with its own team",
+    "ok": true,
+    "detail": [
+      "6aec41fec6f7a5f27",
+      "6af4ac8b3f7588ab3"
+    ]
+  },
+  {
+    "test": "P11",
+    "check": "a second response there: the same team; one in another country: that country's",
+    "ok": true,
+    "detail": [
+      [
+        "6aec420039254967f",
+        "6af4ac8b3f7588ab3"
+      ],
+      [
+        "6aec420039254967f",
+        "6af4ac8e7b247e890"
+      ]
+    ]
+  },
+  {
+    "test": "P11",
+    "check": "its starter tasks and a new project are in the coordination team too",
+    "ok": true,
+    "detail": [
+      [
+        [
+          "6af4ac8b3f7588ab3",
+          "6aec41fec6f7a5f27"
+        ],
+        [
+          "6af4ac8b3f7588ab3",
+          "6aec41fec6f7a5f27"
+        ],
+        [
+          "6af4ac8b3f7588ab3",
+          "6aec41fec6f7a5f27"
+        ],
+        [
+          "6af4ac8b3f7588ab3",
+          "6aec41fec6f7a5f27"
+        ]
+      ],
+      [
+        "6aec41fec6f7a5f27",
+        "6af050661f10ba21a",
+        "6af4ac8b3f7588ab3"
+      ]
+    ]
+  },
+  {
+    "test": "P11",
+    "check": "moved to another country: that country's team instead, and its project, the project's site, its site outside a project and its tasks follow",
+    "ok": true,
+    "detail": [
+      [
+        "6aec41fec6f7a5f27",
+        "6af4ac8e7b247e890"
+      ],
+      [
+        "6aec41fec6f7a5f27",
+        "6af050661f10ba21a",
+        "6af4ac8e7b247e890"
+      ],
+      [
+        "6aec41fec6f7a5f27",
+        "6af050661f10ba21a",
+        "6af4ac8e7b247e890"
+      ],
+      [
+        "6aec41fec6f7a5f27",
+        "6af4ac8e7b247e890"
+      ]
+    ]
+  },
+  {
+    "test": "P11",
+    "check": "staff-2 in Coordination: PRJ Otherland reads both its responses and their projects, not PRJ Testland's",
+    "ok": true,
+    "detail": [
+      [
+        "PRJ Drought",
+        "PRJ Floods"
+      ],
+      [
+        "PRJ Floods WASH"
+      ]
     ]
   },
   {

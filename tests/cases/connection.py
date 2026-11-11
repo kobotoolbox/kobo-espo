@@ -345,7 +345,9 @@ def main():
     check('C2', 'its location also as latitude and longitude (for maps)',
           (site.get('location'), site.get('latitude'), site.get('longitude')) == ('1.23 4.56 0 5', 1.23, 4.56),
           {k: site.get(k) for k in ('location', 'latitude', 'longitude')})
-    check('C2', "in its response's team (Site formula)", site.get('teamsIds') == [team['Response: Test EQ 1']])
+    testland = (by(a, 'Team', 'name', 'Coordination: Testland') or [{}])[0].get('id')
+    check('C2', "in its response's teams, its country's coordination team too (Site formula)",
+          set(site.get('teamsIds') or []) == {team['Response: Test EQ 1'], testland}, site.get('teamsNames'))
     check('C2', "media: the site photo is on the site, with the answer's file name (Kobo stores site_photo_1.png)",
           list((site.get('photosNames') or {}).values()) == ['site photo (1).png'], site.get('photosNames'))
     submit(uids['site-registration'], {'response': resp[0]['code'], 'site_code': code_1, 'site_name': f'Water point {RUN}',
@@ -433,8 +435,8 @@ def main():
           and [c.get('title') for c in people.values()] == ['Country director', 'IM officer']
           and all(set(c.get('teamsIds') or []) == set(acc.get('teamsIds') or []) for c in people.values()),
           {e: {k: c.get(k) for k in ('accountId', 'title', 'teamsNames')} for e, c in people.items()})
-    check('W7', "in the response's team and the ETC project's (its sector), not WASH's",
-          set(org.get('teamsIds') or []) == {team['Response: Test EQ 1'], etc_team}, org.get('teamsNames'))
+    check('W7', "in the response's teams and the ETC project's (its sector), not WASH's",
+          set(org.get('teamsIds') or []) == {team['Response: Test EQ 1'], testland, etc_team}, org.get('teamsNames'))
     submit(uids['responder-registration'], {**reg, 'sectors': 'EMERGENCY_TELECOMS WASH'})
     code, log, st = orgs.once()
     again = by(a, 'CResponder', 'registrationKey', reg['registration_key'])
@@ -490,7 +492,7 @@ def main():
           "its sector's project and teams",
           act.get('responseId') == resp[0]['id'] and act.get('leadOrganisationId') == americares['id']
           and act.get('implementingOrganisationId') == americares['id'] and act.get('projectId') == projects['EMERGENCY_TELECOMS']['id']
-          and set(act.get('teamsIds') or []) == {team['Response: Test EQ 1'], etc_team},
+          and set(act.get('teamsIds') or []) == {team['Response: Test EQ 1'], testland, etc_team},
           {k: act.get(k) for k in ('responseId', 'leadOrganisationId', 'projectId', 'teamsIds')} or log[-400:])
     locs = by(a, 'CActivityLocation', 'activityId', act.get('id', '-'))
     locs = sorted((a.call('GET', f'/CActivityLocation/{x["id"]}') for x in locs), key=lambda x: x.get('cKoboRow') or 0)

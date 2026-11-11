@@ -128,6 +128,7 @@ def run(a, kobo, uid, bridge):
     kingston = a.call('GET', '/CAdminArea', {'maxSize': 3, 'orderBy': 'pcode', **where('parentPcode', 'JM17')})['list']
     resp = a.call('POST', '/CResponse', body={'name': f'{PREFIX} {RUN} Response', 'status': 'Active', 'teamsIds': [eq1],
                                               'emergencyType': 'Cyclone', 'country': 'Jamaica'})
+    coord = a.call('GET', '/Team', {'maxSize': 1, **where('name', 'Coordination: Jamaica')})['list'][0]['id']
     rcode = a.call('GET', f'/CResponse/{resp["id"]}')['code']
     for name, cluster, t in (('ETC', 'EMERGENCY_TELECOMS', etc), ('WASH', 'WASH', wash)):
         a.call('POST', '/CProject', body={'name': f'{PREFIX} {RUN} {name}', 'cluster': cluster, 'status': 'Active',
@@ -163,7 +164,7 @@ def run(a, kobo, uid, bridge):
 
     # --- A2: the whole response sees it ------------------------------------------------------------
     check('A2', "in the response's team and every cluster project's (ETC too, not one of its sectors)",
-          set(one.get('teamsIds') or []) == {eq1, etc, wash}, one.get('teamsNames'))
+          set(one.get('teamsIds') or []) == {coord, eq1, etc, wash}, one.get('teamsNames'))
     extra = a.call('POST', '/Team', body={'name': f'{PREFIX} {RUN} Shelter'})
     a.call('POST', '/CProject', body={'name': f'{PREFIX} {RUN} Shelter', 'cluster': 'SHELTER', 'status': 'Active',
                                       'responseId': resp['id'], 'teamsIds': [extra['id']]})

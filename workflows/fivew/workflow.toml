@@ -241,7 +241,7 @@ CActivity = ["girls", "boys", "women", "men", "elderlyWomen", "elderlyMen", "hou
 # With no project for its sector, it's in the response's teams (coordinators only)
 [traits.CActivity]
 inherit = [
-  { link = "project", entity = "CProject", copy = ["teamsIds", "responseId"] },
+  { link = "project", entity = "CProject", copy = ["teamsIds", "responseId"], cascade = true },
   { link = "response", entity = "CResponse", copy = ["teamsIds"], unless = "project" },
 ]
 
@@ -255,12 +255,17 @@ completed_ends_later = "status == 'COMPLETED' && endDate && datetime\\diff(endDa
 # A location and a focal point are their activity's: its teams (and a location its project
 # and response)
 [traits.CActivityLocation]
-inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds", "projectId", "responseId", "accountId"] }]
+inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds", "projectId", "responseId", "accountId"], cascade = true }]
 
 [traits.CActivityLocation.checks]
 reached_over_targeted = "populationReached && populationTargeted && populationReached > populationTargeted"
 groups_over_total = "populationReached && $groups > populationReached"
 group_parts_dont_add_up = "$parts"
+
+# A response's team changes reach its registrations, and its activities outside a project
+# (those in one follow it, cascade)
+[traits.CResponse]
+teams_down = [{ entity = "CResponder", link = "response" }, { entity = "CActivity", link = "response", unless = "project" }]
 
 # A focal point is this person for this activity (the report named them); the person is
 # one Contact on the organisation's Account, matched by email, else phone (PRODUCT-439)

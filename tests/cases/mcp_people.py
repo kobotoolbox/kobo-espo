@@ -104,8 +104,9 @@ def run(a, inst):
     name = f'{RESPONSE} · ETC'
     proj = (by(a, 'CProject', 'name', name) or [{}])[0]
     pteam = (by(a, 'Team', 'name', f'Cluster: {name}') or [{}])[0]
-    check('U3', "create_project: in its own new team and the response's",
-          done.get('changed') and set(a.call('GET', f'/CProject/{proj["id"]}')['teamsIds']) == {pteam.get('id'), team['id']},
+    jamaica = (by(a, 'Team', 'name', 'Coordination: Jamaica') or [{}])[0].get('id')
+    check('U3', "create_project: in its own new team and the response's (its country's coordination team too)",
+          done.get('changed') and set(a.call('GET', f'/CProject/{proj["id"]}')['teamsIds']) == {pteam.get('id'), team['id'], jamaica},
           done)
     check('U3', "the cluster asked for by its label is stored as its code",
           a.call('GET', f'/CProject/{proj["id"]}').get('cluster') == 'EMERGENCY_TELECOMS')

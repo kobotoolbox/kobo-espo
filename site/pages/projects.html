@@ -38,8 +38,9 @@
   <li><strong>the project's own team</strong> (e.g. <em>Cluster: Hurricane Melissa Response · ETC</em>): its people see the project, its sites and its tasks, and nothing of the other projects;</li>
   <li><strong>the response's team</strong>: its coordinators see every project. Put only coordinators in it.</li>
 </ul>
+<p>Above the responses is the <strong>country's coordination team</strong>, <em>Coordination: Jamaica</em> say. It's made with the first response in that country, and every response there is in it, with everything in those responses. Its people see all of the country's responses, the way a country office does over several emergencies. If a response's country is changed, it moves to that country's team, and so do its projects, sites and tasks.</p>
 <p>A site or a task in a project takes the project's teams by itself. If a team is added to the project later (a partner organisation's, say), its sites and tasks get it too. Closing a project gives its tasks back to its lead, as closing a response does.</p>
-<p>The project's people can't open the response itself, only their project. In testing (<code>tests/cases/projects.py</code>, 54 checks), each project's people saw only their own project's sites, tasks and task board, and were refused the other project's records by their links.</p>
+<p>The project's people can't open the response itself, only their project. In testing (<code>tests/cases/projects.py</code>, 59 checks), each project's people saw only their own project's sites, tasks and task board, and were refused the other project's records by their links.</p>
 </section>
 
 <section id="leadership">
@@ -95,7 +96,7 @@
 <ul>
   <li><strong>Access is per person, not per project.</strong> In EspoCRM someone's access is the sum of their roles, in every team they're in. A person who leads one project and only views another has lead access in both. Give them the role that suits both, or two accounts.</li>
   <li>Taking someone out of a project's team hides its records from them at once, except tasks assigned to them or shared with them, until those are given to someone else (or the project is closed).</li>
-  <li>If the response's team changes, its existing projects keep the old one until they're saved again.</li>
+  <li>A team added to a response, or taken off it, follows to its projects, its sites and tasks outside a project, its 5W records and its assessments. The coordination team follows its country by itself; don't take it off a response by hand, or it stays off until the country is changed.</li>
 </ul>
 </section>
 

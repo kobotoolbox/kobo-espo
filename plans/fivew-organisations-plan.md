@@ -297,6 +297,17 @@ mcp_people.
   through their own teams.
 - **A tier above the response**: a "Coordination: <country>" team, made when a response
   for that country is made, and on every response's teams there.
+  As built (PRODUCT-443): the CResponse formula finds or makes the team on save when the
+  country is set or changed, and swaps it when the country changes. A new trait,
+  `teams_down`, passes a response's team changes to its projects, its tasks and sites
+  outside a project, its 5W registrations and activities outside a project, and its assessments. The
+  projects' and activities' `inherit` cascades take them further down. `responses/migrate.py`
+  gives existing responses their team. Tested in projects P11.
+  EspoCRM's formulas run before save, so while `teams_down` updates a response's records,
+  the response's new teams aren't saved yet. Anything that re-reads them then gets the old
+  ones: a project put back the old country's team. So a project only takes its response's
+  teams when it's new or moved. Its API script, run only on people's edits, keeps the
+  response's teams on it (P8).
 - **An organisation may edit an activity after the IM team has checked it**: the change is
   in the stream and the data checks run again; a locking "checked" status is later.
 - **Keys on the activity report**: later, if misreporting shows up; not in this plan.

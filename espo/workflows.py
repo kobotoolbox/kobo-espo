@@ -234,10 +234,10 @@ def load(names, packs_dir=PACKS, params=None):
         spec['agent_entities'].update(p.get('agent_entities', {}))
         spec['agent_guarded'] += p.get('agent_guarded', [])
         spec['task_parents'] += p.get('task_parents', [])
-        for ent, t in p.get('traits', {}).items():  # inherits and checks add up; the others are one pack's
+        for ent, t in p.get('traits', {}).items():  # inherits, teams_down and checks add up; the others are one pack's
             have = spec['traits'].setdefault(ent, {})
             for k, v in t.items():
-                if k == 'inherit':
+                if k in ('inherit', 'teams_down'):
                     have.setdefault(k, []).extend(v)
                 elif k == 'checks':
                     have.setdefault(k, {}).update(v)

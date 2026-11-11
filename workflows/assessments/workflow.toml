@@ -141,6 +141,10 @@ no_areas = "geoLevel != 'whole_area' && !areaCodes"
 
 # An area is its assessment's (its teams, response, Account, sectors, status, dates), and
 # follows it; its P-codes up its area's parents
+# A response's team changes reach its assessments (and so their areas, cascade)
+[traits.CResponse]
+teams_down = [{ entity = "CAssessment", link = "response" }]
+
 [traits.CAssessmentArea]
 pcodes = { area = "adminArea", pins = false }
 inherit = [{ link = "assessment", entity = "CAssessment", copy = ["teamsIds", "responseId", "accountId", "sectors", "status", "startDate", "endDate"], cascade = true }]

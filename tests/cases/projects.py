@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-P1-P10: cluster projects in a response (a cluster's work in it, e.g. Emergency
+P1-P11: cluster projects in a response (a cluster's work in it, e.g. Emergency
 Telecommunications in Hurricane Melissa), and tasks on sites and cases.
 
     python3 -I tests/cases/projects.py
@@ -11,7 +11,8 @@ cluster-partner) and WASH (Cluster: Test EQ 1 WASH: cluster-viewer), a site and 
 each, a case. Then checks, as each test user with their own password, through the API (as
 isolation.py: the UI's views call the same endpoints). staff-1, in the response's team,
 stands for the response's coordinators. P10: a cluster's leadership (its lead agency and
-co-leads, the global leads suggested) and its people (cluster contacts). Writes
+co-leads, the global leads suggested) and its people (cluster contacts). P11: the country's
+coordination team on every response there, its records following. Writes
 tests/results/projects.json.
 """
 import json
@@ -62,6 +63,9 @@ def cleanup(a):
     for c in a.call('GET', '/Contact', {'maxSize': 50, 'select': 'id', 'where[0][type]': 'startsWith',
                                         'where[0][attribute]': 'emailAddress', 'where[0][value]': 'delivered+prj-'})['list']:
         a.call('DELETE', f'/Contact/{c["id"]}')
+    for t in a.call('GET', '/Team', {'maxSize': 50, 'select': 'name', 'where[0][type]': 'startsWith',
+                                     'where[0][attribute]': 'name', 'where[0][value]': 'Coordination: PRJ '})['list']:
+        a.call('DELETE', f'/Team/{t["id"]}')
 
 
 def teams_of(a, entity, rec):
@@ -296,6 +300,45 @@ def run(a, team, user, eq1, etc, wash, ca):
     check('P10', "the project's teams change: its contacts follow", teams_of(a, 'CClusterContact', cc) == {etc, eq1, ca},
           teams_of(a, 'CClusterContact', cc))
     a.call('PUT', f'/CProject/{p_etc["id"]}', body={'teamsIds': [etc, eq1]})
+
+    # --- P11: the country's coordination, a tier above its responses ----------------------------
+    coord_of = lambda country: (a.call('GET', '/Team', {'maxSize': 1, 'select': 'name', 'where[0][type]': 'equals',  # noqa: E731
+                                                       'where[0][attribute]': 'name',
+                                                       'where[0][value]': f'Coordination: {country}'})['list'] or [{}])[0].get('id')
+    ra = a.call('POST', '/CResponse', body={'name': 'PRJ Floods', 'status': 'Active', 'teamsIds': [eq1], 'country': 'PRJ Testland'})
+    rb = a.call('POST', '/CResponse', body={'name': 'PRJ Landslides', 'status': 'Active', 'teamsIds': [team['Response: Test EQ 2']],
+                                            'country': 'PRJ Testland'})
+    rc = a.call('POST', '/CResponse', body={'name': 'PRJ Drought', 'status': 'Active', 'teamsIds': [team['Response: Test EQ 2']],
+                                            'country': 'PRJ Otherland'})
+    land, other = coord_of('PRJ Testland'), coord_of('PRJ Otherland')
+    check('P11', 'a response in a country: in "Coordination: <country>" (made), with its own team',
+          land and teams_of(a, 'CResponse', ra) == {eq1, land}, teams_of(a, 'CResponse', ra))
+    check('P11', "a second response there: the same team; one in another country: that country's",
+          teams_of(a, 'CResponse', rb) == {team['Response: Test EQ 2'], land} and other and land != other
+          and teams_of(a, 'CResponse', rc) == {team['Response: Test EQ 2'], other}, (teams_of(a, 'CResponse', rb), teams_of(a, 'CResponse', rc)))
+    starter = a.call('GET', '/Task', {'maxSize': 10, 'select': 'teamsIds', 'where[0][type]': 'equals',
+                                      'where[0][attribute]': 'cResponseId', 'where[0][value]': ra['id']})['list']
+    pa = a.call('POST', '/CProject', body={'name': 'PRJ Floods WASH', 'cluster': 'WASH', 'responseId': ra['id'], 'teamsIds': [wash]})
+    check('P11', 'its starter tasks and a new project are in the coordination team too',
+          starter and all(land in t['teamsIds'] for t in starter) and teams_of(a, 'CProject', pa) == {wash, eq1, land},
+          ([t['teamsIds'] for t in starter], teams_of(a, 'CProject', pa)))
+    site = a.call('POST', '/CSite', body={'name': 'PRJ Floods camp', 'siteCode': 'PRJ-F1', 'projectId': pa['id']})
+    loose = a.call('POST', '/CSite', body={'name': 'PRJ Floods school', 'siteCode': 'PRJ-F2', 'responseId': ra['id']})
+    a.call('PUT', f'/CResponse/{ra["id"]}', body={'country': 'PRJ Otherland'})
+    check('P11', "moved to another country: that country's team instead, and its project, the project's site, "
+          "its site outside a project and its tasks follow",
+          teams_of(a, 'CResponse', ra) == {eq1, other} and teams_of(a, 'CProject', pa) == {wash, eq1, other}
+          and teams_of(a, 'CSite', site) == {wash, eq1, other} and teams_of(a, 'CSite', loose) == {eq1, other}
+          and all(set(a.call('GET', f'/Task/{t["id"]}')['teamsIds']) == {eq1, other} for t in starter),
+          (teams_of(a, 'CResponse', ra), teams_of(a, 'CProject', pa), teams_of(a, 'CSite', site), teams_of(a, 'CSite', loose)))
+    a.call('POST', f'/Team/{other}/users', body={'id': user['staff-2']})
+    try:
+        s2 = as_user('staff-2')
+        seen = names(s2, 'CResponse')
+        check('P11', "staff-2 in Coordination: PRJ Otherland reads both its responses and their projects, not PRJ Testland's",
+              seen == {'PRJ Floods', 'PRJ Drought'} and names(s2, 'CProject') == {'PRJ Floods WASH'}, (seen, names(s2, 'CProject')))
+    finally:
+        a.call('DELETE', f'/Team/{other}/users', body={'id': user['staff-2']})
 
     # --- P9: closing a project gives its tasks to its lead -------------------------------------
     a.call('PUT', f'/Task/{on_site["id"]}', body={'collaboratorsIds': [user['cluster-partner'], user['cluster-lead']]})

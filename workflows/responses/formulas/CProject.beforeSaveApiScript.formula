@@ -1,0 +1,16 @@
+// Its teams edited by someone (in the UI or the API): its response's teams stay, so the
+// response's coordinators keep seeing it. Only on requests: the response's teams_down
+// changes them by formula, before the response's new teams are saved. (Runs before the
+// Before Save Custom Script, so its tasks get the teams put back too.)
+if (!entity\isNew() && responseId && entity\isAttributeChanged('teamsIds') && !entity\isAttributeChanged('responseId')) {
+    $teams = teamsIds;
+    $add = record\attribute('CResponse', responseId, 'teamsIds');
+    $i = 0;
+    while ($i < array\length($add)) {
+        if (!array\includes($teams, array\at($add, $i))) {
+            $teams = array\push($teams, array\at($add, $i));
+        }
+        $i = $i + 1;
+    }
+    teamsIds = $teams;
+}

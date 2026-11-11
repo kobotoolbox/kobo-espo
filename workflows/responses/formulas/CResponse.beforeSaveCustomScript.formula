@@ -1,3 +1,36 @@
+// The country's coordination: a "Coordination: <country>" team (made if there's none) on every
+// response in that country, so its coordinators see them all (the CSO mapping's country
+// teams work the same way). A response moved to another country leaves the first one's.
+// Its records follow (trait teams_down).
+// (a new record's link-multiple attributes can't be read unless the request sets them)
+if (country && (entity\isNew() || entity\isAttributeChanged('country'))) {
+    $name = string\concatenate('Coordination: ', string\trim(country));
+    $team = record\findOne('Team', 'createdAt', 'asc', 'name=', $name);
+    if (!$team) {
+        $team = record\create('Team', 'name', $name);
+    }
+    $teams = list();
+    if (!entity\isNew() || entity\isAttributeChanged('teamsIds')) {
+        $teams = teamsIds;
+    }
+    $old = null;
+    if (!entity\isNew() && entity\attributeFetched('country')) {
+        $old = record\findOne('Team', 'createdAt', 'asc', 'name=', string\concatenate('Coordination: ', string\trim(entity\attributeFetched('country'))));
+    }
+    $keep = list();
+    $i = 0;
+    while ($i < array\length($teams)) {
+        if (array\at($teams, $i) != $old) {
+            $keep = array\push($keep, array\at($teams, $i));
+        }
+        $i = $i + 1;
+    }
+    if (!array\includes($keep, $team)) {
+        $keep = array\push($keep, $team);
+    }
+    teamsIds = $keep;
+}
+
 // A new response starts with the standard tasks, in its teams, for its lead
 if (entity\isNew()) {
     $tasks = list('Set up the Kobo project', 'Confirm the roster', 'Comms plan', 'Agree site list and standards');
