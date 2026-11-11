@@ -4,7 +4,8 @@ instance names (deploy/instance.toml).
 
 A pack, workflows/<name>/:
 
-    workflow.toml   requires; entities and their fields; fields on others' entities; links;
+    workflow.toml   requires; conflicts (packs meant for other instances: a warning when
+                    both are applied); entities and their fields; fields on others' entities; links;
                     codes; teams; roles (merged across packs); users (tests only); layouts;
                     settings; data to load; removed fields and links; agent_entities,
                     agent_guarded, task_parents
@@ -164,6 +165,11 @@ def load(names, packs_dir=PACKS, params=None):
     """The packs (and what they require), merged into one spec for apply(). `params`: the
     instance's, by pack ({"cso": {...}}), over each pack's own [params]."""
     packs = order(names, packs_dir)
+    for name in packs:  # meant for separate instances; staging has every pack to test them
+        clash = [c for c in read(name, packs_dir).get('conflicts', []) if c in packs]
+        if clash:
+            print(f'warning: {name} and {", ".join(clash)} are meant for separate instances '
+                  f'(both write the same records\' teams)', file=sys.stderr)
     lists = lists_of(packs, packs_dir)
     spec = {'packs': packs, 'lists': lists, 'entities': {}, 'fields': {}, 'links': [], 'codes': {}, 'teams': [],
             'roles': {}, 'users': [], 'layouts': {}, 'data': [], 'removed': {'fields': {}, 'links': []},

@@ -64,9 +64,13 @@ registration to it:
   Account): what the portal follows (§5).
 
 **An Account's teams are the union of its registrations' teams**: an organisation in two
-responses, or in two clusters of one, is seen by each through its own team. A new trait,
-`teams_union`: the teams of the records that link to the Account (`CResponder.account`),
-recomputed when one of them changes teams.
+responses, or in two clusters of one, is seen by each through its own team. A trait on the
+registration, `teams_up`: when its teams or its Account change, it writes its Account's
+teams as its own and its Account's other registrations' (and the Account it left gets the
+others'). Declared on the child, not the Account: EspoCRM runs no formula when a parent is
+merely linked to, so the child is where the change is seen. A registration deleted leaves
+its teams on the Account until the next save of another (registrations aren't deleted:
+no role may).
 
 The CSO mapping's Account formula keeps setting its Account's teams from its CSO: on its
 own instance nothing else writes them. On an instance with both packs (staging) an
@@ -211,8 +215,8 @@ and a record whose locations fall in the hub's areas is in its team (a trait,
 ## Phases
 
 1. **Accounts.** COrganisation ↔ Account; the registration's formula finds or makes the
-   Account; `CActivity.account`, `CActivityLocation.account` (inherit); the `teams_union`
-   trait on Account; a pack's `conflicts` (fivew, cso); a migration giving existing
+   Account; `CActivity.account`, `CActivityLocation.account` (inherit); the `teams_up`
+   trait on registrations; a pack's `conflicts` (fivew, cso); a migration giving existing
    registrations their Accounts. Tests: fivew, isolation (an Account in two clusters is
    seen by both clusters' leads, not a third's; in two responses, by both responses'
    teams; the response team sees all).
@@ -238,22 +242,15 @@ and a record whose locations fall in the hub's areas is in its team (a trait,
 Each phase leaves every suite green: fivew, cso (unchanged), projects, isolation, connection (W7–W10),
 mcp_people.
 
-## Questions
+## Decided (Josh, 2026-11-11, as suggested)
 
-- **One Account across responses.** I suggest yes: one organisation, one Account, one set
-  of people, whatever response it's in; each response's people see it through their own
-  teams. The alternative (an Account per response) is simpler and duplicates organisations
-  and their people every response.
-- **A tier above the response** (all of a country's responses, or the instance's): a
-  "Coordination: <country>" team added to every response's teams there (the CSO mapping's
-  country teams work this way), or Internal Staff as today. I suggest the team, made when a
-  response is made for that country.
-- **Can an organisation edit an activity once the IM team has checked it?** I suggest yes,
-  with the change in the stream and the data checks run again; a "checked" status that
-  locks it is a later option.
-- **Keys on the activity report.** The CSO update form checks the CSO's key; the 5W report
-  takes whatever organisation the form names. I suggest the same key check later, if
-  misreporting shows up; not in this plan.
+- **One Account per organisation across responses**: each response's people see it
+  through their own teams.
+- **A tier above the response**: a "Coordination: <country>" team, made when a response
+  for that country is made, and on every response's teams there.
+- **An organisation may edit an activity after the IM team has checked it**: the change is
+  in the stream and the data checks run again; a locking "checked" status is later.
+- **Keys on the activity report**: later, if misreporting shows up; not in this plan.
 
 ## Risks
 

@@ -19,6 +19,17 @@ if (responseId && leadOrganisationId && !responderId) {
     responderId = record\findOne('CResponder', 'createdAt', 'asc', 'responseId=', responseId,
         'organisationId=', leadOrganisationId);
 }
+// Its organisation's Account (what the organisation's portal follows): its registration's,
+// else its lead organisation's, if that has one
+if (responderId && (!accountId || entity\isAttributeChanged('responderId'))) {
+    accountId = record\attribute('CResponder', responderId, 'accountId');
+}
+if (!accountId && !responderId && leadOrganisationId) {
+    $acc = record\findOne('Account', 'createdAt', 'asc', 'cOrganisationId=', leadOrganisationId);
+    if ($acc) {
+        accountId = $acc;
+    }
+}
 if (responderId && reportDate) {
     $last = record\attribute('CResponder', responderId, 'lastReport');
     if (!$last || datetime\diff(reportDate, $last, 'days') > 0) {

@@ -1,0 +1,58 @@
+"""The 5W's records from before organisations were Accounts (plans/fivew-organisations-plan.md,
+phase 1): each saved once, so its formula finds or makes its organisation's Account.
+Locations take their activity's (their formula takes it only when made or moved). A rerun
+finds nothing to do."""
+
+
+def every(espo, entity, select, *where):
+    params = {'maxSize': 200, 'select': select}
+    for i, (kind, attr, *value) in enumerate(where):
+        params.update({f'where[{i}][type]': kind, f'where[{i}][attribute]': attr})
+        if value:
+            params[f'where[{i}][value]'] = value[0]
+    out, offset = [], 0
+    while True:
+        page = espo.call('GET', f'/{entity}', {**params, 'offset': offset})['list']
+        out += page
+        offset += 200
+        if len(page) < 200:
+            return out
+
+
+def migrate(espo):
+    done = {}
+    # Registrations: saved, so their formula finds or makes the Account (every registration
+    # names an organisation, so none is left for a rerun)
+    for r in every(espo, 'CResponder', 'id,name,organisationId,organisationOther', ('isNull', 'accountId')):
+        if r.get('organisationId') or r.get('organisationOther'):
+            try:
+                espo.call('PUT', f'/CResponder/{r["id"]}', body={'name': r['name']})
+                done['CResponder'] = done.get('CResponder', 0) + 1
+            except Exception as e:  # e.g. refused by its API script: left as it is
+                print(f'fivew: CResponder {r["id"]} not migrated ({e})')
+    # Activities, then locations: the Account their formula would give them, set directly
+    # (its registration's, else its lead organisation's if it has one)
+    registration, organisation = {}, {}
+
+    def account_of(act):
+        if act.get('responderId'):
+            if act['responderId'] not in registration:
+                registration[act['responderId']] = espo.call('GET', f'/CResponder/{act["responderId"]}').get('accountId')
+            return registration[act['responderId']]
+        org = act.get('leadOrganisationId')
+        if org and org not in organisation:
+            found = every(espo, 'Account', 'id', ('equals', 'cOrganisationId', org))
+            organisation[org] = found[0]['id'] if found else None
+        return organisation.get(org)
+    for entity, parent, select in (('CActivity', None, 'id,responderId,leadOrganisationId'),
+                                   ('CActivityLocation', 'activityId', 'id,activityId')):
+        for r in every(espo, entity, select, ('isNull', 'accountId')):
+            if parent:
+                acc = r.get(parent) and espo.call('GET', f'/CActivity/{r[parent]}').get('accountId')
+            else:
+                acc = account_of(r)
+            if acc:
+                espo.call('PUT', f'/{entity}/{r["id"]}', body={'accountId': acc})
+                done[entity] = done.get(entity, 0) + 1
+    if done:
+        print('fivew: Accounts for ' + ', '.join(f'{n} {e}' for e, n in done.items()))

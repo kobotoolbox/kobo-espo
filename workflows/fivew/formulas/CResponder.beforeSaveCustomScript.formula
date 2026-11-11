@@ -24,7 +24,7 @@ if (responseId && (entity\isNew() || entity\isAttributeChanged('responseId') || 
 }
 
 // Named after its organisation in the list (or the one it typed), with its type
-if (organisationId && (entity\isNew() || entity\isAttributeChanged('organisationId'))) {
+if (organisationId && (entity\isNew() || entity\isAttributeChanged('organisationId') || entity\isAttributeChanged('organisationOther'))) {
     if (record\attribute('COrganisation', organisationId, 'code') == 'other') {
         if (organisationOther) {
             name = organisationOther;
@@ -32,5 +32,31 @@ if (organisationId && (entity\isNew() || entity\isAttributeChanged('organisation
     } else {
         name = record\attribute('COrganisation', organisationId, 'name');
         orgType = record\attribute('COrganisation', organisationId, 'orgType');
+    }
+}
+
+// Its organisation's Account (one per organisation, whatever the response): the one linked
+// to its organisation in the list, else (typed in, "Other") the unlisted one of that name;
+// made if there's none. A typed-in organisation later picked from the list: the
+// registration moves to that organisation's Account, or its Account takes the list entry.
+// Its teams: all the organisation's registrations' (trait teams_up, workflow.toml)
+$listed = organisationId && record\attribute('COrganisation', organisationId, 'code') != 'other';
+if (!accountId || entity\isAttributeChanged('organisationId') || entity\isAttributeChanged('organisationOther')) {
+    $acc = null;
+    if ($listed) {
+        $acc = record\findOne('Account', 'createdAt', 'asc', 'cOrganisationId=', organisationId);
+        if (!$acc && accountId && !record\attribute('Account', accountId, 'cOrganisationId')) {
+            record\update('Account', accountId, 'cOrganisationId', organisationId, 'name', name);
+            $acc = accountId;
+        }
+    } else if (organisationOther) {
+        $acc = record\findOne('Account', 'createdAt', 'asc', 'name=', organisationOther, 'cOrganisationId=', null);
+    }
+    if (!$acc && ($listed || organisationOther)) {
+        $acc = record\create('Account', 'name', name, 'cOrganisationId', ifThenElse($listed, organisationId, null),
+            'cAcronym', acronym, 'cOrgType', orgType);
+    }
+    if ($acc) {
+        accountId = $acc;
     }
 }

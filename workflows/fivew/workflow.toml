@@ -1,6 +1,9 @@
 # Workflow E (plans/workflow-e-5w-plan.md): a response's 5W on the Hurricane Melissa form's model.
 
 requires = ["responses"]
+# The CSO mapping is another project, on its own instance: both write an organisation's
+# Account's teams (plans/fivew-organisations-plan.md)
+conflicts = ["cso"]
 agent_guarded = ["CResponder"]
 task_parents = ["CResponder"]
 codes = { CResponder = "REG", CActivity = "ACT" }
@@ -8,6 +11,9 @@ agent_entities = { CResponder = "Responding organisation", CActivity = "Activity
 links = [
   ["CResponse", "responders", "CResponder", "response", "oneToMany"],
   ["CResponder", "account", "Account", "responderProfiles", "manyToOne"],
+  ["COrganisation", "accounts", "Account", "organisation", "oneToMany"],
+  ["CActivity", "account", "Account", "fivewActivities", "manyToOne"],
+  ["CActivityLocation", "account", "Account", "fivewLocations", "manyToOne"],
   ["CResponder", "contact", "Contact", "responderProfiles", "manyToOne"],
   ["CResponder", "activities", "CActivity", "responder", "oneToMany"],
   ["CProject", "activities", "CActivity", "project", "oneToMany"],
@@ -131,6 +137,11 @@ otherHouseholdsReached = { type = "int", min = 0, label = "Other: households rea
 [fields.COrganisation]
 orgType = { label = "Type", list = "fivew-melissa.org_types" }
 
+# An organisation, once, whatever the response (its registrations' formula makes it)
+[fields.Account]
+acronym = { type = "varchar", maxLength = 30 }
+orgType = { label = "Type", list = "fivew-melissa.org_types" }
+
 [roles."Internal Staff"]
 [roles."Internal Staff".data]
 CResponder = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
@@ -139,32 +150,35 @@ CActivityLocation = { create = "yes", read = "team", edit = "team", delete = "no
 
 [roles."Cluster Lead"]
 [roles."Cluster Lead".data]
+Account = { create = "no", read = "team", edit = "team", delete = "no", stream = "team" }
 CResponder = { create = "no", read = "team", edit = "team", delete = "no", stream = "team" }
 CActivity = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
 CActivityLocation = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
 
 [roles."Cluster Partner"]
 [roles."Cluster Partner".data]
+Account = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CResponder = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CActivity = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
 CActivityLocation = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
 
 [roles."Cluster Viewer"]
 [roles."Cluster Viewer".data]
+Account = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CResponder = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CActivity = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CActivityLocation = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 
 [layouts.CResponder]
 detail = [
-  ["response", "organisation", "organisationOther", "acronym", "orgType", "clusters", "status", "focalPoint", "contact", "focalPointPhone", "lastReport", "registrationKey"],
+  ["response", "organisation", "organisationOther", "account", "acronym", "orgType", "clusters", "status", "focalPoint", "contact", "focalPointPhone", "lastReport", "registrationKey"],
 ]
 list = ["name", "code", "organisation", "clusters", "status", "lastReport", "response"]
 relationships = ["activities", "tasks"]
 
 [layouts.CActivity]
 detail = [
-  ["response", "project", "leadOrganisation", "leadOrganisationOther", "implementingOrganisation", "implementingOrganisationOther", "responder", "sector", "sectorOther", "activityType", "activityTypeOther", "title", "status", "startDate", "endDate", "reportDate", "resourceType", "resourceTypeOther", "resourceUnit", "resourceUnitOther", "comments", "resourceUrl"],
+  ["response", "project", "leadOrganisation", "leadOrganisationOther", "account", "implementingOrganisation", "implementingOrganisationOther", "responder", "sector", "sectorOther", "activityType", "activityTypeOther", "title", "status", "startDate", "endDate", "reportDate", "resourceType", "resourceTypeOther", "resourceUnit", "resourceUnitOther", "comments", "resourceUrl"],
   ["communities", "quantity", "budget", "peopleTargeted", "peopleReached", "dataChecks"],
 ]
 list = [
@@ -183,7 +197,7 @@ relationships = ["locations", "focalPoints"]
 
 [layouts.CActivityLocation]
 detail = [
-  ["activity", "project", "response", "parish", "community", "site", "locationType", "locationTypeOther", "locationComments", "quantity", "budget", "populationTargeted", "populationReached", "populationGroups", "populationGroupsOther", "dataChecks"],
+  ["activity", "account", "project", "response", "parish", "community", "site", "locationType", "locationTypeOther", "locationComments", "quantity", "budget", "populationTargeted", "populationReached", "populationGroups", "populationGroupsOther", "dataChecks"],
   ["idpPeopleTargeted", "idpWomenTargeted", "idpMenTargeted", "idpChildrenTargeted", "idpHouseholdsTargeted", "idpPeopleReached", "idpWomenReached", "idpMenReached", "idpChildrenReached", "idpHouseholdsReached", "hostingPeopleTargeted", "hostingWomenTargeted", "hostingMenTargeted", "hostingChildrenTargeted", "hostingHouseholdsTargeted", "hostingPeopleReached", "hostingWomenReached", "hostingMenReached", "hostingChildrenReached", "hostingHouseholdsReached", "ndpPeopleTargeted", "ndpWomenTargeted", "ndpMenTargeted", "ndpChildrenTargeted", "ndpHouseholdsTargeted", "ndpPeopleReached", "ndpWomenReached", "ndpMenReached", "ndpChildrenReached", "ndpHouseholdsReached", "otherPeopleTargeted", "otherWomenTargeted", "otherMenTargeted", "otherChildrenTargeted", "otherHouseholdsTargeted", "otherPeopleReached", "otherWomenReached", "otherMenReached", "otherChildrenReached", "otherHouseholdsReached"],
 ]
 list = ["name", "activity", "parish", "community", "locationType", "populationTargeted", "populationReached"]
@@ -192,10 +206,14 @@ list = ["name", "activity", "parish", "community", "locationType", "populationTa
 detail = [["activity"]]
 list = ["name", "activity", "emailAddress", "phone", "jobTitle"]
 
+[layouts.Account]
+detail = [["cOrganisation", "cAcronym", "cOrgType"]]
+relationships = ["contacts", "responderProfiles", "fivewActivities", "cases", "documents"]
+
 [layouts.COrganisation]
 detail = [["orgType"]]
 list = ["name", "code", "orgType"]
-relationships = ["activitiesLed", "registrations"]
+relationships = ["accounts", "activitiesLed", "registrations"]
 
 [layouts.CResponse]
 relationships = [{ name = "responders", before = "tasks" }]
@@ -237,7 +255,7 @@ completed_ends_later = "status == 'COMPLETED' && endDate && datetime\\diff(endDa
 # A location and a focal point are their activity's: its teams (and a location its project
 # and response)
 [traits.CActivityLocation]
-inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds", "projectId", "responseId"] }]
+inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds", "projectId", "responseId", "accountId"] }]
 
 [traits.CActivityLocation.checks]
 reached_over_targeted = "populationReached && populationTargeted && populationReached > populationTargeted"
@@ -246,3 +264,8 @@ group_parts_dont_add_up = "$parts"
 
 [traits.CFocalPoint]
 inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds"] }]
+
+# A registration's Account (its organisation, once, whatever the response) is in the teams
+# of all the organisation's registrations: each response and cluster sees it
+[traits.CResponder]
+teams_up = { link = "account", entity = "Account" }

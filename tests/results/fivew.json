@@ -4,11 +4,11 @@
     "check": "every new record has its short code (RSP-, PRJ-, REG-, ACT-, TSK-)",
     "ok": true,
     "detail": {
-      "CResponse": "RSP-QB33",
-      "CProject": "PRJ-RCJQ",
-      "CResponder": "REG-HK7X",
-      "CActivity": "ACT-5YPB",
-      "Task": "TSK-GBFD"
+      "CResponse": "RSP-DASG",
+      "CProject": "PRJ-XCEG",
+      "CResponder": "REG-74EE",
+      "CActivity": "ACT-8GWJ",
+      "Task": "TSK-V6AD"
     }
   },
   {
@@ -23,9 +23,9 @@
     "ok": true,
     "detail": [
       {
-        "id": "6af40fffd7a22f86c",
+        "id": "6af41b86d9ee8fad9",
         "name": "FIVEW ETC",
-        "createdAt": "2026-11-11 06:49:35",
+        "createdAt": "2026-11-11 07:38:46",
         "createdById": "6aec3ee286e4b3936",
         "assignedUserId": null
       }
@@ -67,7 +67,7 @@
     "check": "its sector's project (WASH), and that project's teams",
     "ok": true,
     "detail": {
-      "projectId": "6af41000aa7b70663",
+      "projectId": "6af41b883659cdd16",
       "teamsIds": [
         "6af050661f10ba21a",
         "6aec41fec6f7a5f27"
@@ -112,8 +112,8 @@
         "6af050661f10ba21a",
         "6aec41fec6f7a5f27"
       ],
-      "projectId": "6af41000aa7b70663",
-      "responseId": "6af40ffee1fbac2e1"
+      "projectId": "6af41b883659cdd16",
+      "responseId": "6af41b8537b58cc1e"
     }
   },
   {
@@ -241,7 +241,7 @@
         "6af050644bc5ab8e6",
         "6aec41fec6f7a5f27"
       ],
-      "responseId": "6af40ffee1fbac2e1"
+      "responseId": "6af41b8537b58cc1e"
     }
   },
   {
@@ -322,5 +322,108 @@
     "check": "cluster-partner: editing an organisation refused",
     "ok": true,
     "detail": ""
+  },
+  {
+    "test": "W11",
+    "check": "a listed organisation's registration: its organisation's Account, linked to the list entry, named after it",
+    "ok": true,
+    "detail": {
+      "cOrganisationId": "6af093cfd05c0ca29",
+      "name": "ADRA - Adventist Development and Relief Agency"
+    }
+  },
+  {
+    "test": "W11",
+    "check": "the Account is in the registration's teams (the response's, WASH's)",
+    "ok": true,
+    "detail": [
+      "6af1ad69f2c02baa2",
+      "6af050661f10ba21a",
+      "6af1ad652914147ef",
+      "6aec41fec6f7a5f27"
+    ]
+  },
+  {
+    "test": "W11",
+    "check": "an activity and its location: the registration's Account",
+    "ok": true,
+    "detail": [
+      "6af41a4db84bd4cb7",
+      "6af41a4db84bd4cb7",
+      "6af41a4db84bd4cb7"
+    ]
+  },
+  {
+    "test": "W11",
+    "check": "a typed-in organisation: an Account of that name, not linked to the list, with its type",
+    "ok": true,
+    "detail": {
+      "name": "FIVEW Relief Collective",
+      "cOrganisationId": null,
+      "cOrgType": "NATIONAL_NGO"
+    }
+  },
+  {
+    "test": "W11",
+    "check": "in ETC only: the Account in the response's and ETC's teams",
+    "ok": true,
+    "detail": [
+      "6af050644bc5ab8e6",
+      "6aec41fec6f7a5f27"
+    ]
+  },
+  {
+    "test": "W11",
+    "check": "cluster-lead (ETC) reads it; cluster-viewer (WASH) doesn't",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W11",
+    "check": "now in WASH too: the Account in WASH's team, and cluster-viewer reads it",
+    "ok": true,
+    "detail": [
+      "6af050644bc5ab8e6",
+      "6af050661f10ba21a",
+      "6aec41fec6f7a5f27"
+    ]
+  },
+  {
+    "test": "W11",
+    "check": "registered in a second response: the same Account, in both responses' teams",
+    "ok": true,
+    "detail": [
+      "6af41bd20af1ab92f",
+      [
+        "6af050644bc5ab8e6",
+        "6af050661f10ba21a",
+        "6aec41fec6f7a5f27",
+        "6aec420039254967f"
+      ]
+    ]
+  },
+  {
+    "test": "W11",
+    "check": "its name corrected to another organisation's: a new Account; the first leaves that response's team",
+    "ok": true,
+    "detail": [
+      [
+        "6aec420039254967f"
+      ],
+      [
+        "6af050644bc5ab8e6",
+        "6af050661f10ba21a",
+        "6aec41fec6f7a5f27"
+      ]
+    ]
+  },
+  {
+    "test": "W11",
+    "check": "added to the list and picked: the registration keeps its Account, which takes the list entry",
+    "ok": true,
+    "detail": [
+      "6af41bd20af1ab92f",
+      "6af41be45316b1f56"
+    ]
   }
 ]

@@ -86,6 +86,12 @@ class Traits(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'cascade with unless'):
             traits.cascades({'CX': {'inherit': [{'link': 'a', 'entity': 'CA', 'copy': [], 'cascade': True, 'unless': 'b'}]}})
 
+    def test_teams_up(self):
+        s = custom(self.spec, 'CResponder')
+        self.assertIn("record\\update('Account', accountId, 'teamsIds', $teams);", s)
+        self.assertIn("record\\update('Account', $left, 'teamsIds', $teams);", s)
+        self.assertLess(s.index("accountId = $acc;"), s.index('(trait teams_up)'))  # after its block finds the Account
+
     def test_quoting(self):
         self.assertEqual(traits.q("it's"), "'it\\'s'")
 

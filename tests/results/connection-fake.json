@@ -1,8 +1,8 @@
 {
-  "when": "2026-11-10T15:49:32Z",
+  "when": "2026-11-11T07:55:23Z",
   "espo": "https://staging.respond.kobolabs.dev",
   "kobo": "fake",
-  "run": "325222",
+  "run": "383137",
   "passed": 87,
   "failed": 0,
   "results": [
@@ -17,7 +17,7 @@
       "check": "name, category, priority, project from the answers",
       "ok": true,
       "detail": {
-        "name": "Forms and XLSForm: Form will not deploy (325222)",
+        "name": "Forms and XLSForm: Form will not deploy (383137)",
         "cCategory": "forms",
         "priority": "High",
         "cProject": "consortium_a"
@@ -42,9 +42,9 @@
       "check": "requester Contact by email, with their name",
       "ok": true,
       "detail": {
-        "emailAddress": "req-a-325222@example.org",
+        "emailAddress": "req-a-383137@example.org",
         "firstName": "Test Requester",
-        "lastName": "325222"
+        "lastName": "383137"
       }
     },
     {
@@ -64,7 +64,7 @@
       "check": "media: the attached file is copied onto the case",
       "ok": true,
       "detail": {
-        "6af33b5bd38dc826a": "screenshot.png"
+        "6af41db24274f2b4d": "screenshot.png"
       }
     },
     {
@@ -83,7 +83,7 @@
       "test": "T1",
       "check": "latency of one pass (submission -> case), seconds",
       "ok": true,
-      "detail": 12.4
+      "detail": 12.2
     },
     {
       "test": "T2",
@@ -168,8 +168,8 @@
       "check": "the pass goes on (the good ones still go through)",
       "ok": true,
       "detail": {
-        "last_pass": "2026-11-10T15:44:08Z",
-        "last_success": "2026-11-10T15:44:08Z",
+        "last_pass": "2026-11-11T07:50:10Z",
+        "last_success": "2026-11-11T07:50:10Z",
         "ok": true,
         "error": null,
         "counts": {
@@ -191,7 +191,7 @@
         },
         "failed": 2,
         "failed_elsewhere": 0,
-        "oldest_failed": "2026-11-10T15:44:08Z",
+        "oldest_failed": "2026-11-11T07:50:10Z",
         "oldest_error": "required answer missing: summary"
       }
     },
@@ -199,7 +199,7 @@
       "test": "T4",
       "check": "missing answer: \"required answer missing: summary\" in the ledger",
       "ok": true,
-      "detail": "a6507b5fcd44f46999d568  submission 4  since 2026-11-10T15:44:08Z  1 attempt(s), next 2026-11-10T15:45:08Z\n    required answer missing: summary\na6507b5fcd44f46999d568  submission 5  since 2026-11-10T15:44:08Z  1 attempt(s), next 2026-11-10T15:45:08Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "ab4d5fb2dcf9244a7bf5c8  submission 4  since 2026-11-11T07:50:10Z  1 attempt(s), next 2026-11-11T07:51:10Z\n    required answer missing: summary\nab4d5fb2dcf9244a7bf5c8  submission 5  since 2026-11-11T07:50:10Z  1 attempt(s), next 2026-11-11T07:51:10Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -211,7 +211,7 @@
       "test": "T4",
       "check": "invalid email: refused by EspoCRM, recorded with its reason",
       "ok": true,
-      "detail": "a6507b5fcd44f46999d568  submission 4  since 2026-11-10T15:44:08Z  1 attempt(s), next 2026-11-10T15:45:08Z\n    required answer missing: summary\na6507b5fcd44f46999d568  submission 5  since 2026-11-10T15:44:08Z  1 attempt(s), next 2026-11-10T15:45:08Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
+      "detail": "ab4d5fb2dcf9244a7bf5c8  submission 4  since 2026-11-11T07:50:10Z  1 attempt(s), next 2026-11-11T07:51:10Z\n    required answer missing: summary\nab4d5fb2dcf9244a7bf5c8  submission 5  since 2026-11-11T07:50:10Z  1 attempt(s), next 2026-11-11T07:51:10Z\n    POST /Contact: HTTP 400 Field validation failure; entityType: Contact, field: emailAddress, type: emailAddress.\n"
     },
     {
       "test": "T4",
@@ -592,7 +592,7 @@
       "check": "media: the site photo is on the site, with the answer's file name (Kobo stores site_photo_1.png)",
       "ok": true,
       "detail": {
-        "6af33c471e994c56f": "site photo (1).png"
+        "6af41eb8a87037b17": "site photo (1).png"
       }
     },
     {
@@ -621,7 +621,7 @@
       "test": "C2",
       "check": "a standard code EspoCRM has no record for: recorded, no site made",
       "ok": true,
-      "detail": "a64c753f5c26840ee8c795  submission 4  since 2026-11-10T15:46:32Z  1 attempt(s), next 2026-11-10T15:47:32Z\n    standard: 0 CStandard records with that code\n"
+      "detail": "a83dea3718c104c3fa8b38  submission 4  since 2026-11-11T07:52:40Z  1 attempt(s), next 2026-11-11T07:53:40Z\n    standard: 0 CStandard records with that code\n"
     },
     {
       "test": "C2",
@@ -679,6 +679,12 @@
         {
           "name": "EQ1-WP-325222",
           "label": "EQ1-WP-325222 \u00b7 Water point 325222",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
+          "name": "EQ1-WP-383137",
+          "label": "EQ1-WP-383137 \u00b7 Water point 383137",
           "status": "planned",
           "region": "North"
         },
@@ -716,7 +722,7 @@
       "check": "media: the visit's photo is on its note",
       "ok": true,
       "detail": {
-        "6af33c6add9c4c99a": "leak.png"
+        "6af41ede435649ec2": "leak.png"
       }
     },
     {
@@ -779,6 +785,12 @@
           "region": "North"
         },
         {
+          "name": "EQ1-WP-383137",
+          "label": "EQ1-WP-383137 \u00b7 Water point 383137",
+          "status": "needs_repair",
+          "region": "North"
+        },
+        {
           "name": "ISO-S1",
           "label": "ISO-S1 \u00b7 ISO Site R1",
           "status": "planned",
@@ -790,7 +802,7 @@
       "test": "C3",
       "check": "a visit to an unknown site is recorded, not guessed",
       "ok": true,
-      "detail": "a851da73b66cf4ca296584  submission 2  since 2026-11-10T15:47:07Z  1 attempt(s), next 2026-11-10T15:48:07Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
+      "detail": "a63f0626b66a44d4689404  submission 2  since 2026-11-11T07:53:18Z  1 attempt(s), next 2026-11-11T07:54:18Z\n    0 CSite records with siteCode NO-SUCH-SITE\n"
     },
     {
       "test": "W7",
@@ -798,19 +810,19 @@
       "ok": true,
       "detail": {
         "responseId": "6af1e048da39a7ac0",
-        "name": "Telecom Partners 325222",
+        "name": "Telecom Partners 383137",
         "organisationName": "Other",
         "clusters": [
           "EMERGENCY_TELECOMS"
         ],
-        "code": "REG-A4YJ"
+        "code": "REG-BKQV"
       }
     },
     {
       "test": "W7",
       "check": "its focal point's Contact",
       "ok": true,
-      "detail": "6af33c89d51d14395"
+      "detail": "6af41efaf392752c4"
     },
     {
       "test": "W7",
@@ -826,7 +838,7 @@
       "check": "registering again (now with WASH): the same record, updated, in both projects' teams",
       "ok": true,
       "detail": [
-        "6af33c8a7a8e1e49f"
+        "6af41efb9d24f8a68"
       ]
     },
     {
@@ -894,7 +906,7 @@
           "cKoboRow": 1,
           "communityId": "6af08d79e656e8169",
           "parishId": "6af08d61e414c2498",
-          "siteId": "6af33c47955498277",
+          "siteId": "6af41eb928400cc61",
           "locationType": "shelter"
         },
         {
@@ -923,19 +935,19 @@
       "ok": true,
       "detail": [
         {
-          "id": "6af33cde215a38261",
+          "id": "6af41f459dfc8c5a3",
           "name": "Ama Focal",
           "deleted": false,
           "description": null,
-          "createdAt": "2026-11-10 15:48:46",
-          "modifiedAt": "2026-11-10 15:48:46",
-          "emailAddress": "ama-325222@example.org",
+          "createdAt": "2026-11-11 07:54:45",
+          "modifiedAt": "2026-11-11 07:54:45",
+          "emailAddress": "ama-383137@example.org",
           "phone": "+1 876 555 0101",
           "jobTitle": "Coordinator",
-          "cKoboAsset": "a19dc773cbdb7447ba87d5",
+          "cKoboAsset": "a8fdb4e562d19449a8770f",
           "cKoboSubmissionId": 1,
-          "cKoboSubmissionUuid": "7686e55a-c06e-43a0-a32a-34ab61b2fd1b",
-          "cKoboLink": "http://127.0.0.1:51680/#/forms/a19dc773cbdb7447ba87d5/data/table",
+          "cKoboSubmissionUuid": "3c1ef173-6e05-456d-91ff-4792d5d1e234",
+          "cKoboLink": "http://127.0.0.1:63535/#/forms/a8fdb4e562d19449a8770f/data/table",
           "cKoboRow": 1,
           "createdById": "6af07e3ad7b5a8dca",
           "createdByName": "kobo-activities",
@@ -943,7 +955,7 @@
           "modifiedByName": null,
           "assignedUserId": null,
           "assignedUserName": null,
-          "activityId": "6af33cd8b152a984c",
+          "activityId": "6af41f40ad05c09ad",
           "activityName": "AMERICARES \u00b7 Other"
         }
       ]
@@ -952,13 +964,13 @@
       "test": "W10",
       "check": "a report that ends before it starts: recorded with its reason, not made",
       "ok": true,
-      "detail": "a19dc773cbdb7447ba87d5  submission 2  since 2026-11-10T15:49:10Z  1 attempt(s), next 2026-11-10T15:50:10Z\n    POST /CActivity: HTTP 400 The activity ends before it starts.\na19dc773cbdb7447ba87d5  submission 3  since 2026-11-10T15:49:10Z  1 attempt(s), next 2026-11-10T15:50:10Z\n    FIGURES_COMMUNITY row 2: community: 0 CAdminArea records with that pcode\n"
+      "detail": "a8fdb4e562d19449a8770f  submission 2  since 2026-11-11T07:55:05Z  1 attempt(s), next 2026-11-11T07:56:05Z\n    POST /CActivity: HTTP 400 The activity ends before it starts.\na8fdb4e562d19449a8770f  submission 3  since 2026-11-11T07:55:05Z  1 attempt(s), next 2026-11-11T07:56:05Z\n    FIGURES_COMMUNITY row 2: community: 0 CAdminArea records with that pcode\n"
     },
     {
       "test": "W10",
       "check": "a community P-code EspoCRM doesn't have: recorded with its row, the good row kept, retried later",
       "ok": true,
-      "detail": "a19dc773cbdb7447ba87d5  submission 2  since 2026-11-10T15:49:10Z  1 attempt(s), next 2026-11-10T15:50:10Z\n    POST /CActivity: HTTP 400 The activity ends before it starts.\na19dc773cbdb7447ba87d5  submission 3  since 2026-11-10T15:49:10Z  1 attempt(s), next 2026-11-10T15:50:10Z\n    FIGURES_COMMUNITY row 2: community: 0 CAdminArea records with that pcode\n"
+      "detail": "a8fdb4e562d19449a8770f  submission 2  since 2026-11-11T07:55:05Z  1 attempt(s), next 2026-11-11T07:56:05Z\n    POST /CActivity: HTTP 400 The activity ends before it starts.\na8fdb4e562d19449a8770f  submission 3  since 2026-11-11T07:55:05Z  1 attempt(s), next 2026-11-11T07:56:05Z\n    FIGURES_COMMUNITY row 2: community: 0 CAdminArea records with that pcode\n"
     }
   ]
 }

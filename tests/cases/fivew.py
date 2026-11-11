@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-W1-W9: Workflow E, a response's 5W (plans/workflow-e-5w-plan.md) on the Hurricane Melissa
-5W form's model, and the short codes.
+W1-W9, W11: Workflow E, a response's 5W (plans/workflow-e-5w-plan.md) on the Hurricane
+Melissa 5W form's model, and the short codes; W11 its organisations as Accounts
+(plans/fivew-organisations-plan.md, phase 1).
 
     python3 -I tests/cases/fivew.py
 
@@ -9,8 +10,10 @@ Makes its own fixtures, removing earlier ones first: a response "FIVEW Hurricane
 Response: Test EQ 1 with an Emergency Telecommunications project (Cluster: Test EQ 1 ETC)
 and a WASH project (Cluster: Test EQ 1 WASH), a registered organisation (ADRA, in both
 sectors), activities with their locations (communities) and focal points. Then checks the
-formulas as admin, and access as each test user with their own password. Writes
-tests/results/fivew.json.
+formulas as admin, and access as each test user with their own password. W11 adds a typed-in
+organisation ("FIVEW Relief Collective": its Accounts, and a list entry ORG_FIVEW_TEST, are
+the test's, removed after) and a second response ("FIVEW Hurricane B", Response: Test EQ 2).
+Writes tests/results/fivew.json.
 """
 import json
 import re
@@ -63,6 +66,10 @@ def cleanup(a):
             for r in a.call('GET', f'/{entity}', {'maxSize': 200, 'select': 'id', **where(attr, resp['id'])})['list']:
                 a.call('DELETE', f'/{entity}/{r["id"]}')
         a.call('DELETE', f'/CResponse/{resp["id"]}')
+    for acc in a.call('GET', '/Account', {'maxSize': 50, 'select': 'id', **where('name', 'FIVEW ', 'startsWith')})['list']:
+        a.call('DELETE', f'/Account/{acc["id"]}')
+    for o in a.call('GET', '/COrganisation', {'maxSize': 5, 'select': 'id', **where('code', 'ORG_FIVEW_TEST')})['list']:
+        a.call('DELETE', f'/COrganisation/{o["id"]}')
 
 
 def main():
@@ -251,6 +258,52 @@ def run(a, team, user):
     check('W8', 'cluster-partner: editing an organisation refused',
           status(lambda: p.call('PUT', f'/COrganisation/{org["ORG_ADRA"]["id"]}', body={'name': 'x'})) == 403)
 
+    # --- W11: organisations as Accounts, once whatever the response ----------------------------------
+    get = lambda e, r: a.call('GET', f'/{e}/{r["id"] if isinstance(r, dict) else r}')  # noqa: E731
+    reg = get('CResponder', adra)
+    acc = get('Account', reg['accountId']) if reg.get('accountId') else {}
+    check('W11', "a listed organisation's registration: its organisation's Account, linked to the list entry, named after it",
+          (acc.get('cOrganisationId'), acc.get('name')) == (org['ORG_ADRA']['id'], org['ORG_ADRA']['name']),
+          {k: acc.get(k) for k in ('cOrganisationId', 'name')})
+    check('W11', "the Account is in the registration's teams (the response's, WASH's)", {eq1, wash} <= set(acc.get('teamsIds') or []),
+          acc.get('teamsIds'))
+    check('W11', "an activity and its location: the registration's Account",
+          get('CActivity', act).get('accountId') == reg['accountId'] == get('CActivityLocation', loc1).get('accountId'),
+          (get('CActivity', act).get('accountId'), get('CActivityLocation', loc1).get('accountId'), reg['accountId']))
+    typed = 'FIVEW Relief Collective'
+    r_a = a.call('POST', '/CResponder', body={'name': 'x', 'organisationId': org['other']['id'], 'organisationOther': typed,
+                                              'orgType': 'NATIONAL_NGO', 'responseId': resp['id'], 'clusters': ['EMERGENCY_TELECOMS']})
+    acc_a = get('Account', get('CResponder', r_a)['accountId'])
+    check('W11', 'a typed-in organisation: an Account of that name, not linked to the list, with its type',
+          (acc_a['name'], acc_a.get('cOrganisationId'), acc_a.get('cOrgType')) == (typed, None, 'NATIONAL_NGO'),
+          {k: acc_a.get(k) for k in ('name', 'cOrganisationId', 'cOrgType')})
+    check('W11', "in ETC only: the Account in the response's and ETC's teams", set(acc_a['teamsIds']) == {eq1, etc}, acc_a['teamsIds'])
+    lead, viewer = as_user('cluster-lead'), as_user('cluster-viewer')
+    check('W11', "cluster-lead (ETC) reads it; cluster-viewer (WASH) doesn't",
+          status(lambda: lead.call('GET', f'/Account/{acc_a["id"]}')) == 200
+          and status(lambda: viewer.call('GET', f'/Account/{acc_a["id"]}')) == 403)
+    a.call('PUT', f'/CResponder/{r_a["id"]}', body={'clusters': ['EMERGENCY_TELECOMS', 'WASH']})
+    check('W11', 'now in WASH too: the Account in WASH\'s team, and cluster-viewer reads it',
+          set(get('Account', acc_a)['teamsIds']) == {eq1, etc, wash}
+          and status(lambda: viewer.call('GET', f'/Account/{acc_a["id"]}')) == 200, get('Account', acc_a)['teamsIds'])
+    eq2 = team['Response: Test EQ 2']
+    resp_b = a.call('POST', '/CResponse', body={'name': RESPONSE + ' B', 'status': 'Active', 'teamsIds': [eq2], 'country': 'Jamaica'})
+    r_b = a.call('POST', '/CResponder', body={'name': 'x', 'organisationId': org['other']['id'], 'organisationOther': typed,
+                                              'responseId': resp_b['id'], 'clusters': ['WASH']})
+    check('W11', 'registered in a second response: the same Account, in both responses\' teams',
+          get('CResponder', r_b)['accountId'] == acc_a['id'] and set(get('Account', acc_a)['teamsIds']) == {eq1, etc, wash, eq2},
+          (get('CResponder', r_b)['accountId'], get('Account', acc_a)['teamsIds']))
+    a.call('PUT', f'/CResponder/{r_b["id"]}', body={'organisationOther': 'FIVEW Other Collective'})
+    moved = get('CResponder', r_b)['accountId']
+    check('W11', "its name corrected to another organisation's: a new Account; the first leaves that response's team",
+          moved != acc_a['id'] and set(get('Account', moved)['teamsIds']) == {eq2}
+          and set(get('Account', acc_a)['teamsIds']) == {eq1, etc, wash},
+          (get('Account', moved)['teamsIds'], get('Account', acc_a)['teamsIds']))
+    listed = a.call('POST', '/COrganisation', body={'name': typed, 'code': 'ORG_FIVEW_TEST', 'orgType': 'NATIONAL_NGO'})
+    a.call('PUT', f'/CResponder/{r_a["id"]}', body={'organisationId': listed['id'], 'organisationOther': None})
+    check('W11', 'added to the list and picked: the registration keeps its Account, which takes the list entry',
+          get('CResponder', r_a)['accountId'] == acc_a['id'] and get('Account', acc_a).get('cOrganisationId') == listed['id'],
+          (get('CResponder', r_a)['accountId'], get('Account', acc_a).get('cOrganisationId')))
 
 if __name__ == '__main__':
     main()

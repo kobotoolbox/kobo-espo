@@ -18,14 +18,19 @@ pack's own formula block is then only what is particular to it.
     [traits.CPresence.checks]       # data checks: a dataChecks option each, and when it's set
     outside = "pcodeStatus == 'outside'"
 
+    [traits.CResponder]
+    teams_up = { link = "account", entity = "Account" }   # its parent's teams: its own and its
+                                    # siblings' (the parent it left: the others'), written when
+                                    # its teams or its parent change
+
 Where they go in the Before Save Custom Script: portal_default, pcodes and inherit before
-the packs' blocks, checks, supersede and the cascades (the parent's side of an inherit with
-`cascade`) after them. A block with a line `// trait: <name>` has that trait there instead
+the packs' blocks, checks, supersede, teams_up and the cascades (the parent's side of an
+inherit with `cascade`) after them. A block with a line `// trait: <name>` has that trait there instead
 (e.g. a link the block finds first, then inherit).
 """
 
 BEFORE = ('portal_default', 'pcodes', 'inherit')
-AFTER = ('checks', 'supersede', 'cascade')
+AFTER = ('checks', 'supersede', 'teams_up', 'cascade')
 TRAITS = BEFORE + AFTER[:-1]  # cascade is made from the inherits, not named
 ROWS = 1000  # the most child records a cascade or supersede reads
 
@@ -154,6 +159,38 @@ if ({' && '.join(by)} && $counted && ({changed(watch)})) {{
 current = $counted && !superseded;"""
 
 
+def teams_up(t, entity):
+    link, parent = f"{t['link']}Id", t['entity']
+    def union(start, pid):
+        return f"""    $teams = {start};
+    $rows = record\\findMany({q(entity)}, {ROWS}, 'createdAt', 'asc', {q(link + '=')}, {pid});
+    $i = 0;
+    while ($i < array\\length($rows)) {{
+        $o = array\\at($rows, $i);
+        if ($o != id) {{
+            $add = record\\attribute({q(entity)}, $o, 'teamsIds');
+            $j = 0;
+            while ($j < array\\length($add)) {{
+                if (!array\\includes($teams, array\\at($add, $j))) {{
+                    $teams = array\\push($teams, array\\at($add, $j));
+                }}
+                $j = $j + 1;
+            }}
+        }}
+        $i = $i + 1;
+    }}
+    record\\update({q(parent)}, {pid}, 'teamsIds', $teams);"""
+    return f"""// Its {t['link']}'s teams: its own and its {t['link']}'s other {entity} records' (trait teams_up)
+if ({link} && ({changed(['teamsIds', link])})) {{
+{union("ifThenElse(teamsIds, teamsIds, list())", link)}
+}}
+// The {t['link']} it left: the others' teams
+if (!entity\\isNew() && entity\\isAttributeChanged({q(link)}) && entity\\attributeFetched({q(link)})) {{
+    $left = entity\\attributeFetched({q(link)});
+{union("list()", "$left")}
+}}"""
+
+
 def cascade(children, entity):
     """The parent's side of its children's inherits with `cascade`: (child, link, copy)."""
     out = []
@@ -168,7 +205,7 @@ def cascade(children, entity):
 
 
 RENDER = {'portal_default': portal_default, 'pcodes': pcodes, 'inherit': inherit, 'checks': checks,
-          'supersede': supersede, 'cascade': cascade}
+          'supersede': supersede, 'teams_up': teams_up, 'cascade': cascade}
 
 
 def cascades(traits):
