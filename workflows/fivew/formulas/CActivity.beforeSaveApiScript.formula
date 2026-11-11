@@ -8,3 +8,12 @@ if (responderId && responseId && (entity\isNew() || entity\isAttributeChanged('r
         && record\attribute('CResponder', responderId, 'responseId') != responseId) {
     recordService\throwBadRequest('That registration is for another response.');
 }
+// In the organisation portal: an activity of one of its registrations, in a response
+// (the response and the organisation are the registration's)
+if (env\userAttribute('type') == 'portal' && entity\isNew() && !responderId) {
+    recordService\throwBadRequest('Pick your registration: the response this activity is in.');
+}
+if (env\userAttribute('type') == 'portal' && responderId && (entity\isNew() || entity\isAttributeChanged('responderId'))
+        && record\attribute('CResponder', responderId, 'accountId') != record\attribute('Contact', env\userAttribute('contactId'), 'accountId')) {
+    recordService\throwForbidden("That registration is another organisation's.");
+}

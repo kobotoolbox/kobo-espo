@@ -105,6 +105,13 @@ class Traits(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'cascade with unless'):
             traits.cascades({'CX': {'inherit': [{'link': 'a', 'entity': 'CA', 'copy': [], 'cascade': True, 'unless': 'b'}]}})
 
+    def test_inherit_renamed(self):
+        loc = custom(self.spec, 'CActivityLocation')
+        self.assertIn("activityKind = record\\attribute('CActivity', activityId, 'activityType');", loc)
+        act = custom(self.spec, 'CActivity')
+        self.assertIn("'activityKind', activityType", act)  # the cascade: the location's from the activity's
+        self.assertIn("entity\\isAttributeChanged('activityType')", act)
+
     def test_teams_up(self):
         s = custom(self.spec, 'CResponder')
         self.assertIn("record\\update('Account', accountId, 'teamsIds', $teams);", s)

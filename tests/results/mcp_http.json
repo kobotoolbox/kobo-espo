@@ -24,12 +24,14 @@
       "add_to_team",
       "bridge_info",
       "connection_status",
+      "contact_list",
       "create_connection",
       "create_dashboard_feed",
       "create_entity",
       "create_project",
       "create_response",
       "grant_access",
+      "invite_portal_user",
       "invite_user",
       "list_dashboard_feeds",
       "list_entities",
@@ -111,13 +113,13 @@
     "test": "H3",
     "check": "bridge_info over MCP: the Kobo account to share with",
     "ok": true,
-    "detail": "{\n  \"espocrm\": \"https://staging.respond.kobolabs.dev\",\n  \"kobo_server\": \"http://127.0.0.1:54879\",\n  \"kobo_account\": \"bridge_acct\",\n  \"share_forms_with\": \"bridge_acct\",\n  \"connections\": []\n}"
+    "detail": "{\n  \"espocrm\": \"https://staging.respond.kobolabs.dev\",\n  \"kobo_server\": \"http://127.0.0.1:60602\",\n  \"kobo_account\": \"bridge_acct\",\n  \"share_forms_with\": \"bridge_acct\",\n  \"connections\": []\n}"
   },
   {
     "test": "H4",
     "check": "a refusal is a tool error with its message (what to share)",
     "ok": true,
-    "detail": "Error executing tool propose_connection: The bridge's Kobo account (bridge_acct on http://127.0.0.1:54879) can't see the form aNotSharedWithTheBridge1. With kobo-mcp, share it: share_project aNotSharedWithTheBridge1 with bridge_acct, permission \"View submissions\" (and \"Edit form\" too if the connecti"
+    "detail": "Error executing tool propose_connection: The bridge's Kobo account (bridge_acct on http://127.0.0.1:60602) can't see the form aNotSharedWithTheBridge1. With kobo-mcp, share it: share_project aNotSharedWithTheBridge1 with bridge_acct, permission \"View submissions\" (and \"Edit form\" too if the connecti"
   },
   {
     "test": "H4",
@@ -133,9 +135,9 @@
     "check": "a 401 names the resource metadata; it names this server as where to sign in",
     "ok": true,
     "detail": {
-      "resource": "http://127.0.0.1:54880/mcp",
+      "resource": "http://127.0.0.1:60603/mcp",
       "authorization_servers": [
-        "http://127.0.0.1:54880"
+        "http://127.0.0.1:60603"
       ],
       "bearer_methods_supported": [
         "header"
@@ -147,10 +149,10 @@
     "check": "the authorization server: sign-in, tokens, registration, PKCE (S256)",
     "ok": true,
     "detail": {
-      "issuer": "http://127.0.0.1:54880",
-      "authorization_endpoint": "http://127.0.0.1:54880/authorize",
-      "token_endpoint": "http://127.0.0.1:54880/token",
-      "registration_endpoint": "http://127.0.0.1:54880/register",
+      "issuer": "http://127.0.0.1:60603",
+      "authorization_endpoint": "http://127.0.0.1:60603/authorize",
+      "token_endpoint": "http://127.0.0.1:60603/token",
+      "registration_endpoint": "http://127.0.0.1:60603/register",
       "response_types_supported": [
         "code"
       ],
@@ -173,7 +175,7 @@
     "ok": true,
     "detail": {
       "signin_status": 303,
-      "tools": 24
+      "tools": 26
     }
   },
   {
@@ -219,9 +221,9 @@
       "status": 303,
       "sessions": [
         {
-          "id": "6af0b2f25f4205ed6",
+          "id": "6af4d5cf1b9c58fa5",
           "isActive": false,
-          "lastAccess": "2026-11-08 17:35:47"
+          "lastAccess": "2026-11-11 20:53:35"
         }
       ]
     }
@@ -253,7 +255,7 @@
     "ok": true,
     "detail": {
       "after": 401,
-      "refresh": "{\"error\":\"invalid_grant\",\"error_description\":\"mcp-oauth-159308 is no longer an active EspoCRM admin.\"}"
+      "refresh": "{\"error\":\"invalid_grant\",\"error_description\":\"mcp-oauth-430382 is no longer an active EspoCRM admin.\"}"
     }
   }
 ]

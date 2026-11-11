@@ -54,9 +54,12 @@ def main():
                                     'where[0][value]': resp['id']})['list']
     check('T14', 'staff-1 creates a response: its 4 starter tasks appear', {t['name'] for t in tasks} == STARTER,
           {t['name'] for t in tasks})
-    check('T14', 'in the response\'s team, assigned to its lead, in Backlog',
-          all(t['teamsIds'] == [team['Response: Test EQ 2']] and t['assignedUserId'] == user['staff-1']
-              and t['status'] == 'Backlog' for t in tasks))
+    # its teams: the response's own and its country's coordination team (PRODUCT-443)
+    coord = a.call('GET', '/Team', {'maxSize': 1, 'where[0][type]': 'equals', 'where[0][attribute]': 'name',
+                                    'where[0][value]': 'Coordination: Testland'})['list'][0]['id']
+    check('T14', 'in the response\'s teams (its own, its country\'s coordination team), assigned to its lead, in Backlog',
+          all(set(t['teamsIds']) == {team['Response: Test EQ 2'], coord} and t['assignedUserId'] == user['staff-1']
+              and t['status'] == 'Backlog' for t in tasks), [t['teamsIds'] for t in tasks])
     cols = board(staff, resp['id'])
     check('T14', 'board columns are Backlog, To do, In progress, Blocked, Done (Canceled, Deferred hidden)',
           list(cols) == ['Backlog', 'Not Started', 'Started', 'Blocked', 'Completed'], list(cols))

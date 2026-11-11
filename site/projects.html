@@ -51,6 +51,7 @@
 <nav class="docs__nav" aria-label="On this page">
   <ul>
     <li><a href="#who">Who sees what</a></li>
+    <li><a href="#leadership">Leadership and people</a></li>
     <li><a href="#roles">The cluster roles</a></li>
     <li><a href="#tasks">Tasks on sites and cases</a></li>
     <li><a href="#setup">Setting it up from a conversation</a></li>
@@ -67,8 +68,20 @@
   <li><strong>the project's own team</strong> (e.g. <em>Cluster: Hurricane Melissa Response · ETC</em>): its people see the project, its sites and its tasks, and nothing of the other projects;</li>
   <li><strong>the response's team</strong>: its coordinators see every project. Put only coordinators in it.</li>
 </ul>
+<p>Above the responses is the <strong>country's coordination team</strong>, <em>Coordination: Jamaica</em> say. It's made with the first response in that country, and every response there is in it, with everything in those responses. Its people see all of the country's responses, the way a country office does over several emergencies. If a response's country is changed, it moves to that country's team, and so do its projects, sites and tasks.</p>
 <p>A site or a task in a project takes the project's teams by itself. If a team is added to the project later (a partner organisation's, say), its sites and tasks get it too. Closing a project gives its tasks back to its lead, as closing a response does.</p>
-<p>The project's people can't open the response itself, only their project. In testing (<code>tests/cases/projects.py</code>, 44 checks), each project's people saw only their own project's sites, tasks and task board, and were refused the other project's records by their links.</p>
+<p>The project's people can't open the response itself, only their project. In testing (<code>tests/cases/projects.py</code>, 59 checks), each project's people saw only their own project's sites, tasks and task board, and were refused the other project's records by their links.</p>
+</section>
+
+<section id="leadership">
+<h2>Leadership and people</h2>
+<p>As the UNDAC Handbook describes clusters (A.3.2–A.3.4): a cluster is <strong>activated</strong> for a response when it's needed, and <strong>deactivated</strong> later. A project's status reads <em>Planning</em>, <em>Activated</em> or <em>Deactivated</em>.</p>
+<ul>
+  <li><strong>Its sector's kind</strong>: a cluster (one of the eleven global clusters, Logistics and CCCM among them), an area of responsibility of Protection (Child Protection), a working group (Cash), or coordination. It comes from the sector.</li>
+  <li><strong>Its approach</strong>: <em>cluster</em>, where a lead agency leads, or <em>sector</em>, where the government leads and the agency co-leads. In the handbook's words, "the main difference between clusters and sectors lies in their leadership structure".</li>
+  <li><strong>Its lead agency and co-leads</strong>: organisations (their Accounts, the same as in the 5W). A new project gets its sector's <strong>global lead</strong> as a suggestion (fig. A.4: WASH UNICEF, Logistics and ETC WFP, CCCM IOM…), and in the sector approach as a co-lead. Change it to whoever leads in the country: the handbook's "organisation best suited", a line ministry co-chairing, a national NGO co-leading. Where the global lead isn't in the organisations list, the next one is used: for Health, PAHO (WHO's regional office for the Americas) in the Melissa list.</li>
+  <li><strong>Its people</strong>: its <strong>Cluster contacts</strong>, each with a role (coordinator, co-coordinator, information management officer, government focal point) and an organisation, picked from the list or typed in (a ministry). Each is a Contact on that organisation's Account, found by email or phone, or made. The project's team and the response's see them; the cluster's lead adds them. These are for the people who don't sign in. People who sign in are users in the project's team, with the cluster roles below.</li>
+</ul>
 </section>
 
 <section id="roles">
@@ -98,7 +111,7 @@
 <p>The bridge's EspoCRM MCP (see <a href="connect.html">Connecting a form</a>) has the tools for it, and a prompt, <strong>Set up a response</strong>, with the steps:</p>
 <ul>
   <li><code>create_response</code>: the response and its coordinators' team;</li>
-  <li><code>create_project</code>: a project per cluster, each with a team of its own;</li>
+  <li><code>create_project</code>: a project per cluster, each with a team of its own, its approach, lead agency and co-leads (the global leads suggested when left out);</li>
   <li><code>list_roles</code>, <code>invite_user</code>: a person with a role, in a project's team;</li>
   <li><code>add_to_team</code>, <code>remove_from_team</code>: someone joins or leaves a project;</li>
   <li><code>list_projects</code>: the responses, their projects and teams.</li>
@@ -113,7 +126,7 @@
 <ul>
   <li><strong>Access is per person, not per project.</strong> In EspoCRM someone's access is the sum of their roles, in every team they're in. A person who leads one project and only views another has lead access in both. Give them the role that suits both, or two accounts.</li>
   <li>Taking someone out of a project's team hides its records from them at once, except tasks assigned to them or shared with them, until those are given to someone else (or the project is closed).</li>
-  <li>If the response's team changes, its existing projects keep the old one until they're saved again.</li>
+  <li>A team added to a response, or taken off it, follows to its projects, its sites and tasks outside a project, its 5W records and its assessments. The coordination team follows its country by itself; don't take it off a response by hand, or it stays off until the country is changed.</li>
 </ul>
 </section>
 

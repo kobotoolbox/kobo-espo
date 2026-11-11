@@ -1,5 +1,5 @@
 <!-- title: The 5W -->
-<!-- description: A response's 5W (who does what, where, when, for whom) in EspoCRM, on the Hurricane Melissa 5W form: organisations from a list, an activity per report, a record per community with the people reached by group, the follow-up of organisations that haven't reported, and flags on what looks wrong. -->
+<!-- description: A response's 5W (who does what, where, when, for whom) in EspoCRM, on the Hurricane Melissa 5W form: organisations from a list, an activity per report, a record per community with the people reached by group, the organisation portal, clusters' people and the contact list, the follow-up of organisations that haven't reported, flags on what looks wrong, and the dashboard with the ICCG's 3W across clusters. -->
 <section class="banner">
   <div class="wrap">
     <h1>The 5W: who does what, where, when, for whom</h1>
@@ -23,9 +23,12 @@
     <li><a href="#form">The form, and its codes</a></li>
     <li><a href="#organisations">Organisations</a></li>
     <li><a href="#activities">Activities and communities</a></li>
+    <li><a href="#portal">The organisation portal</a></li>
+    <li><a href="#clusters">Clusters' people, the contact list</a></li>
     <li><a href="#who">Who sees what</a></li>
     <li><a href="#followup">Follow-up</a></li>
     <li><a href="#checks">Data checks</a></li>
+    <li><a href="#dashboard">Dashboard: the 5W and the 3W</a></li>
     <li><a href="#codes">Short codes</a></li>
     <li><a href="#limits">Limits</a></li>
   </ul>
@@ -66,6 +69,29 @@
 <figure><a href="static/shots/fivew-location.jpg"><img src="static/shots/fivew-location.jpg" alt="The activity location Black River, ST.ELIZABETH: the water trucking activity, the WASH project, parish St. Elizabeth, community Black River, general community, quantity 60,000, 9,000 targeted and 5,200 reached, internally displaced people with women, men, children and households reached."></a><figcaption>One community of the report: its figures, by group of people.</figcaption></figure>
 </section>
 
+<section id="portal">
+<h2>The organisation portal</h2>
+<p>Organisations register and report in Kobo, offline and in the field. They keep what they reported current in EspoCRM's <strong>organisation portal</strong> (<code>/portal/organisations</code>), as CSOs do theirs. An organisation's people there can:</p>
+<ul>
+  <li>see its <strong>registrations</strong>, one per response, and correct its details: acronym, type, sectors. Not the response, its key or its status, which are the coordinators';</li>
+  <li>see, add and correct its <strong>activities</strong> and their communities. A new one picks its registration (so its response), and gets the organisation, its Account and its sector's cluster project as a report from Kobo would. The data checks run the same, and the coordinators see the change in the activity's stream. An activity in another organisation's registration is refused;</li>
+  <li>keep its <strong>people</strong> current: add someone, correct them, untick <em>Active</em> for someone who left (kept, and left out of the contact list);</li>
+  <li>read <strong>its clusters</strong> and who to contact in them: the cluster projects it's registered in, and their coordinators, IMOs and government focal points.</li>
+</ul>
+<p>It never shows another organisation: who else works where is the dashboard's.</p>
+<p>A coordinator gives someone a login with the EspoCRM MCP's <code>invite_portal_user</code> (a Contact on the organisation's Account; EspoCRM emails them a link to set their password). A newly registered organisation's focal point gets a <strong>welcome email</strong>: its registration code, the activity report's link with the response and the organisation filled in, and the portal's address. The instance turns it on and gives the links (<code>deploy/instance.toml</code>, <code>[params.fivew]</code>).</p>
+<figure><a href="static/shots/fivew-portal-registration.jpg"><img src="static/shots/fivew-portal-registration.jpg" alt="The organisation portal as the Jamaica Red Cross's focal point: its registration in the Hurricane Melissa response, with its type, sectors (editable), status Reporting, focal point and code; its two activities below. The menu: Responding organisations, Activities, Activity locations, Contacts, Cluster projects, Cluster contacts."></a><figcaption>The Jamaica Red Cross's registration, as its focal point sees it in the portal.</figcaption></figure>
+<figure><a href="static/shots/fivew-portal-activities.jpg"><img src="static/shots/fivew-portal-activities.jpg" alt="The portal's Activities list: only the Jamaica Red Cross's activities."></a><figcaption>Its activities only: another organisation's aren't there.</figcaption></figure>
+<figure><a href="static/shots/fivew-portal-contacts.jpg"><img src="static/shots/fivew-portal-contacts.jpg" alt="The portal's Cluster contacts list: the WASH and Shelter clusters' coordinators, co-coordinator, IMO and government focal point, with their organisations, emails and phones; not the Emergency Telecommunications cluster's, which the Jamaica Red Cross isn't in."></a><figcaption>Who to contact in its clusters (WASH and Shelter), not in the others.</figcaption></figure>
+</section>
+
+<section id="clusters">
+<h2>Clusters' people, the contact list</h2>
+<p>A cluster project has its <strong>Cluster contacts</strong>: its coordinator, co-coordinator, IMO, government focal point (see <a href="projects.html">Cluster projects</a>). Its <strong>partners</strong> are the organisations registered in its sector: an organisation's registration adds its Account to the partners of its sectors' projects, and takes it off when it drops a sector. The portal follows the partners: an organisation reads its clusters, and their contacts, and no others.</p>
+<p>The handbook lists the <strong>contact list</strong> with the 3W among a response's information products. The EspoCRM MCP's <code>contact_list</code> gives it, for a response or one cluster: each cluster's contacts with their roles, and its partner organisations with their active people, and all of it as a CSV. It's people's contact details: for the coordinators to share with the response, not to publish (no role exports from EspoCRM, and the dashboard doesn't show it).</p>
+<figure><a href="static/shots/fivew-cluster.jpg"><img src="static/shots/fivew-cluster.jpg" alt="The WASH cluster project of the Hurricane Melissa response: activated, its teams (Cluster: Hurricane Melissa WASH, Coordination: Jamaica, Response: Hurricane Melissa), its cluster contacts Dwayne Brown, Ravi Persaud and Keisha Morgan, and its activities from Mercy Corps, UNICEF and the Jamaica Red Cross."></a><figcaption>A cluster: its contacts and its partners' activities.</figcaption></figure>
+</section>
+
 <section id="who">
 <h2>Who sees what</h2>
 <ul>
@@ -74,6 +100,8 @@
   <li>An organisation's Account and its people are in the teams of all its registrations: the coordinators of each response it registered for, and the clusters it's in, see them.</li>
   <li><strong>Cluster Viewers</strong> read activities and locations but not focal points or organisations' people, which are people's contact details.</li>
   <li>A <strong>Cluster Partner</strong> can report an activity in their project, and edit their own.</li>
+  <li>An organisation's people, in the <strong>organisation portal</strong>, see their organisation's records and its clusters only.</li>
+  <li>The <strong>ICCG</strong> (the clusters' coordinators together) reads the 3W across clusters on the dashboard: in EspoCRM a coordinator works on their own cluster, since a role's team access can't be read-only for some teams and editable for others.</li>
 </ul>
 <figure><a href="static/shots/fivew-response.jpg"><img src="static/shots/fivew-response.jpg" alt="The response Hurricane Melissa response, Jamaica: cyclone, Jamaica, lead Sam Staff, its code; its three projects (Emergency Telecommunications, Shelter, WASH), its five registered organisations, and its lead's starter tasks."></a><figcaption>The response, its cluster projects and the organisations registered for it.</figcaption></figure>
 </section>
@@ -104,6 +132,21 @@
 <p>Filter the Activities or Activity locations list by <em>Data checks</em> to see what needs a look.</p>
 </section>
 
+<section id="dashboard">
+<h2>Dashboard: the 5W and the 3W across clusters</h2>
+<p>The response's dashboard on kobo-dash (see <a href="dashboards.html">Dashboards</a>) reads two feeds in the response's team, so every cluster: the activities' communities, and the registered organisations. Each community carries its activity's organisation, sector, type and status, and its parish's P-code, so one feed draws the 3W. Its three pages:</p>
+<ul>
+  <li><strong>The 5W</strong>: people reached and targeted, communities, organisations; people reached by parish; communities by sector, organisation and activity type; who does what where;</li>
+  <li><strong>3W across clusters</strong>, for the ICCG's gaps and duplication: communities by parish and sector, organisations by sector, a map of the parishes with none of a chosen sector, and the <strong>duplication</strong> table;</li>
+  <li><strong>Organisations by cluster</strong>: the directory of registered organisations, their types and clusters, and whether they report. No one's contact details: that's the contact list.</li>
+</ul>
+<p><strong>Duplication</strong>: a community where another organisation does an activity of the same sector and type (<em>Other</em>: the same type typed in), neither completed, is flagged with <em>Overlaps with</em>, naming the other organisation and activity. The later report is flagged; the flag is worked out again when the community's record is saved.</p>
+<figure><a href="static/shots/dash-fivew-5w.jpg"><img src="static/shots/dash-fivew-5w.jpg" alt="The 5W dashboard for Hurricane Melissa, its first page: 17K people reached of 31.1K targeted, 12 communities, 6 organisations; people reached by parish (Westmoreland and St. Elizabeth darkest); communities by sector and by organisation; activity types; the who does what where table."></a><figcaption>The 5W: the response's figures, by parish, sector and organisation.</figcaption></figure>
+<figure><a href="static/shots/dash-fivew-iccg.jpg"><img src="static/shots/dash-fivew-iccg.jpg" alt="The 3W across clusters page with WASH chosen: communities by parish (St. Elizabeth, Westmoreland, St. James), organisations (UNICEF, JRC, Mercy Corps), the parishes with WASH activity shaded and the rest grey, and one duplication: Mercy Corps's water trucking in Black River, where UNICEF trucks water too."></a><figcaption>The ICCG's view, with WASH chosen: the gaps, and Mercy Corps and UNICEF both trucking water to Black River.</figcaption></figure>
+<figure><a href="static/shots/dash-fivew-organisations.jpg"><img src="static/shots/dash-fivew-organisations.jpg" alt="The Organisations by cluster page: 5 organisations registered, 5 reporting; organisations per cluster (WASH 3, Shelter 2, Emergency Telecommunications 1) and their types; the directory with each one's type, clusters, status and last report."></a><figcaption>The directory of organisations by cluster.</figcaption></figure>
+<figure><a href="static/shots/fivew-overlap.jpg"><img src="static/shots/fivew-overlap.jpg" alt="Part of the activity location Black River, St. Elizabeth, from Mercy Corps's water trucking: its Account and lead organisation Mercy Corps, sector WASH, activity type water trucking, in progress, parish P-code JM11, and Overlaps with UNICEF's water trucking (ACT-BAEJ)."></a><figcaption>The flagged community in EspoCRM.</figcaption></figure>
+</section>
+
 <section id="codes">
 <h2>Short codes</h2>
 <p>Responses, projects, registrations, activities, tasks and applications have a short code (<code>RSP-7K3Q</code>, <code>PRJ-…</code>, <code>REG-…</code>, <code>ACT-…</code>): easy to say on a call, found by the list's search box, and the names Kobo lists use for their choices. EspoCRM gives them; they can't be changed. Sites keep their site code, areas their P-code.</p>
@@ -115,6 +158,9 @@
   <li>The areas list (789 parishes and communities) goes to every phone with the form.</li>
   <li>An organisation's report isn't checked against its registration: the list is what it picks from, registration is optional.</li>
   <li>Charts, maps and the 5W's tables are dashboards: see <a href="dashboards.html">Dashboards</a>.</li>
+  <li>An overlap flags the later community only, and goes when that one is saved again after the other activity is completed.</li>
+  <li>A correction in the portal and a resubmission from Kobo can disagree: the latest save wins, and the stream shows both.</li>
+  <li>The portal uses EspoCRM's own layouts, with the coordinators' fields (keys, teams, Kobo links) hidden.</li>
 </ul>
 </section>
 

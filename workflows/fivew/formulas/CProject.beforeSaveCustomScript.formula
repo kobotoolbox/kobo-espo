@@ -1,0 +1,17 @@
+// A new cluster project, or its sector changed: its partners are the organisations
+// registered in the response for that sector (their Accounts); a registration's formula
+// keeps them after
+if (responseId && cluster && (entity\isNew() || entity\isAttributeChanged('cluster'))) {
+    $partners = list();
+    $rows = record\findMany('CResponder', 500, 'createdAt', 'asc', 'responseId=', responseId);
+    $i = 0;
+    while ($i < array\length($rows)) {
+        $acc = record\attribute('CResponder', array\at($rows, $i), 'accountId');
+        if ($acc && !array\includes($partners, $acc)
+                && array\includes(record\attribute('CResponder', array\at($rows, $i), 'clusters'), cluster)) {
+            $partners = array\push($partners, $acc);
+        }
+        $i = $i + 1;
+    }
+    partnersIds = $partners;
+}

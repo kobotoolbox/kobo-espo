@@ -12,7 +12,8 @@ pack's own formula block is then only what is particular to it.
                                     # changes follow to it
       { link = "cso", entity = "CCso", copy = ["teamsIds", "accountId"], cascade = true, also = ["country"] },
       { link = "response", entity = "CResponse", copy = ["teamsIds"], unless = "project" },
-    ]
+    ]                               # "kind=activityType": its kind from the parent's
+                                    # activityType (a field can't be named after a link)
     supersede = { by = ["csoId", "adminAreaId"], counted = { field = "keyCheck", in = ["ok", "confirmed"] } }
                                     # the latest counted record of each `by` is the current one
     [traits.CPresence.checks]       # data checks: a dataChecks option each, and when it's set
@@ -135,14 +136,21 @@ if (!{a} && latitude != null && !pcodeStatus) {{
 }}{pending}"""
 
 
+def renamed(f):
+    """A copy entry: (its attribute, the parent's): "kind=activityType", or the same name."""
+    to, _, frm = f.partition('=')
+    return to, frm or to
+
+
 def copy_lines(source, idvar, copy, indent='    '):
     out = []
-    for f in copy:
+    for entry in copy:
+        f, frm = renamed(entry)
         if f == 'teamsIds':  # a parent without teams leaves its own
             out += [f"{indent}$teams = record\\attribute({q(source)}, {idvar}, 'teamsIds');",
                     f"{indent}if (array\\length($teams) > 0) {{", f"{indent}    teamsIds = $teams;", f"{indent}}}"]
         else:
-            out.append(f"{indent}{f} = record\\attribute({q(source)}, {idvar}, {q(f)});")
+            out.append(f"{indent}{f} = record\\attribute({q(source)}, {idvar}, {q(frm)});")
     return out
 
 
@@ -441,9 +449,9 @@ def cascade(children, entity):
     """The parent's side of its children's inherits with `cascade`: (child, link, copy)."""
     out = []
     for child, link, copy in children:
-        args = ', '.join(f"{q(f)}, {f}" for f in copy)
+        args = ', '.join(f"{q(to)}, {frm}" for to, frm in map(renamed, copy))
         out += [f"// Its {child} records follow: {', '.join(copy)} (trait cascade, {child}'s inherit)",
-                f"if (!entity\\isNew() && ({changed(copy, new=False)})) {{",
+                f"if (!entity\\isNew() && ({changed([renamed(f)[1] for f in copy], new=False)})) {{",
                 f"    $rows = record\\findMany({q(child)}, {ROWS}, 'createdAt', 'asc', {q(link + 'Id=')}, id);",
                 "    $i = 0;", "    while ($i < array\\length($rows)) {",
                 f"        record\\update({q(child)}, array\\at($rows, $i), {args});", "        $i = $i + 1;", "    }", '}']

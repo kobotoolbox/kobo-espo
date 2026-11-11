@@ -14,3 +14,14 @@ portal_url = "https://staging.respond.kobolabs.dev/portal/cso/"
 email_only_to = "@resend.dev"
 update_links = { KEN = "https://ee.kobotoolbox.org/x/80mzANLS?d%5B%2FaQG49i9ZTdWEXpHoynGwuV%2Fcso%5D={code}&d%5B%2FaQG49i9ZTdWEXpHoynGwuV%2Fkey%5D={key}", default = "https://ee.kobotoolbox.org/x/az8GRl8a?d%5B%2Fapxz6JBkqx9VcH9j59PV8Q%2Fcso%5D={code}&d%5B%2Fapxz6JBkqx9VcH9j59PV8Q%2Fkey%5D={key}" }
 profile_links = { KEN = "https://ee.kobotoolbox.org/x/krPSkuE4?d%5B%2FaLyYkWfcizAy93bkLaCoa9%2Fcso%5D={code}&d%5B%2FaLyYkWfcizAy93bkLaCoa9%2Fkey%5D={key}", default = "https://ee.kobotoolbox.org/x/RRvbELcb?d%5B%2Fa6HVZM5tJGpqzVHa4MCZWh%2Fcso%5D={code}&d%5B%2Fa6HVZM5tJGpqzVHa4MCZWh%2Fkey%5D={key}" }
+
+# The 5W's welcome email (workflows/fivew/formulas/CResponder...): a new registration's focal
+# point gets its code, the activity report's link (the form on the Kobo test account, its
+# response, organisation and type filled in) and the organisation portal; on staging only
+# Resend's test inbox
+[params.fivew]
+welcome_email = "on"
+from = "noreply@respond.kobolabs.dev"
+portal_url = "https://staging.respond.kobolabs.dev/portal/organisations/"
+email_only_to = "@resend.dev"
+report_link = "https://ee.kobotoolbox.org/x/AfTuXgzO?d%5B%2Fan3jbyAKcM4nAQSoyawu2C%2Fresponse%5D={response}&d%5B%2Fan3jbyAKcM4nAQSoyawu2C%2Forg_details%2FORAGANIZATION_LEAD%2FLeadOrganization_type%5D={type}&d%5B%2Fan3jbyAKcM4nAQSoyawu2C%2Forg_details%2FORAGANIZATION_LEAD%2FLeadOrganization_name%5D={organisation}"

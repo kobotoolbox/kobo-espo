@@ -4,11 +4,11 @@
     "check": "every new record has its short code (RSP-, PRJ-, REG-, ACT-, TSK-)",
     "ok": true,
     "detail": {
-      "CResponse": "RSP-QGZY",
-      "CProject": "PRJ-PJ3F",
-      "CResponder": "REG-9RNQ",
-      "CActivity": "ACT-9HTW",
-      "Task": "TSK-WN8Y"
+      "CResponse": "RSP-PNJN",
+      "CProject": "PRJ-EW94",
+      "CResponder": "REG-V88N",
+      "CActivity": "ACT-CV69",
+      "Task": "TSK-8M6Y"
     }
   },
   {
@@ -23,9 +23,9 @@
     "ok": true,
     "detail": [
       {
-        "id": "6af4a3363a83bcd58",
+        "id": "6af4c725101d71df4",
         "name": "FIVEW ETC",
-        "createdAt": "2026-11-11 17:17:42",
+        "createdAt": "2026-11-11 19:51:01",
         "createdById": "6aec3ee286e4b3936",
         "assignedUserId": null
       }
@@ -68,7 +68,7 @@
     "check": "its sector's project (WASH), and that project's teams",
     "ok": true,
     "detail": {
-      "projectId": "6af4a337776717517",
+      "projectId": "6af4c726053f79651",
       "teamsIds": [
         "6af050661f10ba21a",
         "6af4a1c1730f6773f",
@@ -116,8 +116,8 @@
         "6af4a1c1730f6773f",
         "6aec41fec6f7a5f27"
       ],
-      "projectId": "6af4a337776717517",
-      "responseId": "6af4a334671f9a048"
+      "projectId": "6af4c726053f79651",
+      "responseId": "6af4c72319f814381"
     }
   },
   {
@@ -246,7 +246,7 @@
         "6af4a1c1730f6773f",
         "6aec41fec6f7a5f27"
       ],
-      "responseId": "6af4a334671f9a048"
+      "responseId": "6af4c72319f814381"
     }
   },
   {
@@ -401,7 +401,7 @@
     "check": "registered in a second response: the same Account, in both responses' teams",
     "ok": true,
     "detail": [
-      "6af4a38c7e25e1586",
+      "6af4c774705a76488",
       [
         "6af050644bc5ab8e6",
         "6af050661f10ba21a",
@@ -433,8 +433,8 @@
     "check": "added to the list and picked: the registration keeps its Account, which takes the list entry",
     "ok": true,
     "detail": [
-      "6af4a38c7e25e1586",
-      "6af4a39e23abc449d"
+      "6af4c774705a76488",
+      "6af4c789e86bb9e85"
     ]
   },
   {
@@ -498,7 +498,7 @@
     "check": "named again in another report (the email in other case): the same Contact; its blank phone filled",
     "ok": true,
     "detail": [
-      "6af4a3b273603a8bb",
+      "6af4c79a79bb3b7c1",
       "+18765550199"
     ]
   },
@@ -506,15 +506,15 @@
     "test": "W13",
     "check": "named by phone only: the same Contact",
     "ok": true,
-    "detail": "6af4a3b273603a8bb"
+    "detail": "6af4c79a79bb3b7c1"
   },
   {
     "test": "W13",
     "check": "the same email in another organisation's report: that organisation's own Contact",
     "ok": true,
     "detail": [
-      "6af4a3bd68ad1c459",
-      "6af4a38c7e25e1586"
+      "6af4c7a802b9e8559",
+      "6af4c774705a76488"
     ]
   },
   {
@@ -535,5 +535,366 @@
       },
       "6af41a4db84bd4cb7"
     ]
+  },
+  {
+    "test": "W17",
+    "check": "a location: its activity's organisation, sector, type and status, and its parish's P-code",
+    "ok": true,
+    "detail": {
+      "leadOrganisationName": "Americares",
+      "sector": "WASH",
+      "activityKind": "distribution_of_hygiene_kits",
+      "status": "IN_PROGRESS",
+      "pcode1": "JM17"
+    }
+  },
+  {
+    "test": "W17",
+    "check": "another organisation's same activity in the same community: an overlap, naming it (the later one flagged)",
+    "ok": true,
+    "detail": [
+      "ADRA - Adventist Development and Relief Agency (ACT-6CZQ)",
+      null
+    ]
+  },
+  {
+    "test": "W17",
+    "check": "the same organisation's, or another type: no overlap",
+    "ok": true,
+    "detail": null
+  },
+  {
+    "test": "W17",
+    "check": "its activity completed: the location follows",
+    "ok": true,
+    "detail": "COMPLETED"
+  },
+  {
+    "test": "W17",
+    "check": "the other one completed: no longer an overlap",
+    "ok": true,
+    "detail": null
+  },
+  {
+    "test": "W17",
+    "check": "its activity's sector changed: it moves to that sector's project; the location follows",
+    "ok": true,
+    "detail": [
+      "SHELTER",
+      "FIVEW Shelter"
+    ]
+  },
+  {
+    "test": "W17",
+    "check": "a sector the response has no project for: out of its project, in the response's teams only",
+    "ok": true,
+    "detail": [
+      null,
+      {
+        "6af4a1c1730f6773f": "Coordination: Jamaica",
+        "6aec41fec6f7a5f27": "Response: Test EQ 1"
+      }
+    ]
+  },
+  {
+    "test": "W14",
+    "check": "a cluster's partners: the Accounts of the organisations registered in it (ADRA now in WASH, not ETC)",
+    "ok": true,
+    "detail": [
+      [
+        "6af4c774705a76488"
+      ],
+      [
+        "6af41a4db84bd4cb7",
+        "6af4c774705a76488"
+      ]
+    ]
+  },
+  {
+    "test": "W14",
+    "check": "its contacts take them",
+    "ok": true,
+    "detail": [
+      "6af4c774705a76488",
+      "6af41a4db84bd4cb7"
+    ]
+  },
+  {
+    "test": "W14",
+    "check": "a sector it no longer names: no longer that cluster's partner, nor its contacts'",
+    "ok": true,
+    "detail": [
+      [
+        "6af41a4db84bd4cb7"
+      ],
+      [
+        "6af41a4db84bd4cb7"
+      ]
+    ]
+  },
+  {
+    "test": "W14",
+    "check": "named again: its partner again, and its contacts'",
+    "ok": true,
+    "detail": [
+      "6af41a4db84bd4cb7",
+      "6af4c774705a76488"
+    ]
+  },
+  {
+    "test": "W14",
+    "check": "a cluster activated later: its partners as the organisations name it",
+    "ok": true,
+    "detail": [
+      "6af41a4db84bd4cb7"
+    ]
+  },
+  {
+    "test": "W14",
+    "check": "the organisation portal (customId organisations) and its role are there",
+    "ok": true,
+    "detail": [
+      1,
+      1
+    ]
+  },
+  {
+    "test": "W14",
+    "check": "a person sees their organisation's registrations only (one per response)",
+    "ok": true,
+    "detail": [
+      "6af4c774577e9aa0f",
+      "6af4c78021a7f3db6"
+    ]
+  },
+  {
+    "test": "W14",
+    "check": "its registration, without its key",
+    "ok": true,
+    "detail": [
+      "accountId",
+      "accountName",
+      "acronym",
+      "assignedUserId",
+      "assignedUserName",
+      "clusters",
+      "code",
+      "contactId",
+      "contactName",
+      "createdAt",
+      "createdById",
+      "createdByName",
+      "deleted",
+      "description",
+      "focalPoint",
+      "focalPointPhone",
+      "focalPointPosition",
+      "id",
+      "isFollowed",
+      "lastReport",
+      "modifiedAt",
+      "modifiedById",
+      "modifiedByName",
+      "name",
+      "orgType",
+      "organisationId",
+      "organisationName",
+      "organisationOther",
+      "responseId",
+      "responseName",
+      "status",
+      "streamUpdatedAt"
+    ]
+  },
+  {
+    "test": "W14",
+    "check": "another organisation's registration refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W14",
+    "check": "they correct its details (its acronym), not its status or response",
+    "ok": true,
+    "detail": {
+      "acronym": "FRC",
+      "status": "active",
+      "responseName": "FIVEW Hurricane"
+    }
+  },
+  {
+    "test": "W14",
+    "check": "an activity without its registration (the response) refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W14",
+    "check": "an activity in another organisation's registration refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W14",
+    "check": "an activity they add: their registration's response and organisation, their Account, its sector's project and teams",
+    "ok": true,
+    "detail": {
+      "responseName": "FIVEW Hurricane",
+      "leadOrganisationName": "FIVEW Relief Collective",
+      "accountName": "FIVEW Relief Collective",
+      "projectName": "FIVEW WASH",
+      "teamsNames": {
+        "6af050661f10ba21a": "Cluster: Test EQ 1 WASH",
+        "6af4a1c1730f6773f": "Coordination: Jamaica",
+        "6aec41fec6f7a5f27": "Response: Test EQ 1"
+      }
+    }
+  },
+  {
+    "test": "W14",
+    "check": "its data checks run as for a Kobo report (no community yet)",
+    "ok": true,
+    "detail": [
+      "no_communities"
+    ]
+  },
+  {
+    "test": "W14",
+    "check": "a location they add: the activity's Account and project; the activity's totals and checks follow",
+    "ok": true,
+    "detail": [
+      {
+        "accountName": "FIVEW Relief Collective",
+        "projectName": "FIVEW WASH",
+        "dataChecks": [
+          "reached_over_targeted"
+        ]
+      },
+      {
+        "communities": 1,
+        "peopleReached": 50,
+        "dataChecks": []
+      }
+    ]
+  },
+  {
+    "test": "W14",
+    "check": "they correct it: completed",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W14",
+    "check": "they see their organisation's activities only; another's refused",
+    "ok": true,
+    "detail": 2
+  },
+  {
+    "test": "W14",
+    "check": "a person they add: on their Account, in its teams",
+    "ok": true,
+    "detail": {
+      "accountName": "FIVEW Relief Collective",
+      "teamsNames": {
+        "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
+        "6af050661f10ba21a": "Cluster: Test EQ 1 WASH",
+        "6af4a1c1730f6773f": "Coordination: Jamaica",
+        "6aec41fec6f7a5f27": "Response: Test EQ 1",
+        "6aec420039254967f": "Response: Test EQ 2"
+      }
+    }
+  },
+  {
+    "test": "W14",
+    "check": "someone who left: marked inactive, kept",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W14",
+    "check": "another organisation's person refused",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W14",
+    "check": "their clusters: those they registered in, not the others",
+    "ok": true,
+    "detail": [
+      "FIVEW ETC",
+      "FIVEW WASH"
+    ]
+  },
+  {
+    "test": "W14",
+    "check": "who to contact in them: a cluster's contacts",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "W16",
+    "check": "one cluster's list: its contact with their role, its partners with their active people (not those who left)",
+    "ok": true,
+    "detail": [
+      [
+        [
+          "Coordinator",
+          "Wes FIVEW Coordinator"
+        ]
+      ],
+      [
+        "Ana FIVEW Relief",
+        "Mary Brown"
+      ]
+    ]
+  },
+  {
+    "test": "W16",
+    "check": "and as a CSV: the cluster, role, name, organisation, job title, email, phone",
+    "ok": true,
+    "detail": [
+      "Cluster,Role,Name,Organisation,Job title,Email,Phone",
+      "WASH,Coordinator,Wes FIVEW Coordinator,,,delivered+fivew-wes@resend.dev,",
+      "WASH,Partner,Fola Point,ADRA - Adventist Development and Relief Agency,,f@example.org,",
+      "WASH,Partner,Hannah Clarke,ADRA - Adventist Development and Relief Agency,Field coordinator,hannah.clarke@adra.example.org,+18765550113"
+    ]
+  },
+  {
+    "test": "W16",
+    "check": "the whole response: every cluster",
+    "ok": true,
+    "detail": [
+      "FIVEW ETC",
+      "FIVEW Health",
+      "FIVEW Shelter",
+      "FIVEW WASH"
+    ]
+  },
+  {
+    "test": "W15",
+    "check": "a new registration's focal point gets one welcome email; one at example.org none (staging: the test inbox only)",
+    "ok": true,
+    "detail": [
+      [
+        "delivered+fivew-welcome-426647@resend.dev"
+      ],
+      0
+    ]
+  },
+  {
+    "test": "W15",
+    "check": "scheduled (EspoCRM sends it), on the organisation's Account: its code, the response, the report link with the response and the organisation filled in, the portal",
+    "ok": true,
+    "detail": {
+      "status": "Draft",
+      "sendAt": "2026-11-11 19:57:02",
+      "body": "<p>Hello Wil,</p><p><strong>FIVEW Welcome Org</strong> is registered in the response <strong>FIVEW Hurricane</strong>, with the code <strong>REG-3C3P</strong>. You are its focal point.</p><p><strong>To report an activity</strong> (the 5W), use this link: it fills in the response and your organisatio"
+    }
+  },
+  {
+    "test": "W15",
+    "check": "registering again (an update): no second email",
+    "ok": true,
+    "detail": 1
   }
 ]

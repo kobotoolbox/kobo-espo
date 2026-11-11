@@ -24,3 +24,103 @@ if (contactId && focalPointPhone && !record\attribute('Contact', contactId, 'pho
 if (contactId && focalPointPosition && !record\attribute('Contact', contactId, 'title')) {
     record\update('Contact', contactId, 'title', focalPointPosition);
 }
+
+// Its organisation is a partner of its sectors' projects in its response (what the
+// organisation portal follows: its clusters, and who to contact in them). A sector it no
+// longer names, or the response or Account it left: no longer, unless another of the
+// Account's registrations there names that sector
+$sectors = ifThenElse(clusters, clusters, list());
+if (responseId && accountId && (entity\isNew() || entity\isAttributeChanged('clusters')
+        || entity\isAttributeChanged('accountId') || entity\isAttributeChanged('responseId'))) {
+    $projects = record\findMany('CProject', 200, 'createdAt', 'asc', 'responseId=', responseId);
+    $i = 0;
+    while ($i < array\length($projects)) {
+        $p = array\at($projects, $i);
+        $partners = ifThenElse(record\attribute('CProject', $p, 'partnersIds'), record\attribute('CProject', $p, 'partnersIds'), list());
+        $in = array\includes($sectors, record\attribute('CProject', $p, 'cluster'));
+        if ($in && !array\includes($partners, accountId)) {
+            record\update('CProject', $p, 'partnersIds', array\push($partners, accountId));
+        }
+        if (!$in && array\includes($partners, accountId)) {
+            $keep = false;
+            $others = record\findMany('CResponder', 50, 'createdAt', 'asc', 'responseId=', responseId, 'accountId=', accountId);
+            $j = 0;
+            while ($j < array\length($others)) {
+                if (array\at($others, $j) != id && array\includes(record\attribute('CResponder', array\at($others, $j), 'clusters'),
+                        record\attribute('CProject', $p, 'cluster'))) {
+                    $keep = true;
+                }
+                $j = $j + 1;
+            }
+            if (!$keep) {
+                $left = list();
+                $j = 0;
+                while ($j < array\length($partners)) {
+                    if (array\at($partners, $j) != accountId) {
+                        $left = array\push($left, array\at($partners, $j));
+                    }
+                    $j = $j + 1;
+                }
+                record\update('CProject', $p, 'partnersIds', $left);
+            }
+        }
+        $i = $i + 1;
+    }
+}
+$wasResponse = entity\attributeFetched('responseId');
+$wasAccount = entity\attributeFetched('accountId');
+if (!entity\isNew() && $wasResponse && $wasAccount && ($wasResponse != responseId || $wasAccount != accountId)) {
+    $projects = record\findMany('CProject', 200, 'createdAt', 'asc', 'responseId=', $wasResponse);
+    $i = 0;
+    while ($i < array\length($projects)) {
+        $p = array\at($projects, $i);
+        $partners = ifThenElse(record\attribute('CProject', $p, 'partnersIds'), record\attribute('CProject', $p, 'partnersIds'), list());
+        $keep = false;
+        $others = record\findMany('CResponder', 50, 'createdAt', 'asc', 'responseId=', $wasResponse, 'accountId=', $wasAccount);
+        $j = 0;
+        while ($j < array\length($others)) {
+            if (array\at($others, $j) != id && array\includes(record\attribute('CResponder', array\at($others, $j), 'clusters'),
+                    record\attribute('CProject', $p, 'cluster'))) {
+                $keep = true;
+            }
+            $j = $j + 1;
+        }
+        if (array\includes($partners, $wasAccount) && !$keep) {
+            $left = list();
+            $j = 0;
+            while ($j < array\length($partners)) {
+                if (array\at($partners, $j) != $wasAccount) {
+                    $left = array\push($left, array\at($partners, $j));
+                }
+                $j = $j + 1;
+            }
+            record\update('CProject', $p, 'partnersIds', $left);
+        }
+        $i = $i + 1;
+    }
+}
+
+// The welcome email: a new registration's focal point gets its code, the activity report's
+// link with its response and organisation filled in, and the organisation portal. Made here
+// as a scheduled email (EspoCRM's job sends it within minutes), so an email problem never
+// stops a registration. The instance's parameters (deploy/instance.toml [params.fivew])
+// turn it on and give the links
+$to = ifThenElse(contactId, record\attribute('Contact', contactId, 'emailAddress'), '');
+if (entity\isNew() && $to && {{welcome_email}} == 'on'
+        && ({{email_only_to}} == '' || string\contains(string\lowerCase($to), {{email_only_to}}))) {
+    $first = record\attribute('Contact', contactId, 'firstName');
+    $response = record\attribute('CResponse', responseId, 'name');
+    $report = string\replace(string\replace(string\replace({{report_link}}, '{response}', record\attribute('CResponse', responseId, 'code')),
+        '{organisation}', ifThenElse(organisationId, record\attribute('COrganisation', organisationId, 'code'), '')),
+        '{type}', ifThenElse(orgType, orgType, ''));
+    $body = string\concatenate('<p>Hello ', ifThenElse($first, $first, ''), ',</p>',
+        '<p><strong>', name, '</strong> is registered in the response <strong>', $response, '</strong>, with the code <strong>', code, '</strong>. ',
+        'You are its focal point.</p>',
+        ifThenElse($report, string\concatenate('<p><strong>To report an activity</strong> (the 5W), use this link: ',
+            'it fills in the response and your organisation for you.<br><a href="', $report, '">', $report, '</a></p>'), ''),
+        ifThenElse({{portal_url}}, string\concatenate('<p>The coordinators can give you a login to the <strong>organisation portal</strong>, ',
+            'where you keep your registration, activities and people up to date: <a href="', {{portal_url}}, '">', {{portal_url}}, '</a></p>'), ''));
+    record\create('Email', 'name', string\concatenate(name, ': registered in ', $response),
+        'body', $body, 'isHtml', true, 'to', $to, 'from', {{from}}, 'status', 'Draft',
+        'sendAt', datetime\addMinutes(datetime\now(), 2), 'parentType', 'Account', 'parentId', accountId);
+}

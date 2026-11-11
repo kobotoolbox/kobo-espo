@@ -1,6 +1,6 @@
 # The 5W's organisations: Accounts, their people, clusters' people and a portal
 
-Status: 2026-11-11, a plan, checked against the UNDAC Handbook (8th ed., 2024: A.3
+Status: 2026-11-11, phases 1-6 built (as-built notes in each section); first a plan, checked against the UNDAC Handbook (8th ed., 2024: A.3
 humanitarian coordination and the cluster approach, G.6 inter-cluster coordination, F IM
 products; in ../undac-simex). It follows the CSO mapping's model (plans/cso-mapping-plan.md), which
 already works this way, and builds on the formula traits (plans/workflow-packs-plan.md,
@@ -227,6 +227,25 @@ As the CSO portal: **register in Kobo, keep current in the portal**.
 What it doesn't do: show other organisations. Who else works where is the dashboard's
 (kobo-dash), not the portal's.
 
+As built (2026-11-11, PRODUCT-441): the **Organisation portal** (`/portal/organisations`)
+and its portal role in the fivew pack; aclDefs `accountLink` = `account` on CResponder,
+CActivity, CActivityLocation, CFocalPoint, and = `partners` on CProject and
+CClusterContact. A cluster's **partners** (CProject ↔ Account, many-to-many, relation
+`cProjectPartner`: the loader now takes a relation name, as a link's 6th entry, since
+coLeads links the same entities) are the Accounts of the organisations registered in its
+sector: the registration's formula adds and takes off its Account as its sectors, response
+or Account change (unless another of the Account's registrations there names the sector); a
+new project, or one whose sector changes, takes the response's registrations'; its cluster
+contacts inherit them (cascade). EspoCRM's portal "account" level follows a many-to-many
+link too. A portal activity picks its registration: the formula gives it the registration's
+response and organisation, and its Account and project as for Kobo; its API script refuses
+one without a registration (400) or in another organisation's (403). EspoCRM itself fills a
+portal-made record's account link (and a Contact's Accounts) from the user's Contact. The
+welcome email (params `[params.fivew]`: welcome_email, from, portal_url, email_only_to,
+report_link with `{response}`, `{organisation}`, `{type}`) goes to a new registration's
+focal point. Tests: fivew W14 (25 checks), W15 (3). Not done: portal-specific layouts (the
+coordinators' fields are hidden by field access instead).
+
 ### 6. Reports still come from Kobo
 
 Kobo stays the way organisations report in the field (offline, many at once). The portal
@@ -248,6 +267,20 @@ a coordinator in a second team for the ICCG could edit that team's records too. 
   presence of partners by sector and location");
 - in EspoCRM a coordinator works on their cluster's records only (as today);
 - OCHA's people stay on the response's team, with edit access across it (as today).
+
+As built (2026-11-11, PRODUCT-442, with PRODUCT-404's 5W dashboard): a community
+(CActivityLocation) carries its activity's lead organisation, sector, type (`activityKind`:
+EspoCRM refuses a field named `activityType` beside the link `activity`; the inherit trait
+now takes `"to=from"` copies), status, and its parish's P-code (`pcode1`), so one feed draws
+the 3W; and **Overlaps with**: another organisation's activity of the same sector and type
+in the community, neither completed (the later one flagged, as the assessment registry
+does). An activity whose sector changes moves to that sector's project, or out of its
+project. The dashboard (site/dash-fivew-feeds.py, site/dash-fivew.py, local kobo-dash): the
+5W, the 3W across clusters (gaps by sector, duplication), organisations by cluster (the
+directory). The **contact list** is the EspoCRM MCP's `contact_list` (by cluster: its
+contacts with their roles, its partners' active people; a CSV), not a dashboard page: it's
+people's contact details, and no role exports. Tests: fivew W16 (3), W17 (7). Manual: the
+5W page's portal, clusters and dashboard sections; site/demo-fivew-people.py.
 
 ### 8. Later: sub-national coordination
 

@@ -1,5 +1,5 @@
 {
-  "when": "2026-11-09T14:56:10Z",
+  "when": "2026-11-11T20:54:33Z",
   "espo": "https://staging.respond.kobolabs.dev",
   "passed": 8,
   "failed": 0,
@@ -17,9 +17,26 @@
     },
     {
       "test": "T14",
-      "check": "in the response's team, assigned to its lead, in Backlog",
+      "check": "in the response's teams (its own, its country's coordination team), assigned to its lead, in Backlog",
       "ok": true,
-      "detail": ""
+      "detail": [
+        [
+          "6af4a1b6154a583fc",
+          "6aec420039254967f"
+        ],
+        [
+          "6af4a1b6154a583fc",
+          "6aec420039254967f"
+        ],
+        [
+          "6af4a1b6154a583fc",
+          "6aec420039254967f"
+        ],
+        [
+          "6af4a1b6154a583fc",
+          "6aec420039254967f"
+        ]
+      ]
     },
     {
       "test": "T14",

@@ -29,10 +29,28 @@ links = [
   ["CActivityLocation", "site", "CSite", "activityLocations", "manyToOne"],
   ["CActivityLocation", "project", "CProject", "activityLocations", "manyToOne"],
   ["CActivityLocation", "response", "CResponse", "activityLocations", "manyToOne"],
+  ["CActivityLocation", "leadOrganisation", "COrganisation", "locationsLed", "manyToOne"],
+  # A cluster's partners: the Accounts of the organisations registered in it (CResponder's
+  # formula); its contacts take them. What the organisation portal's "account" level follows
+  ["CProject", "partners", "Account", "clustersPartnered", "manyToMany", "cProjectPartner"],
+  ["CClusterContact", "partners", "Account", "clusterContactsShared", "manyToMany"],
 ]
+link_labels = { clustersPartnered = "Clusters (a partner)", clusterContactsShared = "Cluster contacts it sees" }
 
 [settings]
 global_search = ["CResponder", "CActivity"]
+
+# What an instance sets (deploy/instance.toml [params.fivew]): the welcome email a new
+# registration's focal point gets, with its code, the activity report's link (its
+# response and organisation filled in: {response}, {organisation}, {type}, the organisation's
+# type, which the form filters the organisations by) and the portal. Off
+# unless the instance turns it on
+[params]
+welcome_email = "off"
+from = ""
+portal_url = ""
+email_only_to = ""
+report_link = ""
 
 [entities.Responder]
 label = "Responding organisation"
@@ -94,6 +112,15 @@ populationTargeted = { type = "int", label = "People targeted", min = 0 }
 populationReached = { type = "int", label = "People reached", min = 0 }
 populationGroups = { type = "multiEnum", label = "Groups of people", list = "fivew-melissa.population_groups" }
 populationGroupsOther = { type = "varchar", label = "Groups (other)" }
+# Its activity's who and what (formula, trait inherit), and its parish's P-code: what the
+# response's 3W reads, one row per community (the dashboard's feed reads one entity). Its
+# activity's type is activityKind: EspoCRM refuses a field named after a link (activity)
+pcode1 = { type = "varchar", label = "P-code (parish)", maxLength = 30, readOnly = true }
+sector = { readOnly = true, tooltipText = "Its activity's", list = "fivew-melissa.sectors" }
+activityKind = { label = "Activity type", readOnly = true, tooltipText = "Its activity's", list = "fivew-melissa.activity_types" }
+activityKindOther = { type = "varchar", label = "Activity type (other)", readOnly = true }
+status = { label = "Activity status", readOnly = true, tooltipText = "Its activity's", style = { COMPLETED = "success" }, list = "fivew-melissa.activity_status" }
+overlapsWith = { type = "varchar", label = "Overlaps with", maxLength = 500, readOnly = true, tooltipText = "Other organisations' activities of the same sector and type in this community, not completed (formula): duplication for the ICCG to look at" }
 dataChecks = { type = "multiEnum", label = "Data checks", options = ["reached_over_targeted", "groups_over_total", "group_parts_dont_add_up"], translatedOptions = { reached_over_targeted = "More reached than targeted", groups_over_total = "The groups add up to more than the total reached", group_parts_dont_add_up = "A group's women, men and children don't add up to its people" }, tooltipText = "What looks wrong (formula); fix it or explain in a note" }
 idpPeopleTargeted = { type = "int", min = 0, label = "Internally Displaced People: people targeted" }
 idpWomenTargeted = { type = "int", min = 0, label = "Internally Displaced People: women targeted" }
@@ -168,6 +195,119 @@ CActivityLocation = { create = "no", read = "team", edit = "no", delete = "no", 
 active = { type = "bool", label = "Active", default = true, tooltipText = "Still one of the organisation's people for the response: unticked, they're kept, and left out of the contact list" }
 shared = { type = "bool", label = "Shared", tooltipText = "May be shown to other organisations (a directory), not only to the coordinators" }
 
+# The portal's "account" level follows these links (EspoCRM's entity manager doesn't set
+# them for a custom entity): an organisation's records by its Account; its clusters (and
+# their contacts) by their partners
+[metadata.aclDefs.CResponder]
+accountLink = "account"
+[metadata.aclDefs.CActivity]
+accountLink = "account"
+[metadata.aclDefs.CActivityLocation]
+accountLink = "account"
+[metadata.aclDefs.CFocalPoint]
+accountLink = "account"
+[metadata.aclDefs.CProject]
+accountLink = "partners"
+[metadata.aclDefs.CClusterContact]
+accountLink = "partners"
+
+# The organisation portal (/portal/organisations, plans/fivew-organisations-plan.md §5): an
+# organisation's people see and keep current its registrations, activities and people, and
+# read its clusters and who to contact in them. Never another organisation's
+[[portals]]
+name = "Organisation portal"
+customId = "organisations"
+tabList = ["CResponder", "CActivity", "CActivityLocation", "Contact", "CProject", "CClusterContact"]
+quickCreateList = ["CActivity", "CActivityLocation", "Contact"]
+roles = ["Organisation portal"]
+
+[portal_roles."Organisation portal"]
+exportPermission = "no"
+massUpdatePermission = "no"
+[portal_roles."Organisation portal".data]
+CResponder = { create = "no", read = "account", edit = "account", delete = "no", stream = "account" }
+CActivity = { create = "yes", read = "account", edit = "account", delete = "no", stream = "account" }
+CActivityLocation = { create = "yes", read = "account", edit = "account", delete = "account", stream = "no" }
+CFocalPoint = { create = "yes", read = "account", edit = "account", delete = "account", stream = "no" }
+Contact = { create = "yes", read = "account", edit = "account", delete = "no", stream = "no" }
+Account = { create = "no", read = "account", edit = "no", delete = "no", stream = "no" }
+CProject = { create = "no", read = "account", edit = "no", delete = "no", stream = "no" }
+CClusterContact = { create = "no", read = "account", edit = "no", delete = "no", stream = "no" }
+CAdminArea = { create = "no", read = "all", edit = "no", delete = "no", stream = "no" }
+COrganisation = { create = "no", read = "all", edit = "no", delete = "no", stream = "no" }
+[portal_roles."Organisation portal".fieldData.CResponder]
+# its details, not the response, the key or the status (the coordinators')
+cKoboAsset = { read = "no", edit = "no" }
+cKoboSubmissionId = { read = "no", edit = "no" }
+cKoboSubmissionUuid = { read = "no", edit = "no" }
+cKoboLink = { read = "no", edit = "no" }
+response = { read = "yes", edit = "no" }
+organisation = { read = "yes", edit = "no" }
+organisationOther = { read = "yes", edit = "no" }
+account = { read = "yes", edit = "no" }
+contact = { read = "yes", edit = "no" }
+status = { read = "yes", edit = "no" }
+lastReport = { read = "yes", edit = "no" }
+code = { read = "yes", edit = "no" }
+registrationKey = { read = "no", edit = "no" }
+teams = { read = "no", edit = "no" }
+[portal_roles."Organisation portal".fieldData.CActivity]
+# its registration (so its response and organisation) picked; its project, Account and
+# totals the formulas'
+cKoboAsset = { read = "no", edit = "no" }
+cKoboSubmissionId = { read = "no", edit = "no" }
+cKoboSubmissionUuid = { read = "no", edit = "no" }
+cKoboLink = { read = "no", edit = "no" }
+response = { read = "yes", edit = "no" }
+project = { read = "yes", edit = "no" }
+account = { read = "yes", edit = "no" }
+leadOrganisation = { read = "yes", edit = "no" }
+leadOrganisationOther = { read = "yes", edit = "no" }
+code = { read = "yes", edit = "no" }
+communities = { read = "yes", edit = "no" }
+quantity = { read = "yes", edit = "no" }
+budget = { read = "yes", edit = "no" }
+peopleTargeted = { read = "yes", edit = "no" }
+peopleReached = { read = "yes", edit = "no" }
+dataChecks = { read = "yes", edit = "no" }
+teams = { read = "no", edit = "no" }
+[portal_roles."Organisation portal".fieldData.CActivityLocation]
+cKoboAsset = { read = "no", edit = "no" }
+cKoboSubmissionId = { read = "no", edit = "no" }
+cKoboSubmissionUuid = { read = "no", edit = "no" }
+cKoboLink = { read = "no", edit = "no" }
+account = { read = "yes", edit = "no" }
+project = { read = "yes", edit = "no" }
+response = { read = "yes", edit = "no" }
+site = { read = "no", edit = "no" }
+dataChecks = { read = "yes", edit = "no" }
+teams = { read = "no", edit = "no" }
+leadOrganisation = { read = "yes", edit = "no" }
+overlapsWith = { read = "no", edit = "no" }
+[portal_roles."Organisation portal".fieldData.CFocalPoint]
+cKoboAsset = { read = "no", edit = "no" }
+cKoboSubmissionId = { read = "no", edit = "no" }
+cKoboSubmissionUuid = { read = "no", edit = "no" }
+cKoboLink = { read = "no", edit = "no" }
+account = { read = "yes", edit = "no" }
+contact = { read = "yes", edit = "no" }
+teams = { read = "no", edit = "no" }
+[portal_roles."Organisation portal".fieldData.Contact]
+cKoboAsset = { read = "no", edit = "no" }
+cKoboSubmissionId = { read = "no", edit = "no" }
+cKoboSubmissionUuid = { read = "no", edit = "no" }
+cKoboLink = { read = "no", edit = "no" }
+cActive = { read = "yes", edit = "yes" }
+cShared = { read = "yes", edit = "yes" }
+teams = { read = "no", edit = "no" }
+[portal_roles."Organisation portal".fieldData.CProject]
+teams = { read = "no", edit = "no" }
+partners = { read = "no", edit = "no" }
+lead = { read = "no", edit = "no" }
+[portal_roles."Organisation portal".fieldData.CClusterContact]
+teams = { read = "no", edit = "no" }
+partners = { read = "no", edit = "no" }
+
 [layouts.Contact]
 detail = [["account", "title", "cActive", "cShared"]]
 relationships = [{ name = "activityFocalPoints", before = "cases" }]
@@ -201,9 +341,10 @@ relationships = ["locations", "focalPoints"]
 [layouts.CActivityLocation]
 detail = [
   ["activity", "account", "project", "response", "parish", "community", "site", "locationType", "locationTypeOther", "locationComments", "quantity", "budget", "populationTargeted", "populationReached", "populationGroups", "populationGroupsOther", "dataChecks"],
+  ["leadOrganisation", "sector", "activityKind", "activityKindOther", "status", "pcode1", "overlapsWith"],
   ["idpPeopleTargeted", "idpWomenTargeted", "idpMenTargeted", "idpChildrenTargeted", "idpHouseholdsTargeted", "idpPeopleReached", "idpWomenReached", "idpMenReached", "idpChildrenReached", "idpHouseholdsReached", "hostingPeopleTargeted", "hostingWomenTargeted", "hostingMenTargeted", "hostingChildrenTargeted", "hostingHouseholdsTargeted", "hostingPeopleReached", "hostingWomenReached", "hostingMenReached", "hostingChildrenReached", "hostingHouseholdsReached", "ndpPeopleTargeted", "ndpWomenTargeted", "ndpMenTargeted", "ndpChildrenTargeted", "ndpHouseholdsTargeted", "ndpPeopleReached", "ndpWomenReached", "ndpMenReached", "ndpChildrenReached", "ndpHouseholdsReached", "otherPeopleTargeted", "otherWomenTargeted", "otherMenTargeted", "otherChildrenTargeted", "otherHouseholdsTargeted", "otherPeopleReached", "otherWomenReached", "otherMenReached", "otherChildrenReached", "otherHouseholdsReached"],
 ]
-list = ["name", "activity", "parish", "community", "locationType", "populationTargeted", "populationReached"]
+list = ["name", "activity", "parish", "community", "locationType", "populationTargeted", "populationReached", "overlapsWith"]
 
 [layouts.CFocalPoint]
 detail = [["activity"], ["contact", "account"]]
@@ -242,7 +383,7 @@ CActivity = ["girls", "boys", "women", "men", "elderlyWomen", "elderlyMen", "hou
 [traits.CActivity]
 inherit = [
   { link = "project", entity = "CProject", copy = ["teamsIds", "responseId"], cascade = true },
-  { link = "response", entity = "CResponse", copy = ["teamsIds"], unless = "project" },
+  { link = "response", entity = "CResponse", copy = ["teamsIds"], unless = "project", also = ["projectId"] },
 ]
 
 # Data checks: what looks wrong, as flags for the IM team. Its locations' totals come in
@@ -255,7 +396,7 @@ completed_ends_later = "status == 'COMPLETED' && endDate && datetime\\diff(endDa
 # A location and a focal point are their activity's: its teams (and a location its project
 # and response)
 [traits.CActivityLocation]
-inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds", "projectId", "responseId", "accountId"], cascade = true }]
+inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds", "projectId", "responseId", "accountId", "leadOrganisationId", "sector", "activityKind=activityType", "activityKindOther=activityTypeOther", "status"], cascade = true }]
 
 [traits.CActivityLocation.checks]
 reached_over_targeted = "populationReached && populationTargeted && populationReached > populationTargeted"
@@ -285,3 +426,7 @@ teams_up = { link = "account", entity = "Account" }
 # coordinators and the clusters it's in see them
 [traits.Contact]
 inherit = [{ link = "account", entity = "Account", copy = ["teamsIds"], cascade = true }]
+
+# A cluster's contacts are seen by its partners (the organisation portal), and follow them
+[traits.CClusterContact]
+inherit = [{ link = "project", entity = "CProject", copy = ["partnersIds"], cascade = true }]

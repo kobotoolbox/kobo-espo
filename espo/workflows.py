@@ -6,7 +6,8 @@ A pack, workflows/<name>/:
 
     workflow.toml   requires; conflicts (packs meant for other instances: a warning when
                     both are applied); entities and their fields; fields on others' entities; links
-                    (and link_labels, where a name's words aren't the label: coLeads = "Co-leads");
+                    (and link_labels, where a name's words aren't the label: coLeads = "Co-leads";
+                    a manyToMany's 6th entry its relation's name, when two link the same entities);
                     codes; teams; roles (merged across packs); users (tests only); layouts;
                     settings; data to load; removed fields and links; agent_entities,
                     agent_guarded, task_parents
@@ -404,13 +405,13 @@ def ensure_entities(espo, spec):
             ensure_field(espo, f'C{name}', field, fspec)
     i18n = None
     label = lambda name: link_label(name, spec['link_labels'])  # noqa: E731
-    for entity, link, foreign, link_foreign, kind in spec['links']:
+    for entity, link, foreign, link_foreign, kind, *relation in spec['links']:
         if link not in metadata(espo, f'entityDefs.{entity}.links'):
             espo.call('POST', '/EntityManager/action/createLink', body={
                 'entity': entity, 'link': link, 'linkForeign': link_foreign, 'entityForeign': foreign,
                 'linkType': kind, 'label': label(link), 'labelForeign': label(link_foreign),
                 **({'linkMultipleField': True} if kind == 'manyToMany' else {}),  # its field on the record (participantsIds)
-                'relationName': None})
+                'relationName': relation[0] if relation else None})
             print(f'link created: {entity}.{link} -> {foreign}.{link_foreign}')
         elif kind == 'manyToMany' and link not in metadata(espo, f'entityDefs.{entity}.fields'):
             espo.call('POST', '/EntityManager/action/updateLink', body={

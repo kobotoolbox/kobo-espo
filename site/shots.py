@@ -35,12 +35,12 @@ def save(page, name, full=False):
     print(f'{name}.jpg {img.size[0]}x{img.size[1]}')
 
 
-PORTAL = 'cso'  # the CSO portal's customId: its pages are /portal/cso/
-PORTAL_USERS = {'cso-portal-amani'}
+# Portal users, by their portal's customId: its pages are /portal/<customId>/
+PORTAL_USERS = {'cso-portal-amani': 'cso', 'fivew-portal-jrc': 'organisations'}
 
 
 def base(user):
-    return f'{URL}/portal/{PORTAL}/' if user in PORTAL_USERS else URL + '/'
+    return f'{URL}/portal/{PORTAL_USERS[user]}/' if user in PORTAL_USERS else URL + '/'
 
 
 def sign_in(browser, user, size=(1440, 900)):
@@ -78,6 +78,8 @@ def main(only):
         'melissa': find(a, 'CResponse', 'name', 'Hurricane Melissa response, Jamaica'),
         'trucking': find(a, 'CActivity', 'title', 'Water trucking to Black River and Santa Cruz'),
         'jrc': find(a, 'CResponder', 'organisationId', find(a, 'COrganisation', 'code', 'ORG_JRC')),
+        'melissa_wash': find(a, 'CProject', 'name', 'Hurricane Melissa response, Jamaica · WASH'),
+        'mercy_trucking': find(a, 'CActivity', 'title', 'Water trucking to Black River (Mercy Corps)'),  # site/demo-fivew-people.py
         'amani': find(a, 'CCso', 'name', 'Amani Community Health Network'),
         'kamukunji': find(a, 'CAdminArea', 'pcode', 'KE047288'),
     }
@@ -87,7 +89,7 @@ def main(only):
         'where[0][type]': 'equals', 'where[0][attribute]': 'csoId', 'where[0][value]': ids['amani'],
         'where[1][type]': 'equals', 'where[1][attribute]': 'adminAreaId', 'where[1][value]': ids['kamukunji'],
         'select': 'id', 'maxSize': 1})['list'][0]['id']
-    for key, activity in (('trucking_place', 'trucking'),):  # its first community
+    for key, activity in (('trucking_place', 'trucking'), ('mercy_place', 'mercy_trucking')):  # its first community
         ids[key] = a.call('GET', '/CActivityLocation', {
             'where[0][type]': 'equals', 'where[0][attribute]': 'activityId', 'where[0][value]': ids[activity],
             'orderBy': 'cKoboRow', 'order': 'asc', 'select': 'id', 'maxSize': 1})['list'][0]['id']
@@ -114,6 +116,11 @@ def main(only):
         'fivew-activities': ('staff-1', 'CActivity', None),
         'fivew-activity': ('staff-1', f'CActivity/view/{ids["trucking"]}', None),
         'fivew-location': ('staff-1', f'CActivityLocation/view/{ids["trucking_place"]}', None),
+        'fivew-cluster': ('staff-1', f'CProject/view/{ids["melissa_wash"]}', None),
+        'fivew-overlap': ('staff-1', f'CActivityLocation/view/{ids["mercy_place"]}', None),
+        'fivew-portal-registration': ('fivew-portal-jrc', f'CResponder/view/{ids["jrc"]}', None),
+        'fivew-portal-activities': ('fivew-portal-jrc', 'CActivity', None),
+        'fivew-portal-contacts': ('fivew-portal-jrc', 'CClusterContact', None),
         'cso-list': ('cso-kenya', 'CCso', None),
         'cso-profile': ('cso-kenya', f'CCso/view/{ids["amani"]}', None),
         'cso-place': ('cso-kenya', f'CPresence/view/{ids["amani_place"]}', None),

@@ -1,9 +1,20 @@
+// Made in the organisation portal: its registration picked, so its response and its
+// organisation are the registration's
+if (responderId && !responseId) {
+    responseId = record\attribute('CResponder', responderId, 'responseId');
+}
+if (responderId && !leadOrganisationId && !leadOrganisationOther) {
+    leadOrganisationId = record\attribute('CResponder', responderId, 'organisationId');
+    leadOrganisationOther = record\attribute('CResponder', responderId, 'organisationOther');
+}
+
 // An activity is in its response's project for its sector, and in that project's teams:
 // the sector's people and the coordinators see it. With no project for its sector, it's in
-// the response's teams (coordinators only)
-if (responseId && sector && !projectId) {
+// the response's teams (coordinators only). Its sector changed: it moves to that sector's
+// project, or out of its project if the response has none
+if (responseId && sector && (!projectId || (!entity\isNew() && entity\isAttributeChanged('sector')))) {
     $project = record\findOne('CProject', 'createdAt', 'asc', 'responseId=', responseId, 'cluster=', sector);
-    if ($project) {
+    if ($project || projectId) {
         projectId = $project;
     }
 }

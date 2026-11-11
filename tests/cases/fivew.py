@@ -2,8 +2,8 @@
 """
 W1-W9, W11-W13: Workflow E, a response's 5W (plans/workflow-e-5w-plan.md) on the Hurricane
 Melissa 5W form's model, and the short codes; W11 its organisations as Accounts, W12 their
-people, W13 activities' focal points as those people (plans/fivew-organisations-plan.md,
-phases 1-3).
+people, W13 activities' focal points as those people, W14 clusters' partners and the
+organisation portal, W15 the welcome email (plans/fivew-organisations-plan.md, phases 1-3, 5).
 
     python3 -I tests/cases/fivew.py
 
@@ -18,13 +18,16 @@ Writes tests/results/fivew.json.
 """
 import json
 import re
+import secrets
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from lib import ROOT, BridgeError, admin, as_user  # noqa: E402
+from lib import ROOT, URL, BridgeError, Espo, admin, as_user  # noqa: E402
 
 RESPONSE = 'FIVEW Hurricane'
+RUN = str(int(time.time()))[-6:]
 CODE = re.compile(r'^(RSP|PRJ|REG|ACT|TSK)-[23456789ABCDEFGHJKMNPQRSTVWXYZ]{4}$')
 results = []
 
@@ -63,13 +66,20 @@ def cleanup(a):
                 for r in a.call('GET', f'/{entity}', {'maxSize': 200, 'select': 'id', **where('activityId', act['id'])})['list']:
                     a.call('DELETE', f'/{entity}/{r["id"]}')
             a.call('DELETE', f'/CActivity/{act["id"]}')
+        for p in a.call('GET', '/CProject', {'maxSize': 50, 'select': 'id', **where('responseId', resp['id'])})['list']:
+            for r in a.call('GET', '/CClusterContact', {'maxSize': 50, 'select': 'id', **where('projectId', p['id'])})['list']:
+                a.call('DELETE', f'/CClusterContact/{r["id"]}')
         for entity, attr in (('CResponder', 'responseId'), ('Task', 'cResponseId'), ('CProject', 'responseId')):
             for r in a.call('GET', f'/{entity}', {'maxSize': 200, 'select': 'id', **where(attr, resp['id'])})['list']:
                 a.call('DELETE', f'/{entity}/{r["id"]}')
         a.call('DELETE', f'/CResponse/{resp["id"]}')
     for c in a.call('GET', '/Contact', {'maxSize': 50, 'select': 'id', **where('emailAddress', 'delivered+fivew-', 'startsWith')})['list']:
         a.call('DELETE', f'/Contact/{c["id"]}')
+    for u in a.call('GET', '/User', {'maxSize': 50, 'select': 'id', **where('userName', 'fivewp-', 'startsWith')})['list']:
+        a.call('DELETE', f'/User/{u["id"]}')
     for acc in a.call('GET', '/Account', {'maxSize': 50, 'select': 'id', **where('name', 'FIVEW ', 'startsWith')})['list']:
+        for m in a.call('GET', '/Email', {'maxSize': 50, 'select': 'id', **where('parentId', acc['id'])})['list']:
+            a.call('DELETE', f'/Email/{m["id"]}')  # its welcome emails (W15), sent or not
         a.call('DELETE', f'/Account/{acc["id"]}')
     for o in a.call('GET', '/COrganisation', {'maxSize': 5, 'select': 'id', **where('code', 'ORG_FIVEW_TEST')})['list']:
         a.call('DELETE', f'/COrganisation/{o["id"]}')
@@ -354,6 +364,192 @@ def run(a, team, user):
     fx = get('CFocalPoint', f1)
     check('W13', "a focal point row: its activity's teams and Account", (set(fx['teamsIds']), fx.get('accountId'))
           == (set(get('CActivity', act)['teamsIds']), reg['accountId']), (fx.get('teamsNames'), fx.get('accountId')))
+
+    # --- W17: the 3W across clusters: a location has its activity's who and what, and overlaps ----------
+    kits = 'distribution_of_hygiene_kits'
+    x1 = activity(name='Hygiene kits A', activityType=kits)
+    l1 = location(x1, community[1], populationReached=5)
+    x2 = activity(name='Hygiene kits B', activityType=kits, leadOrganisationId=org['ORG_AMERICARES']['id'])
+    l2 = location(x2, community[1], populationReached=5)
+    got = get('CActivityLocation', l2)
+    check('W17', "a location: its activity's organisation, sector, type and status, and its parish's P-code",
+          (got.get('leadOrganisationId'), got.get('sector'), got.get('activityKind'), got.get('status'), got.get('pcode1'))
+          == (org['ORG_AMERICARES']['id'], 'WASH', kits, 'IN_PROGRESS', 'JM17'),
+          {k: got.get(k) for k in ('leadOrganisationName', 'sector', 'activityKind', 'status', 'pcode1')})
+    code1 = get('CActivity', x1)['code']
+    check('W17', "another organisation's same activity in the same community: an overlap, naming it (the later one flagged)",
+          code1 in (got.get('overlapsWith') or '') and org['ORG_ADRA']['name'] in got['overlapsWith']
+          and not get('CActivityLocation', l1).get('overlapsWith'), (got.get('overlapsWith'), get('CActivityLocation', l1).get('overlapsWith')))
+    l3 = location(act2, community[1], populationReached=5)
+    check('W17', "the same organisation's, or another type: no overlap", not get('CActivityLocation', l3).get('overlapsWith'),
+          get('CActivityLocation', l3).get('overlapsWith'))
+    a.call('PUT', f'/CActivity/{x1["id"]}', body={'status': 'COMPLETED'})
+    check('W17', "its activity completed: the location follows", get('CActivityLocation', l1).get('status') == 'COMPLETED',
+          get('CActivityLocation', l1).get('status'))
+    a.call('PUT', f'/CActivityLocation/{l2["id"]}', body={'populationReached': 6})
+    check('W17', 'the other one completed: no longer an overlap', not get('CActivityLocation', l2).get('overlapsWith'),
+          get('CActivityLocation', l2).get('overlapsWith'))
+    a.call('PUT', f'/CActivity/{x2["id"]}', body={'sector': 'SHELTER'})
+    check('W17', "its activity's sector changed: it moves to that sector's project; the location follows",
+          (get('CActivityLocation', l2).get('sector'), get('CActivity', x2).get('projectName'), get('CActivityLocation', l2).get('projectName'))
+          == ('SHELTER', 'FIVEW Shelter', 'FIVEW Shelter'),
+          (get('CActivityLocation', l2).get('sector'), get('CActivity', x2).get('projectName')))
+    a.call('PUT', f'/CActivity/{x2["id"]}', body={'sector': 'EDUCATION'})
+    check('W17', "a sector the response has no project for: out of its project, in the response's teams only",
+          get('CActivity', x2).get('projectId') is None and set(get('CActivity', x2)['teamsIds']) == set(get('CResponse', resp)['teamsIds']),
+          (get('CActivity', x2).get('projectName'), get('CActivity', x2).get('teamsNames')))
+
+    portal_tests(a, get, resp, resp_b, p_etc, p_wash, reg, r_a, r_b, acc_a, act, ana, olu, community, listed)
+    contact_tests(get, resp)
+    welcome_tests(a, get, resp, org)
+
+
+def portal_tests(a, get, resp, resp_b, p_etc, p_wash, reg, r_a, r_b, acc_a, act, ana, olu, community, listed):
+    """W14: a cluster's partners (the organisations registered in it), and an organisation's
+    person in the organisation portal, with their own password, through the portal's API
+    (what its pages call)."""
+    partners = lambda p: set(get('CProject', p).get('partnersIds') or [])  # noqa: E731
+    check('W14', "a cluster's partners: the Accounts of the organisations registered in it (ADRA now in WASH, not ETC)",
+          partners(p_etc) == {acc_a['id']} and partners(p_wash) == {reg['accountId'], acc_a['id']}, (partners(p_etc), partners(p_wash)))
+    cc = a.call('POST', '/CClusterContact', body={'name': 'Wes FIVEW Coordinator', 'projectId': p_wash['id'], 'role': 'coordinator',
+                                                  'emailAddress': 'delivered+fivew-wes@resend.dev'})
+    check('W14', "its contacts take them", set(get('CClusterContact', cc).get('partnersIds') or []) == partners(p_wash),
+          get('CClusterContact', cc).get('partnersIds'))
+    a.call('PUT', f'/CResponder/{r_a["id"]}', body={'clusters': ['EMERGENCY_TELECOMS']})
+    check('W14', "a sector it no longer names: no longer that cluster's partner, nor its contacts'",
+          partners(p_wash) == {reg['accountId']} and set(get('CClusterContact', cc).get('partnersIds') or []) == {reg['accountId']}
+          and partners(p_etc) == {acc_a['id']}, (partners(p_wash), get('CClusterContact', cc).get('partnersIds')))
+    a.call('PUT', f'/CResponder/{r_a["id"]}', body={'clusters': ['EMERGENCY_TELECOMS', 'WASH']})
+    check('W14', 'named again: its partner again, and its contacts\'', acc_a['id'] in partners(p_wash)
+          and acc_a['id'] in (get('CClusterContact', cc).get('partnersIds') or []), partners(p_wash))
+    p_hl = a.call('POST', '/CProject', body={'name': 'FIVEW Health', 'cluster': 'HEALTH', 'status': 'Active', 'responseId': resp['id']})
+    a.call('PUT', f'/CResponder/{reg["id"]}', body={'clusters': ['WASH', 'SHELTER', 'HEALTH']})
+    check('W14', 'a cluster activated later: its partners as the organisations name it', partners(p_hl) == {reg['accountId']},
+          partners(p_hl))
+
+    portal = a.call('GET', '/Portal', {'maxSize': 5, **where('name', 'Organisation portal')})['list']
+    role = a.call('GET', '/PortalRole', {'maxSize': 5, **where('name', 'Organisation portal')})['list']
+    check('W14', 'the organisation portal (customId organisations) and its role are there', len(portal) == 1 and len(role) == 1
+          and get('Portal', portal[0]).get('customId') == 'organisations', (len(portal), len(role)))
+    if not (portal and role):
+        return
+    password = secrets.token_urlsafe(14)
+    a.call('POST', '/User', body={'userName': f'fivewp-{RUN}', 'type': 'portal', 'password': password, 'contactId': ana['id'],
+                                  'firstName': 'Ana', 'lastName': 'FIVEW Relief', 'portalsIds': [portal[0]['id']],
+                                  'portalRolesIds': [role[0]['id']], 'isActive': True, 'accountsIds': [acc_a['id']]})
+    me = Espo(URL, basic=f'fivewp-{RUN}:{password}')
+    me.base = f'{URL}/api/v1/portal-access/{portal[0]["id"]}'
+    seen = {r['id'] for r in me.call('GET', '/CResponder', {'maxSize': 50, 'select': 'id'})['list']}
+    check('W14', "a person sees their organisation's registrations only (one per response)", seen == {r_a['id'], r_b['id']}, seen)
+    got = me.call('GET', f'/CResponder/{r_a["id"]}')
+    check('W14', 'its registration, without its key', got.get('responseId') == resp['id'] and 'registrationKey' not in got,
+          sorted(got))
+    check('W14', "another organisation's registration refused", status(lambda: me.call('GET', f'/CResponder/{reg["id"]}')) == 403)
+    was = get('CResponder', r_a).get('status')
+    me.call('PUT', f'/CResponder/{r_a["id"]}', body={'acronym': 'FRC', 'status': 'inactive', 'responseId': resp_b['id']})
+    got = get('CResponder', r_a)
+    check('W14', 'they correct its details (its acronym), not its status or response',
+          (got.get('acronym'), got.get('status'), got.get('responseId')) == ('FRC', was, resp['id']),
+          {k: got.get(k) for k in ('acronym', 'status', 'responseName')})
+    body = {'name': 'Jerry cans', 'sector': 'WASH', 'activityType': 'other', 'status': 'IN_PROGRESS', 'startDate': '2026-11-05'}
+    check('W14', 'an activity without its registration (the response) refused', status(lambda: me.call('POST', '/CActivity', body=body)) == 400)
+    check('W14', "an activity in another organisation's registration refused",
+          status(lambda: me.call('POST', '/CActivity', body={**body, 'responderId': reg['id']})) == 403)
+    new = me.call('POST', '/CActivity', body={**body, 'responderId': r_a['id'], 'accountId': reg['accountId']})
+    got = get('CActivity', new)
+    check('W14', "an activity they add: their registration's response and organisation, their Account, its sector's project and teams",
+          (got.get('responseId'), got.get('leadOrganisationId'), got.get('accountId'), got.get('projectId')) ==
+          (resp['id'], listed['id'], acc_a['id'], p_wash['id']) and set(got['teamsIds']) == set(get('CProject', p_wash)['teamsIds']),
+          {k: got.get(k) for k in ('responseName', 'leadOrganisationName', 'accountName', 'projectName', 'teamsNames')})
+    check('W14', 'its data checks run as for a Kobo report (no community yet)', got.get('dataChecks') == ['no_communities'],
+          got.get('dataChecks'))
+    loc = me.call('POST', '/CActivityLocation', body={'name': 'x', 'activityId': new['id'], 'communityId': community[0]['id'],
+                                                      'populationTargeted': 40, 'populationReached': 50})
+    got, gl = get('CActivity', new), get('CActivityLocation', loc)
+    check('W14', "a location they add: the activity's Account and project; the activity's totals and checks follow",
+          (gl.get('accountId'), gl.get('projectId'), gl.get('dataChecks'), got.get('communities'), got.get('peopleReached'), got.get('dataChecks'))
+          == (acc_a['id'], p_wash['id'], ['reached_over_targeted'], 1, 50, []),
+          ({k: gl.get(k) for k in ('accountName', 'projectName', 'dataChecks')}, {k: got.get(k) for k in ('communities', 'peopleReached', 'dataChecks')}))
+    me.call('PUT', f'/CActivity/{new["id"]}', body={'status': 'COMPLETED', 'endDate': '2026-11-09'})
+    check('W14', 'they correct it: completed', get('CActivity', new).get('status') == 'COMPLETED')
+    seen = {r['id'] for r in me.call('GET', '/CActivity', {'maxSize': 50, 'select': 'id'})['list']}
+    check('W14', "they see their organisation's activities only; another's refused",
+          new['id'] in seen and act['id'] not in seen and status(lambda: me.call('GET', f'/CActivity/{act["id"]}')) == 403, len(seen))
+    bea = me.call('POST', '/Contact', body={'firstName': 'Bea', 'lastName': 'FIVEW Portal', 'emailAddress': 'delivered+fivew-bea@resend.dev'})
+    got = get('Contact', bea)
+    check('W14', "a person they add: on their Account, in its teams", got.get('accountId') == acc_a['id']
+          and set(got.get('teamsIds') or []) == set(get('Account', acc_a)['teamsIds']), {k: got.get(k) for k in ('accountName', 'teamsNames')})
+    me.call('PUT', f'/Contact/{bea["id"]}', body={'cActive': False})
+    check('W14', 'someone who left: marked inactive, kept', get('Contact', bea).get('cActive') is False)
+    check('W14', "another organisation's person refused", status(lambda: me.call('GET', f'/Contact/{olu["id"]}')) == 403)
+    seen = {r['name'] for r in me.call('GET', '/CProject', {'maxSize': 50, 'select': 'name'})['list']}
+    check('W14', 'their clusters: those they registered in, not the others', seen == {'FIVEW ETC', 'FIVEW WASH'}, seen)
+    check('W14', "who to contact in them: a cluster's contacts", status(lambda: me.call('GET', f'/CClusterContact/{cc["id"]}')) == 200
+          and status(lambda: me.call('GET', f'/CProject/{p_hl["id"]}')) == 403)
+
+
+def contact_tests(get, resp):
+    """W16: the response's contact list (the EspoCRM MCP's contact_list): by cluster, its
+    contacts and its partners' active people, and a CSV."""
+    import tempfile
+    from bridges import BRIDGE_DIR
+    sys.path.insert(0, str(BRIDGE_DIR))
+    from espo_mcp import tools
+    from lib import secrets as read_secrets
+    work = Path(tempfile.mkdtemp(prefix='fivew-mcp-'))
+    (work / 'token').write_text('unused')
+    (work / 'bridge.secrets').write_text(f'ESPO_ADMIN_PASSWORD={read_secrets()["ESPO_ADMIN_PASSWORD"]}\n')
+    inst = tools.Instance({'ESPO_URL': URL, 'BRIDGE_SECRETS': str(work / 'bridge.secrets'),
+                           'KOBO_URL': 'http://127.0.0.1:9', 'KOBO_TOKEN_FILE': str(work / 'token')})
+    out = tools.contact_list(inst, get('CResponse', resp)['code'], 'WASH')
+    wash = out['clusters'][0] if len(out['clusters']) == 1 else {}
+    people = {o['organisation']: {x['name'] for x in o['people']} for o in wash.get('partners', [])}
+    check('W16', "one cluster's list: its contact with their role, its partners with their active people (not those who left)",
+          [(c['role'], c['name']) for c in wash.get('contacts', [])] == [('Coordinator', 'Wes FIVEW Coordinator')]
+          and 'Ana FIVEW Relief' in people.get('FIVEW Relief Collective', set())
+          and 'Bea FIVEW Portal' not in people.get('FIVEW Relief Collective', set()),
+          ([(c['role'], c['name']) for c in wash.get('contacts', [])], people.get('FIVEW Relief Collective')))
+    lines = out['csv'].splitlines()
+    check('W16', 'and as a CSV: the cluster, role, name, organisation, job title, email, phone',
+          lines[0] == 'Cluster,Role,Name,Organisation,Job title,Email,Phone'
+          and any(ln.startswith('WASH') and 'Wes FIVEW Coordinator' in ln and 'delivered+fivew-wes@resend.dev' in ln for ln in lines[1:])
+          and any(',Partner,Ana FIVEW Relief,FIVEW Relief Collective' in ln for ln in lines), lines[:4])
+    every = tools.contact_list(inst, resp['id'])
+    check('W16', "the whole response: every cluster", sorted(c['project'] for c in every['clusters']) ==
+          ['FIVEW ETC', 'FIVEW Health', 'FIVEW Shelter', 'FIVEW WASH'], [c['project'] for c in every['clusters']])
+
+
+def welcome_tests(a, get, resp, org):
+    """W15: the welcome email a new registration's focal point gets (deploy/instance.toml
+    turns it on; on staging only for Resend's test inbox): a scheduled email with its code
+    and the organisation portal."""
+    inbox = f'delivered+fivew-welcome-{RUN}@resend.dev'
+    out = []
+    for email, name, last in ((inbox, 'FIVEW Welcome Org', 'Come'), (f'fivew-{RUN}@example.org', 'FIVEW Quiet Org', 'Quiet')):
+        c = a.call('POST', '/Contact', body={'firstName': 'Wil', 'lastName': last, 'emailAddress': email})
+        r = a.call('POST', '/CResponder', body={'name': 'x', 'organisationId': org['other']['id'], 'organisationOther': name,
+                                                'orgType': 'NATIONAL_NGO', 'responseId': resp['id'], 'clusters': ['WASH'],
+                                                'contactId': c['id']})
+        r = get('CResponder', r)
+        out.append((r, [get('Email', m) for m in a.call('GET', '/Email', {'maxSize': 10, 'select': 'id', **where('parentId', r['accountId'])})['list']]))
+        if email.endswith('example.org'):
+            a.call('DELETE', f'/Contact/{c["id"]}')
+    (r, mails), (_, quiet) = out
+    check('W15', 'a new registration\'s focal point gets one welcome email; one at example.org none (staging: the test inbox only)',
+          [m.get('to') for m in mails] == [inbox] and quiet == [], ([m.get('to') for m in mails], len(quiet)))
+    m = mails[0] if len(mails) == 1 else {}
+    body = m.get('body') or ''
+    code = get('CResponse', resp)['code']
+    check('W15', "scheduled (EspoCRM sends it), on the organisation's Account: its code, the response, the report link with "
+          "the response and the organisation filled in, the portal",
+          m.get('status') == 'Draft' and m.get('sendAt') and r['code'] in body and RESPONSE in body and '/portal/organisations/' in body
+          and f'response%5D={code}' in body and 'LeadOrganization_name%5D=other' in body and 'LeadOrganization_type%5D=NATIONAL_NGO' in body,
+          {**{k: m.get(k) for k in ('status', 'sendAt')}, 'body': body[:300]})
+    a.call('PUT', f'/CResponder/{r["id"]}', body={'acronym': 'FWO'})
+    again = a.call('GET', '/Email', {'maxSize': 10, 'select': 'id', **where('parentId', r['accountId'])})['list']
+    again = len(again)  # (EspoCRM doesn't count emails: its total is -2)
+    check('W15', 'registering again (an update): no second email', again == 1, again)
+
 
 if __name__ == '__main__':
     main()

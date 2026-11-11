@@ -9,6 +9,48 @@ if (communityId && (entity\isNew() || entity\isAttributeChanged('communityId')))
         ifThenElse(parishId, string\concatenate(', ', record\attribute('CAdminArea', parishId, 'name')), ''));
 }
 
+// Its activity's who and what, for one from before they were copied (the trait copies them
+// when it's made or moved, and its activity's changes follow); its parish's P-code
+if (activityId && !sector && record\attribute('CActivity', activityId, 'sector')) {
+    leadOrganisationId = record\attribute('CActivity', activityId, 'leadOrganisationId');
+    sector = record\attribute('CActivity', activityId, 'sector');
+    activityKind = record\attribute('CActivity', activityId, 'activityType');
+    activityKindOther = record\attribute('CActivity', activityId, 'activityTypeOther');
+    status = record\attribute('CActivity', activityId, 'status');
+}
+if (parishId && (!pcode1 || entity\isAttributeChanged('parishId'))) {
+    pcode1 = record\attribute('CAdminArea', parishId, 'pcode');
+}
+
+// Overlaps, for the ICCG (duplication across clusters, UNDAC Handbook G.6): another
+// organisation's activity of the same sector and type ("other": the same typed-in type) in
+// this community in the response, neither completed. This one is flagged, naming the others
+$overlaps = '';
+if (responseId && communityId && sector && activityKind && status != 'COMPLETED') {
+    $others = record\findMany('CActivityLocation', 500, 'createdAt', 'asc', 'responseId=', responseId, 'communityId=', communityId);
+    $i = 0;
+    while ($i < array\length($others)) {
+        $o = array\at($others, $i);
+        $acc = record\attribute('CActivityLocation', $o, 'accountId');
+        $org = record\attribute('CActivityLocation', $o, 'leadOrganisationId');
+        $same = $o == id || record\attribute('CActivityLocation', $o, 'activityId') == activityId
+            || ifThenElse(accountId && $acc, $acc == accountId, $org == leadOrganisationId);
+        if (!$same && record\attribute('CActivityLocation', $o, 'sector') == sector
+                && record\attribute('CActivityLocation', $o, 'activityKind') == activityKind
+                && (activityKind != 'other' || string\lowerCase(string\trim(record\attribute('CActivityLocation', $o, 'activityKindOther')))
+                    == string\lowerCase(string\trim(activityKindOther)))
+                && record\attribute('CActivityLocation', $o, 'status') != 'COMPLETED') {
+            $who = ifThenElse($acc, record\attribute('Account', $acc, 'name'), record\attribute('COrganisation', $org, 'name'));
+            $what = record\attribute('CActivity', record\attribute('CActivityLocation', $o, 'activityId'), 'code');
+            if (!string\contains($overlaps, $what)) {
+                $overlaps = string\concatenate($overlaps, ifThenElse($overlaps, ', ', ''), $who, ' (', $what, ')');
+            }
+        }
+        $i = $i + 1;
+    }
+}
+overlapsWith = ifThenElse($overlaps, $overlaps, null);
+
 // The activity's totals: this location and its others
 if (activityId) {
     $ids = record\findMany('CActivityLocation', 500, 'createdAt', 'asc', 'activityId=', activityId);
