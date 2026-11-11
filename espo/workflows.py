@@ -10,6 +10,9 @@ A pack, workflows/<name>/:
                     agent_guarded, task_parents
     lists/*.json    choice lists with codes: an enum names one, "<file>.<list>"
     formulas/       <Entity>.<script>.formula: this pack's block of that entity's script
+    [traits.<Entity>]            the shared formula patterns it uses (espo/traits.py):
+                                 portal_default, pcodes, inherit (and its cascade),
+                                 checks, supersede
     agents.json     its example agents
     data/           its reference data
     migrate.py      migrate(espo): what data can't say (old codes moved), run after applying
@@ -51,8 +54,10 @@ PACKS = ROOT / 'workflows'
 FORMULA = ROOT / 'espo' / 'formula'  # the shared snippets: _code, _agent-guard
 sys.path.insert(0, str(ROOT / 'tests'))
 sys.path.insert(0, str(ROOT / 'agents'))
+sys.path.insert(0, str(ROOT / 'espo'))
 from lib import pw_key, secrets as read_secrets  # noqa: E402
 import tools as agent_tools  # noqa: E402  (the code tools an agent may use: its Tools field's options)
+import traits  # noqa: E402  (espo/traits.py: the formulas' shared patterns)
 
 ALL, TEAM, OWN, NO = 'all', 'team', 'own', 'no'
 PERMISSIONS = ('assignmentPermission', 'userPermission', 'mentionPermission', 'exportPermission', 'massUpdatePermission')
@@ -164,7 +169,7 @@ def load(names, packs_dir=PACKS, params=None):
             'roles': {}, 'users': [], 'layouts': {}, 'data': [], 'removed': {'fields': {}, 'links': []},
             'settings': {'assignment_notifications': [], 'global_search': []}, 'formulas': {}, 'agents': [], 'tabs': [],
             'migrations': [], 'agent_entities': {}, 'agent_guarded': [], 'task_parents': [],
-            'metadata': {}, 'portal_roles': {}, 'portals': []}
+            'metadata': {}, 'portal_roles': {}, 'portals': [], 'traits': {}}
     ordered = {}
     for name in packs:
         p, d = read(name, packs_dir), packs_dir / name
@@ -218,6 +223,17 @@ def load(names, packs_dir=PACKS, params=None):
         spec['agent_entities'].update(p.get('agent_entities', {}))
         spec['agent_guarded'] += p.get('agent_guarded', [])
         spec['task_parents'] += p.get('task_parents', [])
+        for ent, t in p.get('traits', {}).items():  # inherits and checks add up; the others are one pack's
+            have = spec['traits'].setdefault(ent, {})
+            for k, v in t.items():
+                if k == 'inherit':
+                    have.setdefault(k, []).extend(v)
+                elif k == 'checks':
+                    have.setdefault(k, {}).update(v)
+                elif k in have:
+                    raise ValueError(f'{name}: {ent}: trait {k} is also another pack\'s')
+                else:
+                    have[k] = v
         mine = {**p.get('params', {}), **((params or {}).get(name) or {})}
         spec.setdefault('params', {})[name] = mine
         for path in sorted((d / 'formulas').glob('*.formula')):
@@ -229,6 +245,9 @@ def load(names, packs_dir=PACKS, params=None):
             spec['migrations'].append(d / 'migrate.py')
     for (ent, k), parts in ordered.items():
         spec['layouts'][ent][k] = merge_ordered(parts)
+    for ent, t in spec['traits'].items():
+        own = spec['entities'].get(ent[1:]) if ent.startswith('C') else None
+        traits.check(ent, t, own['fields'] if own else None)
     # The agents' "Works on" and Tools: from the packs' entities and agents/tools.py
     agent = spec['entities'].get('Agent')
     if agent:
@@ -427,30 +446,42 @@ def ensure_task_board(espo, spec):
         print(f'Task: a parent can be {", ".join(ours)}')
 
 
+def scripts(spec):
+    """Each entity's scripts from the packs: their blocks for it in `requires` order, and in
+    its Before Save Custom Script its traits' snippets (espo/traits.py)."""
+    by_entity = {e: {k: '\n'.join(blocks) for k, blocks in s.items()} for e, s in spec['formulas'].items()}
+    children = traits.cascades(spec['traits'])
+    for entity in {*spec['traits'], *children}:
+        blocks = spec['formulas'].get(entity, {}).get('beforeSaveCustomScript', [])
+        by_entity.setdefault(entity, {})['beforeSaveCustomScript'] = traits.script(
+            entity, blocks, spec['traits'].get(entity, {}), children.get(entity, ()))
+    return by_entity
+
+
 def ensure_formulas(espo, spec):
-    """Each entity's scripts: the packs' blocks for it in `requires` order; the short code
-    (_code.formula) first in the Before Save Custom Script of each entity with a code, and
-    the agent guard (_agent-guard.formula) first in the API Before Save Script of the
-    agent_guarded (its stage block only where the entity has a stage)."""
-    by_entity = {e: {k: '\n'.join(blocks) for k, blocks in scripts.items()} for e, scripts in spec['formulas'].items()}
+    """Each entity's scripts (scripts()); the short code (_code.formula) first in the Before
+    Save Custom Script of each entity with a code, and the agent guard (_agent-guard.formula)
+    first in the API Before Save Script of the agent_guarded (its stage block only where the
+    entity has a stage)."""
+    by_entity = scripts(spec)
     guard = (FORMULA / '_agent-guard.formula').read_text()
     code = (FORMULA / '_code.formula').read_text()
     for entity, prefix in spec['codes'].items():
-        scripts = by_entity.setdefault(entity, {})
+        mine = by_entity.setdefault(entity, {})
         snippet = code.replace('FIELD', code_field(entity)).replace('PREFIX', prefix).replace('ENTITY', entity)
-        scripts['beforeSaveCustomScript'] = snippet + '\n' + scripts.get('beforeSaveCustomScript', '')
+        mine['beforeSaveCustomScript'] = snippet + '\n' + mine.get('beforeSaveCustomScript', '')
     for entity in spec['agent_guarded']:
         g = guard
         if 'stage' not in metadata(espo, f'entityDefs.{entity}.fields'):
             g = re.sub(r'\n *// stage:begin.*?// stage:end\n', '\n', g, flags=re.S)
-        scripts = by_entity.setdefault(entity, {})
-        scripts['beforeSaveApiScript'] = g + '\n' + scripts.get('beforeSaveApiScript', '')
+        mine = by_entity.setdefault(entity, {})
+        mine['beforeSaveApiScript'] = g + '\n' + mine.get('beforeSaveApiScript', '')
     have = metadata(espo, 'formula')
-    for entity, scripts in by_entity.items():
-        if all((have.get(entity) or {}).get(k) == v for k, v in scripts.items()):
+    for entity, mine in by_entity.items():
+        if all((have.get(entity) or {}).get(k) == v for k, v in mine.items()):
             continue
-        espo.call('POST', '/EntityManager/action/formula', body={'scope': entity, 'data': scripts})
-        print(f'formula: {entity} ({", ".join(scripts)})')
+        espo.call('POST', '/EntityManager/action/formula', body={'scope': entity, 'data': mine})
+        print(f'formula: {entity} ({", ".join(mine)})')
 
 
 def ensure_layout_fields(espo, entity, names, panel='Details'):

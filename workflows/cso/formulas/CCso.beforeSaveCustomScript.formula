@@ -93,29 +93,5 @@ if (!accountId) {
 } else if (entity\isAttributeChanged('name') || entity\isAttributeChanged('teamsIds')) {
     record\update('Account', accountId, 'name', name, 'teamsIds', teamsIds);
 }
-
-// Its places, updates and contacts follow: its teams, its Account, and what the
-// dashboard's feeds read of it
-if (!entity\isNew() && (entity\isAttributeChanged('teamsIds') || entity\isAttributeChanged('accountId') || entity\isAttributeChanged('name')
-        || entity\isAttributeChanged('csoType') || entity\isAttributeChanged('settings') || entity\isAttributeChanged('populations')
-        || entity\isAttributeChanged('roles') || entity\isAttributeChanged('listed'))) {
-    $rows = record\findMany('CPresence', 500, 'createdAt', 'asc', 'csoId=', id);
-    $i = 0;
-    while ($i < array\length($rows)) {
-        record\update('CPresence', array\at($rows, $i), 'teamsIds', teamsIds, 'accountId', accountId, 'csoType', csoType,
-            'settings', settings, 'populations', populations, 'roles', roles, 'listed', listed);
-        $i = $i + 1;
-    }
-    $rows = record\findMany('CCsoUpdate', 1000, 'createdAt', 'asc', 'csoId=', id);
-    $i = 0;
-    while ($i < array\length($rows)) {
-        record\update('CCsoUpdate', array\at($rows, $i), 'teamsIds', teamsIds, 'accountId', accountId, 'csoType', csoType, 'listed', listed);
-        $i = $i + 1;
-    }
-    $rows = record\findMany('Contact', 50, 'createdAt', 'asc', 'cCsoId=', id);
-    $i = 0;
-    while ($i < array\length($rows)) {
-        record\update('Contact', array\at($rows, $i), 'teamsIds', teamsIds, 'accountId', accountId);
-        $i = $i + 1;
-    }
-}
+// Its places, updates and contacts follow its teams, its Account and what the dashboard's
+// feeds read of it: the trait cascade (their inherit, workflow.toml)

@@ -1,7 +1,0 @@
-// A focal point is its activity's: in its teams
-if (activityId && (entity\isNew() || entity\isAttributeChanged('activityId'))) {
-    $teams = record\attribute('CActivity', activityId, 'teamsIds');
-    if (array\length($teams) > 0) {
-        teamsIds = $teams;
-    }
-}

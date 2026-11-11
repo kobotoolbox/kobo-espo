@@ -1,12 +1,4 @@
-// A location is its activity's: its project, response and teams
-if (activityId && (entity\isNew() || entity\isAttributeChanged('activityId'))) {
-    $teams = record\attribute('CActivity', activityId, 'teamsIds');
-    if (array\length($teams) > 0) {
-        teamsIds = $teams;
-    }
-    projectId = record\attribute('CActivity', activityId, 'projectId');
-    responseId = record\attribute('CActivity', activityId, 'responseId');
-}
+// A location is its activity's: its project, response and teams (trait inherit, workflow.toml)
 
 // The parish from the community, if it wasn't given; named after them
 if (communityId && !parishId) {
@@ -45,16 +37,9 @@ if (activityId) {
         'peopleTargeted', $targeted, 'quantity', $quantity, 'budget', $budget);
 }
 
-// Data checks: what looks wrong, as flags for the IM team (seed.LOCATION_CHECKS). Never a
-// refusal: a report from the field is kept, then fixed or explained
-$checks = list();
-if (populationReached && populationTargeted && populationReached > populationTargeted) {
-    $checks = array\push($checks, 'reached_over_targeted');
-}
+// For the data checks (the trait checks, workflow.toml): the groups' total, and whether a
+// group's women, men and children add up to its people
 $groups = ifThenElse(idpPeopleReached, idpPeopleReached, 0) + ifThenElse(hostingPeopleReached, hostingPeopleReached, 0) + ifThenElse(ndpPeopleReached, ndpPeopleReached, 0) + ifThenElse(otherPeopleReached, otherPeopleReached, 0);
-if (populationReached && $groups > populationReached) {
-    $checks = array\push($checks, 'groups_over_total');
-}
 $parts = false;
 if (idpPeopleTargeted && (idpWomenTargeted || idpMenTargeted || idpChildrenTargeted) && idpPeopleTargeted != ifThenElse(idpWomenTargeted, idpWomenTargeted, 0) + ifThenElse(idpMenTargeted, idpMenTargeted, 0) + ifThenElse(idpChildrenTargeted, idpChildrenTargeted, 0)) {
     $parts = true;
@@ -80,7 +65,3 @@ if (otherPeopleTargeted && (otherWomenTargeted || otherMenTargeted || otherChild
 if (otherPeopleReached && (otherWomenReached || otherMenReached || otherChildrenReached) && otherPeopleReached != ifThenElse(otherWomenReached, otherWomenReached, 0) + ifThenElse(otherMenReached, otherMenReached, 0) + ifThenElse(otherChildrenReached, otherChildrenReached, 0)) {
     $parts = true;
 }
-if ($parts) {
-    $checks = array\push($checks, 'group_parts_dont_add_up');
-}
-dataChecks = $checks;

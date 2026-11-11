@@ -7,18 +7,7 @@ if (responseId && sector && !projectId) {
         projectId = $project;
     }
 }
-if (projectId && (entity\isNew() || entity\isAttributeChanged('projectId'))) {
-    $teams = record\attribute('CProject', projectId, 'teamsIds');
-    if (array\length($teams) > 0) {
-        teamsIds = $teams;
-    }
-    responseId = record\attribute('CProject', projectId, 'responseId');
-} else if (!projectId && responseId && (entity\isNew() || entity\isAttributeChanged('responseId'))) {
-    $teams = record\attribute('CResponse', responseId, 'teamsIds');
-    if (array\length($teams) > 0) {
-        teamsIds = $teams;
-    }
-}
+// trait: inherit
 
 // The lead organisation implements it unless another one is named (the form asks only then)
 if (!implementingOrganisationId && !implementingOrganisationOther && leadOrganisationId) {
@@ -59,17 +48,3 @@ if (entity\isNew() && responseId && (leadOrganisationOther || implementingOrgani
             'description', 'Named in a 5W report as not in the list (Organisations). Add it with its code and type.');
     }
 }
-
-// Data checks: what looks wrong, as flags for the IM team (seed.ACTIVITY_CHECKS). Its
-// locations' totals come in after it's made (their formula), and the checks follow them
-$checks = list();
-if (!communities) {
-    $checks = array\push($checks, 'no_communities');
-}
-if (status == 'COMPLETED' && communities && !peopleReached) {
-    $checks = array\push($checks, 'completed_nobody_reached');
-}
-if (status == 'COMPLETED' && endDate && datetime\diff(endDate, datetime\today(), 'days') > 0) {
-    $checks = array\push($checks, 'completed_ends_later');
-}
-dataChecks = $checks;

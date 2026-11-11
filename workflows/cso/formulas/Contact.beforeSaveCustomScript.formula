@@ -1,13 +1,6 @@
 // Workflow F: a CSO's contact (a focal point, from its Kobo profile or added in the CSO
-// portal). Added in the portal, it's the CSO of whoever added it (their own contact's)
-if (!cCsoId && entity\isNew() && env\userAttribute('type') == 'portal' && env\userAttribute('contactId')) {
-    cCsoId = record\attribute('Contact', env\userAttribute('contactId'), 'cCsoId');
-}
-// On its CSO's Account, in its CSO's teams
-if (cCsoId && (entity\isNew() || entity\isAttributeChanged('cCsoId'))) {
-    accountId = record\attribute('CCso', cCsoId, 'accountId');
-    teamsIds = record\attribute('CCso', cCsoId, 'teamsIds');
-}
+// portal). Its CSO (added in the portal: that of whoever added it), its CSO's Account and
+// teams: traits (workflow.toml)
 // The CSO's shared contact, when the CSO said yes: its contacts still its and in the
 // directory, this one as it is now
 if (cCsoId && (entity\isNew() || entity\isAttributeChanged('firstName') || entity\isAttributeChanged('lastName')

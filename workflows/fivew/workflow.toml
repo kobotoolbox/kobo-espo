@@ -216,3 +216,33 @@ map = { name = "label", code = "code", orgType = "org_type" }
 links = [["CActivity", "adminArea"], ["CActivity", "site"]]
 [removed.fields]
 CActivity = ["girls", "boys", "women", "men", "elderlyWomen", "elderlyMen", "households", "unit"]
+
+# The formulas' shared patterns (espo/traits.py); the pack's own blocks are in formulas/.
+# An activity is in its response's project for its sector (its block finds the project
+# first), and in that project's teams: the sector's people and the coordinators see it.
+# With no project for its sector, it's in the response's teams (coordinators only)
+[traits.CActivity]
+inherit = [
+  { link = "project", entity = "CProject", copy = ["teamsIds", "responseId"] },
+  { link = "response", entity = "CResponse", copy = ["teamsIds"], unless = "project" },
+]
+
+# Data checks: what looks wrong, as flags for the IM team. Its locations' totals come in
+# after it's made (their formula), and the checks follow them
+[traits.CActivity.checks]
+no_communities = "!communities"
+completed_nobody_reached = "status == 'COMPLETED' && communities && !peopleReached"
+completed_ends_later = "status == 'COMPLETED' && endDate && datetime\\diff(endDate, datetime\\today(), 'days') > 0"
+
+# A location and a focal point are their activity's: its teams (and a location its project
+# and response)
+[traits.CActivityLocation]
+inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds", "projectId", "responseId"] }]
+
+[traits.CActivityLocation.checks]
+reached_over_targeted = "populationReached && populationTargeted && populationReached > populationTargeted"
+groups_over_total = "populationReached && $groups > populationReached"
+group_parts_dont_add_up = "$parts"
+
+[traits.CFocalPoint]
+inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds"] }]

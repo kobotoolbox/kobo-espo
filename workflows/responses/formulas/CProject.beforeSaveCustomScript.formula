@@ -17,14 +17,9 @@ if (responseId && (entity\isNew() || entity\isAttributeChanged('responseId') || 
     teamsIds = $teams;
 }
 
-// Its teams changed (a partner organisation's team added, say): its sites and tasks follow
+// Its teams changed (a partner organisation's team added, say): its tasks follow (its sites
+// too: the sites pack's trait cascade)
 if (!entity\isNew() && entity\isAttributeChanged('teamsIds')) {
-    $sites = record\findMany('CSite', 1000, 'createdAt', 'asc', 'projectId=', id);
-    $i = 0;
-    while ($i < array\length($sites)) {
-        record\update('CSite', array\at($sites, $i), 'teamsIds', teamsIds);
-        $i = $i + 1;
-    }
     $tasks = record\findMany('Task', 1000, 'createdAt', 'asc', 'cProjectId=', id);
     $i = 0;
     while ($i < array\length($tasks)) {

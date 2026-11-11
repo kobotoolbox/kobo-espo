@@ -1,11 +1,11 @@
 # Workflow packs: workflows as data on a standard instance
 
-Status: 2026-11-10, phases 0–2 built and checked (branch `workflow-packs`, not yet
-committed). On staging: the snapshot diff before/after is the agents' "Works on" order only;
-a rerun writes nothing and takes 218 s (was 25 min: the loader writes only what differs,
-reads metadata once per run, retries EspoCRM's transient 500 once); cso 39/39, fivew
-38/38, agents 42/42, isolation 80/80, projects 44/44. Not rerun: connection, mcp (it
-reruns the seed), dash_feeds. Next: phase 3 (traits). As built:
+Status: 2026-11-11, phases 0–3 built. Phases 0–2 (2026-11-10): on staging the snapshot diff
+before/after was the agents' "Works on" order only; a rerun writes nothing and takes 218 s
+(was 25 min: the loader writes only what differs, reads metadata once per run, retries
+EspoCRM's transient 500 once). Phase 3 (traits, `espo/traits.py`, `tests/test_traits.py`):
+the snapshot diff is formula text only; see "3. Formula blocks (traits)" for what was built.
+Next: phase 4 (a second, small instance). As built:
 
 - the loader is `espo/workflows.py` in kobo-espo for now (kobo-espo-bridge untouched while
   this is proven; it moves there with the MCP tools, phase 5); `deploy/instance.toml`
@@ -143,6 +143,34 @@ The loader writes an entity's script from: the traits' snippets, then each pack'
 block for that entity (`formulas/`), in `requires` order, each fenced with its pack's
 name. A pack's own formula is what is particular to it (the CSO key, consent); the
 patterns are shared and tested once.
+
+As built (2026-11-11), `[traits.<Entity>]` in a pack's workflow.toml (the entity's full
+name, so EspoCRM's Contact too), rendered by `espo/traits.py`:
+
+- `portal_default` (made in a portal: the CSO of whoever made it): CPresence,
+  CCsoUpdate, Contact;
+- `pcodes` (the area from a P-coded pin, P-codes up the area's parents, country,
+  pcodeStatus): CPresence, CCsoUpdate;
+- `inherit` (a parent's teams and fields when the link is set or changes; `unless`: only
+  without another link, as a site without a project takes its response's; `also`: other
+  attributes that re-inherit) and its `cascade` (on the parent: its changes follow to the
+  children), made from the inherits, not written: CPresence, CCsoUpdate and Contact from
+  CCso (the cascade replaces CCso's propagation block), CSite from CProject (the cascade
+  replaces CProject's loop over sites) or CResponse, CActivity, CActivityLocation,
+  CFocalPoint (whose formulas were only that: their files are gone);
+- `checks` (a dataChecks option each and when it's set; the loader refuses checks that
+  aren't the field's options): CActivity, CActivityLocation, CCsoUpdate. A check needing a
+  loop has the block compute a `$variable` the check reads;
+- `supersede` (the latest counted record of each `by` is the current one): CCsoUpdate.
+
+Placing: portal_default, pcodes, inherit before the blocks; checks, supersede, cascade
+after; a block's line `// trait: <name>` puts it there instead (CActivity finds its
+project, then inherits; CPresence gives its CSO its country, then takes the CSO's teams).
+Not traits, as one workflow's only: the CSO's places of an earlier submission stopping
+being current, the teams unions of CProject and CResponder, the Task formula (its sites'
+block stays in responses: the task's teams need its project first). Behaviour changes, all
+small: a site whose project has no response no longer keeps a response of its own; the
+cascades read up to 1,000 children (CCso's contacts were 50).
 
 ### 4. An instance says which packs, for whom
 

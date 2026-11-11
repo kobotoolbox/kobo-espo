@@ -269,3 +269,30 @@ teams = ["CSO: Uganda"]
 links = [["CCso", "focalPoints"]]
 [removed.fields]
 CFocalPoint = ["current"]
+
+# The formulas' shared patterns (espo/traits.py); the pack's own blocks are in formulas/.
+# A CSO's places, updates and contacts: its teams, its Account and what the dashboard's
+# feeds read of it (a feed reads one entity), and its changes follow to them (cascade)
+[traits.CPresence]
+portal_default = { field = "csoId", from = "cCsoId" }
+pcodes = "adminArea"
+inherit = [{ link = "cso", entity = "CCso", copy = ["teamsIds", "accountId", "csoType", "settings", "populations", "roles", "listed"], cascade = true, also = ["country"] }]
+
+[traits.CCsoUpdate]
+portal_default = { field = "csoId", from = "cCsoId" }
+pcodes = "adminArea"
+inherit = [{ link = "cso", entity = "CCso", copy = ["teamsIds", "accountId", "csoType", "listed"], cascade = true }]
+# The latest counted update of a CSO in a place is the one that counts, whatever its roles
+# (an update lists every role it has there now)
+supersede = { by = ["csoId", "adminAreaId"], counted = { field = "keyCheck", in = ["ok", "confirmed"] } }
+
+[traits.CCsoUpdate.checks]
+key_missing = "keyCheck == 'missing'"
+key_wrong = "keyCheck == 'wrong'"
+outside = "pcodeStatus == 'outside'"
+not_in_presence = "csoId && pcode1 && !record\\findOne('CPresence', 'createdAt', 'asc', 'csoId=', csoId, 'current=', true, 'pcode1=', pcode1)"
+role_not_in_profile = "$roleNotInProfile"
+
+[traits.Contact]
+portal_default = { field = "cCsoId", from = "cCsoId" }
+inherit = [{ link = "cCso", entity = "CCso", copy = ["accountId", "teamsIds"], cascade = true }]

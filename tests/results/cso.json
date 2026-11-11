@@ -4,7 +4,7 @@
     "check": "a profile makes one CSO, with its CSO- code and a 16-character key, the key given not kept",
     "ok": true,
     "detail": {
-      "code": "CSO-G3CA",
+      "code": "CSO-K7Q7",
       "keyGiven": null,
       "count": null
     }
@@ -14,7 +14,7 @@
     "check": "its answers: name, type, registered in Kenya, lists as codes, profile date today",
     "ok": true,
     "detail": {
-      "name": "CSOT 324679 Amani",
+      "name": "CSOT 379281 Amani",
       "csoType": "national_ngo",
       "countryRegistered": "KEN",
       "roles": [
@@ -25,7 +25,7 @@
         "training",
         "logistics"
       ],
-      "lastProfile": "2026-11-10"
+      "lastProfile": "2026-11-11"
     }
   },
   {
@@ -72,7 +72,7 @@
       "teamsNames": {
         "6af2e5e8eed95f6f3": "CSO: Kenya"
       },
-      "csoName": "CSOT 324679 Amani",
+      "csoName": "CSOT 379281 Amani",
       "csoType": "national_ngo",
       "settings": [
         "informal_settlements",
@@ -86,7 +86,7 @@
     "check": "its Account: made with it, named after it, in its team",
     "ok": true,
     "detail": {
-      "name": "CSOT 324679 Amani",
+      "name": "CSOT 379281 Amani",
       "teamsNames": {
         "6af2e5e8eed95f6f3": "CSO: Kenya"
       }
@@ -97,8 +97,8 @@
     "check": "its places on its Account too",
     "ok": true,
     "detail": [
-      "6af3396eb5f5b610c",
-      "6af3396eb5f5b610c"
+      "6af40e6c1a340917f",
+      "6af40e6c1a340917f"
     ]
   },
   {
@@ -108,14 +108,14 @@
     "detail": [
       [
         "Baraka Second",
-        "CSOT 324679 Amani",
+        "CSOT 379281 Amani",
         {
           "6af2e5e8eed95f6f3": "CSO: Kenya"
         }
       ],
       [
         "Amina Focal",
-        "CSOT 324679 Amani",
+        "CSOT 379281 Amani",
         {
           "6af2e5e8eed95f6f3": "CSO: Kenya"
         }
@@ -126,7 +126,7 @@
     "test": "C1",
     "check": "it said yes to sharing: both focal points in its shared contact",
     "ok": true,
-    "detail": "Baraka Second (Director), baraka-324679@example.org, +254712000000\nAmina Focal (Coordinator), amina-324679@example.org, +254712000000"
+    "detail": "Baraka Second (Director), baraka-379281@example.org, +254712000000\nAmina Focal (Coordinator), amina-379281@example.org, +254712000000"
   },
   {
     "test": "C2",
@@ -152,7 +152,7 @@
     "ok": true,
     "detail": {
       "listed": true,
-      "sharedContact": "Amina Focal (Coordinator), amina-324679@example.org, +254712000000\nBaraka Second (Director), baraka-324679@example.org, +254712000000"
+      "sharedContact": "Amina Focal (Coordinator), amina-379281@example.org, +254712000000\nBaraka Second (Director), baraka-379281@example.org, +254712000000"
     }
   },
   {
@@ -220,7 +220,7 @@
         "Baraka Second",
         "Amina Focal"
       ],
-      "Chege New (Officer), chege-324679@example.org, +254712000000\nAmina Focal (Coordinator), amina-324679@example.org, +254712000000\nBaraka Second (Director), baraka-324679@example.org, +254712000000"
+      "Chege New (Officer), chege-379281@example.org, +254712000000\nAmina Focal (Coordinator), amina-379281@example.org, +254712000000\nBaraka Second (Director), baraka-379281@example.org, +254712000000"
     ]
   },
   {
@@ -246,7 +246,7 @@
     "test": "C3",
     "check": "sent with the code but no key: refused, recorded with its reason, the CSO unchanged",
     "ok": true,
-    "detail": "a2d62e4fa5b9b4086b3a66  submission 4  since 2026-11-10T15:36:04Z  1 attempt(s), next 2026-11-10T15:37:04Z\n    PUT /CCso/6af3396ea3893cceb: HTTP 400 This profile came without its CSO's key: send it again from the link in the CSO's email.\n"
+    "detail": "aaec8d34dd6604b9e9ec9d  submission 4  since 2026-11-11T06:44:55Z  1 attempt(s), next 2026-11-11T06:45:55Z\n    PUT /CCso/6af40e6c0a1f59323: HTTP 400 This profile came without its CSO's key: send it again from the link in the CSO's email.\n"
   },
   {
     "test": "C4",
@@ -318,8 +318,8 @@
     "check": "cso-kenya: Kenya's CSOs (Amani, Pamoja), not Uganda's or the unassigned",
     "ok": true,
     "detail": [
-      "CSOT 324679 Amani",
-      "CSOT 324679 Pamoja"
+      "CSOT 379281 Amani",
+      "CSOT 379281 Pamoja"
     ]
   },
   {
@@ -327,8 +327,8 @@
     "check": "cso-uganda: Uganda's (Mto, Pamoja), not Kenya's",
     "ok": true,
     "detail": [
-      "CSOT 324679 Mto",
-      "CSOT 324679 Pamoja"
+      "CSOT 379281 Mto",
+      "CSOT 379281 Pamoja"
     ]
   },
   {
@@ -358,7 +358,7 @@
     "check": "an update with the CSO's code and key: its CSO, key ok, counted, in its team, the key not kept",
     "ok": true,
     "detail": {
-      "csoName": "CSOT 324679 Amani",
+      "csoName": "CSOT 379281 Amani",
       "keyCheck": "ok",
       "current": true,
       "teamsNames": {
@@ -437,7 +437,7 @@
     "ok": true,
     "detail": {
       "adminAreaName": "Buikwe",
-      "name": "CSOT 324679 Mto: Buikwe"
+      "name": "CSOT 379281 Mto: Buikwe"
     }
   },
   {
@@ -467,7 +467,7 @@
     "check": "a contact sees their CSO only",
     "ok": true,
     "detail": [
-      "CSOT 324679 Amani"
+      "CSOT 379281 Amani"
     ]
   },
   {
@@ -496,8 +496,8 @@
     "check": "a place they add: their CSO's (not picked), its Account and teams, P-codes, current",
     "ok": true,
     "detail": {
-      "csoName": "CSOT 324679 Amani",
-      "accountName": "CSOT 324679 Amani",
+      "csoName": "CSOT 379281 Amani",
+      "accountName": "CSOT 379281 Amani",
       "pcode2": "KE001001",
       "teamsNames": {
         "6af2e5e8eed95f6f3": "CSO: Kenya"
@@ -511,24 +511,24 @@
     "ok": true,
     "detail": [
       {
-        "cCsoName": "CSOT 324679 Amani",
-        "accountName": "CSOT 324679 Amani"
+        "cCsoName": "CSOT 379281 Amani",
+        "accountName": "CSOT 379281 Amani"
       },
-      "Dalia Joined, dalia-324679@example.org\nAmina Focal (Coordinator), amina-324679@example.org, +254712000000\nBaraka Second (Director), baraka-324679@example.org, +254712000000\nChege Newer (Lead), chege-324679@example.org, +254712000000"
+      "Dalia Joined, dalia-379281@example.org\nAmina Focal (Coordinator), amina-379281@example.org, +254712000000\nBaraka Second (Director), baraka-379281@example.org, +254712000000\nChege Newer (Lead), chege-379281@example.org, +254712000000"
     ]
   },
   {
     "test": "C10",
     "check": "someone who left: marked no longer its contact, gone from its shared contact",
     "ok": true,
-    "detail": "Baraka Second (Director), baraka-324679@example.org, +254712000000\nChege Newer (Lead), chege-324679@example.org, +254712000000\nDalia Joined, dalia-324679@example.org"
+    "detail": "Baraka Second (Director), baraka-379281@example.org, +254712000000\nChege Newer (Lead), chege-379281@example.org, +254712000000\nDalia Joined, dalia-379281@example.org"
   },
   {
     "test": "C10",
     "check": "an update they make: their CSO's, counted without a key (they signed in)",
     "ok": true,
     "detail": {
-      "csoName": "CSOT 324679 Amani",
+      "csoName": "CSOT 379281 Amani",
       "keyCheck": "ok",
       "current": true
     }
@@ -550,7 +550,7 @@
     "check": "a new focal point gets one welcome email; one at example.org none (staging: the test inbox only)",
     "ok": true,
     "detail": [
-      "delivered+cso-324679@resend.dev"
+      "delivered+cso-379281@resend.dev"
     ]
   },
   {
@@ -559,7 +559,7 @@
     "ok": true,
     "detail": {
       "status": "Draft",
-      "sendAt": "2026-11-10 15:41:02",
+      "sendAt": "2026-11-11 06:50:24",
       "parentType": "Account",
       "from": "noreply@respond.kobolabs.dev",
       "fromAddress": null
@@ -569,6 +569,6 @@
     "test": "C11",
     "check": "its code, the Kenya update form's link with the code and key filled in, the portal",
     "ok": true,
-    "detail": "<p>Hello Neema,</p><p><strong>CSOT 324679 Karibu</strong> is in the CSO mapping, with the code <strong>CSO-7BN4</strong>. You are one of its focal points.</p><p><strong>To say what your organisation is doing in a place</strong> (and what it needs there), use this link: it fills in your code for you."
+    "detail": "<p>Hello Neema,</p><p><strong>CSOT 379281 Karibu</strong> is in the CSO mapping, with the code <strong>CSO-8D9E</strong>. You are one of its focal points.</p><p><strong>To say what your organisation is doing in a place</strong> (and what it needs there), use this link: it fills in your code for you."
   }
 ]

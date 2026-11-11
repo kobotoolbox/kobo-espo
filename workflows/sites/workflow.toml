@@ -89,3 +89,12 @@ relationships = ["sites"]
 entity = "CStandard"
 file = "data/standards.json"
 match = "code"
+
+# The formulas' shared patterns (espo/traits.py). A site is in its project's teams, or
+# without a project its response's, like its tasks: the project's (or response's) members
+# see it. A project's site is in its response too; the project's changes follow to it
+[traits.CSite]
+inherit = [
+  { link = "project", entity = "CProject", copy = ["teamsIds", "responseId"], cascade = true },
+  { link = "response", entity = "CResponse", copy = ["teamsIds"], unless = "project" },
+]
