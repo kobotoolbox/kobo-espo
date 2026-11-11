@@ -2,10 +2,16 @@
 
 Status: 2026-11-11, a plan, checked against the UNDAC Handbook (8th ed., 2024: A.3
 humanitarian coordination and the cluster approach, G.6 inter-cluster coordination, F IM
-products; in ../undac-simex). It follows the CSO mapping (plans/cso-mapping-plan.md), which
+products; in ../undac-simex). It follows the CSO mapping's model (plans/cso-mapping-plan.md), which
 already works this way, and builds on the formula traits (plans/workflow-packs-plan.md,
-phase 3). Changes the `fivew`, `responses` and `core` packs; the `cso` pack only where an
-organisation is both (§1).
+phase 3). Changes the `fivew`, `responses` and `core` packs.
+
+**The 5W and the CSO mapping are separate projects, on separate instances** (2026-11-11):
+the 5W is humanitarian response coordination (a response's OCHA, clusters and partners);
+the CSO mapping is WHO's, standing, with its own users, data protection and lifecycle. They
+share the *model* (an organisation is an Account, its people Contacts, a portal) and the
+code (core, the traits, the bridge), not records. So nothing here links a 5W organisation
+to a CSO profile; staging has every pack only to test them.
 
 ## Why
 
@@ -57,15 +63,15 @@ registration to it:
 - an activity gets `account` (its registration's, else its lead organisation's
   Account): what the portal follows (§5).
 
-**An Account's teams are the union of its registrations' teams** (and, where an
-organisation is also a CSO, its CSO profile's). Today the CSO formula *sets* its
-Account's teams, which would undo the 5W's. A new trait does both: `teams_union`, the
-teams of everything that links to the Account (`CResponder.account`, `CCso.account`),
-recomputed when one of them changes teams. A pack declares its part on Account (as
-inherits merge across packs). The CSO formula's Account block moves to it.
+**An Account's teams are the union of its registrations' teams**: an organisation in two
+responses, or in two clusters of one, is seen by each through its own team. A new trait,
+`teams_union`: the teams of the records that link to the Account (`CResponder.account`),
+recomputed when one of them changes teams.
 
-So an organisation in the Melissa response and in a CSO mapping is one Account, seen by
-each workflow's people through their own teams.
+The CSO mapping's Account formula keeps setting its Account's teams from its CSO: on its
+own instance nothing else writes them. On an instance with both packs (staging) an
+organisation in both would have its teams written twice; the packs say so (a pack's
+`conflicts`, the loader warning when both are applied) rather than sharing a formula.
 
 ### 2. Its people are Contacts, several, active or not
 
@@ -76,9 +82,9 @@ As the CSO's focal points:
   that Account (the CSO profile's repeat matches by email within the CSO). This needs one
   thing in kobo-espo-bridge: a repeat's match on its parent record's *link*
   (`accountId = "@record.account"`), not only the record (`"@record"`);
-- **Active** and **Shared** on Contact move from the CSO pack to `core` (`cActive`,
-  `cShared`; the CSO's `cCsoActive` and `cCsoShared` migrate). One person, one set of flags,
-  whichever workflow named them;
+- **Active** and **Shared** on Contact: the 5W's own (`cActive`, `cShared`, in the `fivew`
+  pack), as the CSO pack has its own. The same pattern; moving both to `core` is worth it
+  only when a third workflow needs them;
 - a Contact takes its Account's teams (the inherit trait, with cascade): the response's
   coordinators and the clusters the organisation is in see its people, no one else;
 - `focalPoint` and `focalPointPhone` on the registration go (migrated to Contacts).
@@ -206,10 +212,11 @@ and a record whose locations fall in the hub's areas is in its team (a trait,
 
 1. **Accounts.** COrganisation ↔ Account; the registration's formula finds or makes the
    Account; `CActivity.account`, `CActivityLocation.account` (inherit); the `teams_union`
-   trait on Account, the CSO's Account block moved to it; a migration giving existing
-   registrations their Accounts. Tests: fivew, cso, isolation (an Account in two clusters
-   is seen by both clusters' leads, not a third's; the response team sees all).
-2. **People.** `cActive`, `cShared` to core (the CSO's migrated); the registration's
+   trait on Account; a pack's `conflicts` (fivew, cso); a migration giving existing
+   registrations their Accounts. Tests: fivew, isolation (an Account in two clusters is
+   seen by both clusters' leads, not a third's; in two responses, by both responses'
+   teams; the response team sees all).
+2. **People.** `cActive`, `cShared` on Contact (fivew); the registration's
    focal points repeat (form, template; the bridge's `"@record.<link>"` match); Contacts
    take the Account's teams; the registration's text fields migrated. Tests: a person
    named again is the same Contact; a cluster lead sees the people of organisations in
@@ -228,18 +235,15 @@ and a record whose locations fall in the hub's areas is in its team (a trait,
    screenshots; the 5W dashboard: the ICCG's 3W across clusters (§7) and the directory of
    organisations by cluster; the contact list export.
 
-Each phase leaves every suite green: fivew, cso, projects, isolation, connection (W7–W10),
+Each phase leaves every suite green: fivew, cso (unchanged), projects, isolation, connection (W7–W10),
 mcp_people.
 
 ## Questions
 
-- **One Account across responses and the CSO mapping.** I suggest yes: one organisation,
-  one Account, one set of people; each workflow's people see it through their own teams.
-  The alternative (an Account per response) is simpler and duplicates organisations every
-  response.
-- **One portal or one per workflow.** I suggest one per pack (the Organisation portal,
-  the CSO portal), so an instance with only the 5W has a whole portal. An organisation in
-  both uses one login for both (EspoCRM lets a portal user be in several portals).
+- **One Account across responses.** I suggest yes: one organisation, one Account, one set
+  of people, whatever response it's in; each response's people see it through their own
+  teams. The alternative (an Account per response) is simpler and duplicates organisations
+  and their people every response.
 - **A tier above the response** (all of a country's responses, or the instance's): a
   "Coordination: <country>" team added to every response's teams there (the CSO mapping's
   country teams work this way), or Internal Staff as today. I suggest the team, made when a
@@ -253,9 +257,12 @@ mcp_people.
 
 ## Risks
 
-- **Shared Account formula.** Two packs writing an Account's teams is the first time packs
-  share a record's teams; `teams_union` must be the only writer, or one pack undoes the
-  other's. Its tests cover an organisation in both workflows.
+- **Both packs on one instance.** Only staging has the 5W and the CSO mapping together; an
+  organisation in both there has its Account's teams written by both. Tests keep their
+  organisations apart; the loader warns.
+- **Linking the two later.** A mapped CSO may become a response's partner (the handbook's
+  localisation, G.4, and its local and national actors). That's an exchange between
+  instances (an export, or an agent that proposes a registration), not shared records.
 - **Matching people by email** misses phone-only rows (field reports often are): the
   fallback on phone helps; true duplicates remain for the IM team to merge (EspoCRM's merge).
 - **Many teams on one Account** (an organisation in many clusters and responses): a
