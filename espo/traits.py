@@ -38,14 +38,25 @@ pack's own formula block is then only what is particular to it.
                                     # its phone), made if none; linked (contact), the Contact's
                                     # blank phone and title filled
 
+    [traits.CProject]
+    suggest_leads = { list = "fivew-melissa.sectors", by = "cluster", kind = "sectorKind",
+                      lead = "leadAgency", co_leads = "coLeads", approach = "approach" }
+                                    # the list entry's kind; a new record's lead and co-leads
+                                    # (Accounts, made if none) from the entry's lead and
+                                    # co_leads (organisations' codes, the first that exists),
+                                    # unless given; in the sector approach (the government
+                                    # leads) the global lead is suggested as a co-lead
+
 Where they go in the Before Save Custom Script: portal_default, pcodes, inherit,
-teams_from_clusters, account_from_organisation and find_or_make_contact before the packs' blocks; checks,
+teams_from_clusters, account_from_organisation, find_or_make_contact and suggest_leads before the packs' blocks; checks,
 supersede, teams_up, the cascades (the parent's side of an inherit with `cascade`) and the
 cluster teams (the project's side of teams_from_clusters) after them. A block with a line `// trait: <name>` has that trait there instead
 (e.g. a link the block finds first, then inherit).
 """
 
-BEFORE = ('portal_default', 'pcodes', 'inherit', 'teams_from_clusters', 'account_from_organisation', 'find_or_make_contact')
+import json
+
+BEFORE = ('portal_default', 'pcodes', 'inherit', 'teams_from_clusters', 'account_from_organisation', 'find_or_make_contact', 'suggest_leads')
 AFTER = ('checks', 'supersede', 'teams_up', 'cascade', 'cluster_teams')
 TRAITS = BEFORE + AFTER[:-2]  # cascade and cluster_teams are made from other traits, not named
 ROWS = 1000  # the most child records a cascade or supersede reads
@@ -331,6 +342,53 @@ if ({acc} && ({email} || {phone}) && (!{contact} || {changed([acc, email, phone]
 }}"""
 
 
+def suggest_leads(t, entity):
+    """t's entries: the list's (load() puts them in from t's list)."""
+    by, kind, approach = t.get('by', 'cluster'), t.get('kind'), t.get('approach')
+    lead, co = f"{t.get('lead', 'leadAgency')}Id", f"{t.get('co_leads', 'coLeads')}Ids"
+    table = json.dumps({e['code']: {'kind': e.get('kind'), 'lead': e.get('lead', []), 'co': e.get('co_leads', [])}
+                        for e in t['entries']}, separators=(',', ':'))
+    out = [f"// Its sector's kind, and a new one's lead and co-leads: the sector's global leads (the list's,",
+           f"// UNDAC Handbook fig. A.4) unless given, as Accounts (made if none); in the sector approach",
+           f"// the government leads, so the global lead is a co-lead (trait suggest_leads)",
+           f"$sectors = {q(table)};"]
+    if kind:
+        out += [f"if ({by} && (entity\\isNew() || entity\\isAttributeChanged({q(by)}))) {{",
+                f"    {kind} = json\\retrieve($sectors, string\\concatenate({by}, '.kind'));", "}"]
+    sector = f"{approach} == 'sector'" if approach else 'false'
+    out += [f"if ({by} && entity\\isNew() && !{lead} && !entity\\isAttributeChanged({q(co)})) {{",
+            f"    $lead = null;",
+            f"    $codes = json\\retrieve($sectors, string\\concatenate({by}, '.lead'));",
+            "    $i = 0;  // the first of the lead's codes that exists",
+            "    while ($i < array\\length($codes) && !$lead) {",
+            "        $lead = record\\findOne('COrganisation', 'createdAt', 'asc', 'code=', array\\at($codes, $i));",
+            "        $i = $i + 1;", "    }",
+            "    $orgs = ifThenElse($lead, list($lead), list());",
+            f"    $codes = json\\retrieve($sectors, string\\concatenate({by}, '.co'));",
+            "    $i = 0;",
+            "    while ($i < array\\length($codes)) {",
+            "        $org = record\\findOne('COrganisation', 'createdAt', 'asc', 'code=', array\\at($codes, $i));",
+            "        if ($org) {", "            $orgs = array\\push($orgs, $org);", "        }",
+            "        $i = $i + 1;", "    }",
+            "    $accounts = list();  // their Accounts, made if none",
+            "    $i = 0;",
+            "    while ($i < array\\length($orgs)) {",
+            "        $org = array\\at($orgs, $i);",
+            "        $acc = record\\findOne('Account', 'createdAt', 'asc', 'cOrganisationId=', $org);",
+            "        if (!$acc) {",
+            "            $acc = record\\create('Account', 'name', record\\attribute('COrganisation', $org, 'name'), 'cOrganisationId', $org,",
+            "                'cOrgType', record\\attribute('COrganisation', $org, 'orgType'));",
+            "        }",
+            "        $accounts = array\\push($accounts, $acc);",
+            "        $i = $i + 1;", "    }",
+            f"    if ($lead && !({sector})) {{",
+            f"        {lead} = array\\at($accounts, 0);",
+            "        $accounts = array\\removeAt($accounts, 0);", "    }",
+            "    if (array\\length($accounts) > 0) {",
+            f"        {co} = $accounts;", "    }", "}"]
+    return '\n'.join(out)
+
+
 def cascade(children, entity):
     """The parent's side of its children's inherits with `cascade`: (child, link, copy)."""
     out = []
@@ -347,7 +405,8 @@ def cascade(children, entity):
 RENDER = {'portal_default': portal_default, 'pcodes': pcodes, 'inherit': inherit, 'checks': checks,
           'supersede': supersede, 'teams_up': teams_up, 'cascade': cascade,
           'teams_from_clusters': teams_from_clusters, 'cluster_teams': cluster_teams,
-          'account_from_organisation': account_from_organisation, 'find_or_make_contact': find_or_make_contact}
+          'account_from_organisation': account_from_organisation, 'find_or_make_contact': find_or_make_contact,
+          'suggest_leads': suggest_leads}
 
 
 def cascades(traits):

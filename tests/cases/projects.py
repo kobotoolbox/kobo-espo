@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-P1-P9: cluster projects in a response (a cluster's work in it, e.g. Emergency
+P1-P10: cluster projects in a response (a cluster's work in it, e.g. Emergency
 Telecommunications in Hurricane Melissa), and tasks on sites and cases.
 
     python3 -I tests/cases/projects.py
@@ -10,7 +10,9 @@ team Response: Test EQ 1 with two projects, ETC (team Cluster: Test EQ 1 ETC: cl
 cluster-partner) and WASH (Cluster: Test EQ 1 WASH: cluster-viewer), a site and tasks in
 each, a case. Then checks, as each test user with their own password, through the API (as
 isolation.py: the UI's views call the same endpoints). staff-1, in the response's team,
-stands for the response's coordinators. Writes tests/results/projects.json.
+stands for the response's coordinators. P10: a cluster's leadership (its lead agency and
+co-leads, the global leads suggested) and its people (cluster contacts). Writes
+tests/results/projects.json.
 """
 import json
 import sys
@@ -54,9 +56,12 @@ def cleanup(a):
         for t in a.call('GET', '/Task', {'maxSize': 200, 'select': 'name', 'where[0][type]': 'equals',
                                          'where[0][attribute]': 'cResponseId', 'where[0][value]': resp['id']})['list']:
             a.call('DELETE', f'/Task/{t["id"]}')  # its starter tasks too
-    for entity in ('Task', 'CSite', 'CProject', 'CResponse', 'Case'):
+    for entity in ('Task', 'CSite', 'CClusterContact', 'CProject', 'CResponse', 'Case', 'Account'):
         for r in a.call('GET', f'/{entity}', {'maxSize': 200, 'select': 'name', **starts(entity)})['list']:
             a.call('DELETE', f'/{entity}/{r["id"]}')
+    for c in a.call('GET', '/Contact', {'maxSize': 50, 'select': 'id', 'where[0][type]': 'startsWith',
+                                        'where[0][attribute]': 'emailAddress', 'where[0][value]': 'delivered+prj-'})['list']:
+        a.call('DELETE', f'/Contact/{c["id"]}')
 
 
 def teams_of(a, entity, rec):
@@ -230,6 +235,67 @@ def run(a, team, user, eq1, etc, wash, ca):
               [teams_of(a, 'CProject', p_etc), teams_of(a, 'Task', on_site)])
     finally:
         a.call('DELETE', f'/Team/{extra["id"]}')
+
+    # --- P10: a cluster's leadership and people (UNDAC Handbook A.3.2-A.3.4, fig. A.4) ----------
+    get = lambda e, r: a.call('GET', f'/{e}/{r["id"] if isinstance(r, dict) else r}')  # noqa: E731
+    org_id = lambda code: a.call('GET', '/COrganisation', {'maxSize': 1, 'where[0][type]': 'equals',  # noqa: E731
+                                                            'where[0][attribute]': 'code', 'where[0][value]': code})['list'][0]['id']
+    org_acc = lambda code: a.call('GET', '/Account', {'maxSize': 1, 'select': 'id', 'where[0][type]': 'equals',  # noqa: E731
+                                                      'where[0][attribute]': 'cOrganisationId',
+                                                      'where[0][value]': a.call('GET', '/COrganisation', {
+                                                          'maxSize': 1, 'where[0][type]': 'equals', 'where[0][attribute]': 'code',
+                                                          'where[0][value]': code})['list'][0]['id']})['list'][0]['id']
+    pr = get('CProject', p_etc)
+    check('P10', "a new ETC project: a cluster, its lead agency WFP's Account (the global lead, suggested), no co-leads",
+          (pr.get('sectorKind'), pr.get('approach'), pr.get('leadAgencyId'), pr.get('coLeadsIds') or [])
+          == ('cluster', 'cluster', org_acc('ORG_WFP'), []), {k: pr.get(k) for k in ('sectorKind', 'approach', 'leadAgencyName', 'coLeadsNames')})
+    mk = lambda name, cluster, **kw: a.call('POST', '/CProject', body={'name': name, 'cluster': cluster, 'responseId': resp['id'], **kw})  # noqa: E731
+    health = get('CProject', mk('PRJ Hurricane Health', 'HEALTH'))
+    check('P10', "Health: WHO isn't in the list, so PAHO (its regional office) is suggested",
+          health.get('leadAgencyId') == org_acc('ORG_PAHO'), health.get('leadAgencyName'))
+    cccm = get('CProject', mk('PRJ Hurricane CCCM', 'CCCM', approach='sector'))
+    check('P10', "CCCM in the sector approach (the government leads): no lead suggested, IOM (the global lead) a co-lead",
+          (cccm.get('leadAgencyId'), cccm.get('coLeadsIds')) == (None, [org_acc('ORG_IOM')]),
+          (cccm.get('leadAgencyName'), cccm.get('coLeadsNames')))
+    ministry = a.call('POST', '/Account', body={'name': 'PRJ Ministry of Health'})
+    ngo = a.call('POST', '/Account', body={'name': 'PRJ Health NGO'})
+    given = get('CProject', mk('PRJ Hurricane Health 2', 'HEALTH', leadAgencyId=ministry['id'], coLeadsIds=[ngo['id']]))
+    check('P10', 'a lead agency and co-leads given: kept, nothing suggested',
+          (given.get('leadAgencyId'), given.get('coLeadsIds')) == (ministry['id'], [ngo['id']]),
+          (given.get('leadAgencyName'), given.get('coLeadsNames')))
+    kinds = {c: get('CProject', mk(f'PRJ Hurricane {c}', c)) for c in ('CHILD_PROTECTION', 'CASH')}
+    check('P10', "Child Protection: an area of responsibility (UNICEF suggested); Cash: a working group, no lead",
+          [(r.get('sectorKind'), r.get('leadAgencyId')) for r in kinds.values()]
+          == [('aor', org_acc('ORG_UNICEF')), ('working_group', None)], [(r.get('sectorKind'), r.get('leadAgencyName')) for r in kinds.values()])
+    labels = (a.call('GET', '/I18n').get('CProject') or {}).get('options', {}).get('status', {})
+    check('P10', 'its status reads Planning, Activated, Deactivated', [labels.get(k) for k in ('Planning', 'Active', 'Closed')]
+          == ['Planning', 'Activated', 'Deactivated'], labels)
+    lead, partner, viewer = as_user('cluster-lead'), as_user('cluster-partner'), as_user('cluster-viewer')
+    cc = lead.call('POST', '/CClusterContact', body={'name': 'PRJ Wanda Coordinator', 'projectId': p_etc['id'], 'role': 'coordinator',
+                                                     'organisationId': org_id('ORG_WFP'), 'emailAddress': 'delivered+prj-wanda@resend.dev',
+                                                     'phone': '+18765550142', 'teamsIds': [etc]})  # as the UI sends it (P5)
+    cc = get('CClusterContact', cc)
+    person = get('Contact', cc['contactId']) if cc.get('contactId') else {}
+    check('P10', "cluster-lead adds the ETC coordinator: in the project's teams, a Contact on WFP's Account",
+          set(cc['teamsIds']) == {etc, eq1} and person.get('accountId') == org_acc('ORG_WFP')
+          and (person.get('firstName'), person.get('lastName')) == ('PRJ Wanda', 'Coordinator'),
+          (cc.get('teamsNames'), person.get('accountName'), person.get('name')))
+    gov = lead.call('POST', '/CClusterContact', body={'name': 'PRJ Gil Focal', 'projectId': p_etc['id'], 'role': 'government_focal_point',
+                                                      'organisationOther': 'PRJ Ministry of Science and Telecoms',
+                                                      'emailAddress': 'delivered+prj-gil@resend.dev', 'teamsIds': [etc]})
+    gov_acc = get('CClusterContact', gov).get('accountId')
+    check('P10', "a government focal point, their ministry typed in: an Account of that name, the person a Contact on it",
+          gov_acc and get('Account', gov_acc)['name'] == 'PRJ Ministry of Science and Telecoms'
+          and get('Contact', get('CClusterContact', gov)['contactId']).get('accountId') == gov_acc, gov_acc)
+    check('P10', "staff-1 and cluster-partner (ETC) read it; cluster-viewer (WASH) doesn't; the partner can't edit it",
+          status(lambda: s.call('GET', f'/CClusterContact/{cc["id"]}')) == 200
+          and status(lambda: partner.call('GET', f'/CClusterContact/{cc["id"]}')) == 200
+          and status(lambda: viewer.call('GET', f'/CClusterContact/{cc["id"]}')) == 403
+          and status(lambda: partner.call('PUT', f'/CClusterContact/{cc["id"]}', body={'role': 'imo'})) == 403)
+    a.call('PUT', f'/CProject/{p_etc["id"]}', body={'teamsIds': [etc, eq1, ca]})
+    check('P10', "the project's teams change: its contacts follow", teams_of(a, 'CClusterContact', cc) == {etc, eq1, ca},
+          teams_of(a, 'CClusterContact', cc))
+    a.call('PUT', f'/CProject/{p_etc["id"]}', body={'teamsIds': [etc, eq1]})
 
     # --- P9: closing a project gives its tasks to its lead -------------------------------------
     a.call('PUT', f'/Task/{on_site["id"]}', body={'collaboratorsIds': [user['cluster-partner'], user['cluster-lead']]})

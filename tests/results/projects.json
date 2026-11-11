@@ -13,12 +13,12 @@
     "check": "a project's site: the project's teams, and its response",
     "ok": true,
     "detail": {
-      "id": "6af481dcb294095a7",
+      "id": "6af48eb9d6dc40d94",
       "name": "PRJ VSAT hub",
       "deleted": false,
       "description": null,
-      "createdAt": "2026-11-11 14:55:24",
-      "modifiedAt": "2026-11-11 14:55:24",
+      "createdAt": "2026-11-11 15:50:17",
+      "modifiedAt": "2026-11-11 15:50:17",
       "siteCode": "PRJ-E1",
       "siteType": null,
       "status": "planned",
@@ -35,7 +35,7 @@
       "location": null,
       "standardCode": null,
       "registeredAt": null,
-      "streamUpdatedAt": "2026-11-11 14:55:24",
+      "streamUpdatedAt": "2026-11-11 15:50:17",
       "createdById": "6aec3ee286e4b3936",
       "createdByName": "Admin",
       "modifiedById": null,
@@ -50,13 +50,13 @@
         "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
         "6aec41fec6f7a5f27": "Response: Test EQ 1"
       },
-      "responseId": "6af481d96f9182fdc",
+      "responseId": "6af48eb6dae65bc56",
       "responseName": "PRJ Hurricane",
       "photosIds": [],
       "photosNames": {},
       "standardId": null,
       "standardName": null,
-      "projectId": "6af481db0b8d34e7f",
+      "projectId": "6af48eb8060c93c7f",
       "projectName": "PRJ Hurricane ETC",
       "isFollowed": false,
       "followersIds": [],
@@ -69,7 +69,7 @@
     "check": "a project's task: the project's teams, and its response",
     "ok": true,
     "detail": {
-      "id": "6af481df537fc1ef1",
+      "id": "6af48ebbe5d8888f1",
       "name": "PRJ ETC task of the lead",
       "deleted": false,
       "status": "Backlog",
@@ -81,10 +81,10 @@
       "dateCompleted": null,
       "reminders": [],
       "description": null,
-      "createdAt": "2026-11-11 14:55:27",
-      "modifiedAt": "2026-11-11 14:55:27",
-      "cCode": "TSK-7NM9",
-      "streamUpdatedAt": "2026-11-11 14:55:27",
+      "createdAt": "2026-11-11 15:50:19",
+      "modifiedAt": "2026-11-11 15:50:19",
+      "cCode": "TSK-8XFK",
+      "streamUpdatedAt": "2026-11-11 15:50:19",
       "parentId": null,
       "parentType": null,
       "parentName": null,
@@ -114,9 +114,9 @@
       },
       "attachmentsIds": [],
       "attachmentsNames": {},
-      "cResponseId": "6af481d96f9182fdc",
+      "cResponseId": "6af48eb6dae65bc56",
       "cResponseName": "PRJ Hurricane",
-      "cProjectId": "6af481db0b8d34e7f",
+      "cProjectId": "6af48eb8060c93c7f",
       "cProjectName": "PRJ Hurricane ETC",
       "isFollowed": false,
       "followersIds": [
@@ -327,8 +327,8 @@
     "check": "a task on a site: in the site's project, response and teams",
     "ok": true,
     "detail": {
-      "cProjectId": "6af481db0b8d34e7f",
-      "cResponseId": "6af481d96f9182fdc",
+      "cProjectId": "6af48eb8060c93c7f",
+      "cResponseId": "6af48eb6dae65bc56",
       "teamsIds": [
         "6af050644bc5ab8e6",
         "6aec41fec6f7a5f27"
@@ -419,12 +419,12 @@
       [
         "6aec41fec6f7a5f27",
         "6af050644bc5ab8e6",
-        "6af4822486d6de5ea"
+        "6af48f05f285a6aca"
       ],
       [
         "6aec41fec6f7a5f27",
         "6af050644bc5ab8e6",
-        "6af4822486d6de5ea"
+        "6af48f05f285a6aca"
       ]
     ]
   },
@@ -441,6 +441,105 @@
         "6aec41fec6f7a5f27",
         "6af050644bc5ab8e6"
       ]
+    ]
+  },
+  {
+    "test": "P10",
+    "check": "a new ETC project: a cluster, its lead agency WFP's Account (the global lead, suggested), no co-leads",
+    "ok": true,
+    "detail": {
+      "sectorKind": "cluster",
+      "approach": "cluster",
+      "leadAgencyName": "WFP - World Food Programme",
+      "coLeadsNames": {}
+    }
+  },
+  {
+    "test": "P10",
+    "check": "Health: WHO isn't in the list, so PAHO (its regional office) is suggested",
+    "ok": true,
+    "detail": "PAHO - Pan American Health Organization"
+  },
+  {
+    "test": "P10",
+    "check": "CCCM in the sector approach (the government leads): no lead suggested, IOM (the global lead) a co-lead",
+    "ok": true,
+    "detail": [
+      null,
+      {
+        "6af44fbbcd16878fb": "IOM - International Organization for Migration"
+      }
+    ]
+  },
+  {
+    "test": "P10",
+    "check": "a lead agency and co-leads given: kept, nothing suggested",
+    "ok": true,
+    "detail": [
+      "PRJ Ministry of Health",
+      {
+        "6af48f1f0b1b597d8": "PRJ Health NGO"
+      }
+    ]
+  },
+  {
+    "test": "P10",
+    "check": "Child Protection: an area of responsibility (UNICEF suggested); Cash: a working group, no lead",
+    "ok": true,
+    "detail": [
+      [
+        "aor",
+        "UNICEF - United Nations Children\u2019s Fund"
+      ],
+      [
+        "working_group",
+        null
+      ]
+    ]
+  },
+  {
+    "test": "P10",
+    "check": "its status reads Planning, Activated, Deactivated",
+    "ok": true,
+    "detail": {
+      "Planning": "Planning",
+      "Active": "Activated",
+      "Closed": "Deactivated"
+    }
+  },
+  {
+    "test": "P10",
+    "check": "cluster-lead adds the ETC coordinator: in the project's teams, a Contact on WFP's Account",
+    "ok": true,
+    "detail": [
+      {
+        "6af050644bc5ab8e6": "Cluster: Test EQ 1 ETC",
+        "6aec41fec6f7a5f27": "Response: Test EQ 1"
+      },
+      "WFP - World Food Programme",
+      "PRJ Wanda Coordinator"
+    ]
+  },
+  {
+    "test": "P10",
+    "check": "a government focal point, their ministry typed in: an Account of that name, the person a Contact on it",
+    "ok": true,
+    "detail": "6af48f2f271bd85b2"
+  },
+  {
+    "test": "P10",
+    "check": "staff-1 and cluster-partner (ETC) read it; cluster-viewer (WASH) doesn't; the partner can't edit it",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "test": "P10",
+    "check": "the project's teams change: its contacts follow",
+    "ok": true,
+    "detail": [
+      "6aec41fb5be629a65",
+      "6aec41fec6f7a5f27",
+      "6af050644bc5ab8e6"
     ]
   },
   {

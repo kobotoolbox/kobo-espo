@@ -2,7 +2,7 @@
  "settings": {
   "form_title": "Responding organisation registration (espo-kobo test)",
   "form_id": "responder_registration",
-  "version": "3"
+  "version": "4"
  },
  "survey": [
   {
@@ -155,6 +155,11 @@
   },
   {
    "list_name": "sectors",
+   "name": "CCCM",
+   "label": "Camp Coordination and Camp Management"
+  },
+  {
+   "list_name": "sectors",
    "name": "CHILD_PROTECTION",
    "label": "Child Protection"
   },
@@ -187,6 +192,11 @@
    "list_name": "sectors",
    "name": "HEALTH",
    "label": "Health"
+  },
+  {
+   "list_name": "sectors",
+   "name": "LOGISTICS",
+   "label": "Logistics"
   },
   {
    "list_name": "sectors",

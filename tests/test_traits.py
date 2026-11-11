@@ -59,6 +59,16 @@ class Traits(unittest.TestCase):
         a = custom(self.spec, 'CActivity')  # its Account and teams follow to its focal points
         self.assertIn("record\\update('CFocalPoint', array\\at($rows, $i), 'teamsIds', teamsIds, 'accountId', accountId)", a)
 
+    def test_suggest_leads(self):
+        import json
+        s = custom(self.spec, 'CProject')
+        table = json.loads(re.search(r"\$sectors = '(.*?)';", s).group(1))
+        sectors = workflows.load(['core', 'responses'])['lists']['fivew-melissa.sectors']
+        self.assertEqual(set(table), {e['code'] for e in sectors})  # every sector, from the list
+        self.assertEqual((table['HEALTH']['lead'], table['SHELTER']['co'], table['CHILD_PROTECTION']['kind']),
+                         (['ORG_WHO', 'ORG_PAHO'], ['ORG_UNHCR'], 'aor'))
+        self.assertLess(s.index('(trait suggest_leads)'), s.index('A project is in its own teams'))
+
     def test_cascade_on_the_parent(self):
         s = custom(self.spec, 'CCso')
         for child, link in (('CPresence', 'csoId='), ('CCsoUpdate', 'csoId='), ('Contact', 'cCsoId=')):
@@ -66,7 +76,7 @@ class Traits(unittest.TestCase):
         self.assertGreater(s.index('(trait cascade'), s.index("record\\create('Account'"))
         p = custom(self.spec, 'CProject')  # the sites pack's cascade, on the responses pack's entity
         self.assertIn("record\\update('CSite', array\\at($rows, $i), 'teamsIds', teamsIds, 'responseId', responseId)", p)
-        self.assertNotIn('(trait cascade', custom(workflows.load(['core', 'responses']), 'CProject'))
+        self.assertNotIn("record\\update('CSite'", custom(workflows.load(['core', 'responses']), 'CProject'))  # no sites pack
 
     def test_unless(self):
         s = custom(self.spec, 'CSite')

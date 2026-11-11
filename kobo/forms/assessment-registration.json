@@ -299,6 +299,11 @@
   },
   {
    "list_name": "sectors",
+   "name": "CCCM",
+   "label": "Camp Coordination and Camp Management"
+  },
+  {
+   "list_name": "sectors",
    "name": "CHILD_PROTECTION",
    "label": "Child Protection"
   },
@@ -331,6 +336,11 @@
    "list_name": "sectors",
    "name": "HEALTH",
    "label": "Health"
+  },
+  {
+   "list_name": "sectors",
+   "name": "LOGISTICS",
+   "label": "Logistics"
   },
   {
    "list_name": "sectors",

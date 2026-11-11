@@ -3,55 +3,144 @@
  "sectors": [
   {
    "code": "CASH",
-   "label": "Cash Transfer"
+   "label": "Cash Transfer",
+   "kind": "working_group",
+   "lead": [],
+   "co_leads": []
+  },
+  {
+   "code": "CCCM",
+   "label": "Camp Coordination and Camp Management",
+   "kind": "cluster",
+   "lead": [
+    "ORG_IOM"
+   ],
+   "co_leads": [
+    "ORG_UNHCR"
+   ]
   },
   {
    "code": "CHILD_PROTECTION",
-   "label": "Child Protection"
+   "label": "Child Protection",
+   "kind": "aor",
+   "parent": "PROTECTION",
+   "lead": [
+    "ORG_UNICEF"
+   ],
+   "co_leads": []
   },
   {
    "code": "COORDINATION",
-   "label": "Coordination"
+   "label": "Coordination",
+   "kind": "coordination",
+   "lead": [
+    "ORG_OCHA"
+   ],
+   "co_leads": []
   },
   {
    "code": "EARLY_RECOVERY",
-   "label": "Early recovery"
+   "label": "Early recovery",
+   "kind": "cluster",
+   "lead": [
+    "ORG_UNDP"
+   ],
+   "co_leads": []
   },
   {
    "code": "EDUCATION",
-   "label": "Education"
+   "label": "Education",
+   "kind": "cluster",
+   "lead": [
+    "ORG_UNICEF"
+   ],
+   "co_leads": [
+    "ORG_SAVE_THE_CHILDREN"
+   ]
   },
   {
    "code": "EMERGENCY_TELECOMS",
-   "label": "Emergency Telecommunications"
+   "label": "Emergency Telecommunications",
+   "kind": "cluster",
+   "lead": [
+    "ORG_WFP"
+   ],
+   "co_leads": []
   },
   {
    "code": "FOOD_SECURITY",
-   "label": "Food Security"
+   "label": "Food Security",
+   "kind": "cluster",
+   "lead": [
+    "ORG_WFP"
+   ],
+   "co_leads": [
+    "ORG_FAO"
+   ]
   },
   {
    "code": "HEALTH",
-   "label": "Health"
+   "label": "Health",
+   "kind": "cluster",
+   "lead": [
+    "ORG_WHO",
+    "ORG_PAHO"
+   ],
+   "co_leads": []
+  },
+  {
+   "code": "LOGISTICS",
+   "label": "Logistics",
+   "kind": "cluster",
+   "lead": [
+    "ORG_WFP"
+   ],
+   "co_leads": []
   },
   {
    "code": "NUTRITION",
-   "label": "Nutrition"
+   "label": "Nutrition",
+   "kind": "cluster",
+   "lead": [
+    "ORG_UNICEF"
+   ],
+   "co_leads": []
   },
   {
    "code": "PROTECTION",
-   "label": "Protection"
+   "label": "Protection",
+   "kind": "cluster",
+   "lead": [
+    "ORG_UNHCR"
+   ],
+   "co_leads": []
   },
   {
    "code": "SHELTER",
-   "label": "Shelter & NFIs"
+   "label": "Shelter & NFIs",
+   "kind": "cluster",
+   "lead": [
+    "ORG_IFRC"
+   ],
+   "co_leads": [
+    "ORG_UNHCR"
+   ]
   },
   {
    "code": "WASH",
-   "label": "WASH"
+   "label": "WASH",
+   "kind": "cluster",
+   "lead": [
+    "ORG_UNICEF"
+   ],
+   "co_leads": []
   },
   {
    "code": "other_sector",
-   "label": "Other"
+   "label": "Other",
+   "kind": "other",
+   "lead": [],
+   "co_leads": []
   }
  ],
  "activity_types": [
@@ -2039,5 +2128,6 @@
    "code": "other",
    "label": "Other"
   }
- ]
+ ],
+ "sectors_note": "The Melissa form's sectors, and Logistics and CCCM (global clusters, UNDAC Handbook fig. A.4). kind: cluster, aor (an area of responsibility of Protection), working_group, coordination, other; lead and co_leads: the global leads (fig. A.4) as the organisations list's codes, in order of preference (PAHO is WHO's regional office for the Americas), suggested for a new cluster project."
 }

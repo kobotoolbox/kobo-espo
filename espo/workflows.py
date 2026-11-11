@@ -5,7 +5,8 @@ instance names (deploy/instance.toml).
 A pack, workflows/<name>/:
 
     workflow.toml   requires; conflicts (packs meant for other instances: a warning when
-                    both are applied); entities and their fields; fields on others' entities; links;
+                    both are applied); entities and their fields; fields on others' entities; links
+                    (and link_labels, where a name's words aren't the label: coLeads = "Co-leads");
                     codes; teams; roles (merged across packs); users (tests only); layouts;
                     settings; data to load; removed fields and links; agent_entities,
                     agent_guarded, task_parents
@@ -13,7 +14,9 @@ A pack, workflows/<name>/:
     formulas/       <Entity>.<script>.formula: this pack's block of that entity's script
     [traits.<Entity>]            the shared formula patterns it uses (espo/traits.py):
                                  portal_default, pcodes, inherit (and its cascade),
-                                 checks, supersede
+                                 checks, supersede, teams_up, teams_from_clusters,
+                                 account_from_organisation, find_or_make_contact,
+                                 suggest_leads
     agents.json     its example agents
     data/           its reference data
     migrate.py      migrate(espo): what data can't say (old codes moved), run after applying
@@ -176,7 +179,7 @@ def load(names, packs_dir=PACKS, params=None):
             'roles': {}, 'users': [], 'layouts': {}, 'data': [], 'removed': {'fields': {}, 'links': []},
             'settings': {'assignment_notifications': [], 'global_search': []}, 'formulas': {}, 'agents': [], 'tabs': [],
             'migrations': [], 'agent_entities': {}, 'agent_guarded': [], 'task_parents': [],
-            'metadata': {}, 'portal_roles': {}, 'portals': [], 'traits': {}}
+            'metadata': {}, 'portal_roles': {}, 'portals': [], 'traits': {}, 'link_labels': {}}
     ordered = {}
     for name in packs:
         p, d = read(name, packs_dir), packs_dir / name
@@ -188,6 +191,7 @@ def load(names, packs_dir=PACKS, params=None):
         for ent, fields in p.get('fields', {}).items():
             spec['fields'].setdefault(ent, {}).update({f: expand(v, lists, f'{name} {ent}.{f}') for f, v in fields.items()})
         spec['links'] += [tuple(x) for x in p.get('links', [])]
+        spec['link_labels'].update(p.get('link_labels', {}))
         spec['codes'].update(p.get('codes', {}))
         spec['teams'] += [t for t in p.get('teams', []) if t not in spec['teams']]
         for role, r in p.get('roles', {}).items():
@@ -253,6 +257,11 @@ def load(names, packs_dir=PACKS, params=None):
     for (ent, k), parts in ordered.items():
         spec['layouts'][ent][k] = merge_ordered(parts)
     for ent, t in spec['traits'].items():
+        if 'suggest_leads' in t:  # the trait reads its list's entries
+            name = t['suggest_leads'].get('list')
+            if name not in lists:
+                raise ValueError(f'{ent}: suggest_leads: no list {name!r}')
+            t['suggest_leads'] = {**t['suggest_leads'], 'entries': lists[name]}
         own = spec['entities'].get(ent[1:]) if ent.startswith('C') else None
         traits.check(ent, t, own['fields'] if own else None)
     # The agents' "Works on" and Tools: from the packs' entities and agents/tools.py
@@ -354,8 +363,11 @@ def code_field(entity):
     return 'code' if entity.startswith('C') and entity not in ('Case', 'Contact') else 'cCode'
 
 
-def link_label(link):
-    """leadOrganisation -> "Lead organisation", as the fields' labels are."""
+def link_label(link, labels=None):
+    """leadOrganisation -> "Lead organisation", as the fields' labels are; or a pack's own
+    (`link_labels`, by link name: e.g. coLeads = "Co-leads")."""
+    if labels and link in labels:
+        return labels[link]
     words = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', link).split(' ')
     return ' '.join([words[0].capitalize()] + [w.lower() for w in words[1:]])
 
@@ -391,11 +403,12 @@ def ensure_entities(espo, spec):
         for field, fspec in e['fields'].items():
             ensure_field(espo, f'C{name}', field, fspec)
     i18n = None
+    label = lambda name: link_label(name, spec['link_labels'])  # noqa: E731
     for entity, link, foreign, link_foreign, kind in spec['links']:
         if link not in metadata(espo, f'entityDefs.{entity}.links'):
             espo.call('POST', '/EntityManager/action/createLink', body={
                 'entity': entity, 'link': link, 'linkForeign': link_foreign, 'entityForeign': foreign,
-                'linkType': kind, 'label': link_label(link), 'labelForeign': link_label(link_foreign),
+                'linkType': kind, 'label': label(link), 'labelForeign': label(link_foreign),
                 **({'linkMultipleField': True} if kind == 'manyToMany' else {}),  # its field on the record (participantsIds)
                 'relationName': None})
             print(f'link created: {entity}.{link} -> {foreign}.{link_foreign}')
@@ -408,12 +421,12 @@ def ensure_entities(espo, spec):
         i18n = i18n or espo.call('GET', '/I18n')
         # On EspoCRM's own entities a custom link's name gets a "c" (Task.cResponse)
         on_foreign = link_foreign if foreign[0] == 'C' and foreign[1].isupper() else 'c' + link_foreign[0].upper() + link_foreign[1:]
-        if any(((i18n.get(e) or {}).get('links') or {}).get(name) != link_label(label_of)
+        if any(((i18n.get(e) or {}).get('links') or {}).get(name) != label(label_of)
                for e, name, label_of in ((entity, link, link), (foreign, on_foreign, link_foreign))):  # made before
             espo.call('POST', '/EntityManager/action/updateLink', body={  # labels were split into words
                 'entity': entity, 'link': link, 'entityForeign': foreign, 'linkForeign': on_foreign,
-                'label': link_label(link), 'labelForeign': link_label(link_foreign)})
-            print(f'link labels: {entity}.{link} "{link_label(link)}", {foreign}.{link_foreign} "{link_label(link_foreign)}"')
+                'label': label(link), 'labelForeign': label(link_foreign)})
+            print(f'link labels: {entity}.{link} "{label(link)}", {foreign}.{link_foreign} "{label(link_foreign)}"')
 
 
 def remove_obsolete(espo, spec):

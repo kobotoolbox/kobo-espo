@@ -112,10 +112,23 @@ def run(a, inst):
     by_code = tools.create_project(inst, a.call('GET', f'/CResponse/{resp["id"]}')['code'], 'WASH', cluster='WASH')
     check('U3', "the response named by its short code (first call only)",
           by_code.get('would_create', {}).get('response') == RESPONSE, by_code)
+    check('U3', "no lead agency given: the sector's global lead suggested (WFP for ETC)",
+          'global lead' in str(first.get('would_create', {}).get('lead_agency')) and done.get('lead_agency', '').startswith('WFP'),
+          (first.get('would_create'), done.get('lead_agency')))
+    ministry = f'MCPP {RUN} Ministry of Health'
+    first, made = twice(tools.create_project, inst, RESPONSE, 'Health', cluster='Health', approach='sector',
+                        lead_agency=ministry, co_leads=['ORG_PAHO'])
+    hp = a.call('GET', f'/CProject/{(by(a, "CProject", "name", f"{RESPONSE} · Health") or [{}])[0].get("id")}')
+    check('U3', 'the sector approach, a ministry (new) leading and PAHO (by its list code) co-leading',
+          first['would_create'].get('lead_agency') == f'{ministry} (new)' and hp.get('approach') == 'sector'
+          and hp.get('leadAgencyName') == ministry and [n[:4] for n in (hp.get('coLeadsNames') or {}).values()] == ['PAHO'],
+          (first['would_create'], hp.get('leadAgencyName'), hp.get('coLeadsNames')))
+    check('U3', 'an approach that isn\'t one: refused',
+          refused(lambda: tools.create_project(inst, RESPONSE, 'Logs', cluster='Logistics', approach='consortium')))
     listed = next((r for r in tools.list_projects(inst)['responses'] if r['response'] == RESPONSE), {})
-    check('U3', 'list_projects: the response with its project, and their codes',
-          [p['project'] for p in listed.get('projects', [])] == [name] and listed.get('code', '').startswith('RSP-')
-          and listed['projects'][0]['code'].startswith('PRJ-'), listed)
+    check('U3', 'list_projects: the response with its projects, and their codes',
+          sorted(p['project'] for p in listed.get('projects', [])) == [name, f'{RESPONSE} · Health']
+          and listed.get('code', '').startswith('RSP-') and all(p['code'].startswith('PRJ-') for p in listed['projects']), listed)
 
     # --- U4: a person -----------------------------------------------------------------------
     team_name = f'Cluster: {name}'
@@ -240,6 +253,9 @@ def cleanup(a):
     for t in a.call('GET', '/Team', {'maxSize': 200, 'select': 'name', 'where[0][type]': 'contains',
                                      'where[0][attribute]': 'name', 'where[0][value]': f'MCPP {RUN}'})['list']:
         a.call('DELETE', f'/Team/{t["id"]}')
+    for acc in a.call('GET', '/Account', {'maxSize': 50, 'select': 'name', 'where[0][type]': 'startsWith',
+                                          'where[0][attribute]': 'name', 'where[0][value]': f'MCPP {RUN}'})['list']:
+        a.call('DELETE', f'/Account/{acc["id"]}')
 
 
 if __name__ == '__main__':

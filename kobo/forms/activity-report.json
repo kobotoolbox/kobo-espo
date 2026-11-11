@@ -2,7 +2,7 @@
  "settings": {
   "form_title": "5W activity report (espo-kobo test)",
   "form_id": "fivew_activity_report",
-  "version": "1",
+  "version": "2",
   "style": "theme-grid pages"
  },
  "survey": [
@@ -1118,6 +1118,11 @@
   },
   {
    "list_name": "sectors",
+   "name": "CCCM",
+   "label": "Camp Coordination and Camp Management"
+  },
+  {
+   "list_name": "sectors",
    "name": "CHILD_PROTECTION",
    "label": "Child Protection"
   },
@@ -1150,6 +1155,11 @@
    "list_name": "sectors",
    "name": "HEALTH",
    "label": "Health"
+  },
+  {
+   "list_name": "sectors",
+   "name": "LOGISTICS",
+   "label": "Logistics"
   },
   {
    "list_name": "sectors",
@@ -1678,7 +1688,7 @@
    "list_name": "activity_types",
    "name": "other",
    "label": "Other",
-   "sector": "FOOD_SECURITY NUTRITION HEALTH SHELTER EDUCATION PROTECTION COORDINATION EARLY_RECOVERY CASH NOT_SPECIFIED other_sector WASH"
+   "sector": "FOOD_SECURITY NUTRITION HEALTH SHELTER EDUCATION PROTECTION COORDINATION EARLY_RECOVERY CASH NOT_SPECIFIED other_sector WASH CCCM LOGISTICS"
   },
   {
    "list_name": "activity_status",

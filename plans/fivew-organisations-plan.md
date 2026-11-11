@@ -175,6 +175,32 @@ Protection, working group). The handbook doesn't list the AoRs (Child Protection
 Mine Action, Housing, Land and Property): that's from the IASC's cluster arrangements, to
 check with a real response's setup before it ships.
 
+As built (2026-11-11, PRODUCT-440):
+
+- the sectors list (`workflows/responses/lists/fivew-melissa.json`) has Logistics and CCCM,
+  and per entry a `kind` (cluster, aor with its `parent`, working_group, coordination,
+  other) and the global `lead` and `co_leads` as the organisations list's codes in order of
+  preference. The Melissa list has no WHO, FAO, UNHCR, UNDP or Save the Children, so Health
+  falls back to PAHO (WHO's regional office) and the others have no suggestion until those
+  organisations are listed. The 5W forms (activity report v2, registration v4) and the
+  assessment form have the two new sectors (the activity type "other" for both). No other
+  AoRs (GBV, Mine Action, HLP) were added: the Melissa response's form has Child
+  Protection only; add them with a response that has them;
+- CProject: `approach` (cluster, sector), `sectorKind` (read only, from the sector), status
+  labelled Planning / Activated / Deactivated (stored values unchanged), `leadAgency`
+  (Account), `coLeads` (Accounts, many-to-many). The trait `suggest_leads` (it reads its
+  list: load() puts the entries in) fills a new project's lead and co-leads unless given;
+  in the sector approach the global lead goes to the co-leads;
+- CClusterContact (responses pack): role, organisation (the list, or typed in), account
+  (account_from_organisation), contact (find_or_make_contact), email, phone, job title; its
+  project's teams (inherit, cascade). Cluster Lead and Internal Staff make and edit them,
+  partners and viewers read them. The organisation comes from the list rather than an
+  Account link because a cluster's lead can't read another agency's Account;
+- the loader: `link_labels` in a pack, for labels a link name doesn't spell (Co-leads);
+- MCP `create_project`: `approach`, `lead_agency`, `co_leads` (an Account by name, or an
+  organisation by list code or name; a new Account when neither exists, shown "(new)").
+- Tests: projects P10 (10 checks, 54/54), mcp_people U3 (+3, 34/34), test_traits (+1).
+
 ### 5. The organisation's portal
 
 As the CSO portal: **register in Kobo, keep current in the portal**.

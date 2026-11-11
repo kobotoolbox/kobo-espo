@@ -11,7 +11,14 @@ links = [
   ["CProject", "lead", "User", "leadOfProjects", "manyToOne"],
   ["CResponse", "lead", "User", "leadOfResponses", "manyToOne"],
   ["COrganisation", "accounts", "Account", "organisation", "oneToMany"],
+  ["CProject", "leadAgency", "Account", "clustersLed", "manyToOne"],
+  ["CProject", "coLeads", "Account", "clustersCoLed", "manyToMany"],
+  ["CProject", "clusterContacts", "CClusterContact", "project", "oneToMany"],
+  ["CClusterContact", "account", "Account", "clusterRoles", "manyToOne"],
+  ["CClusterContact", "organisation", "COrganisation", "clusterRoles", "manyToOne"],
+  ["CClusterContact", "contact", "Contact", "clusterRoles", "manyToOne"],
 ]
+link_labels = { coLeads = "Co-leads", clustersCoLed = "Clusters co-led" }
 
 [settings]
 assignment_notifications = ["CResponse", "CProject"]
@@ -33,9 +40,29 @@ labelPlural = "Cluster projects"
 iconClass = "fas fa-layer-group"
 [entities.Project.fields]
 cluster = { label = "Sector", list = "fivew-melissa.sectors" }
-status = { type = "enum", options = ["Planning", "Active", "Closed"], default = "Planning", style = { Active = "success", Closed = "info" } }
+# Activated per response, only those needed, and deactivated later (UNDAC Handbook A.3.2);
+# the stored values stay Planning, Active, Closed
+status = { type = "enum", options = ["Planning", "Active", "Closed"], translatedOptions = { Planning = "Planning", Active = "Activated", Closed = "Deactivated" }, default = "Planning", style = { Active = "success", Closed = "info" } }
 startDate = { type = "date", label = "Start date" }
 endDate = { type = "date", label = "End date" }
+approach = { type = "enum", options = ["cluster", "sector"], translatedOptions = { cluster = "Cluster (a lead agency leads)", sector = "Sector (the government leads)" }, default = "cluster", tooltipText = "Who leads: in the sector approach the government leads and the agency co-leads (UNDAC Handbook A.3.4)" }
+sectorKind = { type = "enum", label = "Kind", options = ["", "cluster", "aor", "working_group", "coordination", "other"], translatedOptions = { cluster = "Cluster", aor = "Area of responsibility (Protection)", working_group = "Working group", coordination = "Coordination", other = "Other" }, readOnly = true, tooltipText = "From the sector" }
+
+# A cluster's people who don't sign in, each with their role in it (its coordinator, IMO,
+# government focal point...): their organisation from the list (everyone reads it) or typed
+# in (a ministry), its Account found or made (account_from_organisation), and the person a
+# Contact on it (find_or_make_contact). People who sign in are users in the cluster's team.
+[entities.ClusterContact]
+label = "Cluster contact"
+labelPlural = "Cluster contacts"
+iconClass = "fas fa-address-book"
+stream = false
+[entities.ClusterContact.fields]
+role = { type = "enum", options = ["coordinator", "co_coordinator", "imo", "government_focal_point", "other"], translatedOptions = { coordinator = "Coordinator", co_coordinator = "Co-coordinator", imo = "Information management officer", government_focal_point = "Government focal point", other = "Other" }, default = "coordinator" }
+emailAddress = { type = "varchar", label = "Email", maxLength = 150 }
+phone = { type = "varchar", maxLength = 40 }
+jobTitle = { type = "varchar", label = "Job title" }
+organisationOther = { type = "varchar", label = "Organisation (not in the list)" }
 
 # The organisations list's type, and an organisation, once, whatever the response: an
 # Account (a 5W registration's or an assessment's formula finds or makes it, the trait
@@ -51,6 +78,7 @@ orgType = { label = "Type", list = "fivew-melissa.org_types" }
 [roles."Internal Staff".data]
 CResponse = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
 CProject = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
+CClusterContact = { create = "yes", read = "team", edit = "team", delete = "yes", stream = "team" }
 
 [roles."Cluster Lead"]
 assignmentPermission = "team"
@@ -64,6 +92,7 @@ CProject = { create = "no", read = "team", edit = "team", delete = "no", stream 
 Task = { create = "yes", read = "team", edit = "team", delete = "no", stream = "team" }
 CResponse = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CFocalPoint = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CClusterContact = { create = "yes", read = "team", edit = "team", delete = "yes", stream = "team" }
 CAdminArea = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
 COrganisation = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
 Team = { read = "team" }
@@ -81,6 +110,7 @@ CProject = { create = "no", read = "team", edit = "no", delete = "no", stream = 
 Task = { create = "yes", read = "team", edit = "own", delete = "no", stream = "team" }
 CResponse = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CFocalPoint = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CClusterContact = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CAdminArea = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
 COrganisation = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
 Team = { read = "team" }
@@ -97,6 +127,7 @@ Account = { create = "no", read = "team", edit = "no", delete = "no", stream = "
 CProject = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 Task = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CResponse = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
+CClusterContact = { create = "no", read = "team", edit = "no", delete = "no", stream = "team" }
 CAdminArea = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
 COrganisation = { create = "no", read = "all", edit = "no", delete = "no", stream = "all" }
 Team = { read = "team" }
@@ -112,13 +143,20 @@ list = ["name", "code", "status", "emergencyType", "country", "lead", "teams"]
 relationships = ["projects", "tasks"]
 
 [layouts.CProject]
-detail = [["cluster", "status", "response", "lead", "startDate", "endDate"]]
-list = ["name", "code", "cluster", "status", "response", "lead", "teams"]
-relationships = ["tasks"]
+detail = [["cluster", "sectorKind", "status", "approach", "response", "leadAgency", "coLeads", "lead", "startDate", "endDate"]]
+list = ["name", "code", "cluster", "status", "response", "leadAgency", "lead", "teams"]
+relationships = ["clusterContacts", "tasks"]
+
+[layouts.CClusterContact]
+detail = [["project", "role", "organisation", "organisationOther", "account", "contact", "emailAddress", "phone", "jobTitle"]]
+list = ["name", "role", "project", "account", "emailAddress", "phone"]
 
 [layouts.Account]
 detail = [["cOrganisation", "cAcronym", "cOrgType"]]
-relationships = ["contacts", "cases", "documents"]
+relationships = ["contacts", "clustersLed", "clustersCoLed", "cases", "documents"]
+
+[layouts.Contact]
+relationships = ["clusterRoles", "cases", "documents"]
 
 [layouts.COrganisation]
 detail = [["orgType"]]
@@ -129,6 +167,18 @@ relationships = ["accounts"]
 detail = [["cResponse", "cProject"]]
 kanban = [{ name = "cProject", before = "assignedUser" }, { name = "cResponse", before = "assignedUser" }]
 filters = ["cResponse", "cProject"]
+
+# A cluster's people: its project's teams (so its response's too), and the project's changes
+# follow; each person a Contact on their organisation's Account
+[traits.CClusterContact]
+inherit = [{ link = "project", entity = "CProject", copy = ["teamsIds"], cascade = true }]
+account_from_organisation = { organisation = "organisation", other = "organisationOther" }
+find_or_make_contact = { account = "account", email = "emailAddress", phone = "phone", name = "name", title = "jobTitle" }
+
+# A new cluster project: its sector's kind, and its global leads suggested (UNDAC Handbook
+# fig. A.4, in the sectors list), unless given
+[traits.CProject]
+suggest_leads = { list = "fivew-melissa.sectors", by = "cluster", kind = "sectorKind", lead = "leadAgency", co_leads = "coLeads", approach = "approach" }
 
 [[users]]
 username = "cluster-lead"
