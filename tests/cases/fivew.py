@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-W1-W9, W11: Workflow E, a response's 5W (plans/workflow-e-5w-plan.md) on the Hurricane
-Melissa 5W form's model, and the short codes; W11 its organisations as Accounts
-(plans/fivew-organisations-plan.md, phase 1).
+W1-W9, W11-W13: Workflow E, a response's 5W (plans/workflow-e-5w-plan.md) on the Hurricane
+Melissa 5W form's model, and the short codes; W11 its organisations as Accounts, W12 their
+people, W13 activities' focal points as those people (plans/fivew-organisations-plan.md,
+phases 1-3).
 
     python3 -I tests/cases/fivew.py
 
@@ -322,6 +323,35 @@ def run(a, team, user):
     a.call('PUT', f'/CResponder/{r_b["id"]}', body={'organisationOther': None, 'organisationId': listed['id']})
     check('W12', "the organisation registered in a second response: its people get that response's team too (cascade)",
           eq2 in get('Contact', ana)['teamsIds'], get('Contact', ana).get('teamsNames'))
+
+    # --- W13: an activity's focal points: the same person over reports is one Contact ------------------
+    fp = lambda act_rec, **kw: a.call('POST', '/CFocalPoint', body={'activityId': act_rec['id'], **kw})  # noqa: E731
+    act2 = activity(name='Hygiene kits')
+    f1 = fp(act, name='Mary Jane Brown', emailAddress='delivered+fivew-mary@resend.dev', jobTitle='WASH officer')
+    f2 = fp(act2, name='Mary Brown', emailAddress='Delivered+FIVEW-mary@resend.dev', phone='+18765550199')
+    mary = get('CFocalPoint', f1).get('contactId')
+    c = get('Contact', mary) if mary else {}
+    check('W13', "a focal point: a Contact on its activity's Account, named, with its email and job title, in the Account's teams",
+          (c.get('accountId'), c.get('firstName'), c.get('lastName'), c.get('title')) == (reg['accountId'], 'Mary Jane', 'Brown', 'WASH officer')
+          and set(c.get('teamsIds') or []) == set(get('Account', reg['accountId'])['teamsIds']),
+          {k: c.get(k) for k in ('accountId', 'firstName', 'lastName', 'title', 'teamsNames')})
+    check('W13', 'named again in another report (the email in other case): the same Contact; its blank phone filled',
+          get('CFocalPoint', f2).get('contactId') == mary and get('Contact', mary).get('phoneNumber') == '+18765550199',
+          (get('CFocalPoint', f2).get('contactId'), get('Contact', mary).get('phoneNumber')))
+    f3 = fp(act2, name='M. Brown', phone='+18765550199')
+    check('W13', 'named by phone only: the same Contact', get('CFocalPoint', f3).get('contactId') == mary,
+          get('CFocalPoint', f3).get('contactId'))
+    act_a = activity(name='Radios', responderId=r_a['id'])
+    f4 = fp(act_a, name='Mary Brown', emailAddress='delivered+fivew-mary@resend.dev')
+    other = get('CFocalPoint', f4).get('contactId')
+    check('W13', "the same email in another organisation's report: that organisation's own Contact",
+          other and other != mary and get('Contact', other).get('accountId') == get('CActivity', act_a).get('accountId') != reg['accountId'],
+          (other, get('Contact', other).get('accountId') if other else None))
+    rows = a.call('GET', f'/Contact/{mary}/cActivityFocalPoints', {'select': 'id'})
+    check('W13', "the Contact's focal point rows: every report that named her", rows['total'] == 3, rows['total'])
+    fx = get('CFocalPoint', f1)
+    check('W13', "a focal point row: its activity's teams and Account", (set(fx['teamsIds']), fx.get('accountId'))
+          == (set(get('CActivity', act)['teamsIds']), reg['accountId']), (fx.get('teamsNames'), fx.get('accountId')))
 
 if __name__ == '__main__':
     main()

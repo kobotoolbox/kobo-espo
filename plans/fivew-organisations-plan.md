@@ -117,6 +117,18 @@ and links it (`contact`). So:
 - it's a formula pattern worth a trait (`find_or_make_contact`): the CSO's repeat could
   use it too.
 
+As built (2026-11-11, PRODUCT-439): `CFocalPoint` has `account` (its activity's, by the
+inherit trait, with cascade: an activity's Account and teams follow to its focal points)
+and `contact`. The `find_or_make_contact` trait (espo/traits.py) finds the Contact on the
+Account by email (EspoCRM's email match ignores case), else by phone, or makes one (the
+name split at its last word), fills the Contact's blank phone and title, and links it;
+again whenever the Account, email or phone change. The Contact's panel *Activity focal
+points* lists every report that named the person (the link on Contact is
+`cActivityFocalPoints`: EspoCRM prefixes custom links on its own entities). The migration
+links existing focal points (13 on staging). The same email in another organisation's
+report is that organisation's own Contact. fivew W13 (6 checks). The CSO's repeat keeps
+the bridge's match; the trait is there if it's wanted.
+
 (My earlier answer suggested replacing CFocalPoint with a link to Contacts. Keeping it
 as the link between a person and an activity is less work, needs no bridge change, and
 keeps which report named whom.)

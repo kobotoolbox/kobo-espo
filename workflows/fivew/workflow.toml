@@ -22,6 +22,8 @@ links = [
   ["CActivity", "implementingOrganisation", "COrganisation", "activitiesImplemented", "manyToOne"],
   ["CActivity", "locations", "CActivityLocation", "activity", "oneToMany"],
   ["CActivity", "focalPoints", "CFocalPoint", "activity", "oneToMany"],
+  ["CFocalPoint", "account", "Account", "activityFocalPoints", "manyToOne"],
+  ["CFocalPoint", "contact", "Contact", "activityFocalPoints", "manyToOne"],
   ["CActivityLocation", "parish", "CAdminArea", "locationsInParish", "manyToOne"],
   ["CActivityLocation", "community", "CAdminArea", "locationsInCommunity", "manyToOne"],
   ["CActivityLocation", "site", "CSite", "activityLocations", "manyToOne"],
@@ -168,6 +170,7 @@ shared = { type = "bool", label = "Shared", tooltipText = "May be shown to other
 
 [layouts.Contact]
 detail = [["account", "title", "cActive", "cShared"]]
+relationships = [{ name = "activityFocalPoints", before = "cases" }]
 
 [layouts.CResponder]
 detail = [
@@ -203,8 +206,8 @@ detail = [
 list = ["name", "activity", "parish", "community", "locationType", "populationTargeted", "populationReached"]
 
 [layouts.CFocalPoint]
-detail = [["activity"]]
-list = ["name", "activity", "emailAddress", "phone", "jobTitle"]
+detail = [["activity"], ["contact", "account"]]
+list = ["name", "activity", "contact", "emailAddress", "phone", "jobTitle"]
 
 [layouts.Account]
 relationships = [{ name = "responderProfiles", before = "cases" }, { name = "fivewActivities", before = "cases" }]
@@ -259,8 +262,11 @@ reached_over_targeted = "populationReached && populationTargeted && populationRe
 groups_over_total = "populationReached && $groups > populationReached"
 group_parts_dont_add_up = "$parts"
 
+# A focal point is this person for this activity (the report named them); the person is
+# one Contact on the organisation's Account, matched by email, else phone (PRODUCT-439)
 [traits.CFocalPoint]
-inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds"] }]
+inherit = [{ link = "activity", entity = "CActivity", copy = ["teamsIds", "accountId"], cascade = true }]
+find_or_make_contact = { account = "account", email = "emailAddress", phone = "phone", name = "name", title = "jobTitle" }
 
 # A registration is in its response's teams and those of its sectors' projects (and a new
 # project's, in its sector). Its organisation's Account (once, whatever the response) is in

@@ -63,5 +63,12 @@ def migrate(espo):
                 'accountId': r['accountId'], **({'phoneNumber': r['focalPointPhone']}
                                                 if r.get('focalPointPhone') and not c.get('phoneNumber') else {})})
             done['Contact'] = done.get('Contact', 0) + 1
+    # Activities' focal points from before they were Contacts (PRODUCT-439): given their
+    # activity's Account, their formula finds or makes their person's Contact
+    for r in every(espo, 'CFocalPoint', 'id,activityId,accountId', ('isNull', 'contactId'), ('isNotNull', 'activityId')):
+        acc = r.get('accountId') or espo.call('GET', f'/CActivity/{r["activityId"]}').get('accountId')
+        if acc:
+            espo.call('PUT', f'/CFocalPoint/{r["id"]}', body={'accountId': acc})
+            done['CFocalPoint'] = done.get('CFocalPoint', 0) + 1
     if done:
         print('fivew: Accounts for ' + ', '.join(f'{n} {e}' for e, n in done.items()))

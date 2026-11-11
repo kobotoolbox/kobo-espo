@@ -31,14 +31,21 @@ pack's own formula block is then only what is particular to it.
                                     # its organisation's Account: the one linked to its list
                                     # entry, else the unlisted one of the typed name; made if none
 
+    [traits.CFocalPoint]
+    find_or_make_contact = { account = "account", email = "emailAddress", phone = "phone",
+                             name = "name", title = "jobTitle" }
+                                    # its person: the Contact on its Account with its email (else
+                                    # its phone), made if none; linked (contact), the Contact's
+                                    # blank phone and title filled
+
 Where they go in the Before Save Custom Script: portal_default, pcodes, inherit,
-teams_from_clusters and account_from_organisation before the packs' blocks; checks,
+teams_from_clusters, account_from_organisation and find_or_make_contact before the packs' blocks; checks,
 supersede, teams_up, the cascades (the parent's side of an inherit with `cascade`) and the
 cluster teams (the project's side of teams_from_clusters) after them. A block with a line `// trait: <name>` has that trait there instead
 (e.g. a link the block finds first, then inherit).
 """
 
-BEFORE = ('portal_default', 'pcodes', 'inherit', 'teams_from_clusters', 'account_from_organisation')
+BEFORE = ('portal_default', 'pcodes', 'inherit', 'teams_from_clusters', 'account_from_organisation', 'find_or_make_contact')
 AFTER = ('checks', 'supersede', 'teams_up', 'cascade', 'cluster_teams')
 TRAITS = BEFORE + AFTER[:-2]  # cascade and cluster_teams are made from other traits, not named
 ROWS = 1000  # the most child records a cascade or supersede reads
@@ -294,6 +301,36 @@ if (!accountId || {changed([org, other], new=False)}) {{
 }}"""
 
 
+def find_or_make_contact(t, entity):
+    acc, email, phone = f"{t.get('account', 'account')}Id", t.get('email', 'emailAddress'), t.get('phone', 'phone')
+    name, title, contact = t.get('name', 'name'), t.get('title'), f"{t.get('contact', 'contact')}Id"
+    fill = [(phone, 'phoneNumber')] + ([(title, 'title')] if title else [])
+    return f"""// Its person: the Contact on its Account with its email, else its phone; made if none (so
+// someone named in several reports is one Contact), and the Contact's blank phone and title
+// filled (trait find_or_make_contact)
+if ({acc} && ({email} || {phone}) && (!{contact} || {changed([acc, email, phone], new=False)})) {{
+    $c = null;
+    if ({email}) {{
+        $c = record\\findOne('Contact', 'createdAt', 'asc', 'accountId=', {acc}, 'emailAddress=', {email});
+    }}
+    if (!$c && {phone}) {{
+        $c = record\\findOne('Contact', 'createdAt', 'asc', 'accountId=', {acc}, 'phoneNumber=', {phone});
+    }}
+    if (!$c) {{
+        $full = string\\trim({name});
+        $words = string\\split($full, ' ');
+        $last = ifThenElse($full, array\\at($words, array\\length($words) - 1), ifThenElse({email}, {email}, {phone}));
+        $c = record\\create('Contact', 'accountId', {acc},
+            'firstName', ifThenElse($full, string\\trim(string\\substring($full, 0, string\\length($full) - string\\length($last))), null),
+            'lastName', $last,
+            'emailAddress', {email}, 'phoneNumber', {phone}{''.join(f", 'title', {title}" for _ in [1] if title)});
+    }} else {{
+{chr(10).join(f"        if ({v} && !record\\attribute('Contact', $c, {q(a)})) {{{chr(10)}            record\\update('Contact', $c, {q(a)}, {v});{chr(10)}        }}" for v, a in fill)}
+    }}
+    {contact} = $c;
+}}"""
+
+
 def cascade(children, entity):
     """The parent's side of its children's inherits with `cascade`: (child, link, copy)."""
     out = []
@@ -310,7 +347,7 @@ def cascade(children, entity):
 RENDER = {'portal_default': portal_default, 'pcodes': pcodes, 'inherit': inherit, 'checks': checks,
           'supersede': supersede, 'teams_up': teams_up, 'cascade': cascade,
           'teams_from_clusters': teams_from_clusters, 'cluster_teams': cluster_teams,
-          'account_from_organisation': account_from_organisation}
+          'account_from_organisation': account_from_organisation, 'find_or_make_contact': find_or_make_contact}
 
 
 def cascades(traits):

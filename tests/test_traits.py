@@ -50,6 +50,15 @@ class Traits(unittest.TestCase):
         a = custom(self.spec, 'CActivity')  # its project found first, then inherit
         self.assertLess(a.index("projectId = $project"), a.index('(trait inherit)'))
 
+    def test_find_or_make_contact(self):
+        s = custom(self.spec, 'CFocalPoint')  # its activity's Account first (inherit), then its person
+        self.assertLess(s.index("accountId = record\\attribute('CActivity', activityId, 'accountId')"), s.index('(trait find_or_make_contact)'))
+        self.assertIn("'accountId=', accountId, 'emailAddress=', emailAddress", s)
+        self.assertIn("'accountId=', accountId, 'phoneNumber=', phone", s)
+        self.assertIn('contactId = $c;', s)
+        a = custom(self.spec, 'CActivity')  # its Account and teams follow to its focal points
+        self.assertIn("record\\update('CFocalPoint', array\\at($rows, $i), 'teamsIds', teamsIds, 'accountId', accountId)", a)
+
     def test_cascade_on_the_parent(self):
         s = custom(self.spec, 'CCso')
         for child, link in (('CPresence', 'csoId='), ('CCsoUpdate', 'csoId='), ('Contact', 'cCsoId=')):
