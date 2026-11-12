@@ -19,7 +19,7 @@
    "status",
    "lastReport",
    "clusters",
-   "focalPoint",
+   "contactName",
    "responseName"
   ],
   "outputFields": [],

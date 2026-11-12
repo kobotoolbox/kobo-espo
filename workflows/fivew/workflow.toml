@@ -62,8 +62,7 @@ orgType = { label = "Type", list = "fivew-melissa.org_types" }
 organisationOther = { type = "varchar", label = "Organisation (not in the list)" }
 clusters = { type = "multiEnum", label = "Sectors", list = "fivew-melissa.sectors" }
 status = { type = "enum", options = ["registered", "active", "inactive"], default = "registered", translatedOptions = { registered = "Registered", active = "Reporting", inactive = "Inactive" }, style = { active = "success", inactive = "info" } }
-focalPoint = { type = "varchar", label = "Focal point" }
-focalPointPhone = { type = "varchar", label = "Focal point phone", maxLength = 40 }
+focalPointPhone = { type = "varchar", label = "Focal point phone", maxLength = 40, tooltipText = "As the form gives it: the focal point's Contact takes it (formula)" }
 focalPointPosition = { type = "varchar", label = "Focal point position", tooltipText = "As the form gives it: the focal point's Contact takes it (formula)" }
 registrationKey = { type = "varchar", label = "Registration key", tooltipText = "Response and organisation: registering again updates the same record" }
 lastReport = { type = "date", label = "Last report" }
@@ -314,7 +313,7 @@ relationships = [{ name = "activityFocalPoints", before = "cases" }]
 
 [layouts.CResponder]
 detail = [
-  ["response", "organisation", "organisationOther", "account", "acronym", "orgType", "clusters", "status", "focalPoint", "contact", "focalPointPhone", "lastReport", "registrationKey"],
+  ["response", "organisation", "organisationOther", "account", "acronym", "orgType", "clusters", "status", "contact", "lastReport", "registrationKey"],
 ]
 list = ["name", "code", "organisation", "clusters", "status", "lastReport", "response"]
 relationships = ["activities", "tasks"]
@@ -375,6 +374,8 @@ map = { name = "label", code = "code", orgType = "org_type" }
 links = [["CActivity", "adminArea"], ["CActivity", "site"]]
 [removed.fields]
 CActivity = ["girls", "boys", "women", "men", "elderlyWomen", "elderlyMen", "households", "unit"]
+# The registration's focal point is its Contact (its name, phone and position: PRODUCT-438)
+CResponder = ["focalPoint"]
 
 # The formulas' shared patterns (espo/traits.py); the pack's own blocks are in formulas/.
 # An activity is in its response's project for its sector (its block finds the project

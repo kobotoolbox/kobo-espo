@@ -55,11 +55,7 @@ kobo = "sectors"
 espo = "clusters"
 type = "multiEnum"
 
-[[field]]
-kobo = "focal_name"
-espo = "focalPoint"
-
-[[field]]
+[[field]]  # as the form gives it: the focal point's Contact takes it (formula)
 kobo = "focal_phone"
 espo = "focalPointPhone"
 
