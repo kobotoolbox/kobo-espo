@@ -143,7 +143,7 @@ claude mcp add --transport http espocrm https://&lt;your EspoCRM&gt;/bridge/mcp 
   <li><strong>Active</strong>: untick it to pause the connection. Ticking it again picks up the submissions made meanwhile.</li>
   <li><strong>Template</strong>: edit it here, or ask Claude (<code>update_connection</code> shows the change first). The bridge sets the connection up again in its next pass. It also checks every 10 minutes whether the form has a new version.</li>
 </ul>
-<p>This instance's four forms are connections like any other:</p>
+<p>This instance's eleven forms are connections like any other:</p>
 <div class="table-scroll"><table>
   <thead><tr><th>Connection</th><th>Form</th><th>Makes</th><th>API user</th></tr></thead>
   <tbody>
@@ -151,6 +151,11 @@ claude mcp add --transport http espocrm https://&lt;your EspoCRM&gt;/bridge/mcp 
     <tr><td>volunteer</td><td>Volunteer availability</td><td>Contacts (volunteers)</td><td><code>kobo-volunteers</code></td></tr>
     <tr><td>site-registration</td><td>Site registration</td><td>Sites; <code>responses.csv</code>, <code>standards.csv</code> (<a href="sites.html">Sites</a>)</td><td><code>kobo-sites</code></td></tr>
     <tr><td>site-visit</td><td>Site visit - Test EQ 1</td><td>Visit notes on sites; <code>sites.csv</code></td><td><code>kobo-site-lists</code>, <code>kobo-site-visits</code></td></tr>
+    <tr><td>responder-registration</td><td>Responding organisation registration</td><td>5W registrations, their focal points as Contacts; <code>responses.csv</code>, <code>organisations.csv</code> (<a href="fivew.html">The 5W</a>)</td><td><code>kobo-responders</code></td></tr>
+    <tr><td>activity-report</td><td>5W activity report</td><td>Activities, their communities and focal points; <code>responses.csv</code>, <code>organisations.csv</code>, <code>areas.csv</code></td><td><code>kobo-activities</code></td></tr>
+    <tr><td>assessment-registration</td><td>Assessment registration</td><td>Assessments and their areas; the same three lists (<a href="assessments.html">Assessment registry</a>)</td><td><code>kobo-assessment-registration</code></td></tr>
+    <tr><td>cso-profile, cso-profile-ken</td><td>CSO profile (and Kenya's)</td><td>CSOs, their places and contacts; Kenya's <code>areas.csv</code> (<a href="cso.html">CSO mapping</a>)</td><td><code>kobo-cso-profile</code>, <code>kobo-cso-profile-ken</code></td></tr>
+    <tr><td>cso-update, cso-update-ken</td><td>CSO update (and Kenya's)</td><td>CSO updates; Kenya's <code>areas.csv</code></td><td><code>kobo-cso-update</code>, <code>kobo-cso-update-ken</code></td></tr>
   </tbody>
 </table></div>
 <p>They were made from the files in <code>kobo/templates/</code> on the droplet's first deploy (<code>serve adopt</code>, run by <code>deploy/bridges.sh</code>). The files are kept as the tests' fixtures; changing one doesn't change the droplet.</p>
