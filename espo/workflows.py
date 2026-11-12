@@ -20,7 +20,8 @@ A pack, workflows/<name>/:
                                  suggest_leads
     agents.json     its example agents
     data/           its reference data
-    migrate.py      migrate(espo): what data can't say (old codes moved), run after applying
+    migrate.py      migrate(espo[, rekeyed]): what data can't say (old codes moved), run after
+                    applying; rekeyed: this run's [[data]] records re-keyed in place (`was`)
 
     [metadata.<type>.<Entity>]   metadata the admin API can't set (aclDefs: which link a
                                  portal's "account" level follows): installed as one
@@ -614,32 +615,63 @@ def load_data(espo, spec):
             sources = [(d['list'], spec['lists'][d['list']])]
         else:
             sources = [(p.name, json.loads(p.read_text())) for p in sorted(pack_dir.glob(d['file']))]
+        groups = []
         for label, rows in sources:
             fmap = d.get('map')
-            want = {}
-            for r in rows:
-                body = {k: (r.get(v) or '') for k, v in fmap.items()} if fmap else dict(r)
-                want[body[d['match']]] = body
+            bodies = [{k: (r.get(v) or '') for k, v in fmap.items()} if fmap else dict(r) for r in rows]
+            if d.get('sync_by'):  # each value its own group (a file of many countries' admin0 rows)
+                values = list(dict.fromkeys(b[d['sync_by']] for b in bodies))
+                groups += [(label if len(values) == 1 else f'{label}: {v}', v, [b for b in bodies if b[d['sync_by']] == v])
+                           for v in values]
+            else:
+                groups.append((label, None, bodies))
+        seen = [value for _, value, _ in groups if value is not None]
+        twice = sorted({v for v in seen if seen.count(v) > 1})
+        if twice:  # each file would remove the other's records
+            raise ValueError(f'{d["file"]}: {d["sync_by"]} {", ".join(twice)} in more than one file')
+        for label, value, bodies in groups:
+            want = {b[d['match']]: b for b in bodies}
             if not want:
                 continue
-            select = ','.join(dict.fromkeys(['id', d['match'], *next(iter(want.values()))]))
+            select = ','.join(dict.fromkeys(['id', d['match'], *next(iter(want.values())), *([d['was'][1]] if d.get('was') else [])]))
             where = {}
             if d.get('sync_by'):
-                value = next(iter(want.values()))[d['sync_by']]
                 where = {'where[0][type]': 'equals', 'where[0][attribute]': d['sync_by'], 'where[0][value]': value}
             have = {r[d['match']]: r for r in every(espo, d['entity'], select, **where)}
+            # `was` = [field, scheme field]: a row's record may still be under the code its
+            # field gives (another set's, before the areas were the geocoder's): that record,
+            # if it isn't re-keyed yet (no scheme), is the row's, its code changed in place
+            # (so what links to it stays). A snapshot: codes may swap between places
+            target, rekeyed = {}, {}
+            if d.get('was'):
+                old, scheme = d['was']
+                for key, body in want.items():
+                    rec = have.get(body.get(old) or '')
+                    if rec is not None and not rec.get(scheme) and body.get(old) != key:
+                        target[key] = rec
+                        rekeyed[body[old]] = key
+            claimed = {r['id'] for r in target.values()}
+            for key in want:
+                if key not in target and key in have and have[key]['id'] not in claimed:
+                    target[key] = have[key]
             written = 0
             for key, body in want.items():
-                if key not in have:
+                rec = target.get(key)
+                if rec is None:
                     espo.call('POST', f'/{d["entity"]}', body=body, headers={'X-Skip-Duplicate-Check': 'true'})
                     written += 1
-                elif any(have[key].get(k) != v for k, v in body.items()):
-                    espo.call('PUT', f'/{d["entity"]}/{have[key]["id"]}', body=body)
+                elif any((rec.get(k) if rec.get(k) is not None else '') != v for k, v in body.items()):  # EspoCRM keeps '' as null
+                    espo.call('PUT', f'/{d["entity"]}/{rec["id"]}', body=body)
                     written += 1
-            gone = set(have) - set(want) if d.get('sync_by') else set()
+            if rekeyed:
+                spec.setdefault('rekeyed', {}).setdefault(d['entity'], {}).update(rekeyed)
+                print(f'data {d["entity"]} ({label}): {len(rekeyed)} re-keyed in place, from their {d["was"][0]}')
+            kept = {r['id'] for r in target.values()}
+            gone = {k for k, r in have.items() if r['id'] not in kept} if d.get('sync_by') else set()
             for key in gone:
                 espo.call('DELETE', f'/{d["entity"]}/{have[key]["id"]}')
-            print(f'data {d["entity"]} ({label}): {len(want)}, {written} written' + (f', {len(gone)} removed' if gone else ''))
+            if written or gone or len(groups) < 10:  # a file of many countries: only those it changed
+                print(f'data {d["entity"]} ({label}): {len(want)}, {written} written' + (f', {len(gone)} removed' if gone else ''))
 
 
 def ensure_roles(espo, spec):
@@ -777,7 +809,11 @@ def migrate(espo, spec):
     for path in spec['migrations']:
         ns = {}
         exec(compile(path.read_text(), str(path), 'exec'), ns)
-        ns['migrate'](espo)
+        # migrate(espo, rekeyed): this run's re-keyed reference records, {entity: {old: new}}
+        if ns['migrate'].__code__.co_argcount > 1:
+            ns['migrate'](espo, spec.get('rekeyed', {}))
+        else:
+            ns['migrate'](espo)
         print(f'migrate: {path.parent.name}')
 
 

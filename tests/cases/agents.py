@@ -306,7 +306,7 @@ def main():
                     ('soon', {'status': 'planned', 'startDate': on(9), 'endDate': on(12)})]:
         asm[key] = a.call('POST', '/CAssessment', body={'name': f'AGT Assessment {key}', 'responseId': resp4['id'],
                                                         'organisationId': org['ORG_ADRA'], 'sectors': ['WASH'],
-                                                        'geoLevel': 'admin1', 'areaCodes': 'JM17', **kw})
+                                                        'geoLevel': 'admin1', 'areaCodes': 'JM03', **kw})
 
     def asked(prefix):
         return sorted(t['name'] for k, r in asm.items() for t in a.call('GET', '/Task', {
@@ -321,7 +321,7 @@ def main():
           asked('Has it started?') == ['Has it started? AGT Assessment late'], asked('Has it started?'))
     asm['other'] = a.call('POST', '/CAssessment', body={'name': 'AGT Assessment other', 'responseId': resp4['id'],
                                                         'organisationId': org['ORG_AMERICARES'], 'sectors': ['WASH', 'HEALTH'],
-                                                        'geoLevel': 'admin2', 'areaCodes': 'JM17001',
+                                                        'geoLevel': 'admin2', 'areaCodes': 'JM030101',
                                                         'status': 'planned', 'startDate': on(-1), 'endDate': on(8)})
     runner.once()
     got = a.call('GET', f'/CAssessment/{asm["other"]["id"]}')

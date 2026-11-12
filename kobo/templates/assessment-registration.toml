@@ -172,10 +172,12 @@ order_by = "name"
 columns = { name = "code", label = "name" }
 forms = ["Assessment registration (espo-kobo test)"]
 
+# Jamaica's parishes and communities, the geocoder's P-codes (its communities are admin3:
+# a community's parent here is its parish, pcode1)
 [[list]]
 file = "areas.csv"
 entity = "CAdminArea"
-where = { country = "JAM" }
+where = { country = "JAM", level = ["admin1", "admin3"] }
 order_by = "pcode"
-columns = { name = "pcode", label = "name", level = "level", parent = "parentPcode" }
+columns = { name = "pcode", label = "name", level = "level", parent = "pcode1" }
 forms = ["Assessment registration (espo-kobo test)"]

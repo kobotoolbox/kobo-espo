@@ -87,25 +87,25 @@ REGISTRATIONS = [  # (organisation, its type, sectors, focal point, email)
 REPORTS = [
     ('ORG_JRC', 'RED_CROSS_MOVEMENT', None, 'WASH', 'distribution_of_hygiene_kits', 'Hygiene kits for displaced families',
      'COMPLETED', 'wash', 'hygiene', '2026-10-31', '2026-11-05',
-     [('JM16', 'JM16062', 'shelter', 420, 1600, 1520), ('JM16', 'JM16051', 'general_community', 180, 700, 690)]),
+     [('JM14', 'JM141316', 'shelter', 420, 1600, 1520), ('JM14', 'JM140904', 'general_community', 180, 700, 690)]),
     ('ORG_UNICEF', 'UN_AGENCY', 'ORG_JRC', 'WASH', 'water_trucking', 'Water trucking to Black River and Santa Cruz',
      'IN_PROGRESS', 'wash', 'water', '2026-11-01', None,
-     [('JM11', 'JM11008', 'general_community', 60000, 9000, 5200), ('JM11', 'JM11051', 'general_community', 35000, 6000, 2100)]),
+     [('JM09', 'JM090203', 'general_community', 60000, 9000, 5200), ('JM09', 'JM090709', 'general_community', 35000, 6000, 2100)]),
     ('ORG_ADRA', 'INTERNATIONAL_NGO', None, 'SHELTER', 'emergency', 'Emergency shelter kits, Hanover',
      'IN_PROGRESS', 'non_food', 'shelter_kit', '2026-11-02', None,
-     [('JM02', 'JM02001', 'general_community', 250, 1200, 650), ('JM02', 'JM02011', 'general_community', 150, 800, 300)]),
+     [('JM02', 'JM020410', 'general_community', 250, 1200, 650), ('JM02', 'JM020203', 'general_community', 150, 800, 300)]),
     ('ORG_JRC', 'RED_CROSS_MOVEMENT', None, 'SHELTER', 'nfi', 'Tarpaulins and mattresses, Westmoreland',
      'COMPLETED', 'non_food', 'tarpaulin', '2026-10-30', '2026-11-03',
-     [('JM16', 'JM16013', 'general_community', 120, 400, 460)]),  # more reached than targeted: a data check
+     [('JM14', 'JM141402', 'general_community', 120, 400, 460)]),  # more reached than targeted: a data check
     ('ORG_WFP', 'UN_AGENCY', None, 'EMERGENCY_TELECOMS', 'other', 'Connectivity for collective centres',
      'IN_PROGRESS', 'it', 'communication', '2026-11-01', None,
-     [('JM16', 'JM16074', 'shelter', 3, 900, 900), ('JM11', 'JM11058', 'school', 2, 500, 350)]),
+     [('JM14', 'JM141410', 'shelter', 3, 900, 900), ('JM09', 'JM090215', 'school', 2, 500, 350)]),
     ('ORG_UNICEF', 'UN_AGENCY', None, 'WASH', 'hygiene_promotion_awareness_campaigns', 'Hygiene promotion in schools',
      'PLANNED', 'wash', 'hygiene', '2026-11-12', None,
-     [('JM12', 'JM12042', 'school', 0, 3000, 0)]),
+     [('JM10', 'JM100519', 'school', 0, 3000, 0)]),
     ('ORG_IFRC', 'RED_CROSS_MOVEMENT', None, 'HEALTH', 'health_facility_rehabilitation_or_support',
      'Generators for health centres', 'COMPLETED', 'non_food', 'generator', '2026-11-03', '2026-11-20',  # ends after
-     [('JM16', 'JM16002', 'health_facility', 2, 3000, 3000)]),  # today, yet completed: a data check
+     [('JM14', 'JM141301', 'health_facility', 2, 3000, 3000)]),  # today, yet completed: a data check
 ]
 
 

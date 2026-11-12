@@ -456,12 +456,13 @@ def main():
           len(lists['organisations.csv']) == 137 and {'name': 'ORG_ADRA', 'label': 'ADRA - Adventist Development and Relief Agency',
                                                      'org_type': 'INTERNATIONAL_NGO'} in lists['organisations.csv'],
           lists['organisations.csv'][:2])
-    check('W8', "areas.csv: Jamaica's parishes and communities by P-code, each community with its parish",
-          len(lists['areas.csv']) == 789 and {'name': 'JM17', 'label': 'KINGSTON', 'level': 'admin1', 'parent': 'JM'}
-          in lists['areas.csv'] and all(r['parent'].startswith('JM') for r in lists['areas.csv']), lists['areas.csv'][:2])
+    check('W8', "areas.csv: Jamaica's parishes and communities by the geocoder's P-code, each community with its parish",
+          len(lists['areas.csv']) == 789 and {'name': 'JM03', 'label': 'Kingston', 'level': 'admin1', 'parent': 'JM03'}
+          in lists['areas.csv'] and all(r['parent'].startswith('JM') and r['level'] in ('admin1', 'admin3') for r in lists['areas.csv']),
+          lists['areas.csv'][:2])
     check('W8', 'responses.csv: by code', all(r['name'].startswith('RSP-') for r in lists['responses.csv']))
-    kingston = [r['name'] for r in lists['areas.csv'] if r['parent'] == 'JM17'][:1]
-    standrew = [r['name'] for r in lists['areas.csv'] if r['parent'] == 'JM08'][:1]
+    kingston = [r['name'] for r in lists['areas.csv'] if r['parent'] == 'JM03' and r['level'] == 'admin3'][:1]
+    standrew = [r['name'] for r in lists['areas.csv'] if r['parent'] == 'JM06' and r['level'] == 'admin3'][:1]
     R, L = 'RESPONSES/FIGURES_COMMUNITY', 'org_details'
 
     def report(start, end=None, communities=(), **extra):
@@ -483,7 +484,7 @@ def main():
                      f'{R}/people/idp/idp_women_reached': str(r // 2), f'{R}/people/idp/idp_men_reached': str(r - r // 2)}
                     for par, com, site_c, q, t, r in communities], **extra}
     rep_a = submit(uids['activity-report'], report('2026-11-04', communities=[
-        ('JM17', kingston[0], code_1, 3, 200, 120), ('JM08', standrew[0], None, 2, 100, 80)]))
+        ('JM03', kingston[0], code_1, 3, 200, 120), ('JM06', standrew[0], None, 2, 100, 80)]))
     code, log, st = reports.once()
     act = by(a, 'CActivity', 'cKoboSubmissionUuid', rep_a['_uuid'])
     act = a.call('GET', f'/CActivity/{act[0]["id"]}') if act else {}
@@ -511,7 +512,7 @@ def main():
           and fps[0].get('emailAddress') == f'ama-{RUN}@example.org', fps)
     bad = submit(uids['activity-report'], report('2026-11-10', '2026-11-01'))
     unknown = submit(uids['activity-report'], report('2026-11-04', communities=[
-        ('JM17', kingston[0], None, 1, 10, 10), ('JM17', 'JM99999', None, 1, 10, 10)]))
+        ('JM03', kingston[0], None, 1, 10, 10), ('JM03', 'JM99999', None, 1, 10, 10)]))
     code, log, st = reports.once()
     failed = reports.failed()
     check('W10', 'a report that ends before it starts: recorded with its reason, not made',

@@ -11,8 +11,8 @@ MCP_URL, DASH_PUBLIC_KEY and SIGNING_KEY, its Ed25519 pair, SECRET_KEY, CRED_KEY
     PYTHONPATH=src uv run python ../kobo-espo/site/dash-fivew.py
 
 ASSET: the 5W activity report project on the Kobo test account (a dashboard belongs to a
-Kobo project; its data here is EspoCRM's). BOUNDARIES: Jamaica's parishes, re-keyed to
-the Melissa P-codes EspoCRM has (the geocoder's own are numbered differently: PRODUCT-428).
+Kobo project; its data here is EspoCRM's). BOUNDARIES: Jamaica's parishes from the geocoder
+(espo/seed/admin_areas.py JM --boundaries DIR), the P-codes EspoCRM has.
 Keys come from secrets/dash-fivew.json and are never printed.
 """
 import asyncio
@@ -39,7 +39,7 @@ ESPO = 'https://staging.respond.kobolabs.dev'
 USER = 'cso-demo'  # the local kobo-dash's demo owner
 ASSET = 'an3jbyAKcM4nAQSoyawu2C'  # the 5W activity report project on the Kobo test account
 FEEDS = json.loads((Path(__file__).resolve().parents[1] / 'secrets' / 'dash-fivew.json').read_text())
-BOUNDARIES = Path(os.environ.get('BOUNDARIES', '/tmp/asm-build/boundaries'))  # jam-admin1-melissa.geojson
+BOUNDARIES = Path(os.environ.get('BOUNDARIES', '/tmp/asm-build/boundaries'))  # jam-admin1.geojson
 
 
 def token(**extra):
@@ -157,7 +157,7 @@ def main():
 
         async def layers(s, o):
             d, _ = await owned(s, o.id, slug)
-            await boundaries.save(s, d, 'parishes', (BOUNDARIES / 'jam-admin1-melissa.geojson').read_bytes(), 'pcode')
+            await boundaries.save(s, d, 'parishes', (BOUNDARIES / 'jam-admin1.geojson').read_bytes(), 'pcode')
 
         asyncio.run(direct(layers))
         saved = call(c, 'PUT', f'/api/dashboards/{slug}/spec', {'spec': SPEC, 'note': '5W, Hurricane Melissa: the 5W, the ICCG\'s 3W, organisations by cluster'})

@@ -21,8 +21,8 @@
     "ok": true,
     "detail": {
       "would_create": {
-        "response": "MCPP 428019 Hurricane",
-        "team": "Response: MCPP 428019 Hurricane (new)",
+        "response": "MCPP 472686 Hurricane",
+        "team": "Response: MCPP 472686 Hurricane (new)",
         "emergency_type": "Cyclone",
         "country": "Jamaica",
         "lead": "staff-2"
@@ -30,7 +30,7 @@
       "note": "Its team is its coordinators': they see all its projects. It starts with four tasks for its lead. staff-2 is put in its team.",
       "changed": false,
       "confirm_required": true,
-      "confirm": "eyJleHAiOiAxNzk0NDI4NjY3LCAiZiI6IHsiYWN0aW9uIjogImNyZWF0ZV9yZXNwb25zZSIsICJjb3VudHJ5IjogIkphbWFpY2EiLCAibGVhZCI6ICJzdGFmZi0yIiwgIm5hbWUiOiAiTUNQUCA0MjgwMTkgSHVycmljYW5lIiwgInRlYW0iOiAiUmVzcG9uc2U6IE1DUFAgNDI4MDE5IEh1cnJpY2FuZSIsICJ0eXBlIjogIkN5Y2xvbmUifX0.ifzCK3vud2uGDHV7Qx5_jKwWJkk5kREg86hSl1yCjTs",
+      "confirm": "eyJleHAiOiAxNzk0NDczMzMxLCAiZiI6IHsiYWN0aW9uIjogImNyZWF0ZV9yZXNwb25zZSIsICJjb3VudHJ5IjogIkphbWFpY2EiLCAibGVhZCI6ICJzdGFmZi0yIiwgIm5hbWUiOiAiTUNQUCA0NzI2ODYgSHVycmljYW5lIiwgInRlYW0iOiAiUmVzcG9uc2U6IE1DUFAgNDcyNjg2IEh1cnJpY2FuZSIsICJ0eXBlIjogIkN5Y2xvbmUifX0.PzwDM6HB3ktx2uy3yavOoUxxpU_Je-1582cMlByKI7Y",
       "next": "Show the user this, and call again with `confirm` only once they have agreed."
     }
   },
@@ -40,9 +40,9 @@
     "ok": true,
     "detail": {
       "changed": true,
-      "response": "MCPP 428019 Hurricane",
-      "team": "Response: MCPP 428019 Hurricane",
-      "link": "https://staging.respond.kobolabs.dev/#CResponse/view/6af4ccab501defcd9",
+      "response": "MCPP 472686 Hurricane",
+      "team": "Response: MCPP 472686 Hurricane",
+      "link": "https://staging.respond.kobolabs.dev/#CResponse/view/6af57b245bb7edbd4",
       "next": "create_project for each cluster; invite_user or add_to_team for its coordinators."
     }
   },
@@ -76,12 +76,12 @@
     "ok": true,
     "detail": {
       "changed": true,
-      "project": "MCPP 428019 Hurricane \u00b7 ETC",
-      "team": "Cluster: MCPP 428019 Hurricane \u00b7 ETC",
-      "link": "https://staging.respond.kobolabs.dev/#CProject/view/6af4ccd45f24ce942",
+      "project": "MCPP 472686 Hurricane \u00b7 ETC",
+      "team": "Cluster: MCPP 472686 Hurricane \u00b7 ETC",
+      "link": "https://staging.respond.kobolabs.dev/#CProject/view/6af57b4db7c6860e4",
       "lead_agency": "WFP - World Food Programme",
       "co_leads": [],
-      "next": "invite_user (or add_to_team) the project's people into \"Cluster: MCPP 428019 Hurricane \u00b7 ETC\", each with a role (list_roles). A Kobo form for its sites: a connection whose site list has `team = \"Cluster: MCPP 428019 Hurricane \u00b7 ETC\"`."
+      "next": "invite_user (or add_to_team) the project's people into \"Cluster: MCPP 472686 Hurricane \u00b7 ETC\", each with a role (list_roles). A Kobo form for its sites: a connection whose site list has `team = \"Cluster: MCPP 472686 Hurricane \u00b7 ETC\"`."
     }
   },
   {
@@ -96,19 +96,19 @@
     "ok": true,
     "detail": {
       "would_create": {
-        "project": "MCPP 428019 Hurricane \u00b7 WASH",
-        "response": "MCPP 428019 Hurricane",
+        "project": "MCPP 472686 Hurricane \u00b7 WASH",
+        "response": "MCPP 472686 Hurricane",
         "cluster": "WASH",
         "lead": null,
-        "team": "Cluster: MCPP 428019 Hurricane \u00b7 WASH (new)",
+        "team": "Cluster: MCPP 472686 Hurricane \u00b7 WASH (new)",
         "approach": "cluster",
         "lead_agency": "the sector's global lead, suggested",
         "co_leads": "the sector's global co-leads, suggested"
       },
-      "note": "Its records are in its team and the response's (Coordination: Jamaica, Response: MCPP 428019 Hurricane): the project's people see only this project, the response's coordinators every project. To hand out its work, a coordinator joins its team (add_to_team).",
+      "note": "Its records are in its team and the response's (Coordination: Jamaica, Response: MCPP 472686 Hurricane): the project's people see only this project, the response's coordinators every project. To hand out its work, a coordinator joins its team (add_to_team).",
       "changed": false,
       "confirm_required": true,
-      "confirm": "eyJleHAiOiAxNzk0NDI4NzMyLCAiZiI6IHsiYWN0aW9uIjogImNyZWF0ZV9wcm9qZWN0IiwgImFwcHJvYWNoIjogImNsdXN0ZXIiLCAiY2x1c3RlciI6ICJXQVNIIiwgImNvX2xlYWRzIjogW10sICJsZWFkIjogbnVsbCwgImxlYWRfYWdlbmN5IjogbnVsbCwgIm5hbWUiOiAiTUNQUCA0MjgwMTkgSHVycmljYW5lIFx1MDBiNyBXQVNIIiwgInJlc3BvbnNlIjogIjZhZjRjY2FiNTAxZGVmY2Q5IiwgInRlYW0iOiAiQ2x1c3RlcjogTUNQUCA0MjgwMTkgSHVycmljYW5lIFx1MDBiNyBXQVNIIn19.jDrlDE1lW1MJRRcggdV2FhZ_dvejbgZ50AJIZ2nwD_U",
+      "confirm": "eyJleHAiOiAxNzk0NDczMzkzLCAiZiI6IHsiYWN0aW9uIjogImNyZWF0ZV9wcm9qZWN0IiwgImFwcHJvYWNoIjogImNsdXN0ZXIiLCAiY2x1c3RlciI6ICJXQVNIIiwgImNvX2xlYWRzIjogW10sICJsZWFkIjogbnVsbCwgImxlYWRfYWdlbmN5IjogbnVsbCwgIm5hbWUiOiAiTUNQUCA0NzI2ODYgSHVycmljYW5lIFx1MDBiNyBXQVNIIiwgInJlc3BvbnNlIjogIjZhZjU3YjI0NWJiN2VkYmQ0IiwgInRlYW0iOiAiQ2x1c3RlcjogTUNQUCA0NzI2ODYgSHVycmljYW5lIFx1MDBiNyBXQVNIIn19.7ldZzQi7xz58FJLlDQ68ak5Q7XHi5HEXi8O76JVFQV0",
       "next": "Show the user this, and call again with `confirm` only once they have agreed."
     }
   },
@@ -118,11 +118,11 @@
     "ok": true,
     "detail": [
       {
-        "project": "MCPP 428019 Hurricane \u00b7 ETC",
-        "response": "MCPP 428019 Hurricane",
+        "project": "MCPP 472686 Hurricane \u00b7 ETC",
+        "response": "MCPP 472686 Hurricane",
         "cluster": "EMERGENCY_TELECOMS",
         "lead": null,
-        "team": "Cluster: MCPP 428019 Hurricane \u00b7 ETC (new)",
+        "team": "Cluster: MCPP 472686 Hurricane \u00b7 ETC (new)",
         "approach": "cluster",
         "lead_agency": "the sector's global lead, suggested",
         "co_leads": "the sector's global co-leads, suggested"
@@ -136,18 +136,18 @@
     "ok": true,
     "detail": [
       {
-        "project": "MCPP 428019 Hurricane \u00b7 Health",
-        "response": "MCPP 428019 Hurricane",
+        "project": "MCPP 472686 Hurricane \u00b7 Health",
+        "response": "MCPP 472686 Hurricane",
         "cluster": "HEALTH",
         "lead": null,
-        "team": "Cluster: MCPP 428019 Hurricane \u00b7 Health (new)",
+        "team": "Cluster: MCPP 472686 Hurricane \u00b7 Health (new)",
         "approach": "sector",
-        "lead_agency": "MCPP 428019 Ministry of Health (new)",
+        "lead_agency": "MCPP 472686 Ministry of Health (new)",
         "co_leads": [
           "PAHO - Pan American Health Organization"
         ]
       },
-      "MCPP 428019 Ministry of Health",
+      "MCPP 472686 Ministry of Health",
       {
         "6af44fa42edcf4e16": "PAHO - Pan American Health Organization"
       }
@@ -164,41 +164,41 @@
     "check": "list_projects: the response with its projects, and their codes",
     "ok": true,
     "detail": {
-      "response": "MCPP 428019 Hurricane",
-      "code": "RSP-HG46",
+      "response": "MCPP 472686 Hurricane",
+      "code": "RSP-GBWD",
       "status": "Active",
       "lead": "Sasha Staff",
       "teams": [
         "Coordination: Jamaica",
-        "Response: MCPP 428019 Hurricane"
+        "Response: MCPP 472686 Hurricane"
       ],
-      "link": "https://staging.respond.kobolabs.dev/#CResponse/view/6af4ccab501defcd9",
+      "link": "https://staging.respond.kobolabs.dev/#CResponse/view/6af57b245bb7edbd4",
       "projects": [
         {
-          "project": "MCPP 428019 Hurricane \u00b7 ETC",
-          "code": "PRJ-DCGV",
+          "project": "MCPP 472686 Hurricane \u00b7 ETC",
+          "code": "PRJ-PEA8",
           "cluster": "EMERGENCY_TELECOMS",
           "status": "Active",
           "lead": null,
           "teams": [
-            "Cluster: MCPP 428019 Hurricane \u00b7 ETC",
+            "Cluster: MCPP 472686 Hurricane \u00b7 ETC",
             "Coordination: Jamaica",
-            "Response: MCPP 428019 Hurricane"
+            "Response: MCPP 472686 Hurricane"
           ],
-          "link": "https://staging.respond.kobolabs.dev/#CProject/view/6af4ccd45f24ce942"
+          "link": "https://staging.respond.kobolabs.dev/#CProject/view/6af57b4db7c6860e4"
         },
         {
-          "project": "MCPP 428019 Hurricane \u00b7 Health",
-          "code": "PRJ-JF8B",
+          "project": "MCPP 472686 Hurricane \u00b7 Health",
+          "code": "PRJ-D7YQ",
           "cluster": "HEALTH",
           "status": "Active",
           "lead": null,
           "teams": [
-            "Cluster: MCPP 428019 Hurricane \u00b7 Health",
+            "Cluster: MCPP 472686 Hurricane \u00b7 Health",
             "Coordination: Jamaica",
-            "Response: MCPP 428019 Hurricane"
+            "Response: MCPP 472686 Hurricane"
           ],
-          "link": "https://staging.respond.kobolabs.dev/#CProject/view/6af4cd0918abbde24"
+          "link": "https://staging.respond.kobolabs.dev/#CProject/view/6af57b7b18b39e6bc"
         }
       ]
     }
@@ -233,18 +233,18 @@
     "ok": true,
     "detail": {
       "would_create": {
-        "user": "mcpp-428019",
+        "user": "mcpp-472686",
         "name": "Amina Test",
-        "email": "delivered+mcpp-428019@resend.dev",
+        "email": "delivered+mcpp-472686@resend.dev",
         "role": "Cluster Partner",
         "teams": [
-          "Cluster: MCPP 428019 Hurricane \u00b7 ETC"
+          "Cluster: MCPP 472686 Hurricane \u00b7 ETC"
         ]
       },
-      "email": "EspoCRM emails delivered+mcpp-428019@resend.dev a link to set their password.",
+      "email": "EspoCRM emails delivered+mcpp-472686@resend.dev a link to set their password.",
       "changed": false,
       "confirm_required": true,
-      "confirm": "eyJleHAiOiAxNzk0NDI4OTIzLCAiZiI6IHsiYWN0aW9uIjogImludml0ZV91c2VyIiwgImVtYWlsIjogImRlbGl2ZXJlZCttY3BwLTQyODAxOUByZXNlbmQuZGV2IiwgIm5hbWUiOiBbIkFtaW5hIiwgIlRlc3QiXSwgInJvbGUiOiAiQ2x1c3RlciBQYXJ0bmVyIiwgInRlYW1zIjogWyJDbHVzdGVyOiBNQ1BQIDQyODAxOSBIdXJyaWNhbmUgXHUwMGI3IEVUQyJdLCAidXNlciI6ICJtY3BwLTQyODAxOSJ9fQ.nvBck_Y2OSNEJydvkA7urZZjOhckZQJvbbd5ax-G7_Q",
+      "confirm": "eyJleHAiOiAxNzk0NDczNTgyLCAiZiI6IHsiYWN0aW9uIjogImludml0ZV91c2VyIiwgImVtYWlsIjogImRlbGl2ZXJlZCttY3BwLTQ3MjY4NkByZXNlbmQuZGV2IiwgIm5hbWUiOiBbIkFtaW5hIiwgIlRlc3QiXSwgInJvbGUiOiAiQ2x1c3RlciBQYXJ0bmVyIiwgInRlYW1zIjogWyJDbHVzdGVyOiBNQ1BQIDQ3MjY4NiBIdXJyaWNhbmUgXHUwMGI3IEVUQyJdLCAidXNlciI6ICJtY3BwLTQ3MjY4NiJ9fQ.2nU3T7khSGL6ccjn4mUvmVS3mZyYI1nl4ZorJ0rOo1Y",
       "next": "Show the user this, and call again with `confirm` only once they have agreed."
     }
   },
@@ -255,27 +255,27 @@
     "detail": {
       "changed": true,
       "user": [
-        "6af4ccd3972ac5671"
+        "6af57b4d0a5551fe0"
       ],
       "role": "Cluster Partner",
       "teams": [
-        "Cluster: MCPP 428019 Hurricane \u00b7 ETC"
+        "Cluster: MCPP 472686 Hurricane \u00b7 ETC"
       ],
       "emailed": true,
-      "link": "https://staging.respond.kobolabs.dev/#User/view/6af4cdd7a0dfd9580"
+      "link": "https://staging.respond.kobolabs.dev/#User/view/6af57c473793cf7cf"
     }
   },
   {
     "test": "U4",
     "check": "no password field in either answer",
     "ok": true,
-    "detail": "{'would_create', 'confirm', 'confirm_required', 'emailed', 'user', 'email', 'link', 'changed', 'next', 'name', 'role', 'teams'}"
+    "detail": "{'name', 'email', 'confirm_required', 'link', 'user', 'would_create', 'next', 'teams', 'emailed', 'role', 'confirm', 'changed'}"
   },
   {
     "test": "U5",
     "check": "the invited partner sees the project's site, not the response's own",
     "ok": true,
-    "detail": "{'MCPP 428019 site'}"
+    "detail": "{'MCPP 472686 site'}"
   },
   {
     "test": "U6",
@@ -296,7 +296,7 @@
     "detail": {
       "changed": true,
       "user": "staff-1",
-      "team": "Cluster: MCPP 428019 Hurricane \u00b7 ETC"
+      "team": "Cluster: MCPP 472686 Hurricane \u00b7 ETC"
     }
   },
   {
@@ -312,7 +312,7 @@
     "detail": {
       "changed": true,
       "user": "staff-1",
-      "removed_from": "Cluster: MCPP 428019 Hurricane \u00b7 ETC"
+      "removed_from": "Cluster: MCPP 472686 Hurricane \u00b7 ETC"
     }
   },
   {
@@ -327,7 +327,7 @@
     "ok": true,
     "detail": {
       "changed": false,
-      "note": "mcpp-428019 is in Cluster: MCPP 428019 Hurricane \u00b7 ETC already."
+      "note": "mcpp-472686 is in Cluster: MCPP 472686 Hurricane \u00b7 ETC already."
     }
   },
   {
@@ -342,19 +342,19 @@
     "ok": true,
     "detail": {
       "would_create": {
-        "portal user": "delivered-mcpp-portal-428019@resend.dev",
-        "email": "delivered+mcpp-portal-428019@resend.dev",
-        "for contact": "Pia Portal 428019",
+        "portal user": "delivered-mcpp-portal-472686@resend.dev",
+        "email": "delivered+mcpp-portal-472686@resend.dev",
+        "for contact": "Pia Portal 472686",
         "sees what belongs to": [
-          "MCPP 428019 Organisation"
+          "MCPP 472686 Organisation"
         ],
         "portal": "CSO portal",
         "portal role": "CSO portal"
       },
-      "email": "EspoCRM emails delivered+mcpp-portal-428019@resend.dev a link to set their password.",
+      "email": "EspoCRM emails delivered+mcpp-portal-472686@resend.dev a link to set their password.",
       "changed": false,
       "confirm_required": true,
-      "confirm": "eyJleHAiOiAxNzk0NDI5MDM2LCAiZiI6IHsiYWN0aW9uIjogImludml0ZV9wb3J0YWxfdXNlciIsICJjb250YWN0IjogIjZhZjRjZTAyMGJkMzI4ODk2IiwgInBvcnRhbCI6ICI2YWYzMDhlZTczNWY0MDJmMyIsICJyb2xlIjogIjZhZjMwOGVkMDk5N2YxMzQ1In19.Qw_OA84PIOdirR67vQySUiFnvty49PD5UPZZO3Z9ZaI",
+      "confirm": "eyJleHAiOiAxNzk0NDczNjkzLCAiZiI6IHsiYWN0aW9uIjogImludml0ZV9wb3J0YWxfdXNlciIsICJjb250YWN0IjogIjZhZjU3YzcxM2JmMzBkMDQ0IiwgInBvcnRhbCI6ICI2YWYzMDhlZTczNWY0MDJmMyIsICJyb2xlIjogIjZhZjMwOGVkMDk5N2YxMzQ1In19.NJ_peB-G6bM4ipaetQQBjFs4Fq1HWeEfFW7Vny8BQMo",
       "next": "Show the user this, and call again with `confirm` only once they have agreed."
     }
   },
@@ -364,9 +364,9 @@
     "ok": true,
     "detail": {
       "type": "portal",
-      "contactName": "Pia Portal 428019",
+      "contactName": "Pia Portal 472686",
       "accountsNames": {
-        "6af4ce014e9a23c76": "MCPP 428019 Organisation"
+        "6af57c704a277311c": "MCPP 472686 Organisation"
       },
       "portalsNames": {
         "6af308ee735f402f3": "CSO portal"

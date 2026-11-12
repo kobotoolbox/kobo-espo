@@ -106,8 +106,9 @@ def run(a, team, user):
     org = {c: a.call('GET', '/COrganisation', {'maxSize': 1, **where('code', c)})['list'][0]
            for c in ('ORG_ADRA', 'ORG_AMERICARES', 'other')}
     area = {c: a.call('GET', '/CAdminArea', {'maxSize': 1, **where('pcode', c)})['list'][0]
-            for c in ('JM17', 'JM08')}
-    community = a.call('GET', '/CAdminArea', {'maxSize': 2, 'orderBy': 'pcode', **where('parentPcode', 'JM17')})['list']
+            for c in ('JM03', 'JM06')}
+    # Kingston's communities (the geocoder's admin3: their admin1 is Kingston, JM03)
+    community = a.call('GET', '/CAdminArea', {'maxSize': 2, 'orderBy': 'pcode', **{'where[0][type]': 'equals', 'where[0][attribute]': 'pcode1', 'where[0][value]': 'JM03', 'where[1][type]': 'equals', 'where[1][attribute]': 'level', 'where[1][value]': 'admin3'}})['list']
     resp = a.call('POST', '/CResponse', body={'name': RESPONSE, 'status': 'Active', 'teamsIds': [eq1],
                                               'leadId': user['staff-1'], 'emergencyType': 'Cyclone', 'country': 'Jamaica'})
     # its country's coordination team, made or found by the response's formula (PRODUCT-443)
@@ -187,7 +188,7 @@ def run(a, team, user):
           and got.get('projectId') == p_wash['id'] and got.get('responseId') == resp['id'],
           {k: got.get(k) for k in ('teamsIds', 'projectId', 'responseId')})
     check('W4', 'its parish from the community, and named after both',
-          got.get('parishId') == area['JM17']['id'] and got['name'] == f'{community[0]["name"]}, {area["JM17"]["name"]}',
+          got.get('parishId') == area['JM03']['id'] and got['name'] == f'{community[0]["name"]}, {area["JM03"]["name"]}',
           {k: got.get(k) for k in ('parishId', 'name')})
     act_now = a.call('GET', f'/CActivity/{act["id"]}')
     check('W4', "the activity's totals: 2 communities, 100 reached, 150 targeted, 15 units, 750 budget",
@@ -262,9 +263,13 @@ def run(a, team, user):
 
     # --- W8: reference lists: areas and organisations --------------------------------------------
     areas = a.call('GET', '/CAdminArea', {'maxSize': 1, **where('country', 'JAM')})['total']
-    kingston = a.call('GET', '/CAdminArea', {'maxSize': 1, **where('pcode', 'JM17')})['list'][0]
-    check('W8', "Jamaica's 14 parishes and 775 communities, Melissa's P-codes (JM17 Kingston)",
-          areas == 789 and kingston['name'] == 'KINGSTON', (areas, kingston['name']))
+    kingston = a.call('GET', '/CAdminArea', {'maxSize': 1, **where('pcode', 'JM03')})['list'][0]
+    melissa = a.call('GET', '/CAdminArea', {'maxSize': 1, **where('altPcode', 'JM17')})['list']
+    check('W8', "Jamaica, its 14 parishes, 131 constituencies and 775 communities, the geocoder's P-codes (JM03 Kingston)",
+          areas == 921 and kingston['name'] == 'Kingston', (areas, kingston['name']))
+    check('W8', "Kingston's other P-code, the Melissa 5W form's (its crosswalk): JM17",
+          (kingston.get('altPcode'), kingston.get('altScheme')) == ('JM17', 'melissa-5w')
+          and [r['pcode'] for r in melissa] == ['JM03'], (kingston.get('altPcode'), kingston.get('altScheme')))
     for who in ('cluster-viewer', 'cluster-partner'):
         u = as_user(who)
         orgs = u.call('GET', '/COrganisation', {'maxSize': 1})['total']
@@ -374,7 +379,7 @@ def run(a, team, user):
     got = get('CActivityLocation', l2)
     check('W17', "a location: its activity's organisation, sector, type and status, and its parish's P-code",
           (got.get('leadOrganisationId'), got.get('sector'), got.get('activityKind'), got.get('status'), got.get('pcode1'))
-          == (org['ORG_AMERICARES']['id'], 'WASH', kits, 'IN_PROGRESS', 'JM17'),
+          == (org['ORG_AMERICARES']['id'], 'WASH', kits, 'IN_PROGRESS', 'JM03'),
           {k: got.get(k) for k in ('leadOrganisationName', 'sector', 'activityKind', 'status', 'pcode1')})
     code1 = get('CActivity', x1)['code']
     check('W17', "another organisation's same activity in the same community: an overlap, naming it (the later one flagged)",

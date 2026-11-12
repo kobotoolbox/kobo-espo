@@ -413,10 +413,13 @@ order_by = "name"
 columns = { name = "code", label = "name", org_type = "orgType" }
 forms = ["5W activity report (espo-kobo test)"]
 
-[[list]]  # Jamaica's parishes and communities (the Melissa form's P-codes), not other countries'
+# Jamaica's parishes and communities (the geocoder's COD-AB P-codes; its communities are
+# admin3, so the form's two levels skip admin2: a community's parent here is its parish,
+# pcode1), not other countries'
+[[list]]
 file = "areas.csv"
 entity = "CAdminArea"
-where = { country = "JAM" }
+where = { country = "JAM", level = ["admin1", "admin3"] }
 order_by = "pcode"
-columns = { name = "pcode", label = "name", level = "level", parent = "parentPcode" }
+columns = { name = "pcode", label = "name", level = "level", parent = "pcode1" }
 forms = ["5W activity report (espo-kobo test)"]

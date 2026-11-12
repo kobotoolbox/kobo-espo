@@ -15,6 +15,7 @@
     <li><a href="#email">Email</a></li>
     <li><a href="#templates">Templates and connections</a></li>
     <li><a href="#add">A new consortium or response</a></li>
+    <li><a href="#pcodes">P-codes: a response with codes of its own</a></li>
     <li><a href="#people">People and roles</a></li>
     <li><a href="#checking">Checking on the bridge</a></li>
     <li><a href="#agents">Agents</a></li>
@@ -93,6 +94,24 @@ packs = ["core", "support", "responses", "roster", "sites", "grants", "fivew", "
   <li>Give its people the team.</li>
   <li>For its sites, make a new connection with a copy of the <strong>site-visit</strong> connection's template, changing the team and the visit form's name.</li>
 </ol>
+</section>
+
+<section id="pcodes">
+<h2>P-codes: a response with codes of its own</h2>
+<p>EspoCRM's <strong>admin areas</strong> are the Humanitarian Geocoder's: the OCHA COD-AB boundaries from HDX, with their P-codes. They're the <strong>one set of codes</strong> every record is filed under: the dashboards' maps are shaded on the same boundaries, the P-coding agents find areas by them, and gaps and overlaps compare them. <code>espo/seed/admin_areas.py</code> writes a country's areas (<code>workflows/core/data/admin-areas-&lt;iso3&gt;.json</code>, each country in one file), and the seed loads them. <code>--countries</code> writes the country row (admin0) of every other country the geocoder has.</p>
+<p>A response often brings codes of its own: its 5W form's, a government's list, an older COD version. Hurricane Melissa's 5W form numbers Jamaica's parishes differently (Kingston is <code>JM17</code> there, <code>JM03</code> in the COD-AB) and skips a level (its communities sit straight under the parishes; the COD-AB has 131 constituencies between). Such a set of codes gets a <strong>crosswalk</strong> in the geocoder (its <code>docs/crosswalks.md</code>): each of its codes matched to a P-code, by the same code, by the same name within its parent's area, a close name for a person to confirm, or by hand; what can't be matched is listed to resolve. Melissa's 790 codes all match: 4 by code, 786 by name.</p>
+<ol>
+  <li><strong>Make the crosswalk</strong> in the geocoder from the set's codes (a CSV of code, name, level, parent code): <code>manage.py build_crosswalk JM melissa-5w crosswalks/JM_melissa-5w.csv</code>, or its API. Review what it couldn't match, and set those by hand.</li>
+  <li><strong>Give the areas their other code</strong>: <code>python3 -I espo/seed/admin_areas.py JM --max-level 3 --crosswalk melissa-5w</code> (or <code>--crosswalk-file</code>, its JSON). Each area gets the set's code as its <em>Other P-code</em> (<code>altPcode</code>, with the crosswalk's key in <code>altScheme</code>) and its admin1's code (<code>pcode1</code>).</li>
+  <li><strong>Seed.</strong> An area EspoCRM still has under the set's code is <strong>re-keyed in place</strong> (the data step's <code>was</code>): its record takes the geocoder's code, name, level and parent, so every report, location and assessment linked to it stays linked. The packs' migrations then bring what copied the old codes along: activity locations their parish's code and names, assessments their areas' codes (and their overlaps). A second seed re-keys nothing.</li>
+</ol>
+<p>Then, for data in the set's codes:</p>
+<ul>
+  <li><strong>Our own forms</strong> read their area lists from EspoCRM, so they're in the geocoder's codes already. A form that picks two levels (parish, community) where the boundaries have three lists the parishes and the communities, each community with its admin1 (<code>pcode1</code>) as its parent: <code>where = { country = "JAM", level = ["admin1", "admin3"] }</code>, <code>parent = "pcode1"</code>.</li>
+  <li><strong>The response's own form, or an import from it</strong>: its template matches the area on the other code, <code>lookup = "altPcode"</code> instead of <code>"pcode"</code>. A code the crosswalk doesn't have isn't guessed: the record is kept without the area, and the bridge records the row it couldn't place.</li>
+  <li><strong>Sharing back</strong>: an area keeps both codes, so a list or export can give the response's code beside the geocoder's.</li>
+</ul>
+<p>An area has one other code, from one crosswalk: a second response in the same country with yet other codes needs crosswalk entries as their own records (not built). A new COD-AB version that renumbers areas is the same case: its old codes are a crosswalk.</p>
 </section>
 
 <section id="people">

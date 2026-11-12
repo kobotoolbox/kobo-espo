@@ -19,7 +19,7 @@ def every(espo, entity, select, *where):
             return out
 
 
-def migrate(espo):
+def migrate(espo, rekeyed=None):
     done = {}
     # Registrations: saved, so their formula finds or makes the Account (every registration
     # names an organisation, so none is left for a rerun)
@@ -85,5 +85,11 @@ def migrate(espo):
     for r in every(espo, 'CActivityLocation', 'id,name', ('isNotNull', 'activityId'), ('isNull', 'sector')):
         espo.call('PUT', f'/CActivityLocation/{r["id"]}', body={'name': r['name']})
         done['CActivityLocation (who and what)'] = done.get('CActivityLocation (who and what)', 0) + 1
+    # Areas re-keyed this run (their codes became the geocoder's, PRODUCT-428): locations
+    # saved again, so their formula gives them their parish's new code and names
+    if (rekeyed or {}).get('CAdminArea'):
+        for r in every(espo, 'CActivityLocation', 'id,name', ('isNotNull', 'communityId')):
+            espo.call('PUT', f'/CActivityLocation/{r["id"]}', body={'name': r['name']})
+            done['CActivityLocation (areas re-keyed)'] = done.get('CActivityLocation (areas re-keyed)', 0) + 1
     if done:
         print('fivew: migrated ' + ', '.join(f'{n} {e}' for e, n in done.items()))

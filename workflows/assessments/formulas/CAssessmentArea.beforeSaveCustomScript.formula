@@ -4,8 +4,9 @@
 if (entity\isNew() || entity\isAttributeChanged('cKoboSubmissionUuid')) {
     current = true;
 }
-// Named after its assessment and its area ("ASM-7K3Q: Kingston")
-if (assessmentId && (entity\isNew() || entity\isAttributeChanged('assessmentId') || entity\isAttributeChanged('adminAreaId'))) {
+// Named after its assessment and its area ("ASM-7K3Q: Kingston"), as they're named now
+// (areas re-keyed)
+if (assessmentId) {
     name = string\concatenate(record\attribute('CAssessment', assessmentId, 'code'), ': ',
         ifThenElse(adminAreaId, record\attribute('CAdminArea', adminAreaId, 'name'), ifThenElse(pcode, pcode, 'area')));
 }

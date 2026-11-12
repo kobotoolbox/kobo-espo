@@ -125,7 +125,8 @@ def run(a, kobo, uid, bridge):
     eq1, etc, wash = team['Response: Test EQ 1'], team['Cluster: Test EQ 1 ETC'], team['Cluster: Test EQ 1 WASH']
     org = {c: a.call('GET', '/COrganisation', {'maxSize': 1, **where('code', c)})['list'][0]
            for c in ('ORG_ADRA', 'ORG_AMERICARES', 'other')}
-    kingston = a.call('GET', '/CAdminArea', {'maxSize': 3, 'orderBy': 'pcode', **where('parentPcode', 'JM17')})['list']
+    # Kingston's communities (the geocoder's admin3: their admin1 is Kingston, JM03)
+    kingston = a.call('GET', '/CAdminArea', {'maxSize': 3, 'orderBy': 'pcode', **{'where[0][type]': 'equals', 'where[0][attribute]': 'pcode1', 'where[0][value]': 'JM03', 'where[1][type]': 'equals', 'where[1][attribute]': 'level', 'where[1][value]': 'admin3'}})['list']
     resp = a.call('POST', '/CResponse', body={'name': f'{PREFIX} {RUN} Response', 'status': 'Active', 'teamsIds': [eq1],
                                               'emergencyType': 'Cyclone', 'country': 'Jamaica'})
     coord = a.call('GET', '/Team', {'maxSize': 1, **where('name', 'Coordination: Jamaica')})['list'][0]['id']
@@ -147,7 +148,7 @@ def run(a, kobo, uid, bridge):
 
     # --- A1: an assessment registered --------------------------------------------------------------
     one, log = submit(title='Rapid WASH', org='ORG_ADRA', sectors=['WASH', 'HEALTH'],
-                      areas=[('JM17', kingston[0]['pcode']), ('JM08', None)], start=days(2), end=days(12),
+                      areas=[('JM03', kingston[0]['pcode']), ('JM06', None)], start=days(2), end=days(12),
                       participants='ORG_AMERICARES ORG_ADRA')
     check('A1', 'a submission makes one assessment, with its ASM- code, planned, not checked yet',
           bool(one.get('code') and CODE.match(one['code'])) and (one.get('status'), one.get('review')) == ('planned', 'new'),
@@ -179,10 +180,12 @@ def run(a, kobo, uid, bridge):
     # --- A3: its areas ----------------------------------------------------------------------------
     rows = areas(one)
     k1 = next((r for r in rows if r.get('pcode') == kingston[0]['pcode']), {})
+    # (a community is the geocoder's admin3: its constituency between it and its parish)
     check('A3', 'one row per area, each linked to its admin area, with its P-codes up its parents and its country',
-          len(rows) == 2 and k1.get('adminAreaId') == kingston[0]['id'] and k1.get('pcode1') == 'JM17'
-          and k1.get('pcode2') == kingston[0]['pcode'] and k1.get('country') == 'JAM',
-          [{k: r.get(k) for k in ('pcode', 'pcode1', 'pcode2', 'country', 'adminAreaName')} for r in rows])
+          len(rows) == 2 and k1.get('adminAreaId') == kingston[0]['id'] and k1.get('pcode1') == 'JM03'
+          and k1.get('pcode2') == kingston[0]['parentPcode'] and k1.get('pcode3') == kingston[0]['pcode']
+          and k1.get('country') == 'JAM',
+          [{k: r.get(k) for k in ('pcode', 'pcode1', 'pcode2', 'pcode3', 'country', 'adminAreaName')} for r in rows])
     check('A3', "a row has its assessment's teams, response, Account, sectors, status and dates; it's current",
           set(k1.get('teamsIds') or []) == set(get('CAssessment', one['id'])['teamsIds']) and k1.get('responseId') == resp['id']
           and k1.get('accountId') == one.get('accountId') and k1.get('sectors') == ['WASH', 'HEALTH']
@@ -191,11 +194,11 @@ def run(a, kobo, uid, bridge):
           {k: k1.get(k) for k in ('responseId', 'accountId', 'sectors', 'status', 'startDate', 'current', 'name')})
 
     # --- A4: another organisation's, at the same time and place: an overlap -----------------------
-    two, _ = submit(title='Health check', org='ORG_AMERICARES', sectors=['HEALTH'], areas=[('JM17', None)],
+    two, _ = submit(title='Health check', org='ORG_AMERICARES', sectors=['HEALTH'], areas=[('JM03', None)],
                     start=days(5), end=days(20), level='admin1')
-    three, _ = submit(title='Shelter count', org='ORG_AMERICARES', sectors=['SHELTER'], areas=[('JM17', None)],
+    three, _ = submit(title='Shelter count', org='ORG_AMERICARES', sectors=['SHELTER'], areas=[('JM03', None)],
                       start=days(5), end=days(20), level='admin1')
-    four, _ = submit(title='Later health', org='ORG_AMERICARES', sectors=['HEALTH'], areas=[('JM17', None)],
+    four, _ = submit(title='Later health', org='ORG_AMERICARES', sectors=['HEALTH'], areas=[('JM03', None)],
                      start=days(30), end=days(40), level='admin1')
     check('A4', "a Health assessment of Kingston (the parish) while ADRA's covers a community in it: flagged, naming ADRA's",
           'overlap' in (two.get('dataChecks') or []) and two.get('overlapsWith') == one['code'],
@@ -210,14 +213,14 @@ def run(a, kobo, uid, bridge):
     check('A5', 'staff-1 (the A&A Cell, the response\'s team) marks it checked; cluster-partner can\'t edit it',
           get('CAssessment', one['id'])['review'] == 'checked'
           and status(lambda: partner.call('PUT', f'/CAssessment/{one["id"]}', body={'notes': 'x'})) == 403)
-    again, _ = submit(title='Rapid WASH', org='ORG_ADRA', sectors=['WASH', 'HEALTH'], areas=[('JM08', None)],
+    again, _ = submit(title='Rapid WASH', org='ORG_ADRA', sectors=['WASH', 'HEALTH'], areas=[('JM06', None)],
                       start=days(-30), end=days(-20), state='completed', code=one['code'])
     check('A5', 'sent again with its code: the same assessment, completed, its dates moved, not checked any more',
           again.get('id') == one['id'] and (again.get('status'), again.get('endDate'), again.get('review')) == ('completed', days(-20), 'new'),
           {k: again.get(k) for k in ('id', 'status', 'endDate', 'review')})
     current = areas(one, current=True)
     check('A5', "its areas: the new submission's current, the dropped one not",
-          [r.get('pcode') for r in current] == ['JM08'] and len(areas(one)) == 3 and current[0].get('status') == 'completed',
+          [r.get('pcode') for r in current] == ['JM06'] and len(areas(one)) == 3 and current[0].get('status') == 'completed',
           [(r.get('pcode'), r.get('current'), r.get('status')) for r in areas(one)])
 
     # --- A6: data checks ----------------------------------------------------------------------------

@@ -1,0 +1,751 @@
+[
+ {
+  "name": "United Arab Emirates",
+  "pcode": "AE",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "ARE"
+ },
+ {
+  "name": "Afghanistan",
+  "pcode": "AF",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "AFG"
+ },
+ {
+  "name": "Armenia",
+  "pcode": "AM",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "ARM"
+ },
+ {
+  "name": "Angola",
+  "pcode": "AO",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "AGO"
+ },
+ {
+  "name": "Azerbaijan",
+  "pcode": "AZ",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "AZE"
+ },
+ {
+  "name": "Bangladesh",
+  "pcode": "BD",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "BGD"
+ },
+ {
+  "name": "Burkina Faso",
+  "pcode": "BF",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "BFA"
+ },
+ {
+  "name": "Bulgaria",
+  "pcode": "BG",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "BGR"
+ },
+ {
+  "name": "Burundi",
+  "pcode": "BI",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "BDI"
+ },
+ {
+  "name": "Bénin",
+  "pcode": "BJ",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "BEN"
+ },
+ {
+  "name": "Bolivia (Estado Plurinacional de)",
+  "pcode": "BO",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "BOL"
+ },
+ {
+  "name": "Bhutan",
+  "pcode": "BT",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "BTN"
+ },
+ {
+  "name": "Belarus",
+  "pcode": "BY",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "BLR"
+ },
+ {
+  "name": "Belize",
+  "pcode": "BZ",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "BLZ"
+ },
+ {
+  "name": "République démocratique du Congo",
+  "pcode": "CD",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "COD"
+ },
+ {
+  "name": "République centrafricaine",
+  "pcode": "CF",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "CAF"
+ },
+ {
+  "name": "Congo",
+  "pcode": "CG",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "COG"
+ },
+ {
+  "name": "Côte d'Ivoire",
+  "pcode": "CI",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "CIV"
+ },
+ {
+  "name": "Chile",
+  "pcode": "CL",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "CHL"
+ },
+ {
+  "name": "Cameroon",
+  "pcode": "CM",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "CMR"
+ },
+ {
+  "name": "Colombia",
+  "pcode": "CO",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "COL"
+ },
+ {
+  "name": "Costa Rica",
+  "pcode": "CR",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "CRI"
+ },
+ {
+  "name": "Cuba",
+  "pcode": "CU",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "CUB"
+ },
+ {
+  "name": "Cabo Verde",
+  "pcode": "CV",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "CPV"
+ },
+ {
+  "name": "República Dominicana",
+  "pcode": "DO",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "DOM"
+ },
+ {
+  "name": "Algeria",
+  "pcode": "DZ",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "DZA"
+ },
+ {
+  "name": "Ecuador",
+  "pcode": "EC",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "ECU"
+ },
+ {
+  "name": "Egypt",
+  "pcode": "EG",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "EGY"
+ },
+ {
+  "name": "Western Sahara",
+  "pcode": "EH",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "ESH"
+ },
+ {
+  "name": "Eritrea",
+  "pcode": "ER",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "ERI"
+ },
+ {
+  "name": "Ethiopia",
+  "pcode": "ET",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "ETH"
+ },
+ {
+  "name": "Grenada",
+  "pcode": "GD",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "GRD"
+ },
+ {
+  "name": "Georgia",
+  "pcode": "GE",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "GEO"
+ },
+ {
+  "name": "Ghana",
+  "pcode": "GH",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "GHA"
+ },
+ {
+  "name": "Gambia",
+  "pcode": "GM",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "GMB"
+ },
+ {
+  "name": "Guinée",
+  "pcode": "GN",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "GIN"
+ },
+ {
+  "name": "Guinea Ecuatorial",
+  "pcode": "GQ",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "GNQ"
+ },
+ {
+  "name": "Guatemala",
+  "pcode": "GT",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "GTM"
+ },
+ {
+  "name": "Guinea-Bissau",
+  "pcode": "GW",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "GNB"
+ },
+ {
+  "name": "Honduras",
+  "pcode": "HN",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "HND"
+ },
+ {
+  "name": "Haiti",
+  "pcode": "HT",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "HTI"
+ },
+ {
+  "name": "Magyarország",
+  "pcode": "HU",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "HUN"
+ },
+ {
+  "name": "Indonesia",
+  "pcode": "ID",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "IDN"
+ },
+ {
+  "name": "Iraq",
+  "pcode": "IQ",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "IRQ"
+ },
+ {
+  "name": "Iran (Islamic Republic of)",
+  "pcode": "IR",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "IRN"
+ },
+ {
+  "name": "Kyrgyzstan",
+  "pcode": "KG",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "KGZ"
+ },
+ {
+  "name": "Cambodia",
+  "pcode": "KH",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "KHM"
+ },
+ {
+  "name": "Comores",
+  "pcode": "KM",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "COM"
+ },
+ {
+  "name": "Democratic People's Republic of Korea",
+  "pcode": "KP",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "PRK"
+ },
+ {
+  "name": "Kuwait",
+  "pcode": "KW",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "KWT"
+ },
+ {
+  "name": "Lao People's Democratic Republic",
+  "pcode": "LA",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "LAO"
+ },
+ {
+  "name": "Lebanon",
+  "pcode": "LB",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "LBN"
+ },
+ {
+  "name": "Sri Lanka",
+  "pcode": "LK",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "LKA"
+ },
+ {
+  "name": "Liberia",
+  "pcode": "LR",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "LBR"
+ },
+ {
+  "name": "Libya",
+  "pcode": "LY",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "LBY"
+ },
+ {
+  "name": "Morocco",
+  "pcode": "MA",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "MAR"
+ },
+ {
+  "name": "Republic of Moldova",
+  "pcode": "MD",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "MDA"
+ },
+ {
+  "name": "Mali",
+  "pcode": "ML",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "MLI"
+ },
+ {
+  "name": "Myanmar",
+  "pcode": "MM",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "MMR"
+ },
+ {
+  "name": "Mongolia",
+  "pcode": "MN",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "MNG"
+ },
+ {
+  "name": "Mauritanie",
+  "pcode": "MR",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "MRT"
+ },
+ {
+  "name": "Maldives",
+  "pcode": "MV",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "MDV"
+ },
+ {
+  "name": "Malawi",
+  "pcode": "MW",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "MWI"
+ },
+ {
+  "name": "México",
+  "pcode": "MX",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "MEX"
+ },
+ {
+  "name": "Malaysia",
+  "pcode": "MY",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "MYS"
+ },
+ {
+  "name": "Moçambique",
+  "pcode": "MZ",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "MOZ"
+ },
+ {
+  "name": "Namibia",
+  "pcode": "NA",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "NAM"
+ },
+ {
+  "name": "Niger",
+  "pcode": "NE",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "NER"
+ },
+ {
+  "name": "Nigeria",
+  "pcode": "NG",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "NGA"
+ },
+ {
+  "name": "Nicaragua",
+  "pcode": "NI",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "NIC"
+ },
+ {
+  "name": "Nepal",
+  "pcode": "NP",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "NPL"
+ },
+ {
+  "name": "Oman",
+  "pcode": "OM",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "OMN"
+ },
+ {
+  "name": "Panamá",
+  "pcode": "PA",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "PAN"
+ },
+ {
+  "name": "Perú",
+  "pcode": "PE",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "PER"
+ },
+ {
+  "name": "Papua New Guinea",
+  "pcode": "PG",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "PNG"
+ },
+ {
+  "name": "Philippines",
+  "pcode": "PH",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "PHL"
+ },
+ {
+  "name": "Pakistan",
+  "pcode": "PK",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "PAK"
+ },
+ {
+  "name": "Polska",
+  "pcode": "PL",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "POL"
+ },
+ {
+  "name": "State of Palestine",
+  "pcode": "PS",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "PSE"
+ },
+ {
+  "name": "Qatar",
+  "pcode": "QA",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "QAT"
+ },
+ {
+  "name": "România",
+  "pcode": "RO",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "ROU"
+ },
+ {
+  "name": "Saudi Arabia",
+  "pcode": "SA",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "SAU"
+ },
+ {
+  "name": "Sudan",
+  "pcode": "SD",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "SDN"
+ },
+ {
+  "name": "Slovensko",
+  "pcode": "SK",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "SVK"
+ },
+ {
+  "name": "Sierra Leone",
+  "pcode": "SL",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "SLE"
+ },
+ {
+  "name": "Sénégal",
+  "pcode": "SN",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "SEN"
+ },
+ {
+  "name": "Somalia",
+  "pcode": "SO",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "SOM"
+ },
+ {
+  "name": "South Sudan",
+  "pcode": "SS",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "SSD"
+ },
+ {
+  "name": "El Salvador",
+  "pcode": "SV",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "SLV"
+ },
+ {
+  "name": "Sint Maarten (Dutch part)",
+  "pcode": "SX",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "SXM"
+ },
+ {
+  "name": "Syrian Arab Republic",
+  "pcode": "SY",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "SYR"
+ },
+ {
+  "name": "Eswatini",
+  "pcode": "SZ",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "SWZ"
+ },
+ {
+  "name": "Tchad",
+  "pcode": "TD",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "TCD"
+ },
+ {
+  "name": "Togo",
+  "pcode": "TG",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "TGO"
+ },
+ {
+  "name": "Thailand",
+  "pcode": "TH",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "THA"
+ },
+ {
+  "name": "Timor-Leste",
+  "pcode": "TL",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "TLS"
+ },
+ {
+  "name": "Tunisie",
+  "pcode": "TN",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "TUN"
+ },
+ {
+  "name": "Türkiye",
+  "pcode": "TR",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "TUR"
+ },
+ {
+  "name": "Ukraine",
+  "pcode": "UA",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "UKR"
+ },
+ {
+  "name": "Saint Vincent and the Grenadines",
+  "pcode": "VC",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "VCT"
+ },
+ {
+  "name": "Venezuela (República Bolivariana de)",
+  "pcode": "VE",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "VEN"
+ },
+ {
+  "name": "Viet Nam",
+  "pcode": "VN",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "VNM"
+ },
+ {
+  "name": "Vanuatu",
+  "pcode": "VU",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "VUT"
+ },
+ {
+  "name": "Yemen",
+  "pcode": "YE",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "YEM"
+ },
+ {
+  "name": "South Africa",
+  "pcode": "ZA",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "ZAF"
+ },
+ {
+  "name": "Zambia",
+  "pcode": "ZM",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "ZMB"
+ },
+ {
+  "name": "Zimbabwe",
+  "pcode": "ZW",
+  "level": "admin0",
+  "parentPcode": "",
+  "country": "ZWE"
+ }
+]

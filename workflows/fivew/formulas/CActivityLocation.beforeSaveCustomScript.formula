@@ -1,10 +1,11 @@
 // A location is its activity's: its project, response and teams (trait inherit, workflow.toml)
 
-// The parish from the community, if it wasn't given; named after them
+// The parish from the community, if it wasn't given (its admin1: the boundaries may have a
+// level between); named after them, as they're named now (areas re-keyed)
 if (communityId && !parishId) {
-    parishId = record\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', record\attribute('CAdminArea', communityId, 'parentPcode'));
+    parishId = record\findOne('CAdminArea', 'createdAt', 'asc', 'pcode=', record\attribute('CAdminArea', communityId, 'pcode1'));
 }
-if (communityId && (entity\isNew() || entity\isAttributeChanged('communityId'))) {
+if (communityId) {
     name = string\concatenate(record\attribute('CAdminArea', communityId, 'name'),
         ifThenElse(parishId, string\concatenate(', ', record\attribute('CAdminArea', parishId, 'name')), ''));
 }
@@ -18,7 +19,7 @@ if (activityId && !sector && record\attribute('CActivity', activityId, 'sector')
     activityKindOther = record\attribute('CActivity', activityId, 'activityTypeOther');
     status = record\attribute('CActivity', activityId, 'status');
 }
-if (parishId && (!pcode1 || entity\isAttributeChanged('parishId'))) {
+if (parishId) {
     pcode1 = record\attribute('CAdminArea', parishId, 'pcode');
 }
 

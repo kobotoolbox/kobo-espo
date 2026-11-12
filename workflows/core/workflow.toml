@@ -46,6 +46,9 @@ pcode = { type = "varchar", label = "P-code", required = true, maxLength = 30 }
 level = { type = "enum", options = ["admin0", "admin1", "admin2", "admin3", "admin4"], default = "admin1" }
 parentPcode = { type = "varchar", label = "Parent P-code", maxLength = 30 }
 country = { type = "varchar", label = "Country (ISO3)", maxLength = 3 }
+pcode1 = { type = "varchar", label = "Admin1 P-code", maxLength = 30, tooltipText = "Its admin1's P-code (an admin1's is its own): what a two-level list (parish, community) filters on when the boundaries have a level between" }
+altPcode = { type = "varchar", label = "Other P-code", maxLength = 30, tooltipText = "The code another set gives this area (a response's form, a government list): its crosswalk's (Other P-codes), from the geocoder" }
+altScheme = { type = "varchar", label = "Other P-codes", maxLength = 100, tooltipText = "The crosswalk the other code is from, e.g. melissa-5w" }
 
 [entities.Agent]
 labelPlural = "Agents"
@@ -149,8 +152,8 @@ detail = [["code"]]
 list = ["name", "code"]
 
 [layouts.CAdminArea]
-detail = [["pcode", "level", "parentPcode", "country"]]
-list = ["name", "pcode", "level", "parentPcode", "country"]
+detail = [["pcode", "level", "parentPcode", "country", "pcode1", "altPcode", "altScheme"]]
+list = ["name", "pcode", "level", "parentPcode", "country", "altPcode"]
 
 [layouts.Task]
 kanban = ["name", "assignedUser", "dateEnd"]
@@ -188,8 +191,12 @@ name = "Sasha Staff"
 role = "Internal Staff"
 teams = ["Internal Kobo", "Project: Consortium B", "Grants review"]
 
+# A country's areas, the geocoder's (espo/seed/admin_areas.py): one file each (or one of
+# every other country's admin0 row). An area under another set's code (its altPcode, e.g.
+# Melissa's, before the areas were the geocoder's) is re-keyed in place (`was`)
 [[data]]
 entity = "CAdminArea"
 file = "data/admin-areas-*.json"
 match = "pcode"
 sync_by = "country"
+was = ["altPcode", "altScheme"]

@@ -116,7 +116,16 @@ if (!{a} && pcodeStatus == 'done') {{
 if (!{a} && latitude != null && !pcodeStatus) {{
     pcodeStatus = 'pending';
 }}""" if pins else ''
-    return pin + f"""if ({a} && ({changed([a])})) {{
+    return pin + f"""// ... and again, afresh, when its area's code isn't among them: the area was re-keyed (its
+// codes became the geocoder's) since
+$stale = {a} && record\\attribute('CAdminArea', {a}, 'level') != 'admin0'
+    && !array\\includes(list(pcode1, pcode2, pcode3), record\\attribute('CAdminArea', {a}, 'pcode'));
+if ($stale && !({changed([a])})) {{
+    pcode1 = null;
+    pcode2 = null;
+    pcode3 = null;
+}}
+if ({a} && ({changed([a])} || $stale)) {{
     $a = {a};
     $n = 0;
     while ($a && $n < 5) {{
