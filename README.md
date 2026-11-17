@@ -61,3 +61,7 @@ ignored; the droplet keeps its own in `/root/kobo-espo*.secrets` (mode 600).
 
 Agents with a real model, from your own machine through Amazon Bedrock (your AWS login, no
 Anthropic key; Sonnet 5.5 for test runs): the manual's "Running it" → "Agents".
+
+## Licence
+
+GNU Affero General Public License v3.0: see [LICENSE](LICENSE).
